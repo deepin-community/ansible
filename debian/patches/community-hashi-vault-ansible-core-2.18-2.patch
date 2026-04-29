@@ -1,0 +1,23 @@
+From: Felix Fontein <felix@fontein.de>
+Date: Tue, 24 Sep 2024 22:35:24 +0300
+Subject: Fix unit tests for stable-2.18 and devel.
+
+Origin: upstream, https://github.com/ansible-collections/community.hashi_vault/pull/452/commits/5bddc1f026d2f7ef8879f760a82150309389d8d9
+Last-Update: 2024-11-12
+---
+ .../tests/unit/plugins/lookup/test_vault_ansible_settings.py            | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/ansible_collections/community/hashi_vault/tests/unit/plugins/lookup/test_vault_ansible_settings.py b/ansible_collections/community/hashi_vault/tests/unit/plugins/lookup/test_vault_ansible_settings.py
+index 4d33183..88914c9 100644
+--- a/ansible_collections/community/hashi_vault/tests/unit/plugins/lookup/test_vault_ansible_settings.py
++++ b/ansible_collections/community/hashi_vault/tests/unit/plugins/lookup/test_vault_ansible_settings.py
+@@ -41,6 +41,8 @@ def patch_config_manager(sample_options):
+     config = mock.Mock(wraps=C)
+     config.get_configuration_definitions.return_value = sample_options.copy()
+     config.get_config_value_and_origin = mock.Mock(wraps=_config_value_and_origin)
++    config.WARNINGS = set()
++    config.DEPRECATED = list()
+ 
+     with mock.patch('ansible.constants.config', config):
+         yield config
