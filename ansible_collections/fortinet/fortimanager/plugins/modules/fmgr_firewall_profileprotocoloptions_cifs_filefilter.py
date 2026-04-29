@@ -138,6 +138,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -153,17 +154,16 @@ EXAMPLES = '''
         adom: <your own value>
         profile_protocol_options: <your own value>
         firewall_profileprotocoloptions_cifs_filefilter:
-          entries:
-            -
-              action: <value in [log, block]>
-              comment: <string>
-              direction: <value in [any, incoming, outgoing]>
-              file_type: <list or string>
-              filter: <string>
-              protocol:
-                - "cifs"
-          log: <value in [disable, enable]>
-          status: <value in [disable, enable]>
+          # entries:
+          #   - action: <value in [log, block]>
+          #     comment: <string>
+          #     direction: <value in [any, incoming, outgoing]>
+          #     file_type: <list or string>
+          #     filter: <string>
+          #     protocol:
+          #       - "cifs"
+          # log: <value in [disable, enable]>
+          # status: <value in [disable, enable]>
 '''
 
 RETURN = '''

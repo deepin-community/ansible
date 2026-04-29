@@ -50,7 +50,7 @@ DOCUMENTATION:
           functional level, but it can be higher.
         - The default is automatically computed and set.
         - Current known modes are C(Win2003), C(Win2008), C(Win2008R2),
-          C(Win2012), C(Win2012R2), or C(WinThreshold).
+          C(Win2012), C(Win2012R2), C(WinThreshold), or C(Win2025).
       type: str
     domain_type:
       description:
@@ -85,6 +85,12 @@ DOCUMENTATION:
           create a new domain tree in.
         - This can only be set when I(domain_type=tree).
       type: str
+    replication_source_dc:
+      description:
+        - Specifies the name of an existing domain controller in the forest that
+          will be used as the replication source for the new domain.
+      type: str
+      version_added: 1.8.0
     safe_mode_password:
       description:
         - Safe mode password for the domain controller.

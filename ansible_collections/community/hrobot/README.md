@@ -5,7 +5,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
 # Community Hetzner Robot Collection
-[![CI](https://github.com/ansible-collections/community.hrobot/workflows/CI/badge.svg?event=push)](https://github.com/ansible-collections/community.hrobot/actions)
+[![CI](https://github.com/ansible-collections/community.hrobot/actions/workflows/nox.yml/badge.svg?branch=main)](https://github.com/ansible-collections/community.hrobot/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/community.hrobot)](https://codecov.io/gh/ansible-collections/community.hrobot)
 [![REUSE status](https://api.reuse.software/badge/github.com/ansible-collections/community.hrobot)](https://api.reuse.software/info/github.com/ansible-collections/community.hrobot)
 
@@ -35,7 +35,7 @@ For more information about communication, see the [Ansible communication guide](
 
 ## Tested with Ansible
 
-Tested with the current ansible-core 2.14, ansible-core 2.15, ansible-core 2.16, ansible-core 2.17, and ansible-core 2.18 releases and the current development version of ansible-core. Ansible versions before 2.9.10 are not supported.
+Tested with the current ansible-core 2.14, ansible-core 2.15, ansible-core 2.16, ansible-core 2.17, ansible-core 2.18, and ansible-core 2.19 releases and the current development version of ansible-core. Ansible versions before 2.9.10 are not supported.
 
 ## External requirements
 
@@ -53,10 +53,27 @@ If you use the Ansible package and do not update collections independently, use 
 
 ## Included content
 
+- `community.hrobot.boot` module
 - `community.hrobot.failover_ip` module
 - `community.hrobot.failover_ip_info` module
 - `community.hrobot.firewall` module
 - `community.hrobot.firewall_info` module
+- `community.hrobot.reset` module
+- `community.hrobot.reverse_dns` module
+- `community.hrobot.server_info` module
+- `community.hrobot.server` module
+- `community.hrobot.ssh_key_info` module
+- `community.hrobot.ssh_key` module
+- `community.hrobot.storagebox` module
+- `community.hrobot.storagebox_info` module
+- `community.hrobot.storagebox_set_password` module
+- `community.hrobot.storagebox_snapshot` module
+- `community.hrobot.storagebox_snapshot_info` module
+- `community.hrobot.storagebox_snapshot_plan` module
+- `community.hrobot.storagebox_snapshot_plan_info` module
+- `community.hrobot.storagebox_subaccount` module
+- `community.hrobot.storagebox_subaccount_info` module
+- `community.hrobot.v_switch` module
 - `community.hrobot.robot` inventory plugin
 
 You can find [documentation for the modules and plugins in this collection here](https://docs.ansible.com/ansible/devel/collections/community/hrobot/).
@@ -79,6 +96,8 @@ See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_gui
 ## Contributing to this collection
 
 If you want to develop new content for this collection or improve what is already here, the easiest way to work on the collection is to clone it into one of the configured [`COLLECTIONS_PATH`](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths), and work on it there.
+
+Refer to our [contribution guide](https://github.com/ansible-collections/community.general/blob/main/CONTRIBUTING.md) for information on testing!
 
 You can find more information in the [developer guide for collections](https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html#contributing-to-collections), and in the [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html).
 
@@ -104,4 +123,4 @@ See [LICENSES/GPL-3.0-or-later.txt](https://github.com/ansible-collections/commu
 
 Parts of the collection are licensed under the [BSD 2-Clause license](https://github.com/ansible-collections/community.hrobot/blob/main/LICENSES/BSD-2-Clause.txt).
 
-All files have a machine readable `SDPX-License-Identifier:` comment denoting its respective license(s) or an equivalent entry in an accompanying `.license` file. Only changelog fragments (which will not be part of a release) are covered by a blanket statement in `.reuse/dep5`. This conforms to the [REUSE specification](https://reuse.software/spec/).
+All files have a machine readable `SDPX-License-Identifier:` comment denoting its respective license(s) or an equivalent entry in an accompanying `.license` file. Only changelog fragments (which will not be part of a release) are covered by a blanket statement in `REUSE.toml`. This conforms to the [REUSE specification](https://reuse.software/spec/).

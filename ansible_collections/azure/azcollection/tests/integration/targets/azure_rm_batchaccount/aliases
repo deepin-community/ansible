@@ -1,4 +1,0 @@
-cloud/azure
-destructive
-shippable/azure/group12
-needs/file/tests/integration_common_tasks/managed_identity.yml

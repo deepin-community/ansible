@@ -20,8 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
-    get_dict_result,
+    meraki_compare_equality2,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
     InconsistentParameters,
@@ -79,11 +78,8 @@ class NetworksApplianceFirewallL7FirewallRules(object):
                 params=self.get_all_params(name=name),
             )
             if isinstance(items, dict):
-                if 'response' in items:
-                    items = items.get('response')
-            result = get_dict_result(items, 'name', name)
-            if result is None:
-                result = items
+                if 'rules' in items:
+                    result = items
         except Exception as e:
             print("Error: ", e)
             result = None
@@ -98,7 +94,8 @@ class NetworksApplianceFirewallL7FirewallRules(object):
         prev_obj = None
         id_exists = False
         name_exists = False
-        o_id = self.new_object.get("networkId") or self.new_object.get("network_id")
+        o_id = self.new_object.get(
+            "networkId") or self.new_object.get("network_id")
         name = self.new_object.get("name")
         if o_id:
             prev_obj = self.get_object_by_name(o_id)
@@ -113,20 +110,22 @@ class NetworksApplianceFirewallL7FirewallRules(object):
                     "The 'id' and 'name' params don't refer to the same object")
             if _id:
                 self.new_object.update(dict(id=_id))
-        it_exists = prev_obj is not None and isinstance(prev_obj, dict)
+        it_exists = prev_obj is not None
         return (it_exists, prev_obj)
 
     def requires_update(self, current_obj):
         requested_obj = self.new_object
-
+        if len(current_obj) == 0:
+            return True
+        if len(requested_obj) == 0:
+            return True
         obj_params = [
             ("rules", "rules"),
-            ("networkId", "networkId"),
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):

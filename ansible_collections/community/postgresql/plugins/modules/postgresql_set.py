@@ -12,7 +12,14 @@ DOCUMENTATION = r'''
 ---
 module: postgresql_set
 short_description: Change a PostgreSQL server configuration parameter
+deprecated:
+  removed_in: "5.0.0"
+  why: It has been replaced with a better-designed module.
+  alternative: Use M(community.postgresql.postgresql_alter_system) instead.
 description:
+   - "IMPORTANT: If your PostgreSQL server version is 14 or later,
+     use the M(community.postgresql.postgresql_alter_system) module instead as it will
+     replace this module in future."
    - Allows to change a PostgreSQL server configuration parameter.
    - The module uses ALTER SYSTEM command and applies changes by reload server configuration.
    - ALTER SYSTEM is used for changing server configuration parameters across the entire database cluster.
@@ -48,12 +55,13 @@ options:
     - Permissions checking for SQL commands is carried out as though
       the session_role were the one that had logged in originally.
     type: str
-  db:
+  login_db:
     description:
     - Name of database to connect.
+    - The V(db) alias is deprecated and will be removed in version 5.0.0.
     type: str
     aliases:
-    - login_db
+    - db
   trust_input:
     description:
     - If C(false), check whether values of parameters are potentially dangerous.
@@ -64,6 +72,7 @@ options:
 
 notes:
 - Supported version of PostgreSQL is 9.4 and later.
+  For PostgreSQL version 14 or later, the M(community.postgresql.postgresql_alter_system) module is recommended.
 - Pay attention, change setting with 'postmaster' context can return changed is true
   when actually nothing changes because the same value may be presented in
   several different form, for example, 1024MB, 1GB, etc. However in pg_settings
@@ -78,6 +87,7 @@ attributes:
     support: full
 
 seealso:
+- module: community.postgresql.postgresql_alter_system
 - module: community.postgresql.postgresql_info
 - name: PostgreSQL server configuration
   description: General information about PostgreSQL server configuration.
@@ -133,7 +143,6 @@ EXAMPLES = r'''
   community.postgresql.postgresql_set:
     name: TimeZone
     value: 'Europe/Paris'
-
 '''
 
 RETURN = r'''
@@ -415,7 +424,13 @@ def main():
     argument_spec = postgres_common_argument_spec()
     argument_spec.update(
         name=dict(type='str', required=True),
-        db=dict(type='str', aliases=['login_db']),
+        login_db=dict(type='str', aliases=['db'], deprecated_aliases=[
+            {
+                'name': 'db',
+                'version': '5.0.0',
+                'collection_name': 'community.postgresql',
+            }],
+        ),
         value=dict(type='str'),
         reset=dict(type='bool', default=False),
         session_role=dict(type='str'),

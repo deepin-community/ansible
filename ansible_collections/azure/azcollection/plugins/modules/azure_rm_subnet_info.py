@@ -226,9 +226,6 @@ class AzureRMSubnetInfo(AzureRMModuleBase):
         super(AzureRMSubnetInfo, self).__init__(self.module_arg_spec, supports_check_mode=True, supports_tags=False)
 
     def exec_module(self, **kwargs):
-        is_old_facts = self.module._name == 'azure_rm_subnet_facts'
-        if is_old_facts:
-            self.module.deprecate("The 'azure_rm_subnet_facts' module has been renamed to 'azure_rm_subnet_info'", version=(2.9, ))
 
         for key in self.module_arg_spec:
             setattr(self, key, kwargs[key])
@@ -260,15 +257,15 @@ class AzureRMSubnetInfo(AzureRMModuleBase):
         response = None
         results = []
         try:
-            response = self.network_client.subnets.get(resource_group_name=self.resource_group,
-                                                       virtual_network_name=self.virtual_network_name)
+            response = self.network_client.subnets.list(resource_group_name=self.resource_group,
+                                                        virtual_network_name=self.virtual_network_name)
             self.log("Response : {0}".format(response))
         except ResourceNotFoundError as e:
             self.fail('Could not get facts for Subnet.')
 
         if response is not None:
             for item in response:
-                results.append(self.format_item(item))
+                results.append(self.format_response(item))
 
         return results
 

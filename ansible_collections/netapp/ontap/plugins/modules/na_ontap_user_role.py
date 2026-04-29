@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2024, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -15,7 +15,7 @@ short_description: NetApp ONTAP user role configuration and management
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: 2.6.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 
 description:
   - Create, modify, or destroy user roles.
@@ -101,58 +101,56 @@ notes:
 '''
 
 EXAMPLES = """
+- name: Create User Role Zapi
+  netapp.ontap.na_ontap_user_role:
+    state: present
+    name: ansibleRole
+    command_directory_name: volume
+    access_level: none
+    query: show
+    vserver: ansibleVServer
+    use_rest: never
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Create User Role Zapi
-      netapp.ontap.na_ontap_user_role:
-        state: present
-        name: ansibleRole
-        command_directory_name: volume
-        access_level: none
-        query: show
-        vserver: ansibleVServer
-        use_rest: never
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Modify User Role Zapi
+  netapp.ontap.na_ontap_user_role:
+    state: present
+    name: ansibleRole
+    command_directory_name: volume
+    access_level: none
+    query: ""
+    vserver: ansibleVServer
+    use_rest: never
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Modify User Role Zapi
-      netapp.ontap.na_ontap_user_role:
-        state: present
-        name: ansibleRole
-        command_directory_name: volume
-        access_level: none
-        query: ""
-        vserver: ansibleVServer
-        use_rest: never
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Create user role REST in ONTAP 9.11.1
+  netapp.ontap.na_ontap_user_role:
+    state: present
+    privileges:
+      - path: /api/cluster/jobs
+    vserver: ansibleSVM
+    name: carchi-test-role
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Create user role REST in ONTAP 9.11.1
-      netapp.ontap.na_ontap_user_role:
-        state: present
-        privileges:
-          - path: /api/cluster/jobs
-        vserver: ansibleSVM
-        name: carchi-test-role
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-
-    - name: Modify user role REST in ONTAP 9.11.1
-      netapp.ontap.na_ontap_user_role:
-        state: present
-        privileges:
-          - path: /api/cluster/jobs
-            access: readonly
-          - path: /api/storage/volumes
-            access: readonly
-        vserver: ansibleSVM
-        name: carchi-test-role
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-
+- name: Modify user role REST in ONTAP 9.11.1
+  netapp.ontap.na_ontap_user_role:
+    state: present
+    privileges:
+      - path: /api/cluster/jobs
+        access: readonly
+      - path: /api/storage/volumes
+        access: readonly
+    vserver: ansibleSVM
+    name: carchi-test-role
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """
@@ -195,6 +193,7 @@ class NetAppOntapUserRole:
                                 ('query', 'privileges')]
         )
         self.owner_uuid = None
+        self.role_modified = None
         self.na_helper = NetAppModule()
         self.parameters = self.na_helper.set_parameters(self.module.params)
         if self.parameters.get('privileges') is not None:
@@ -393,6 +392,7 @@ class NetAppOntapUserRole:
 
     def modify_role_rest(self, modify):
         # there is no direct modify for role.
+        self.role_modified = False
         privileges = self.get_role_privileges_rest()
         modify_privilege = []
         for privilege in modify['privileges']:
@@ -401,16 +401,23 @@ class NetAppOntapUserRole:
             # if the path is not in privilege then it need to be added
             if path not in privileges:
                 self.create_role_privilege(privilege)
+                self.role_modified = True
             elif privilege.get('query'):
                 if not privileges[path].get('query'):
                     self.modify_role_privilege(privilege, path)
+                    self.role_modified = True
                 elif privilege['query'] != privileges[path]['query']:
                     self.modify_role_privilege(privilege, path)
+                    self.role_modified = True
             elif privilege.get('access') and privilege['access'] != privileges[path]['access']:
                 self.modify_role_privilege(privilege, path)
+                self.role_modified = True
         for privilege_path in privileges:
+            if privilege_path == 'DEFAULT':
+                continue
             if privilege_path not in modify_privilege:
                 self.delete_role_privilege(privilege_path)
+                self.role_modified = True
 
     def get_role_privileges_rest(self):
         api = 'security/roles/%s/%s/privileges' % (self.owner_uuid, self.parameters['name'])
@@ -492,7 +499,11 @@ class NetAppOntapUserRole:
             elif modify:
                 self.modify_role(modify)
             if self.use_rest:
-                self.validate_create_modify_required(current, modify)
+                if self.role_modified is False:
+                    self.na_helper.changed = False
+                    modify = {}
+                else:
+                    self.validate_create_modify_required(current, modify)
         result = netapp_utils.generate_result(self.na_helper.changed, cd_action, modify)
         self.module.exit_json(**result)
 

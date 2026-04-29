@@ -51,6 +51,11 @@ DOCUMENTATION = """
                 - name: NETBOX_TOKEN
                 - name: NETBOX_API_TOKEN
             required: false
+        headers:
+            description: Dictionary of headers to be passed to the NetBox API.
+            default: {}
+            env:
+                - name: NETBOX_HEADERS
         validate_certs:
             description:
                 - Whether or not to validate SSL of the NetBox instance
@@ -97,6 +102,20 @@ tasks:
                     api_endpoint='http://localhost/',
                     api_filter='role=management tag=Dell'),
                     token='<redacted>') }}"
+    # This example uses an API Filter with a variable and jinja concatenation
+  - name: Set hostname fact
+    set_fact:
+      hostname: "my-server"
+  - name: Obtain details of a single device from NetBox
+    debug:
+      msg: >
+        "Device {{item.0.value.display}} (ID: {{item.0.key}}) was
+         manufactured by {{ item.0.value.device_type.manufacturer.name }}"
+    loop:
+      - '{{ query("netbox.netbox.nb_lookup", "devices",
+        api_endpoint="http://localhost/",
+        api_filter="name=" ~hostname,
+        token="<redacted>") }}'
 """
 
 RETURN = """
@@ -108,13 +127,13 @@ RETURN = """
 
 import os
 import functools
+import json
 from pprint import pformat
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible.parsing.splitter import parse_kv, split_args
 from ansible.utils.display import Display
-from ansible.module_utils.six import raise_from
 from importlib.metadata import version
 
 try:
@@ -308,6 +327,9 @@ def get_endpoint(netbox, term):
         }
         netbox_endpoint_map["l2vpns"] = {"endpoint": netbox.ipam.l2vpns}
 
+    if netbox_versiontuple >= (4, 2):
+        netbox_endpoint_map["mac-addresses"] = {"endpoint": netbox.dcim.mac_addresses}
+
     return netbox_endpoint_map[term]["endpoint"]
 
 
@@ -390,16 +412,14 @@ class LookupModule(LookupBase):
 
     def run(self, terms, variables=None, **kwargs):
         if PYNETBOX_LIBRARY_IMPORT_ERROR:
-            raise_from(
-                AnsibleError("pynetbox must be installed to use this plugin"),
-                PYNETBOX_LIBRARY_IMPORT_ERROR,
-            )
+            raise AnsibleError(
+                "pynetbox must be installed to use this plugin"
+            ) from PYNETBOX_LIBRARY_IMPORT_ERROR
 
         if REQUESTS_LIBRARY_IMPORT_ERROR:
-            raise_from(
-                AnsibleError("requests must be installed to use this plugin"),
-                REQUESTS_LIBRARY_IMPORT_ERROR,
-            )
+            raise AnsibleError(
+                "requests must be installed to use this plugin"
+            ) from REQUESTS_LIBRARY_IMPORT_ERROR
 
         netbox_api_token = (
             kwargs.get("token")
@@ -411,6 +431,7 @@ class LookupModule(LookupBase):
             or os.getenv("NETBOX_API")
             or os.getenv("NETBOX_URL")
         )
+        netbox_headers = kwargs.get("headers") or os.getenv("NETBOX_HEADERS") or {}
         netbox_ssl_verify = kwargs.get("validate_certs", True)
         netbox_private_key = kwargs.get("private_key")
         netbox_private_key_file = kwargs.get("key_file")
@@ -421,8 +442,12 @@ class LookupModule(LookupBase):
         if not isinstance(terms, list):
             terms = [terms]
 
+        if isinstance(netbox_headers, str):
+            netbox_headers = json.loads(netbox_headers)
+
         try:
             session = requests.Session()
+            session.headers = netbox_headers
             session.verify = netbox_ssl_verify
 
             if Version(version("pynetbox")) < Version("7.0.0"):

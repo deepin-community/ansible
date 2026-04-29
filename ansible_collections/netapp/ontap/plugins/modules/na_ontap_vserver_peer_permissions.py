@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2023-2024, NetApp, Inc
+# (c) 2023-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -12,7 +12,7 @@ short_description: NetApp Ontap - create, delete or modify vserver peer permissi
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: '22.3.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Create, delete or modify vserver peer permission.
 options:
@@ -42,36 +42,35 @@ options:
 """
 
 EXAMPLES = """
+- name: Create vserver peer permission for an SVM
+  netapp.ontap.na_ontap_vserver_peer_permissions:
+    state: present
+    vserver: ansible
+    cluster_peer: test_cluster
+    applications: ['snapmirror']
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Create vserver peer permission for an SVM
-      netapp.ontap.na_ontap_vserver_peer_permissions:
-        state: present
-        vserver: ansible
-        cluster_peer: test_cluster
-        applications: ['snapmirror']
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Modify vserver peer permission for an SVM
+  netapp.ontap.na_ontap_vserver_peer_permissions:
+    state: present
+    vserver: ansible
+    cluster_peer: test_cluster
+    applications: ['snapmirror', 'flexcache']
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Modify vserver peer permission for an SVM
-      netapp.ontap.na_ontap_vserver_peer_permissions:
-        state: present
-        vserver: ansible
-        cluster_peer: test_cluster
-        applications: ['snapmirror', 'flexcache']
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-
-    - name: Delete vserver peer permission for an SVM
-      netapp.ontap.na_ontap_vserver_peer_permissions:
-        state: absent
-        vserver: ansible
-        cluster_peer: test_cluster
-        applications: ['snapmirror']
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Delete vserver peer permission for an SVM
+  netapp.ontap.na_ontap_vserver_peer_permissions:
+    state: absent
+    vserver: ansible
+    cluster_peer: test_cluster
+    applications: ['snapmirror']
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """

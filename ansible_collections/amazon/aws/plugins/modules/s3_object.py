@@ -67,7 +67,7 @@ options:
     type: int
   metadata:
     description:
-      - Metadata to use when O(mode=put) or O(mode=copy) as a dictionary of key value pairs.
+      - Metadata to use when O(mode=copy), O(mode=create) or O(mode=put) as a dictionary of key value pairs.
     type: dict
   mode:
     description:
@@ -263,12 +263,7 @@ author:
   - "Alina Buzachis (@alinabuzachis)"
 notes:
   - Support for O(tags) and O(purge_tags) was added in release 2.0.0.
-  - In release 5.0.0 the O(s3_url) parameter was merged into the O(endpoint_url) parameter,
-    I(s3_url) remains as an alias for O(endpoint_url).
   - For Walrus O(endpoint_url) should be set to the FQDN of the endpoint with neither scheme nor path.
-  - Support for the E(S3_URL) environment variable has been
-    deprecated and will be removed in a release after 2024-12-01, please use the O(endpoint_url) parameter
-    or the E(AWS_URL) environment variable.
   - Support for creating and deleting buckets was removed in release 6.0.0.
 extends_documentation_fragment:
   - amazon.aws.common.modules
@@ -500,13 +495,13 @@ def etag_compare(module, s3, bucket, obj, version=None, local_file=None, content
 def _head_object(s3, bucket, obj, version=None):
     try:
         if version:
-            key_check = s3.head_object(aws_retry=True, Bucket=bucket, Key=obj, VersionId=version)
+            obj_head = s3.head_object(aws_retry=True, Bucket=bucket, Key=obj, VersionId=version)
         else:
-            key_check = s3.head_object(aws_retry=True, Bucket=bucket, Key=obj)
-        if not key_check:
+            obj_head = s3.head_object(aws_retry=True, Bucket=bucket, Key=obj)
+        if not obj_head:
             return {}
-        key_check.pop("ResponseMetadata")
-        return key_check
+        obj_head.pop("ResponseMetadata")
+        return obj_head
     except is_boto3_error_code("404"):
         return {}
 
@@ -629,7 +624,7 @@ def put_object_acl(module, s3, bucket, obj, params=None):
         raise S3ObjectFailure(f"Failed while creating object {obj}.", e)
 
 
-def create_dirkey(module, s3, bucket, obj, encrypt, expiry):
+def create_dirkey(module, s3, bucket, obj, encrypt, expiry, metadata):
     if module.check_mode:
         module.exit_json(msg="PUT operation skipped - running in check mode", changed=True)
     params = {"Bucket": bucket, "Key": obj, "Body": b""}
@@ -638,6 +633,7 @@ def create_dirkey(module, s3, bucket, obj, encrypt, expiry):
             encrypt,
             module.params.get("encryption_mode"),
             module.params.get("encryption_kms_key_id"),
+            metadata,
         )
     )
     put_object_acl(module, s3, bucket, obj, params)
@@ -656,10 +652,7 @@ def create_dirkey(module, s3, bucket, obj, encrypt, expiry):
 
 
 def path_check(path):
-    if os.path.exists(path):
-        return True
-    else:
-        return False
+    return bool(os.path.exists(path))
 
 
 def guess_content_type(src):
@@ -1051,7 +1044,7 @@ def s3_object_do_put(module, connection, connection_v4, s3_vars):
         connection = connection_v4
 
     if s3_vars["src"] is not None and not path_check(s3_vars["src"]):
-        module.fail_json(msg=f"Local object \"{s3_vars['src']}\" does not exist for PUT operation")
+        module.fail_json(msg=f'Local object "{s3_vars["src"]}" does not exist for PUT operation')
 
     keyrtn = key_check(
         module,
@@ -1154,6 +1147,7 @@ def s3_object_do_create(module, connection, connection_v4, s3_vars):
         s3_vars["object"],
         s3_vars["encrypt"],
         s3_vars["expiry"],
+        s3_vars["metadata"],
     )
 
 
@@ -1248,7 +1242,6 @@ def calculate_object_etag(module, s3, bucket, obj, head_etag, version=None):
 
 def copy_object_to_bucket(module, s3, bucket, obj, encrypt, metadata, validate, src_bucket, src_obj, versionId=None):
     try:
-        params = {"Bucket": bucket, "Key": obj}
         if not key_check(module, s3, src_bucket, src_obj, version=versionId, validate=validate):
             # Key does not exist in source bucket
             module.exit_json(
@@ -1302,25 +1295,29 @@ def copy_object_to_bucket(module, s3, bucket, obj, encrypt, metadata, validate, 
             }
             if versionId:
                 bucketsrc.update({"VersionId": versionId})
-            params.update({"CopySource": bucketsrc})
-            params.update(
-                get_extra_params(
-                    encrypt,
-                    module.params.get("encryption_mode"),
-                    module.params.get("encryption_kms_key_id"),
-                    metadata,
-                )
+
+            extra_args = get_extra_params(
+                encrypt,
+                module.params.get("encryption_mode"),
+                module.params.get("encryption_kms_key_id"),
+                metadata,
             )
+
             if metadata:
                 # 'MetadataDirective' Specifies whether the metadata is copied from the source object or replaced
                 # with metadata that's provided in the request. The default value is 'COPY', therefore when user
                 # specifies a metadata we should set it to 'REPLACE'
-                params.update({"MetadataDirective": "REPLACE"})
-            s3.copy_object(aws_retry=True, **params)
+                extra_args.update({"MetadataDirective": "REPLACE"})
+
+            # perform a "managed" copy rather simply using copy_object.  This will automatically use
+            # multi-part uploads where necessary (https://github.com/boto/boto3/issues/1715)
+            s3.copy(bucketsrc, bucket, obj, ExtraArgs=extra_args, aws_retry=True)
+
+            # We can't set the ACLs & tags during the copy, update them afterwards
             put_object_acl(module, s3, bucket, obj)
-            # Tags
             tags, tags_updated = ensure_tags(s3, module, bucket, obj)
-            msg = f"Object copied from bucket {bucketsrc['Bucket']} to bucket {bucket}."
+
+            msg = f"Object copied from bucket {src_bucket} to bucket {bucket}."
             return changed, {"msg": msg, "tags": tags}
     except (
         botocore.exceptions.BotoCoreError,

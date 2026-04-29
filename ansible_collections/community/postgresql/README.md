@@ -5,6 +5,8 @@
 
 This collection is a part of the Ansible package.
 
+> NOTE: This collection is only for interacting with an existing database installation! If you are looking for a collection to *install* PostgreSQL you need to use another collection/role, for example, [galaxyproject.postgresql](https://galaxy.ansible.com/ui/standalone/roles/galaxyproject/postgresql/install/).
+
 ## Our mission
 
 At the `community.postgresql` Ansible collection project,
@@ -87,8 +89,9 @@ We maintain each major release version (1.x.y, 2.x.y, ...) for two years after t
 Here is the table for the support timeline:
 - 1.x.y: released 2020-11-17, EOL
 - 2.x.y: released 2022-02-10, EOL
-- 3.x.y: released 2023-06-09, current
-- 4.x.y: to be released; not earlier than after Ansible 10 release (~May 2024)
+- 3.x.y: released 2023-06-09, maintained until 2027-05-06 (bugfixes only)
+- 4.x.y: released 2025-05-06, current
+- 5.x.y: to be released; not earlier than Ansible 14 release (~May 2026)
 
 ## PostgreSQL server version support
 
@@ -99,9 +102,11 @@ Even if they are present in our test matrix now, they can be removed at any mome
 ## Tested with ansible-core
 
 Tested with the following `ansible-core` releases:
-- 2.15
+- 2.15 (only integration on Fedora 37)
 - 2.16
 - 2.17
+- 2.18
+- 2.19
 - current development version
 
 Ansible-core versions before 2.12.0 are not supported.
@@ -113,7 +118,8 @@ Our AZP CI includes testing with the following docker images / PostgreSQL versio
 | Fedora 37    |           2.9.6 |               14   |
 | Fedora 39    |           2.9.6 |               15   |
 | Ubuntu 22.04 |           3.1.9 |               16   |
-| Fedora 40    |           2.9.9 |               16   |
+| Fedora 40/41 |           2.9.9 |               16   |
+| RHEL 10      |           2.9.9 |               16   |
 | Ubuntu 24.04 |           3.2.2 |               17   |
 
 ## Included content
@@ -126,10 +132,9 @@ Our AZP CI includes testing with the following docker images / PostgreSQL versio
 - **Basic modules**:
   - [postgresql_db](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_db_module.html)
   - [postgresql_ext](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_ext_module.html)
-  - [postgresql_lang](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_lang_module.html)
   - [postgresql_pg_hba](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_pg_hba_module.html)
   - [postgresql_privs](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_privs_module.html)
-  - [postgresql_set](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_set_module.html)
+  - [postgresql_alter_system](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_alter_system_module.html) (will replace `postgresql_set`)
   - [postgresql_schema](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_schema_module.html)
   - [postgresql_tablespace](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_tablespace_module.html)
   - [postgresql_query](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_query_module.html)

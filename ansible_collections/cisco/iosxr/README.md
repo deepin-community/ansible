@@ -33,10 +33,8 @@ For more information about communication, see the [Ansible communication guide](
 <!--start requires_ansible-->
 ## Ansible version compatibility
 
-This collection has been tested against following Ansible versions: **>=2.15.0**.
+This collection has been tested against the following Ansible versions: **>=2.16.0**.
 
-For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
-fully qualified collection name (for example, `cisco.ios.ios`).
 Plugins and modules within a collection may be tested with only specific Ansible versions.
 A collection may contain metadata that identifies these versions.
 PEP440 is the schema used to describe the versions of Ansible.
@@ -95,6 +93,7 @@ Name | Description
 [cisco.iosxr.iosxr_user](https://github.com/ansible-collections/cisco.iosxr/blob/main/docs/cisco.iosxr.iosxr_user_module.rst)|Module to manage the aggregates of local users.
 [cisco.iosxr.iosxr_vrf_address_family](https://github.com/ansible-collections/cisco.iosxr/blob/main/docs/cisco.iosxr.iosxr_vrf_address_family_module.rst)|Resource module to configure VRF Address family.
 [cisco.iosxr.iosxr_vrf_global](https://github.com/ansible-collections/cisco.iosxr/blob/main/docs/cisco.iosxr.iosxr_vrf_global_module.rst)|Manages global VRF configuration.
+[cisco.iosxr.iosxr_vrf_interfaces](https://github.com/ansible-collections/cisco.iosxr/blob/main/docs/cisco.iosxr.iosxr_vrf_interfaces_module.rst)|Resource module to configure VRF interfaces.
 
 <!--end collection content-->
 

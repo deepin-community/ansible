@@ -69,9 +69,9 @@ except ImportError:
 try:
     from requests.exceptions import RequestException  # noqa: F401, pylint: disable=unused-import
 except ImportError:
-    # Either Docker SDK for Python is no longer using requests, or Docker SDK for Python isn't around either,
+    # Either Docker SDK for Python is no longer using requests, or Docker SDK for Python is not around either,
     # or Docker SDK for Python's dependency requests is missing. In any case, define an exception
-    # class RequestException so that our code doesn't break.
+    # class RequestException so that our code does not break.
     class RequestException(Exception):
         pass
 
@@ -321,7 +321,7 @@ class AnsibleDockerClientBase(Client):
             cert_path=self._get_value('cert_path', params['client_cert'], 'DOCKER_CERT_PATH', None, type='str'),
             key_path=self._get_value('key_path', params['client_key'], 'DOCKER_CERT_PATH', None, type='str'),
             tls=self._get_value('tls', params['tls'], 'DOCKER_TLS', DEFAULT_TLS, type='bool'),
-            tls_verify=self._get_value('tls_verfy', params['validate_certs'], 'DOCKER_TLS_VERIFY',
+            tls_verify=self._get_value('validate_certs', params['validate_certs'], 'DOCKER_TLS_VERIFY',
                                        DEFAULT_TLS_VERIFY, type='bool'),
             timeout=self._get_value('timeout', params['timeout'], 'DOCKER_TIMEOUT',
                                     DEFAULT_TIMEOUT_SECONDS, type='int'),
@@ -440,7 +440,7 @@ class AnsibleDockerClientBase(Client):
             registry, repo_name = auth.resolve_repository_name(name)
             if registry == 'docker.io':
                 # If docker.io is explicitly there in name, the image
-                # isn't found in some cases (#41509)
+                # is not found in some cases (#41509)
                 self.log("Check for docker.io image: %s" % repo_name)
                 images = self._image_lookup(repo_name, tag)
                 if not images and repo_name.startswith('library/'):
@@ -449,8 +449,8 @@ class AnsibleDockerClientBase(Client):
                     self.log("Check for docker.io image: %s" % lookup)
                     images = self._image_lookup(lookup, tag)
                 if not images:
-                    # Last case for some Docker versions: if docker.io wasn't there,
-                    # it can be that the image wasn't found either
+                    # Last case for some Docker versions: if docker.io was not there,
+                    # it can be that the image was not found either
                     # (https://github.com/ansible/ansible/pull/15586)
                     lookup = "%s/%s" % (registry, repo_name)
                     self.log("Check for docker.io image: %s" % lookup)

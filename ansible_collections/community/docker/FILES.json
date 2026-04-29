@@ -81,21 +81,21 @@
    "name": ".azure-pipelines/templates/coverage.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2cfdbf962bd04a21836ab1cd333dbf5dde408c50d3b1ec12231ed55172fd800c",
+   "chksum_sha256": "a31ecfb36a901b437c426ad4781e5ad86b076cc3192451916bf15984f2ab3a53",
    "format": 1
   },
   {
    "name": ".azure-pipelines/templates/matrix.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7d41651c12445067921426ce3de9661cc9dbab2e5ad3b2650edbb444371cac14",
+   "chksum_sha256": "7449540d42acdbbbeaa64da007e14a0849160bcbb138a91b8e433c994d2977fe",
    "format": 1
   },
   {
    "name": ".azure-pipelines/templates/test.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e899c99995b9bda705f85203a5b851b833cc407a1d619c8da0aaaf92b1835eba",
+   "chksum_sha256": "301d7944fc5d89e949d28a4347f8623800f8a360e72a0144bcf2f7d2474c16dc",
    "format": 1
   },
   {
@@ -109,7 +109,7 @@
    "name": ".azure-pipelines/azure-pipelines.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a0b7c864b9f4d48632c4ea994003c11d0c2fe8b26da316ca22bb88b7948784c6",
+   "chksum_sha256": "595e8f455c2ca53fa2fafacf65dc642b1c9b8d3c309bb8d1f5874a3619729bbe",
    "format": 1
   },
   {
@@ -130,56 +130,42 @@
    "name": ".github/workflows/ansible-test.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "167cdc68d116e70c79049a5fe1de0693e8daca5dd731c961a1abb58cb89e78d4",
+   "chksum_sha256": "285fac72f4fcd65185e842d1e921540be5d59e707dcb4869b8e7f7713d7ef995",
    "format": 1
   },
   {
    "name": ".github/workflows/docker-images.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d9bf0ca4e52c1f5d8e6321290f723c0b55ba360661065706f4a4504a01e8093c",
+   "chksum_sha256": "a71cb74ca1975caf9f5de6159e3de98c4bb5531a35cb513fffeee04bfe7f9bc7",
    "format": 1
   },
   {
    "name": ".github/workflows/docs-pr.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3e6c93c7d80e3781d85613340b811f97b68278ec877066159e66c8629bbda400",
+   "chksum_sha256": "f0e72b7dcc8c137c9f6bc104129ea913afa763df268c3922196e07f0eeaca893",
    "format": 1
   },
   {
    "name": ".github/workflows/docs-push.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f24b36d3208518f1e2c6463b3dc573c3de1e89ecd8981d6dea760c0beb173177",
+   "chksum_sha256": "2b46c9a89e3a1d6804dc2a9d7c3638995e8b57178af696b61d7da9d31588a7a0",
    "format": 1
   },
   {
-   "name": ".github/workflows/ee.yml",
+   "name": ".github/workflows/nox.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8a350d15d9b370426bd057250e590692212b7e9b6645aba927ba87046ee94887",
-   "format": 1
-  },
-  {
-   "name": ".github/workflows/import-galaxy.yml",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "739c36223d6e0e6ccc98907c43cba53296e7b1ccd64a2d995c2ff21df4ab25a5",
-   "format": 1
-  },
-  {
-   "name": ".github/workflows/reuse.yml",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "27daed4452b1d2d92da01ec79340b4021d81e18ac94639f6e36f5948fdc79f7a",
+   "chksum_sha256": "ec0610a32a309a52e84e75a088beeab2706c455c1b8be5564aca0a3d12a8e8b5",
    "format": 1
   },
   {
    "name": ".github/dependabot.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f314f2fce46d346ef9559fdeae3a55ce6d799bab45a255092446c31e17e6874d",
+   "chksum_sha256": "673731e08adb20eb69f8b1a19a3ecb6b1989ac7d8f8e9a5b477aaeb480dffa1f",
    "format": 1
   },
   {
@@ -187,20 +173,6 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "6a23e48e2562604318540e6ddcac75213ad2c367258d76fc75914e9b939d380e",
-   "format": 1
-  },
-  {
-   "name": ".reuse",
-   "ftype": "dir",
-   "chksum_type": null,
-   "chksum_sha256": null,
-   "format": 1
-  },
-  {
-   "name": ".reuse/dep5",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "9d8cb20d72d7e81aaf2e7f0ddce7eacdb3d47a890541717d7fae08a6cab7ebed",
    "format": 1
   },
   {
@@ -249,7 +221,7 @@
    "name": "changelogs/changelog.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "976672f16f53ab9971bed7a24fcc45e4e566fa0e35fab03b1a356e42dd49514b",
+   "chksum_sha256": "cdcb11bcff2bbd28f58edc01618713ec373d5875895da05fca0166414ec73388",
    "format": 1
   },
   {
@@ -263,7 +235,7 @@
    "name": "changelogs/config.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e9c82087ba2bca7a72ed78f6eaf5451b31499122b6338de0c95ed014fe3794e3",
+   "chksum_sha256": "9207a4074b199aca60fa78d0c88130d7c515aa284b7e1ea4d3f5df7b800a8c14",
    "format": 1
   },
   {
@@ -291,7 +263,7 @@
    "name": "docs/docsite/rst/scenario_guide.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "dcbef6d865e38902c5a8b88e7bddf940f62cf31067f29cd041a215cd6a0a6f19",
+   "chksum_sha256": "e2f70d86570ec719c1dd61c651220c911387283585aab8721cd59c36807a9ebf",
    "format": 1
   },
   {
@@ -382,21 +354,21 @@
    "name": "plugins/connection/docker.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1a4faba4eabe5880de5692d178ac6ba64e01c6d5c84079c59567982af2c40098",
+   "chksum_sha256": "2c3ab7aca86af646b21c44a3ff2f7ba83cfc09352af5e890438fe7f67c70e281",
    "format": 1
   },
   {
    "name": "plugins/connection/docker_api.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "63b21eda574e7408f19e1d23be385f1134b3db32797a9addfab701fa1a403afb",
+   "chksum_sha256": "ae3e31da5046bf4daa6f6ffe0804a01acd458e318f0ae902b74f77a70d6619a1",
    "format": 1
   },
   {
    "name": "plugins/connection/nsenter.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0b3e97b145df0862f75ea03ead386929d6e4faae67123e0421b19a2fa3575347",
+   "chksum_sha256": "3394ceb0c7bf213415b9f62ba2335b725e264bffe0a793f49ccfd31776cdef7c",
    "format": 1
   },
   {
@@ -410,21 +382,21 @@
    "name": "plugins/doc_fragments/attributes.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3cb11d4fbb64f22b4c70fb7baf8f8777a21d99887383234e1af7945f45ca95a6",
+   "chksum_sha256": "8de0cb5fd6ec3b3581e640c253ea30a9f73e9d9d70813d2124e20ca1f9f152af",
    "format": 1
   },
   {
    "name": "plugins/doc_fragments/compose_v2.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b933078742267339f91deefafecdb5b5734b981c9fe25981c1e708ee69a67635",
+   "chksum_sha256": "331f0039c4b8479b7bd45aba615ac2109198983dce5775a8c171cc3315dc18d7",
    "format": 1
   },
   {
    "name": "plugins/doc_fragments/docker.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a9fd416066dffa89ee07a6122a757a49cb5440468010a5c70a04957cdef673e9",
+   "chksum_sha256": "5dc649932785ffb9e887f79b1976ac9be00f044f8826669fff3fd264587ce7f6",
    "format": 1
   },
   {
@@ -438,21 +410,21 @@
    "name": "plugins/inventory/docker_containers.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "311bce18b8763f96db6ca7d32a404e91af6b32b0ee1e83956afc948554a5897e",
+   "chksum_sha256": "d76877af90ec6e8a4bdad6b3f44f21d049588895bb16e41ebe6147e197618eda",
    "format": 1
   },
   {
    "name": "plugins/inventory/docker_machine.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "776312ec70ddc9b5bb92c92df787797a1c041c863a856841346fd5d9101961d4",
+   "chksum_sha256": "332967dafb5d57fd730c92089631e3e7e3047ae37e15070931cc41cd181062ab",
    "format": 1
   },
   {
    "name": "plugins/inventory/docker_swarm.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e32340237593ea5d6125c1c748b15aa1814714694724779ed680fb92eb86f18c",
+   "chksum_sha256": "0dce1503beeacffa42ba590ddcf3c67ba9a4596ca8909d610f98491387c27a0f",
    "format": 1
   },
   {
@@ -480,14 +452,42 @@
    "name": "plugins/module_utils/_api/api/client.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8554f7ce18d5be8e27c24585da9ca10eb9873fd3d190b1089908e11e64fcfdc1",
+   "chksum_sha256": "8389cfc4c1503d4529bb1f158b3adaeedeea78974167e9f07c74a7d00a403862",
    "format": 1
   },
   {
    "name": "plugins/module_utils/_api/api/daemon.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9a0d17ad9e1fc3ca2fe1d502273ad12442cfe46d32bcb19372f6bed32b1e0815",
+   "chksum_sha256": "3c2d5c163d1fad4f976bc72afcb515ba1d43fa9e09f412a18cdb0f7e3eba1587",
+   "format": 1
+  },
+  {
+   "name": "plugins/module_utils/_api/context",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "plugins/module_utils/_api/context/api.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "19c9bdbe7221ec963bfe6ffafe5c07b64b311790be9961b0996ce54cf908d481",
+   "format": 1
+  },
+  {
+   "name": "plugins/module_utils/_api/context/config.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6d0df090a4b8e449cd1f330d3b108d758bcd24b3f4b84accb5869536f4a2e283",
+   "format": 1
+  },
+  {
+   "name": "plugins/module_utils/_api/context/context.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e888ff12cf885aa7152d2596a511fd88446e664f6f240063ad3ac6dc48ca7cba",
    "format": 1
   },
   {
@@ -543,7 +543,7 @@
    "name": "plugins/module_utils/_api/transport/npipeconn.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ae561ff5c8dfa7ded1df93e052173bc23cb9a8aae7dc00e0f10352034f3e1b6c",
+   "chksum_sha256": "df4962bee7edd11c1a803ab30f8889394dc9b8650508fad4ef0fb7ba45f65483",
    "format": 1
   },
   {
@@ -571,7 +571,7 @@
    "name": "plugins/module_utils/_api/transport/unixconn.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5356fb54e55692cb27393cc5a694a74c885302b837c16b4ca80c62cb58380ad3",
+   "chksum_sha256": "3390ec94b878ca417716163fc6d1b51d0db6b576a2f12964b2188c3cc08a3f01",
    "format": 1
   },
   {
@@ -585,7 +585,7 @@
    "name": "plugins/module_utils/_api/types/daemon.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0f2f62cf8368b5763fdd37928be5fc1496c76120c98253a6b7abc25d4944f036",
+   "chksum_sha256": "21677b39bfd0453e6412e0ee4990bab946d0c275536246eaafdf7671427f749c",
    "format": 1
   },
   {
@@ -599,14 +599,14 @@
    "name": "plugins/module_utils/_api/utils/build.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2384f3ba9a75a65db4cab0a3bff25262cb37deaa182b47816715e73f483ca812",
+   "chksum_sha256": "1900930ec34f288598d6f3b90d172c5d06846b19282c703ec0f92f65ebf75066",
    "format": 1
   },
   {
    "name": "plugins/module_utils/_api/utils/config.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "bf89f579d69305de6b158d5a6cffa8a151537826b7b29a46c2f480cae9acd0c4",
+   "chksum_sha256": "cc761f97d8399b099a6c788e3d60535e9caa61648b45ef7bf16f84a6b1249d2c",
    "format": 1
   },
   {
@@ -620,7 +620,7 @@
    "name": "plugins/module_utils/_api/utils/fnmatch.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7a52bdaf477671ebc49186f8e7a2a0c6a3d014d544fc0ca1117896b3bd3c5333",
+   "chksum_sha256": "92d79de95dedb8dc32101b555ef87a649df63612f68ed7738faedf8750041041",
    "format": 1
   },
   {
@@ -648,14 +648,14 @@
    "name": "plugins/module_utils/_api/utils/socket.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "58f5909c0bdbf63fbb0c09c89aeb3f8a1f9e8b22c071fd2c0c25e6bfce166d18",
+   "chksum_sha256": "1d1f15a0bc03108442521cb5ea9470779611e15c80356c2a59b4270630bdf302",
    "format": 1
   },
   {
    "name": "plugins/module_utils/_api/utils/utils.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "84d22ae2825223d88d2cc66386427828a3363cf549404a3be68880db91fc0bfa",
+   "chksum_sha256": "b00a9e079f94c44fab3b81520c957ff48c02683daa83eb759b26507b0a57fa1b",
    "format": 1
   },
   {
@@ -669,21 +669,21 @@
    "name": "plugins/module_utils/_api/auth.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "050402e1503e0efc852051bf403a44d149d0d4770accc9f2888ecff8a5f3a5b4",
+   "chksum_sha256": "da8d2977ea699573cb718a4c8b19000e50ce976d212a95edd151ae92c4f534d9",
    "format": 1
   },
   {
    "name": "plugins/module_utils/_api/constants.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2876120cf27b5452728357de13d552aa5987dcb8a2a0942fdd8594ba6c17ea23",
+   "chksum_sha256": "c767e02e4d85656c31a874929314b2708ca98205de8ca4294705582684ce333d",
    "format": 1
   },
   {
    "name": "plugins/module_utils/_api/errors.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0c856e76224c2ff545de31cbba165bb09120bc276208c2f76ce4a62c0b027c36",
+   "chksum_sha256": "34059fd430100aa0eb13dfa119a836cc9a3a680d155f7000755bd8a001c7df3a",
    "format": 1
   },
   {
@@ -711,14 +711,14 @@
    "name": "plugins/module_utils/module_container/docker_api.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b6d4e4668c074b02ce5d198b4cf5b92020715e8d763e74a0b454820f22a5e745",
+   "chksum_sha256": "002435493595501bff72350e98c463eda13ddc9dc220e257d73cba520d288c59",
    "format": 1
   },
   {
    "name": "plugins/module_utils/module_container/module.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cc3077c76ecddbbf79a0011ec857d6ff3a3081e1cdbe6854edaaafc06c3fb8e5",
+   "chksum_sha256": "6e097a332523a49e7bf059ea8dcfff8db60da7a8565818ca91298df07259bd88",
    "format": 1
   },
   {
@@ -746,28 +746,28 @@
    "name": "plugins/module_utils/common.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d24d41acb9482d8fc208ee33b3fc6ba33ce30a07bc6dec361010aff8adb7e2db",
+   "chksum_sha256": "1b087d123b9d580e168dbfcef29928a12aa6b1d191de8a828771ae36e01e5dcc",
    "format": 1
   },
   {
    "name": "plugins/module_utils/common_api.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "070cef2d34c5c920a31e16fa7e5da3a4338348220122b6fd2de4bf9ac5783637",
+   "chksum_sha256": "e564c19692ddaf81f39d024cde73c26248ee58f89f5debcece3df9457056b775",
    "format": 1
   },
   {
    "name": "plugins/module_utils/common_cli.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "efa7844621df2c757d8b9eaeb39f6e1c13a2743bf1cbec40b8a2ab6e237445b2",
+   "chksum_sha256": "08d9adfe716c4594f30bba95a5e78be7624e7657b3cd91bfa4c829f445f25c47",
    "format": 1
   },
   {
    "name": "plugins/module_utils/compose_v2.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f1bb0e10809c41c3383dfbe7990ef33ecae990902edada950044726f7f2bafd1",
+   "chksum_sha256": "5a057961ac574716c2a18ff9fc7980e584a980824769182c1454007ecbfe441a",
    "format": 1
   },
   {
@@ -781,7 +781,7 @@
    "name": "plugins/module_utils/image_archive.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "26073983bafd86ccadb1f197f2a55188f208145db066bbc02ea9bf59aaf30085",
+   "chksum_sha256": "1fbf968198702f4f75c728f98cc7eecbe3fe59b1ea99a25566f6c9c970d9805a",
    "format": 1
   },
   {
@@ -802,7 +802,7 @@
    "name": "plugins/module_utils/socket_helper.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "577f40a52b8757e30e3d275c1072146b00597d261bc85ff09f2a4e6d67f1af0f",
+   "chksum_sha256": "3894979ab396e7066cc423af655b5cd2c501f758fdccf8ea6e0883ba6a298053",
    "format": 1
   },
   {
@@ -816,7 +816,7 @@
    "name": "plugins/module_utils/util.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ddb4ad29837c66c026e18b8a553e3ad880710d5a5e7351dea9bd04aac5544b57",
+   "chksum_sha256": "e60e00cdc77c2a55981851dbcc6c844bee686d13df5320dc998f64d0bfbb6571",
    "format": 1
   },
   {
@@ -837,259 +837,266 @@
    "name": "plugins/modules/current_container_facts.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6866839dd328f2c566de59dea1a826ec60cb9fa20c2639c520d16338d3a09839",
+   "chksum_sha256": "aeb74d5f4f6dca1fbd100951a3322f20997248f7f7fe7c21d7027152f7c7f27b",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_compose_v2.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6f9c20095d116b46ff583c2a34250e15778bf298ef28fddb3760dd66f7656adf",
+   "chksum_sha256": "2fb03c43eb239235e003742555952a5769d38c0569a6c1f9456d981596a962fc",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_compose_v2_exec.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f9cd99d39372dbd7071843d66ce1189ebd3659c090c0f6441106f9ab2499d934",
+   "chksum_sha256": "c398ca85a6fb63069586d0dbf6dcc59e287ffe42ce99cd7c5bce1babf5e3f5b4",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_compose_v2_pull.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "64ca943fe1682e91ed4b2eef4450041c69d2e31148eaaf5928565380aecb157d",
+   "chksum_sha256": "67394d9afbfd8d42c09faa399ca6071e876284457dd8c53d2075ca04804e30ff",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_compose_v2_run.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "747ba88bc497579e3eb98eec70d7ffd08fa959c5a43b8199dda88a2a93542085",
+   "chksum_sha256": "9951c42b709676d43d382cf6836522587cc0e72fe7abbb657bf6bca8071b0c05",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_config.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a96f3f6c7e2954f78955e753fce7ea4718c6642107591872244b4c23b0d61897",
+   "chksum_sha256": "02f4039620e89c4d576632a2522338432dd96014d7ee49c8704d8bbf5b62e537",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_container.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "692238babc7c151636e59c68e6282947002390bbe7affa2c9035d77e4c69d48c",
+   "chksum_sha256": "b958d7552d3ac89ef00dfa6767c3d6103e585bd563ce317c805f7aee3c3015f1",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_container_copy_into.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "159747c6289017ce9aee07510f86c9f15eba2693a8b3dbb33bcd0605c26c068e",
+   "chksum_sha256": "725547398cbc4a068c925355ec752b752dc1ee7103b3ae596808259cfc9ac6a9",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_container_exec.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9828790f19f268519de01fa41df37adf89f5a6af88438b4dab5fd225b7a68a88",
+   "chksum_sha256": "07b5bc3b8ae95667edb3cfb6ea25f6efc584f7f620ab916f9b014a8695b93d04",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_container_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "35e0e238679d4354f9de4c1d6dc2ac3e0862cf672946d78ef0cc4a7556ab0f62",
+   "chksum_sha256": "717755cc11c8654b1c35d52b9b5b3e92044dbcbab4bc3868ac51c89b2f49f009",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/docker_context_info.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ef9f4e7bb1977a10974b0f5e5a14a7c9ba21d819cc5dde24dfb9cb1796c077a8",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_host_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "151f120d73e9455471e7cba20ecec490f4d38c1d96321dd23862d52fb87a6670",
+   "chksum_sha256": "547893d5b4f72a311a302bcb1ece29837f1cb21fc7cbfd2a1cd1fe148fdfa068",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_image.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b983a42f2bf64df10684e4f38ff47de7cf2d829a54c64bd0dc1ad6014f47399a",
+   "chksum_sha256": "c3063b2a4a78339e5388054fc51dbfb18bee85f884254f9eee938f049eaf03f5",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_image_build.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b97e91f59b99b788f2b251658e634a53c7c0fa4c5306629e23f118a2bd7ab7ea",
+   "chksum_sha256": "3996e1ee0601df849217f7372b2c147799fd8ccc027c24ce66bf97e7b9bdcc54",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_image_export.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7067813390e980633abb6e6dac5f5465999cc14edd128098167ca4866bab3af2",
+   "chksum_sha256": "916ca5ed078bf18f1cc58cc7cbe4af350e30f834045ae93328d21373bebbd5c1",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_image_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "559cca032685ee95c35d6035a7cd3f618318c42f26785f1a0ff588c6f7951468",
+   "chksum_sha256": "61c734ff2a6f07f6939a903aedb378ef4b0f9cde67f426d09db8ba96c58922fc",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_image_load.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "16169307ec8cfa3787eadfe2fd33c818134ba9ef11e964ea4b57f0c73d695196",
+   "chksum_sha256": "08f8d6f051c31941aebbddf38dd811ffa3a7ce9d4f268aee08aa2e636d9b823a",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_image_pull.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9e9f67a89f12825306cd7c4a5ad7e88d7a37e3c61441f47a3845d254eea40742",
+   "chksum_sha256": "89bee35031beef488b9b773997644b159c3d4370390b473142fa1a8437a184a8",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_image_push.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "268edc32e25119bd5325af3d9ed30aa0c9e0086e787243c99930f9987189fb9a",
+   "chksum_sha256": "ead50201bec07efcd30c721c54315c0c7f184a26ffd2d802af7810cb1198d402",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_image_remove.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0041c6479f43faa0a47c6935202a6b1fbbe3c149753a2e1f5d5d93c0a0588420",
+   "chksum_sha256": "af7425307ccb267ab296797fbfce96a0c76721a73d9634ef269faaa70353aa8e",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_image_tag.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "44167b07eef7079178b8b386407d11c327107d41a38957301179da71a8825b65",
+   "chksum_sha256": "b9aff028bc1b5d801b3eaa618eaee6bfef6321d749faba651589de34dd928ce0",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_login.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2d03eca55c8d126807cff8d560211dd7cd06aedd84d1c8af2342afc96ce23a84",
+   "chksum_sha256": "9e7a8d28c740f5caa69942dd15d846bafc9caaa20b2cf4f157a2311bccfa4906",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_network.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "161eb985970864d93181b72a37e060c13785247b6ef73f7f7225670e17562ed3",
+   "chksum_sha256": "9fbf2418ef3e3b0679cf3549e5463d0ad9f6b6d4f5d9ab98f198deb034eee4fb",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_network_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2df4c46a27a1a7f4faa016db358677a3885ec854592a0416e051a33a83d99d39",
+   "chksum_sha256": "b94ea53e46647c83f737d2a4063b16ba30ae1e8196d4e99e2095ff29bc9f81e3",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_node.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f7d4f6e23e260fb080ddaf46ceca499f294ab751c5ce9ddb1eaef95fe5508490",
+   "chksum_sha256": "ce449c63071d720fb9bb94c9e5a81644dee2c369e435a38a6b49ad83c6f7ef08",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_node_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "780820410f8eb564f8b858f61aa33fbc4eaee4919719df1f7c75b4c9629a67e7",
+   "chksum_sha256": "26d1fd312073f0c068090c57c5af7b801769cd6c2a0b471ecc17da81b7147af9",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_plugin.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0e51993a3f5ba1e1d0d8067e7d4dacaac4a4031c6fc7431a847c4f69a6a7f556",
+   "chksum_sha256": "2b94fec0aa3d9c8afd86f6dd15adf58d1c61a686ef64713556040a36eff255b2",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_prune.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9fe90dbe34a1df83495a352f9d701405ffcceac2630f01d94915970f7455954d",
+   "chksum_sha256": "952f931a8dcbefeb1250ce429aac4c4dc10e919252a0b34b6140f850c32b4255",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_secret.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6a0b46846fdecd55a1f532c25053d461362c2b50d6f345ed78646615362f0230",
+   "chksum_sha256": "f8001a26cc174fb112a6e3f3c9661c3a3beb34878bb78d153eb0b5a00b4be989",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_stack.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "458e9a7b47a5550475cced6d7e4086ff07868203db9a05b0447c4537ffb590cd",
+   "chksum_sha256": "8bebcc598761b242e825756902e7db812f3d6d86f9bce8b65670a034b7648e2c",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_stack_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cbe62b6ff998c1f3c5e8c88e2aef77002993c0b5e67dad10413d618eb3984635",
+   "chksum_sha256": "7cd62b885cb2d3761d917ccd43d397a28948ddceeba24a6135d74b9541714800",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_stack_task_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "83fecae51c22fca463f96318f2e2c07d593adcfd84eccd043a7c1abddb988a64",
+   "chksum_sha256": "6b708f268872cf2e839ab52bf1c4f3de218746ed11a782f4ce32d1fbab9a03de",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_swarm.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "39535eee28eb0e67588fd75309ae4966891687a82f00bd10ece93a51b6106cbb",
+   "chksum_sha256": "b9488921f824561af4acfbc8847b93dca4dcba8e755c18033a8f41ab8dfc5789",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_swarm_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "05bcd2c3e0b417f7ee328732c6c4afba2dba2400a83e5149a6af989eeda493fe",
+   "chksum_sha256": "d349385d34af6cda6cd65b2fdce2a8ddb52dcfd9c5b645234c6d7e5e71e2ceb0",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_swarm_service.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8e26569fc1511e731464dca54cf4a3e74c349cf100c3cb5ca4dc7348c07ef8b6",
+   "chksum_sha256": "1bcfd7b897b3598649ea994c51495a531a66206993d7409a91f5860b1adc0a56",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_swarm_service_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "11ab44415df1311c23916d9e1a84b83b54e06077cbd01f22989acc0d23769fec",
+   "chksum_sha256": "12fe183979107d10998db2a373f0915823c32f9b7b0e6e7a61676577ba9bca0f",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_volume.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "af35988929d7d734e092b95c0560e577fce36a5fb864c40da2024ed5965afc25",
+   "chksum_sha256": "464b6c77558829ffe7a057153207e360837f3f357fa7bc6f280559a418256d98",
    "format": 1
   },
   {
    "name": "plugins/modules/docker_volume_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b1b8c2614b7d3746f5ac2c4e7f378fcd7912217a8171638c33e697b7889a173d",
+   "chksum_sha256": "44e024e5ec8d67ffb8f79c4c4045837c493bc6c0b50e7a32226140423c44732b",
    "format": 1
   },
   {
@@ -1166,7 +1173,7 @@
    "name": "tests/ee/roles/current_container_facts/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7a69f4b9bd07c91387dc4722ba7a449c5ea0cb5fd7293f3676bf04bb6b65c929",
+   "chksum_sha256": "9a6b6e9b2171558688891ac4a41d3bfc4905a40d7ac1c61b4ba2b42f86302012",
    "format": 1
   },
   {
@@ -1313,7 +1320,7 @@
    "name": "tests/images/copy-images.sh",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "04013471eaf0195dc061e01597e9adf2b25f721d746f3ee877f4704c95990ce4",
+   "chksum_sha256": "2827fe0b4d79b8668a0fb6ec317d702b00d3b2eb4eba6eb120ccebfae654a831",
    "format": 1
   },
   {
@@ -1355,7 +1362,7 @@
    "name": "tests/integration/targets/connection/test_connection.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9b592195fed688108e3ab4748d9140bab2e28d150e0a4bb5a128f3c11caa7b02",
+   "chksum_sha256": "55091f4243d5c4357826138b0e7c15ebb10487cef91ce67ffd03aa78c4f06898",
    "format": 1
   },
   {
@@ -1614,35 +1621,35 @@
    "name": "tests/integration/targets/docker_compose_v2/tasks/tests/build.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d96e8142bcf1113dddf414e7e08fc37f805125df7bc3de5518e903370e6676ee",
+   "chksum_sha256": "0eeac8c80eb96f5b771dc11a3c128c167593d67216978b82395187ffd30839ec",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_compose_v2/tasks/tests/container-exit.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ba3edf6785210ce927a0df6c4495ace11be1953f7b289a998b2bc6f5aa96eb5e",
+   "chksum_sha256": "1a3f6e03422a43781be9ede880f7e0b7125b93a12a78d0d78fd24b1756058f88",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_compose_v2/tasks/tests/definition.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "adcb8e01b5983c8a34e4b3088b705db671f863d67d7cf9e40365b27171b9bb25",
+   "chksum_sha256": "b0cd1834afb3a8de3492a17568bce60947138389bc8357e4c85d6f275b23d401",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_compose_v2/tasks/tests/pull.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ac0486b7bf9b2f09b62f11749d44c1569fc0c3ea6dc76b6ba542f02d10cf2393",
+   "chksum_sha256": "10ece2e72b65802a37736b75b538c0b7370aa9248ed23f452baeb58edfcdb7f4",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_compose_v2/tasks/tests/start-stop.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8c85e1b97d72c9fe7ea46103d69b02c55040e7f15aaec36dfeb469bec46c9037",
+   "chksum_sha256": "338fdd0edebeb32a75c5012b12075090423fd7d62f31652dff3201619de4f8c5",
    "format": 1
   },
   {
@@ -1768,7 +1775,7 @@
    "name": "tests/integration/targets/docker_compose_v2_pull/tasks/tests/pull.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cbf67543ecda60b097fbf51973ae67fc9e5ae3129d7f21a83311380253c2e821",
+   "chksum_sha256": "8bb78b835e69ad33b1edd57197316e6e70b59ccd03787acf8f716929b916b502",
    "format": 1
   },
   {
@@ -1894,7 +1901,7 @@
    "name": "tests/integration/targets/docker_config/tasks/test_docker_config.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "08dd9ab43d652b6997690c262e39c873647d8427a683951ad540583b8a0d1f61",
+   "chksum_sha256": "73eda3335f6021db519688019d4b115253134d692ebf47a1429f6bc130684ac2",
    "format": 1
   },
   {
@@ -1971,14 +1978,14 @@
    "name": "tests/integration/targets/docker_container/tasks/tests/comparisons.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9975880766fb10219151c58592084c77a17f340af95fb146503bf8e4ed5b5001",
+   "chksum_sha256": "977b7d301901f2b12fcb4ea16447b2d0faf523899f1bc8f6711eed6491be5915",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_container/tasks/tests/compatibility.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7a27f5ab737d3a39ff24c4521208432ecd553d77a265b07fb8499b1066a692d7",
+   "chksum_sha256": "74d9dde7b488433c3fc82b22ca48a620f402e5180f7508fb9a5b36077592ef7d",
    "format": 1
   },
   {
@@ -1992,56 +1999,56 @@
    "name": "tests/integration/targets/docker_container/tasks/tests/image-ids.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "eccd744be85b191cf37f34988ef444fa1387bd3fd86dd63387c917e83aa27232",
+   "chksum_sha256": "716416ca5463611a1b6214d5fe460ea2723348fc4ccc9d73fbb959a90a961a12",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_container/tasks/tests/mounts-volumes.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2102d3f8e2e8cb629265e182f81378e8dc1e2dc0ff87832eb09c89b1ccbe8c32",
+   "chksum_sha256": "1e6c6828ac6ca1bb66bfdfe899021fd0592f0ae61254e0ff3e36340fb1c690f4",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_container/tasks/tests/network.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5ba6e3e711fdfdd8a91bde7d32e160e102e17225808a060990fa417c80382620",
+   "chksum_sha256": "80bac74c291fcf3ec8f3dd391246e816ba0e2d1a41069d7809d070dd3b0603bd",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_container/tasks/tests/options.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d06dc0a1d15701a4f284c028a18ae4d98a4806a0a73b0558c3440610670afc4c",
+   "chksum_sha256": "4117b3c9b752caa322be0a8619092b527c84c1d7c8d056c7be7b034c7d7234b9",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_container/tasks/tests/ports.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8fd7fa0458ff3857e042d3c685a40936af859ea8859c3159cee577e8f729cdf8",
+   "chksum_sha256": "4318fcc9e593f146b661f3ac298b09d65c9c41d2b649c3bff29c93e686ddb180",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_container/tasks/tests/regression-45700-dont-parse-on-absent.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3007b6ac1ae353ab8240d0c98382d05e16fe7867279b6f702ebcc03d9bf448de",
+   "chksum_sha256": "34f0734f64977dd37a9ba3e22361b083bb6c0317587701c8878c667de43d0c24",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_container/tasks/tests/start-stop.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7639592140dc4e886a39ef96197d99ef88d726b4be48a6a7ed063f435214bf9f",
+   "chksum_sha256": "eb71ac84b7dfeaa799f5ad507a63a289094058e323386d937466e5dd300a35a6",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_container/tasks/tests/update.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "92297e5b4bff33636121f65b8b8ffb61212c5fd233cb7c50095e7668ed6613c7",
+   "chksum_sha256": "e73624340aca06345ba2a8880160ea5e6ae43a640ecb32ebd9c89ae83394e27c",
    "format": 1
   },
   {
@@ -2104,14 +2111,14 @@
    "name": "tests/integration/targets/docker_container_copy_into/tasks/tests/content.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ba9edfdb3876753bc2fd194a7076699d8da3b528667a6a65c39ba37c9b28a6c5",
+   "chksum_sha256": "320cb737c1e2cbec44e5e63a3e11ebf371616ba34f3a5e04cfa7118277e702cc",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_container_copy_into/tasks/tests/file.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "68ce2ed7af0be53ee05ff324533e82589622f263057bafb4f68a17f7dad723b0",
+   "chksum_sha256": "c325407e6871168acfb1f31e64a5dc837bb21b98f0743c76a37a18e7cd3f5e8e",
    "format": 1
   },
   {
@@ -2167,7 +2174,7 @@
    "name": "tests/integration/targets/docker_container_exec/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "13a3a3c36fa72bd27f6b81556239c5ac3380c8da9e427e087a649d8361e2719f",
+   "chksum_sha256": "169184bb8f88a9864c2af91bd5d0e7722b1fdf5d77bebc3cbc473853eb85e14b",
    "format": 1
   },
   {
@@ -2209,11 +2216,81 @@
    "name": "tests/integration/targets/docker_container_info/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "dd87ea6325a300ea4015d3090672aac951752d3a2b024e385f726ce44202c013",
+   "chksum_sha256": "f374065d0498455b7933af3353fc794dd4751fe5b5a2b73f2405edeecf38c836",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_container_info/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "01b45d7b6d896d5b801037e95e7e3225acf01da3732237ceb8ebf75e49adf60d",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_context_info",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_context_info/meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_context_info/meta/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "83adc52ce00e4a10200ce1643ec8d9ffe25470ed0a25749688eeb780d0fceb79",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_context_info/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_context_info/tasks/tests",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_context_info/tasks/tests/default-context.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "760a10cf4ccb14a7ff9394ba6dc5fa7b94ab3576bfdd4599bfcd987ed2348851",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_context_info/tasks/tests/podman.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6fb05c9d4db183f4c41208f08c70fcba8ba651a3f7f194f55573d24ed6d639ad",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_context_info/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "370a2ba1755c3df0cc3fd9813d6ff1a77b3b8e6d244ab1600c1282e6046b16e7",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_context_info/tasks/run-test.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "589896d784e4a7b77ed0c607c47d776ee00968bf212f82097e73498a3754b65b",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_context_info/aliases",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "01b45d7b6d896d5b801037e95e7e3225acf01da3732237ceb8ebf75e49adf60d",
@@ -2237,7 +2314,7 @@
    "name": "tests/integration/targets/docker_host_info/meta/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6fbc5e2468efd3c9de72d5eb1061a59b4c3ac7274c4857be455efcc35e8610d5",
+   "chksum_sha256": "83adc52ce00e4a10200ce1643ec8d9ffe25470ed0a25749688eeb780d0fceb79",
    "format": 1
   },
   {
@@ -2251,14 +2328,14 @@
    "name": "tests/integration/targets/docker_host_info/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9b0baf4500b169ff8084559a7990f0462c4ca112519fa7410f481cb35c6f3427",
+   "chksum_sha256": "8575d9f7ecaba084ddc5befc77162b06dee7a0213dd4f39549a24bce0b574154",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_host_info/tasks/test_host_info.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1497cfefe5a230adaa749ec8c5fb5093863f2daed385878b64e73f6cd1e52158",
+   "chksum_sha256": "85c12680fe7a0db17bab20cc203ad9111a9c9b569b2d2f7f2645c85340deba0a",
    "format": 1
   },
   {
@@ -2307,21 +2384,21 @@
    "name": "tests/integration/targets/docker_image/tasks/tests/basic.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "82c6cc949307b59b70c390d8c43067cb5fea9ae6de3c57e5d133fc9e9caa2d7a",
+   "chksum_sha256": "ef2be88397d5e8ea7e664f6c16b829a672e6e26670cbab1f19fab511b40e62aa",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_image/tasks/tests/docker_image.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "132b8e0517198529ec420ca730dabad59ba9fa99c5f307a8074d12a1e9a2b773",
+   "chksum_sha256": "cfb7b851b3f4521f50bb03dd263b6903d6a453449491a1799742338bcb280cbb",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_image/tasks/tests/options.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "01e5f20d85b5a760235bb1c1b56136c8097ad7dfd32a5211fcffa5416191bb97",
+   "chksum_sha256": "a36e3b16890ce64743d547834689e23fa4e9e25a1dd9690fbceb68237cd4589f",
    "format": 1
   },
   {
@@ -2433,7 +2510,7 @@
    "name": "tests/integration/targets/docker_image_build/tasks/tests/options.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8fe987d38f4065b152a05d845709946504903321342d99184c10aa7cf86ae74b",
+   "chksum_sha256": "c0208b05dd9ce25a47c0e4aaab17d72f3a278b17830c977bb2c0309fe38e3b0a",
    "format": 1
   },
   {
@@ -2615,7 +2692,7 @@
    "name": "tests/integration/targets/docker_image_info/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "dc3ce4462ff5b5f575a9e3734427fee06c61d8a0cbd93ead7926f95d0131a8a9",
+   "chksum_sha256": "8853d21a980821bcfabb5ab83562ac2e757f798b7b49a1661f1c1d7a363b85d6",
    "format": 1
   },
   {
@@ -2734,21 +2811,21 @@
    "name": "tests/integration/targets/docker_image_pull/tasks/tests/basic.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5af002d72658cfb9a2058d3792fd2e881e808639ff6053ba29c26d5928bd734e",
+   "chksum_sha256": "77fbe29e29d564d4eb94a4312cadda8950771ed67d4212524fc6a322e607ae22",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_image_pull/tasks/tests/image-ids.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6046c00692b59a1087dc1a1be4fb0a51d2ead9b8eb13f5dec6bf9f5c281e3556",
+   "chksum_sha256": "00a08050edb753597058823a1730d3533ec467a90d45b328f3d09874bfc2a9c8",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_image_pull/tasks/tests/registry.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5640e423fa7377f6513b62f58b068e66143f2f15b74a0a4b00d9adfdcf286352",
+   "chksum_sha256": "383aea0d26c94bb79d83d382abc9bf73d1abfefe9b02c8732df4928e2ade6a7b",
    "format": 1
   },
   {
@@ -2818,14 +2895,14 @@
    "name": "tests/integration/targets/docker_image_push/tasks/tests/basic.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0e176bf605f73d6dc857c02c67aa1b8c400d8c51e30e00b2d076eddd7f10f8c1",
+   "chksum_sha256": "119c468ee4e878159fefbf2d0059d0d2b9d41fe2a3fe39d17e5b9b0171cbca55",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_image_push/tasks/tests/registry.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "033ce4bb02091d123ce90d08d9618cb5b6dd9ab959d8a7c27944aeab3fe3a704",
+   "chksum_sha256": "9554527a6bf82ccbc30055c1004f74a80143998f414db95ef22931518d11590f",
    "format": 1
   },
   {
@@ -2888,7 +2965,7 @@
    "name": "tests/integration/targets/docker_image_remove/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8909cd9fb5a4f056696fb0e2f6b5c595388c0209f9aacd3143a2cdfa95039acb",
+   "chksum_sha256": "9cb1252814425968478835d98bc55701ef97c6341c66e346d0b7f3af70ea0fd2",
    "format": 1
   },
   {
@@ -2930,7 +3007,7 @@
    "name": "tests/integration/targets/docker_image_tag/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a0189575a19c755c3ae0594b57deaf9ef24496566dafb73b9ca5edc64732c57a",
+   "chksum_sha256": "af93be74a69508774dfe3eca1f0414f11f59458450f935ccdf55c7c764406777",
    "format": 1
   },
   {
@@ -2979,14 +3056,14 @@
    "name": "tests/integration/targets/docker_login/tasks/tests/docker_login.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "32bd7505493ca7016e201f730fda1d938ef0c0d1c40221405105c03785507e1b",
+   "chksum_sha256": "e44d9a84b7bcf481908b5f30f1b9b310f1609a34e12980c2c7e53ce608208b4a",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_login/tasks/tests/multiple-servers.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "899043f20783bb683b488c8b225367a8c0a67ac1c3628591bddc8eff72a7f374",
+   "chksum_sha256": "f6b7764c0e2de8801bb512828baf5b20f7d066a5c9708f9d0e7468ee68673452",
    "format": 1
   },
   {
@@ -3056,35 +3133,35 @@
    "name": "tests/integration/targets/docker_network/tasks/tests/basic.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "55534ba4791b0036bb9c117e9a7f6ae0394f80d5d4308a3dcf65f4564d7762e3",
+   "chksum_sha256": "41e72068ed7caae6621a4fe990d01b60bc8212012661b15de8c8fd42e51a72a2",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_network/tasks/tests/ipam.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d125372c2a14262ec4da6484cff93e4f96936c00c32fc42502e587b8bf0b4de2",
+   "chksum_sha256": "edb217dcdc122ffaa8ac940a12ed5de2cd3c6c05b0c87973393fde87b609ea52",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_network/tasks/tests/options.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4ab72fb542993d2d73fb972ec5d401bc2939b56bad2ed6e4717c24e33d1b48ad",
+   "chksum_sha256": "01bb3414a5ee6482d8a213d99d4a8f1d0da88525de5c88d5b86d008dbb06b624",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_network/tasks/tests/overlay.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9b9ced6725b33b3fcae41e7341eb88bacedfdfaf7727abfe7304f5ff4fa9b867",
+   "chksum_sha256": "a39caf9bcce0822cb8e8f935b3b1e6f02a283f54f07e876f4f812a436383eadd",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_network/tasks/tests/substring.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f7dc51530e72162b7a3c6806be4be3963aef34251036c222a06b1eeffc916985",
+   "chksum_sha256": "c182d3e67f4ba6ffc99f3f2741d7ceb002507e3c8f26c2ede246f1424aaf95d3",
    "format": 1
   },
   {
@@ -3140,7 +3217,7 @@
    "name": "tests/integration/targets/docker_network_info/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a6aae8f07ab0cd76c415bc74687e29a6055c1fc27ae519bc5079d003d9309e6b",
+   "chksum_sha256": "f279136839f18a229f37fd4ff25c957eadd79f4e03d22069850cd76c854fd5f8",
    "format": 1
   },
   {
@@ -3182,14 +3259,14 @@
    "name": "tests/integration/targets/docker_node/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7227db085c3248209f3c6e2ca999811ed192a2ab188e378e18981d45e5be024f",
+   "chksum_sha256": "0fdd9f90475a086288db1f40865cbef36420f1587adf73ee944880ec32588f73",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_node/tasks/test_node.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6286e7ba1e8bd45d6eab7be864c5732a387f3660d2ac2f294e70aad9b2ada3d8",
+   "chksum_sha256": "ae528020826d5ccc40ec06b012cec0b6bbd12efd26deb66f4b31a48a89b9dbac",
    "format": 1
   },
   {
@@ -3238,7 +3315,7 @@
    "name": "tests/integration/targets/docker_node_info/tasks/test_node_info.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6a27a92f404cbb84de0e074ad065e4050da9116196d76cc4e79d1a310f37c6d8",
+   "chksum_sha256": "afc1609617003896e773c9dae1119468b96e95b0a61ce64f6f6183e9db62a8ba",
    "format": 1
   },
   {
@@ -3287,14 +3364,14 @@
    "name": "tests/integration/targets/docker_plugin/tasks/tests/basic.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "32dc8a4e25d13084a7e9c03f87b2b5f910ed8ce0aa90f78bded97d4afd1b17ad",
+   "chksum_sha256": "91a02c3a6a8c3f688f92119c4eb78f62a0224a536a63e3e6cd993bf04019adfb",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_plugin/tasks/tests/basic_with_alias.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5a290c1014a5a347ce52f13a2f64ad3df22375badffd5a7d222a1399ff5ad8d1",
+   "chksum_sha256": "9c6d93577ddf304d1c45e7e158b428d4df176f8f5a537ab327ea27e04c65b0e4",
    "format": 1
   },
   {
@@ -3350,7 +3427,7 @@
    "name": "tests/integration/targets/docker_prune/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e1128cf980ee7ef055acc2d4e41f36e4b7d798f6e73a22ba34f3be0b261b2ca1",
+   "chksum_sha256": "accfda6bcb4e45664939b6a3517281cd72b160b4020b10394a9d4f7dd0101b88",
    "format": 1
   },
   {
@@ -3399,7 +3476,7 @@
    "name": "tests/integration/targets/docker_secret/tasks/test_secrets.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d49058d648987547abe31655563a7663f1f5d71925417dcf249d795c45abdd44",
+   "chksum_sha256": "0a8c9dfba0a0b4f5105d03ce39c026e808b4b2ce089f8d70ab6058f87505e437",
    "format": 1
   },
   {
@@ -3448,7 +3525,7 @@
    "name": "tests/integration/targets/docker_stack/tasks/test_stack.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "75abdee49bb9be0d447a2cd08a115fdfa0dcde8711ba10bc14d7ac42cc383cd5",
+   "chksum_sha256": "ccbdbf16a99f34dabc7aaa7ae812726fb5481e507d0c05c53f8680178f7ca831",
    "format": 1
   },
   {
@@ -3462,14 +3539,14 @@
    "name": "tests/integration/targets/docker_stack/templates/stack_compose_base.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5558e4dad8831ef90d224785b65d7e8f2b1ad48f924cf80312b8005828c58e8c",
+   "chksum_sha256": "c59fdbb88dadc55232c61a24f3a4f8573bb6700e88e68dd483aa4ba40ab320e6",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_stack/templates/stack_compose_overrides.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1095458fd062b0208d910a56599ad4f748dc2997fad41168453c00499b224ae5",
+   "chksum_sha256": "2e2d1c762d09c7b79a55a07349eb2388f57194e00866a855f3be289a755bdd34",
    "format": 1
   },
   {
@@ -3483,7 +3560,7 @@
    "name": "tests/integration/targets/docker_stack/vars/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6d7c3098ce206b9a9edf4aabdf1016615bafe0f6e9f549a85693bb6212187f3c",
+   "chksum_sha256": "488b9b96b7f4e2519b27526d3d61546747c29ae1875893224bc7582a9b31ad02",
    "format": 1
   },
   {
@@ -3532,7 +3609,7 @@
    "name": "tests/integration/targets/docker_stack_info/tasks/test_stack_info.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "29e78c0d01610a78842ca6301e597e5945169162814e9cf5415bd66406c8246a",
+   "chksum_sha256": "3d3043c5cd70f51acf38fe61e6b995d64fd7f26ec848a0abd65f65449bcaf479",
    "format": 1
   },
   {
@@ -3546,14 +3623,14 @@
    "name": "tests/integration/targets/docker_stack_info/templates/stack_compose_base.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5558e4dad8831ef90d224785b65d7e8f2b1ad48f924cf80312b8005828c58e8c",
+   "chksum_sha256": "c59fdbb88dadc55232c61a24f3a4f8573bb6700e88e68dd483aa4ba40ab320e6",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_stack_info/templates/stack_compose_overrides.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1095458fd062b0208d910a56599ad4f748dc2997fad41168453c00499b224ae5",
+   "chksum_sha256": "2e2d1c762d09c7b79a55a07349eb2388f57194e00866a855f3be289a755bdd34",
    "format": 1
   },
   {
@@ -3567,7 +3644,7 @@
    "name": "tests/integration/targets/docker_stack_info/vars/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6d7c3098ce206b9a9edf4aabdf1016615bafe0f6e9f549a85693bb6212187f3c",
+   "chksum_sha256": "488b9b96b7f4e2519b27526d3d61546747c29ae1875893224bc7582a9b31ad02",
    "format": 1
   },
   {
@@ -3616,7 +3693,7 @@
    "name": "tests/integration/targets/docker_stack_task_info/tasks/test_stack_task_info.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5095994eb5af632106c94860af28783dfac2551ea3e83ca89ea1cbb8d5743e3c",
+   "chksum_sha256": "b288b8d4f030ce62f949b761e2d23b0c68b86c714f4238d7bd74caa80cc3a549",
    "format": 1
   },
   {
@@ -3630,14 +3707,14 @@
    "name": "tests/integration/targets/docker_stack_task_info/templates/stack_compose_base.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5558e4dad8831ef90d224785b65d7e8f2b1ad48f924cf80312b8005828c58e8c",
+   "chksum_sha256": "c59fdbb88dadc55232c61a24f3a4f8573bb6700e88e68dd483aa4ba40ab320e6",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_stack_task_info/templates/stack_compose_overrides.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1095458fd062b0208d910a56599ad4f748dc2997fad41168453c00499b224ae5",
+   "chksum_sha256": "2e2d1c762d09c7b79a55a07349eb2388f57194e00866a855f3be289a755bdd34",
    "format": 1
   },
   {
@@ -3651,7 +3728,7 @@
    "name": "tests/integration/targets/docker_stack_task_info/vars/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6d7c3098ce206b9a9edf4aabdf1016615bafe0f6e9f549a85693bb6212187f3c",
+   "chksum_sha256": "488b9b96b7f4e2519b27526d3d61546747c29ae1875893224bc7582a9b31ad02",
    "format": 1
   },
   {
@@ -3700,28 +3777,28 @@
    "name": "tests/integration/targets/docker_swarm/tasks/tests/basic.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "387c884ec51f37bcc743d8fe78e9c13bbc53525d4a33f53ba005bdcb393c7b82",
+   "chksum_sha256": "cabc2044941e9097d1932e565beec5e5694f07be8adb15015d926bf972f77b5e",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_swarm/tasks/tests/options-ca.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2e311704bfd0fb615c074cd1d88cc7d1f7aa0c044855ac2d20f9fbe7970b5cdd",
+   "chksum_sha256": "968fb5ae27038edba5584fa214a3c28582da5738d6399d4eb2e7695c2d918e5e",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_swarm/tasks/tests/options.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "74407ee96908822f1669a5533152b377a3ed04acddbbbb9a8ecb0870ee830fa6",
+   "chksum_sha256": "029aca52b6d0012a63a1571759a56ab466983e14ffb714460572d9a1258aee1e",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_swarm/tasks/tests/remote-addr-pool.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "fd8a708bda8339d4feedf71a2cc75d1f8290b12ecb46c3a5d8e8cb31bebbbfe2",
+   "chksum_sha256": "6a896d59637622bec9cbd6cd6c5b128c4186dcd8dee97fc5d40c871c60d3dffe",
    "format": 1
   },
   {
@@ -3791,7 +3868,7 @@
    "name": "tests/integration/targets/docker_swarm_info/tasks/test_swarm_info.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a66e2f1d82c3ab32d59c07635c4d20abf69b8d323b96ddf841357b6b0b58cdfa",
+   "chksum_sha256": "44e84ae62f9312bbdbbc0ceb46ea867079924dcd7a10f76280c7e1548ef02916",
    "format": 1
   },
   {
@@ -3861,7 +3938,7 @@
    "name": "tests/integration/targets/docker_swarm_service/tasks/tests/configs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0e08bc6e9da871f3893df657e47555078a5e051446f74c7ae04d88d71cea3caa",
+   "chksum_sha256": "cbf4bff5ccc1969f2128bb3cc0aeba36d56169bb0c522dd4127dd035ce2e7913",
    "format": 1
   },
   {
@@ -3882,28 +3959,28 @@
    "name": "tests/integration/targets/docker_swarm_service/tasks/tests/mounts.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "feb2f64cf09a5c3c3671ddb63424106f859e56ee6458903fe1a88314d7913b5e",
+   "chksum_sha256": "fa785bde77234ce30439b887ca990886e3efa55f94ee1c5b5daf6cd07250d32e",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_swarm_service/tasks/tests/networks.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ee6f4d57049dd41e941bf38e68aa000210a8f672424db0f8d691f437faa5922e",
+   "chksum_sha256": "3904031a0ebf214120fadc8933bbf063762073aff4339ed1545c0ae6615655f1",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_swarm_service/tasks/tests/options.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5fa2417d8fb8b3cb832a4856894d8cdb1fad7f2151cc5115ccdd9a910b554440",
+   "chksum_sha256": "e650686b92f3a0b37b2f03648c61d6e6164b6ffcfbbc83cbc059d8653cafa7dd",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_swarm_service/tasks/tests/placement.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "76afa0a98842465343c95aee8c81af356c4fb7fd6787c1d6220606f2c0cac36f",
+   "chksum_sha256": "133aec026a1ecea39e8f56bce4f23d0e293e291e44da401517d80c23700c590a",
    "format": 1
   },
   {
@@ -3931,14 +4008,14 @@
    "name": "tests/integration/targets/docker_swarm_service/tasks/tests/secrets.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "dca8535022b87072bd2c56dfa28fc5191123d54bf85b77b84a06d50bb4e24947",
+   "chksum_sha256": "69e9f737395eca5328e102c6877a84b29b4e8d4d1d089ecff35d8ebdcbdc43c1",
    "format": 1
   },
   {
    "name": "tests/integration/targets/docker_swarm_service/tasks/tests/update_config.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "88c0380d4311ed88be4d4a8bae09c883c23eb6dc6150bd8fc812bb6dda6142f4",
+   "chksum_sha256": "679e5ea95c64fec2fd88210c0bda6010a7dcd5d5f73626ec4d1534c27abbbb99",
    "format": 1
   },
   {
@@ -4015,7 +4092,7 @@
    "name": "tests/integration/targets/docker_swarm_service_info/tasks/test_docker_swarm_service_info.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "de9df1f83213750697c77b492330e8272ab72e2e4b6132a90a67025fe03a72fe",
+   "chksum_sha256": "49d6e2fe4a7c21bc36694ba680444a03d50999b2ddd3519401fc81173e7e727b",
    "format": 1
   },
   {
@@ -4064,7 +4141,7 @@
    "name": "tests/integration/targets/docker_volume/tasks/tests/basic.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "475e8c5fd3509e7f3e96eebbd26aa97e19fe2975feacd6830894062429392dd9",
+   "chksum_sha256": "9ee3ed229f70c27e631201e35f2c0069f4fb5203362c43efde6a09e508e5e09e",
    "format": 1
   },
   {
@@ -4120,7 +4197,7 @@
    "name": "tests/integration/targets/docker_volume_info/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3c191889c5d70676ec95292c46169b822c7bd262a8f52294820f482bea2d188d",
+   "chksum_sha256": "2d0428745ccb01e3e3d53a1df798f0b668b6d32f943b72b0c33d5856b5ad83a1",
    "format": 1
   },
   {
@@ -4190,7 +4267,7 @@
    "name": "tests/integration/targets/generic_connection_tests/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "da42f5ed16ff85517f2feb4316aa384d68c3a69f1ba3b3402b472ebc5b771f43",
+   "chksum_sha256": "848b30a2d0bae9901ecbac3193e4f29dbbf3fc2bcfaf5d044cfd83d4e4d37f7d",
    "format": 1
   },
   {
@@ -4204,7 +4281,7 @@
    "name": "tests/integration/targets/generic_connection_tests/vars/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9a4cacd6b85030dc07b2739b6256c20299291ce870bf04130b45e1ba3a2be291",
+   "chksum_sha256": "674cc10b7d8be2858293d33b1aa3b056f3608a2600615aa2a5fbde9960cfee25",
    "format": 1
   },
   {
@@ -4253,7 +4330,7 @@
    "name": "tests/integration/targets/generic_ssh_connection/aliases",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "bd4b5ae853d3f070a2fd4b1ccdb6460d73fe1ffaa6b95e64bc49302b8bcf82ab",
+   "chksum_sha256": "5cf8f8cb496520633d5717e30f80d3fbdca0bbcdeeece1af78578b17203d8a86",
    "format": 1
   },
   {
@@ -4302,7 +4379,7 @@
    "name": "tests/integration/targets/inventory_docker_containers/playbooks/test_inventory_1.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5a161e8190369dce67ab9b59f2c4109fbfda3ce2cac66c80412b7aacc558c996",
+   "chksum_sha256": "408d60c6f2a71e7fb256a41c7fc6f728b7285b09905cd3c0ae763ba88b7a0307",
    "format": 1
   },
   {
@@ -4393,7 +4470,7 @@
    "name": "tests/integration/targets/inventory_docker_machine/playbooks/test_inventory_1.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d27d7401d8892de9d3af62c3480a002f0a7ea651a0a57790842c3f544447b0cb",
+   "chksum_sha256": "55e7588e01a59207b8a527548c1f580fc33fe3fa14c6ab500040de928083d4bc",
    "format": 1
   },
   {
@@ -4407,7 +4484,7 @@
    "name": "tests/integration/targets/inventory_docker_machine/docker-machine",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "be46924912c9e2ad743df5123a599c11e883e4fcf37f6521b17855c8e8548b60",
+   "chksum_sha256": "6452172a01de135acbfe826bdf009508e0fd9db385802dd90b3ec75ad52853b0",
    "format": 1
   },
   {
@@ -4561,7 +4638,7 @@
    "name": "tests/integration/targets/setup_docker/handlers/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5fde8f14499aecccaad502ae36b1cdc7d40057275b62fc255cb8c791fefcd7ae",
+   "chksum_sha256": "9029ad14480da05f148378f9e0e849043286258419cc1e19427c26c9cd2dc80c",
    "format": 1
   },
   {
@@ -4603,7 +4680,7 @@
    "name": "tests/integration/targets/setup_docker/tasks/Debian.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b01e250a8bb567f0ec9eed0c73dd047d865748434fe345ef9c9ad1c4cdf849ba",
+   "chksum_sha256": "50e1d1ab6cbf3bfed5557d53070bb6d2d79dcd022e93a82372dd46768845c0b5",
    "format": 1
   },
   {
@@ -4645,7 +4722,7 @@
    "name": "tests/integration/targets/setup_docker/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "55ce15cf1ed1c55a7819cccd60385f8368b79ee831c8c458fab6eaef4d4f7f28",
+   "chksum_sha256": "4b3d115ab0cd8995154e4e33494f1d5dbc12d6203d47fc7c1f725d92ef96d560",
    "format": 1
   },
   {
@@ -4729,7 +4806,7 @@
    "name": "tests/integration/targets/setup_docker/vars/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9a4cacd6b85030dc07b2739b6256c20299291ce870bf04130b45e1ba3a2be291",
+   "chksum_sha256": "674cc10b7d8be2858293d33b1aa3b056f3608a2600615aa2a5fbde9960cfee25",
    "format": 1
   },
   {
@@ -5072,7 +5149,7 @@
    "name": "tests/integration/targets/setup_docker_compose_v2/tasks/setup.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "31f09b7f032289ec891a08c4df8735e387e24e779b0b6c1a330361e19dc15fac",
+   "chksum_sha256": "34a1f3bba2d3785d41e7fa122fb955c0579c91b687360e8bb8d4360f37f84de3",
    "format": 1
   },
   {
@@ -5289,7 +5366,7 @@
    "name": "tests/integration/targets/setup_docker_registry/meta/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2817df3a1acffc7941cbe75ff9125d401a566c95e787d2deaa091e54c335bff3",
+   "chksum_sha256": "6f6d8513b6ccc437a46c16a7da22d1fdf8e1c93f1c7d11afa2916ababc1b25cd",
    "format": 1
   },
   {
@@ -5310,14 +5387,14 @@
    "name": "tests/integration/targets/setup_docker_registry/tasks/setup-frontend.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "366fffda5da5f3ef62aa30de4b1ddf2bab5059b2c88bb8241af00d73dab06208",
+   "chksum_sha256": "1f71066e627ab8b9cbd7d3cc235195444a19c77de5fb7f6e7ec769b84d8bd91e",
    "format": 1
   },
   {
    "name": "tests/integration/targets/setup_docker_registry/tasks/setup.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "41e6a5d9cfc661c70c418c31e3ff1d02310fd05f5e5317f8d011857352cceaae",
+   "chksum_sha256": "117ec4aea060bac1a0c35cdfe1e235b451537900bb8464cb5edc80198f4af9d7",
    "format": 1
   },
   {
@@ -5331,7 +5408,7 @@
    "name": "tests/integration/targets/setup_docker_registry/vars/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9a4cacd6b85030dc07b2739b6256c20299291ce870bf04130b45e1ba3a2be291",
+   "chksum_sha256": "674cc10b7d8be2858293d33b1aa3b056f3608a2600615aa2a5fbde9960cfee25",
    "format": 1
   },
   {
@@ -5562,7 +5639,7 @@
    "name": "tests/integration/targets/setup_paramiko/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "492cf351a422e1ff3d0260747979fab86803e60f23fb48491e0cb8706af484a6",
+   "chksum_sha256": "61ba3275181904b247d889547b97adb3ea8403ffd761637db6eeb61c84fde08c",
    "format": 1
   },
   {
@@ -5584,6 +5661,118 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "78ad7f7bf5401c5ddb2f7c3ba23811bd3e5e4650e0739059264c1999814e5f12",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/defaults",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/defaults/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "eb707cc2df5838f22ab14fe848d9ce1e833764b282b5be6a494b84ecaed2db43",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/handlers",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/handlers/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "3842ac7575b48a30ba5c60dc44d21279ab1640612ed0372f70b78346d31778ab",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/meta/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e11ca6edae518cc531ab425daa9eb93f78f89b9ddd515deabd239e8c7925323d",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "02fe83ff66ca9fcf6aa9b96a37816097c720316cb05e4bde0d948b2701dd6fcb",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/vars",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/vars/Alpine.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "862b710b7ce7a04c7e69cd856e156f3db34906415e9f82941062fd92687c868d",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/vars/RedHat-7.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a934c4ea6402aa92476b4ef75725cdb5a75d2d564e89b574b0f3b59ffd930ff7",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/vars/RedHat-8.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "dfddae9742ffe50150212a8ba8150ddb78cd5093dff429b50cc940c17e2ec369",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/vars/Ubuntu-20.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "98221fd1a8e84fefd5287f7af582700b8a751607657eec1ed5d10840d948ceaf",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/vars/default.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "63a1b79555c097c3c1d8b0bdb2b84b86b91873c6d3d55b7534067c8fea6d41fb",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/setup_podman/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cb09ffab7e455855046b8e8ef753c031bcd11a625c879517fa98335d23b15af8",
    "format": 1
   },
   {
@@ -5681,7 +5870,7 @@
    "name": "tests/integration/requirements.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d17176cccf067bce53bc57f15ed98cc91ce74d1f79f6e122558117fe75565687",
+   "chksum_sha256": "d750aee0bace61eb94577dee79cca7e9a091a3c1984783e4577ea96cd2836f3f",
    "format": 1
   },
   {
@@ -5692,108 +5881,10 @@
    "format": 1
   },
   {
-   "name": "tests/sanity/extra",
-   "ftype": "dir",
-   "chksum_type": null,
-   "chksum_sha256": null,
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/action-group.json",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "8db6b6d605787776bb1fa0be5bc4eb52a89fc896f5d3b5fff13d943035e5905f",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/action-group.json.license",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "6eb915239f9f35407fa68fdc41ed6522f1fdcce11badbdcd6057548023179ac1",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/action-group.py",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "43418297dc51c6b51bb746189d9045c1650b6d7de373e926798e3773eb2fd3c1",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/extra-docs.json",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "6c7fbc8a07fa803ce062387232eb0d0198a311f5347493f06c19a07aa45a9bf6",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/extra-docs.json.license",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "6eb915239f9f35407fa68fdc41ed6522f1fdcce11badbdcd6057548023179ac1",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/extra-docs.py",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "c52e316daf1292bbb063be19429fd1f06e02bce3c9d4622a8dfc61fa3af06688",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/licenses.json",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "8c111eb62fa6f1b6c8a1260e9ff06c8b76ef8244428c6289969d79678093618f",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/licenses.json.license",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "6eb915239f9f35407fa68fdc41ed6522f1fdcce11badbdcd6057548023179ac1",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/licenses.py",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "ff502f0707adf15a57b2fc48842fc47d154bfbd3aeadf4c0c05e96b0589c3cd4",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/licenses.py.license",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "88f745b5d91e1371369c207e3392877af6f3e1de48fbaca63a728d4dcf79e03c",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/no-unwanted-files.json",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "a3d3b17f699b042958c7cd845a9d685bc935d83062e0bcf077f2c7200e2c0bac",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/no-unwanted-files.json.license",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "6eb915239f9f35407fa68fdc41ed6522f1fdcce11badbdcd6057548023179ac1",
-   "format": 1
-  },
-  {
-   "name": "tests/sanity/extra/no-unwanted-files.py",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "416fdc4ddd0ad89ddad54bcacc8bf5790d3a9610f7c059167123046849f0ade9",
-   "format": 1
-  },
-  {
    "name": "tests/sanity/ignore-2.15.txt",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "66b5d2222c0ea982efa4ccbc5fffad980cfbc17001a6cf39b072297715cc22b8",
+   "chksum_sha256": "1763250df76911c21262f1264d93ae07ef9d5cb225d4c0c3c00acd4ce7217f6f",
    "format": 1
   },
   {
@@ -5807,7 +5898,7 @@
    "name": "tests/sanity/ignore-2.16.txt",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6a8d217bd175553fa6b355e3a2ce4d891d6593ffcacc639d44f6c84a45feaaa1",
+   "chksum_sha256": "1d89e539ef04dda183f8a1f41aa51b7b23e74bcf29ede268495ff5b34e8260f3",
    "format": 1
   },
   {
@@ -5860,45 +5951,24 @@
    "format": 1
   },
   {
+   "name": "tests/sanity/ignore-2.20.txt",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f52743569e64513bef9795bab6cf6ccfde9b70a8cd5b81a3fe28994379468877",
+   "format": 1
+  },
+  {
+   "name": "tests/sanity/ignore-2.20.txt.license",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6eb915239f9f35407fa68fdc41ed6522f1fdcce11badbdcd6057548023179ac1",
+   "format": 1
+  },
+  {
    "name": "tests/unit",
    "ftype": "dir",
    "chksum_type": null,
    "chksum_sha256": null,
-   "format": 1
-  },
-  {
-   "name": "tests/unit/compat",
-   "ftype": "dir",
-   "chksum_type": null,
-   "chksum_sha256": null,
-   "format": 1
-  },
-  {
-   "name": "tests/unit/compat/__init__.py",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-   "format": 1
-  },
-  {
-   "name": "tests/unit/compat/builtins.py",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "1a66bf5868ec79d871566ca33e62612c7467681405a2c8aef8a93a768c3deebb",
-   "format": 1
-  },
-  {
-   "name": "tests/unit/compat/mock.py",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "75bef6f2ce5456591fd26298e8181709215fa31da43c2d25ce70ae73fd6a2936",
-   "format": 1
-  },
-  {
-   "name": "tests/unit/compat/unittest.py",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "3eac6f61233f8679a6d6732224de17066df8e6b90eeb1a465ce920809960a88b",
    "format": 1
   },
   {
@@ -5919,7 +5989,7 @@
    "name": "tests/unit/plugins/connection/test_docker.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "87ee13fd71ee3f6a5cc070f3cc44d26b328e823e16831173e9730d4231e12529",
+   "chksum_sha256": "3a4e573a7acc70395f704193a479916c41e8d16452fa3ebac244ae40ac558b76",
    "format": 1
   },
   {
@@ -5933,7 +6003,7 @@
    "name": "tests/unit/plugins/inventory/test_docker_containers.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "87571060e81b9ed77b5332a56e5c6b5fbeba60201a07e20882b57944e5a13aaf",
+   "chksum_sha256": "51003a12a51c74e610d08f099ef0e8e0ae61f9d4e1aef93c94f09b81c2d9a7c5",
    "format": 1
   },
   {
@@ -5961,7 +6031,7 @@
    "name": "tests/unit/plugins/module_utils/_api/api/test_client.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9c9b531983d18111c1ae36320dead46e6a98637a258c5335e29e85915447a768",
+   "chksum_sha256": "8705a25f44bb467a84b7190d6f271b05aa06c7e88e95710a4ec80daf4de658eb",
    "format": 1
   },
   {
@@ -6045,7 +6115,7 @@
    "name": "tests/unit/plugins/module_utils/_api/utils/test_decorators.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "c199f7436d7076adf09eb02cd9016697ad1d98d93a9805127b548feaae4a7fbf",
+   "chksum_sha256": "3c456a60344ff749271ff04b38b22d61af90e6d462204232bff8277c3d06a41a",
    "format": 1
   },
   {
@@ -6073,14 +6143,21 @@
    "name": "tests/unit/plugins/module_utils/_api/utils/test_utils.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e1595599c25bbe64c07d99e1ee9d2b27effc8e950f7d7301995426febbac2927",
+   "chksum_sha256": "44b2975c5db9c12740cb7395a43838fe4c2785e11cb6b646bf12df704a7d2851",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/module_utils/_api/constants.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "247a4855046db1ac90cdea6c5db78ca229abe543813488734eaff7bface261ea",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/module_utils/_api/fake_api.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "34922ee17f3c850bdde7f6b6910e1f465c802cae15ebae77bb5747f8f2921c57",
+   "chksum_sha256": "7eb7fac244b3434d671340031e82eb5821694652f58f3c22f883caaf198a3282",
    "format": 1
   },
   {
@@ -6095,6 +6172,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "86e10a21915fad656729eec85fe53df7f05d5319e331fdd6bacf8945faf45259",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/module_utils/_api/test_context.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cf7b155c02ae36231afc5b923f909a61475ae4c482bf2bdc2ff9fbc48fe4c286",
    "format": 1
   },
   {
@@ -6161,10 +6245,10 @@
    "format": 1
   },
   {
-   "name": "tests/unit/plugins/modules/conftest.py",
+   "name": "tests/unit/plugins/modules/test_docker_container_copy_into.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "bc5cd8bb3edd35ccd18027139e608db8c118853d44ca4435fa310092e4881f01",
+   "chksum_sha256": "cd52f8160e2cdc3605d4323908536d57eb3cdd6128474f98014b05c268ff6295",
    "format": 1
   },
   {
@@ -6172,6 +6256,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "88971516134166aba528faf1470a1538e2283e5bd90436a0493ced56264aac0e",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/test_docker_image_build.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c6a400fa0a6c4f112e487365dc3891c069c04b0635275c505f7c9a73e83b797b",
    "format": 1
   },
   {
@@ -6199,7 +6290,7 @@
    "name": "tests/unit/plugins/plugin_utils/test_unsafe.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1568c3ce2e4607a182d8fcafd8d70a78000eec9bd4577ac943af0ab09ef30243",
+   "chksum_sha256": "4e329a20fd2677d7aa18ffd6036824817c7e9da1b5bba6b1ee87c0495ee4efff",
    "format": 1
   },
   {
@@ -6227,7 +6318,7 @@
    "name": "tests/unit/requirements.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "12b0e4bf7113bf7fbdab69a78078c507a37a366cf4539d8f6ceab7ee2c3d46f3",
+   "chksum_sha256": "ec06127b561ae622eda4a0069630dc945698f9b0481e4cf47c497b7f9b8d089a",
    "format": 1
   },
   {
@@ -6297,14 +6388,14 @@
    "name": "tests/utils/shippable/sanity.sh",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a5c298630e328b6de875b0db8a48db50592ca493f93004d7975cbfcb119a964f",
+   "chksum_sha256": "f5a62e7956e0bac511e0937c87eb6f5e71c645e0c1715e866102c175eb501e1b",
    "format": 1
   },
   {
    "name": "tests/utils/shippable/shippable.sh",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "db01bed83cdeff8d87b90c222cb84a5661680c9dd733f4ed5929dc7d44fc8636",
+   "chksum_sha256": "2480081a6c22823a4bae64144fd15141ffb00fd5b3693d56147c33adb92fdd7f",
    "format": 1
   },
   {
@@ -6325,21 +6416,42 @@
    "name": "tests/config.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4a6a1ad768079ef3a02b727a199898f8465358c0c0bd3359fe4a59f57b537bb3",
+   "chksum_sha256": "498d46cf08b5abb09880088fa8fd142315f7f775e94cdc7d41364ed20fc2cd65",
    "format": 1
   },
   {
-   "name": "tests/galaxy-importer.cfg",
+   "name": ".git-blame-ignore-revs",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d4e70c7540d2f405f079373fea81ee9be93021d051333797b20e756212ce3f0f",
+   "chksum_sha256": "c6883cf805be18ee838dc2e729f19eaa9899e8c1d04c634f6e0553d17c570b84",
+   "format": 1
+  },
+  {
+   "name": ".yamllint",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "5d93680c1f505b887c2ad31a98485e8200caada975c0877bbfdd5a92812da9d3",
+   "format": 1
+  },
+  {
+   "name": ".yamllint-docs",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f4ff8aace264eb4b3c2acb26002f4075fb5341e152490ade5db2defc992cf2a6",
+   "format": 1
+  },
+  {
+   "name": ".yamllint-examples",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0318dedf44e374936934d8f16887df85ac793a0ddd9c0b410972574c700249cb",
    "format": 1
   },
   {
    "name": "CHANGELOG.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "353acf5e526c5fd69e7b8a13d62c87c9be09397aa7a060e406436c69bea61bfa",
+   "chksum_sha256": "169aa31b7ab656232bdcd71fb728240a588407ef007703fa289068de24814191",
    "format": 1
   },
   {
@@ -6353,7 +6465,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "84862f4ed23c1ad3a52468985353755844554428d875db95e125cc340cb39468",
+   "chksum_sha256": "0fcedc527b1e7caaf617c1c83e9db639d96990d3baaead569f2a3995fea50572",
    "format": 1
   },
   {
@@ -6374,7 +6486,28 @@
    "name": "README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "16b3a953c28aadccfff18a776213cedb7c8a8daea64bbed0d068692de6a1a476",
+   "chksum_sha256": "1fb7be6deff9c6dcbd487e36d9e4e72dcb5bd867f33a54c58aa0146368ad8acf",
+   "format": 1
+  },
+  {
+   "name": "REUSE.toml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "646b5ce1ce1d31715c0e6a8ad9c2cc2828973e92badb73d1d6e7be33a3d2af3f",
+   "format": 1
+  },
+  {
+   "name": "antsibull-nox.toml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "114a9729a8640888d71d8e8b2d2c72df5d991b96d0f3134a6ede566cf95e8ba6",
+   "format": 1
+  },
+  {
+   "name": "noxfile.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "28e31f1fb7a5bac30cff004209402ac5150df7feab6c3bf708ff7c29e94c54d7",
    "format": 1
   }
  ],

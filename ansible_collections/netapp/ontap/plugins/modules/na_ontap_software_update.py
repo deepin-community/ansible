@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2022, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 '''
@@ -12,7 +12,7 @@ __metaclass__ = type
 
 
 DOCUMENTATION = '''
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Update ONTAP software
   - Requires an https connection and is not supported over http
@@ -29,6 +29,11 @@ options:
       - When state is absent, the package is deleted from disk.
     default: present
     type: str
+  https:
+    description:
+      - Enable and disable https.
+    type: bool
+    default: true
   nodes:
     description:
       - List of nodes to be updated, the nodes have to be a part of a HA Pair.
@@ -95,18 +100,17 @@ notes:
 '''
 
 EXAMPLES = """
-
-    - name: ONTAP software update
-      netapp.ontap.na_ontap_software_update:
-        state: present
-        nodes: vsim1
-        package_url: "{{ url }}"
-        package_version: "{{ version_name }}"
-        ignore_validation_warning: True
-        download_only: True
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: ONTAP software update
+  netapp.ontap.na_ontap_software_update:
+    state: present
+    nodes: vsim1
+    package_url: "{{ url }}"
+    package_version: "{{ version_name }}"
+    ignore_validation_warning: true
+    download_only: true
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """
@@ -148,6 +152,7 @@ class NetAppONTAPSoftwareUpdate:
         self.argument_spec = netapp_utils.na_ontap_host_argument_spec()
         self.argument_spec.update(dict(
             state=dict(required=False, type='str', choices=['present', 'absent'], default='present'),
+            https=dict(required=False, type='bool', default=True),
             nodes=dict(required=False, type='list', elements='str', aliases=["node", "nodes_to_update"]),
             package_version=dict(required=True, type='str'),
             package_url=dict(required=False, type='str'),

@@ -5,12 +5,13 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: hetzner_dns_record_set
 
 short_description: Add or delete record sets in Hetzner DNS service
@@ -18,34 +19,30 @@ short_description: Add or delete record sets in Hetzner DNS service
 version_added: 2.0.0
 
 description:
-    - "Creates and deletes DNS record sets in Hetzner DNS service."
-
+  - Creates and deletes DNS record sets in Hetzner DNS service.
 extends_documentation_fragment:
-    - community.dns.hetzner
-    - community.dns.hetzner.record_default_ttl
-    - community.dns.hetzner.record_notes
-    - community.dns.hetzner.record_type_choices
-    - community.dns.hetzner.zone_id_type
-    - community.dns.module_record_set
-    - community.dns.options.bulk_operations
-    - community.dns.options.record_transformation
-    - community.dns.attributes
-    - community.dns.attributes.actiongroup_hetzner
+  - community.dns.hetzner
+  - community.dns.hetzner.record_default_ttl
+  - community.dns.hetzner.record_notes
+  - community.dns.hetzner.record_type_choices
+  - community.dns.hetzner.record_type_seealso
+  - community.dns.hetzner.zone_id_type
+  - community.dns.module_record_set
+  - community.dns.options.bulk_operations
+  - community.dns.options.record_transformation
+  - community.dns.attributes
+  - community.dns.attributes.actiongroup_hetzner
 
 attributes:
-    action_group:
-        version_added: 2.4.0
-    check_mode:
-        support: full
-    diff_mode:
-        support: full
+  action_group:
+    version_added: 2.4.0
 
 author:
-    - Markus Bergholz (@markuman) <markuman+spambelongstogoogle@gmail.com>
-    - Felix Fontein (@felixfontein)
-'''
+  - Markus Bergholz (@markuman) <markuman+spambelongstogoogle@gmail.com>
+  - Felix Fontein (@felixfontein)
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Add new.foo.com as an A record with 3 IPs
   community.dns.hetzner_dns_record_set:
     state: present
@@ -125,8 +122,8 @@ EXAMPLES = '''
     record: foo.com
     type: CAA
     value:
-    - '128 issue "letsencrypt.org"'
-    - '128 iodef "mailto:webmaster@foo.com"'
+      - '128 issue "letsencrypt.org"'
+      - '128 iodef "mailto:webmaster@foo.com"'
     hetzner_token: access_token
 
 - name: Add an MX record
@@ -137,7 +134,7 @@ EXAMPLES = '''
     type: MX
     ttl: 3600
     value:
-    - "10 mail.foo.com"
+      - "10 mail.foo.com"
     hetzner_token: access_token
 
 - name: Add a CNAME record
@@ -148,7 +145,7 @@ EXAMPLES = '''
     type: CNAME
     ttl: 3600
     value:
-    - foo.foo.com
+      - foo.foo.com
     hetzner_token: access_token
 
 - name: Add a PTR record
@@ -159,7 +156,7 @@ EXAMPLES = '''
     type: PTR
     ttl: 3600
     value:
-    - foo.foo.com
+      - foo.foo.com
     hetzner_token: access_token
 
 - name: Add an SPF record
@@ -170,7 +167,7 @@ EXAMPLES = '''
     type: SPF
     ttl: 3600
     value:
-    - "v=spf1 a mx ~all"
+      - "v=spf1 a mx ~all"
     hetzner_token: access_token
 
 - name: Add a PTR record
@@ -181,34 +178,28 @@ EXAMPLES = '''
     type: PTR
     ttl: 3600
     value:
-    - "10 100 3333 service.foo.com"
+      - "10 100 3333 service.foo.com"
     hetzner_token: access_token
-'''
+"""
 
-RETURN = '''
+RETURN = r"""
 zone_id:
-    description: The ID of the zone.
-    type: str
-    returned: success
-    sample: 23
-'''
+  description: The ID of the zone.
+  type: str
+  returned: success
+  sample: 23
+"""
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.community.dns.plugins.module_utils.argspec import (
     ModuleOptionProvider,
 )
-
-from ansible_collections.community.dns.plugins.module_utils.http import (
-    ModuleHTTPHelper,
-)
-
 from ansible_collections.community.dns.plugins.module_utils.hetzner.api import (
-    create_hetzner_argument_spec,
     create_hetzner_api,
+    create_hetzner_argument_spec,
     create_hetzner_provider_information,
 )
-
+from ansible_collections.community.dns.plugins.module_utils.http import ModuleHTTPHelper
 from ansible_collections.community.dns.plugins.module_utils.module.record_set import (
     create_module_argument_spec,
     run_module,

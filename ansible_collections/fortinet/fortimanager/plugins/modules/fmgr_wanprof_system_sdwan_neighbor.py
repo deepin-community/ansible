@@ -128,12 +128,20 @@ options:
                 aliases: ['service-id']
                 type: str
                 description: SD-WAN service ID to work with the neighbor.
+            route_metric:
+                aliases: ['route-metric']
+                type: str
+                description: Route-metric of neighbor.
+                choices:
+                    - 'preferable'
+                    - 'priority'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -150,14 +158,15 @@ EXAMPLES = '''
         wanprof: <your own value>
         state: present # <value in [present, absent]>
         wanprof_system_sdwan_neighbor:
-          health_check: <string>
-          ip: <string>
-          member: <list or string>
-          role: <value in [primary, secondary, standalone]>
-          sla_id: <integer>
-          minimum_sla_meet_members: <integer>
-          mode: <value in [sla, speedtest]>
-          service_id: <string>
+          # health_check: <string>
+          # ip: <string>
+          # member: <list or string>
+          # role: <value in [primary, secondary, standalone]>
+          # sla_id: <integer>
+          # minimum_sla_meet_members: <integer>
+          # mode: <value in [sla, speedtest]>
+          # service_id: <string>
+          # route_metric: <value in [preferable, priority]>
 '''
 
 RETURN = '''
@@ -225,7 +234,8 @@ def main():
                 'sla-id': {'v_range': [['6.4.1', '']], 'type': 'int'},
                 'minimum-sla-meet-members': {'v_range': [['7.2.0', '']], 'type': 'int'},
                 'mode': {'v_range': [['7.0.1', '']], 'choices': ['sla', 'speedtest'], 'type': 'str'},
-                'service-id': {'v_range': [['7.4.1', '']], 'type': 'str'}
+                'service-id': {'v_range': [['7.4.1', '']], 'type': 'str'},
+                'route-metric': {'v_range': [['7.6.2', '']], 'choices': ['preferable', 'priority'], 'type': 'str'}
             }
         }
     }

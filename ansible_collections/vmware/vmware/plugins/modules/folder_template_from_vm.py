@@ -63,6 +63,18 @@ options:
             - For example 'datacenter name/vm/path/to/folder' or 'path/to/folder'
         type: str
         required: True
+    folder_paths_are_absolute:
+        description:
+            - If true, any folder path parameters are treated as absolute paths.
+            - If false, modules will try to intelligently determine if the path is absolute
+              or relative.
+            - This option is useful when your environment has a complex folder structure. By default,
+              modules will try to intelligently determine if the path is absolute or relative.
+              They may mistakenly prepend the datacenter name or other folder names, and this option
+              can be used to avoid this.
+        type: bool
+        required: false
+        default: false
     template_name:
         description:
             - The name to give to the new template.
@@ -99,7 +111,7 @@ attributes:
         description: The check_mode support.
         support: full
 extends_documentation_fragment:
-    - vmware.vmware.vmware.vcenter_documentation
+    - vmware.vmware.base_options
 
 '''
 
@@ -143,9 +155,14 @@ RETURN = r'''
 import traceback
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware import PyVmomi, vmware_argument_spec
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_folder_paths import format_folder_path_as_vm_fq_path
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_tasks import RunningTaskMonitor, TaskError
+from ansible_collections.vmware.vmware.plugins.module_utils._module_pyvmomi_base import (
+    ModulePyvmomiBase
+)
+from ansible_collections.vmware.vmware.plugins.module_utils.argument_spec import (
+    base_argument_spec
+)
+from ansible_collections.vmware.vmware.plugins.module_utils._folder_paths import format_folder_path_as_vm_fq_path
+from ansible_collections.vmware.vmware.plugins.module_utils._vsphere_tasks import RunningTaskMonitor, TaskError
 
 PYVMOMI_IMP_ERR = None
 try:
@@ -156,7 +173,7 @@ except ImportError:
     HAS_PYVMOMI = False
 
 
-class VmwareFolderTemplate(PyVmomi):
+class VmwareFolderTemplate(ModulePyvmomiBase):
     def __init__(self, module):
         super(VmwareFolderTemplate, self).__init__(module)
         if not self.is_vcenter():
@@ -164,17 +181,20 @@ class VmwareFolderTemplate(PyVmomi):
 
         self.template_name = self.params.get("template_name")
 
-        fq_folder_path = format_folder_path_as_vm_fq_path(
-            self.params.get("template_folder"),
-            self.params.get("datacenter")
-        )
+        if self.params.get("folder_paths_are_absolute"):
+            fq_folder_path = self.params.get("template_folder")
+        else:
+            fq_folder_path = format_folder_path_as_vm_fq_path(
+                self.params.get("template_folder"),
+                self.params.get("datacenter")
+            )
         self.template_folder = self.get_folder_by_absolute_path(fq_folder_path, fail_on_missing=True)
 
     def check_if_template_exists(self):
         """
         Checks if a template with the given name and folder already exists
         """
-        templates = self.get_vm_using_params(name_param='template_name', fail_on_missing=False)
+        templates = self.get_vms_using_params(name_param='template_name', fail_on_missing=False)
         if not templates:
             return False
 
@@ -194,7 +214,7 @@ class VmwareFolderTemplate(PyVmomi):
         Uses the UUID, MOID, or name provided to find the source VM for the template. Returns an error if using the name,
         multiple matches are found, and the user did not provide a name_match strategy.
         """
-        vms = self.get_vm_using_params(
+        vms = self.get_vms_using_params(
             name_param='vm_name',
             moid_param='vm_moid',
             uuid_param='vm_uuid',
@@ -236,12 +256,12 @@ class VmwareFolderTemplate(PyVmomi):
     def __create_template_location_spec(self):
         template_location_spec = vim.vm.RelocateSpec()
         if self.params.get("datastore"):
-            template_location_spec.datastore = self.get_datastore_by_name(
+            template_location_spec.datastore = self.get_datastore_by_name_or_moid(
                 self.params.get("datastore"),
                 fail_on_missing=True)
 
         if self.params.get("resource_pool"):
-            template_location_spec.pool = self.get_resource_pool_by_name(
+            template_location_spec.pool = self.get_resource_pool_by_name_or_moid(
                 self.params.get("resource_pool"),
                 fail_on_missing=True)
 
@@ -262,7 +282,7 @@ def custom_validation(module):
 def main():
     module = AnsibleModule(
         argument_spec={
-            **vmware_argument_spec(), **dict(
+            **base_argument_spec(), **dict(
                 vm_name=dict(type='str', required=False, default=None),
                 vm_name_match=dict(type='str', required=False, choices=['first', 'last']),
                 vm_uuid=dict(type='str', required=False, default=None),
@@ -271,6 +291,7 @@ def main():
                 state=dict(type='str', required=False, default='present', choices=['present', 'absent']),
                 template_name=dict(type='str', required=True),
                 template_folder=dict(type='str', required=True),
+                folder_paths_are_absolute=dict(type='bool', required=False, default=False),
                 datacenter=dict(type='str', aliases=['datacenter_name'], required=True),
                 datastore=dict(type='str', required=False),
                 resource_pool=dict(type='str', required=False),

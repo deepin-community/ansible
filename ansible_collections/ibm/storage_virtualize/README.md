@@ -18,7 +18,7 @@ For more information about communication, see the [Ansible communication guide](
 ## Requirements
 
 - Ansible version 2.15 or higher
-- Python 3.9 or higher for controller nodes
+- Python 3.10 or higher for controller nodes
 
 ## Installation
 
@@ -60,14 +60,12 @@ Alternatively, you can add a full namepsace and collection name in the `collecti
 ```yaml
 ---
 - name: Using the IBM Storage Virtualize collection
-  collections:
-    - ibm.storage_virtualize
   gather_facts: no
   connection: local
   hosts: localhost
   tasks:
     - name: Gather info from storage
-      ibm_svc_info:
+      ibm.storage_virtualize.ibm_svc_info:
         clustername: x.x.x.x
         domain:
         username: username
@@ -114,6 +112,7 @@ Alternatively, you can add a full namepsace and collection name in the `collecti
 - ibm_sv_manage_cloud_backup - Manages cloud backups on Storage Virtualize systems
 - ibm_sv_manage_drive - Manages drive state changes, tasks and dump
 - ibm_sv_manage_fc_partnership - Manages Fibre Channel (FC) partnership on Storage Virtualize systems
+- ibm_sv_manage_flashsystem_grid - Manages Flashsystem grid operations such as creating and managing members
 - ibm_sv_manage_fcportsetmember - Manages addition or removal of ports from the Fibre Channel (FC) portsets on Storage Virtualize systems
 - ibm_sv_manage_ip_partnership - Manages IP partnership configuration on Storage Virtualize systems
 - ibm_sv_manage_provisioning_policy - Manages provisioning policy configuration on Storage Virtualize systems
@@ -150,7 +149,6 @@ The modules in the IBM Storage Virtualize Ansible collection leverage REST APIs 
 3. The Ansible collection can run on all IBM Storage Virtualize system versions above 8.1.3, except versions 8.3.1.3, 8.3.1.4 and 8.3.1.5.
 4. At time of release of the SV Ansible v1.8.0 collection, no module is available for non LMC systems to automate license agreements acceptance, including EULA.
    User will be presented with a GUI setup wizard upon user-interface login, whether the Ansible modules have been used for initial configuration or not.
-
 
 ## Releasing, Versioning, and Deprecation
 

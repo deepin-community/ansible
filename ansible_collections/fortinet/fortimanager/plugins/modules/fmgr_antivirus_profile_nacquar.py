@@ -106,6 +106,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -121,9 +122,9 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         antivirus_profile_nacquar:
-          expiry: <string>
-          infected: <value in [none, quar-src-ip, quar-interface]>
-          log: <value in [disable, enable]>
+          # expiry: <string>
+          # infected: <value in [none, quar-src-ip, quar-interface]>
+          # log: <value in [disable, enable]>
 '''
 
 RETURN = '''

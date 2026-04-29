@@ -77,13 +77,12 @@ ansible-galaxy collection install community.postgresql
 
 See the following list of supported Operating systems with the Zabbix releases.
 
-| Zabbix              | 7.0 | 6.4 | 6.0 |
+| Zabbix              | 7.2 | 7.0 | 6.0 |
 |---------------------|-----|-----|-----|
 | Red Hat Fam 9       |  V  |  V  |  V  |
 | Red Hat Fam 8       |  V  |  V  |  V  |
 | Ubuntu 24.04 noble  |  V  |  V  |  V  |
 | Ubuntu 22.04 jammy  |  V  |  V  |  V  |
-| Ubuntu 20.04 focal  |  V  |  V  |  V  |
 | Debian 12 bookworm  |  V  |  V  |  V  |
 | Debian 11 bullseye  |  V  |  V  |  V  |
 | Suse Fam 15         |  V  |  V  |  V  |
@@ -132,7 +131,7 @@ The following is an overview of all available configuration default for this rol
 * `zabbix_repo_yum_gpgcheck`: Default: `0`.  Should yum perform a GPG check on the repository
 * `zabbix_proxy_disable_repo`: A list of repos to disable during install.  Default `epel`.
 * `zabbix_proxy_apt_priority`: APT priority for the zabbix repository
-* `*zabbix_proxy_package_state`: Default: `present`. Can be overridden to `latest` to update packages
+* `zabbix_proxy_package_state`: Default: `present`. Can be overridden to `latest` to update packages
 * `zabbix_repo_deb_url`: The URL to the Zabbix repository.  Default `http://repo.zabbix.com/zabbix/{{ zabbix_proxy_version }}/{{ ansible_distribution.lower() }}`
 * `zabbix_repo_deb_component`: The repository component for Debian installs. Default `main`.
 * `zabbix_repo_deb_gpg_key_url`: The URL to download the Zabbix GPG key from. Default `http://repo.zabbix.com/zabbix-official-repo.key`.
@@ -141,6 +140,8 @@ The following is an overview of all available configuration default for this rol
 ### SElinux
 
 Selinux changes will be installed based on the status of selinux running on the target system.
+
+* `selinux_allow_zabbix_can_network`: Default: `True`.
 
 ## Proxy
 
@@ -289,6 +290,12 @@ These variables need to be overridden when you want to make use of the Zabbix AP
 * `zabbix_proxy_name`: name of the Zabbix proxy as it is seen by Zabbix server
 * `zabbix_proxy_state`: present (Default) if the proxy needs to be created or absent if you want to delete it. This only works when `zabbix_api_create_proxy` is set to `True`.
 * `zabbix_proxy_status`: active (Default) if the proxy needs to be active or passive.
+* `zabbix_api_create_proxy_group`: When you want to enable the Zabbix API to create/delete the proxy group. This has to be set to `True` if you want to make use of `zabbix_proxy_group_state`. Is using the same API connectivity options as `zabbix_api_create_proxy`. Default: `False`. Version 7.0 or Greater.
+* `zabbix_proxy_group_name`: Name of the Zabbix proxy group as it is seen by Zabbix server. Version 7.0 or Greater.
+* `zabbix_proxy_group_state`: Present (Default) if the proxy group needs to be created or absent if you want to delete it. This only works when `zabbix_api_create_proxy_group` is set to `True`. The Zabbix proxy this variable is used together with, will be automatically assigned to that `zabbix_proxy_group_name` proxy group. Version 7.0 or Greater.
+* `zabbix_proxy_group_description`: Zabbix proxy group description. Default `omit`. Version 7.0 or Greater.
+* `zabbix_proxy_group_failover_delay`: Failover period for each proxy in the group to have online/offline state. Default `1m`. Version 7.0 or Greater.
+* `zabbix_proxy_group_min_online`: Minimum number of online proxies required for the group to be online. Possible values range: 1-1000. Default `1`. Version 7.0 or Greater.
 
 ## Configuration Variables
 
@@ -301,7 +308,7 @@ The following table lists all variables that are exposed to modify the configura
 | AllowRoot | zabbix_proxy_allowroot | `False` | `True`/`False` |
 | AllowUnsupportedDBVersions | zabbix_proxy_allowunsupporteddbversions | `False` | `True`/`False` |
 | CacheSize | zabbix_proxy_cachesize | 32M | |
-| ConfigFrequency | zabbix_proxy_configfrequency | 3600 | |
+| ConfigFrequency | zabbix_proxy_configfrequency | 3600 | Being deprecated. In conflict with ProxyConfigFrequency. |
 | DataSenderFrequency | zabbix_proxy_datasenderfrequency | 1 | |
 | DBHost | zabbix_proxy_dbhost | localhost| |
 | DBName | zabbix_proxy_dbname | zabbix_proxy| |
@@ -343,7 +350,7 @@ The following table lists all variables that are exposed to modify the configura
 | MaxConcurrentChecksPerPoller | zabbix_proxy_maxconcurrentchecksperpoller | 1000 | Version 7.0 or Greater |
 | PidFile | zabbix_proxy_pidfile | /var/run/zabbix/zabbix_proxy.pid| |
 | ProxyBufferMode | zabbix_proxy_proxybuffermode | disk | Version 7.0 or Greater |
-| ProxyConfigFrequency | zabbix_proxy_proxyconfigfrequency | 10 | Version 6.4 or Lower |
+| ProxyConfigFrequency | zabbix_proxy_proxyconfigfrequency | 10 | Version 6.4 or Greater |
 | ProxyLocalBuffer | zabbix_proxy_proxylocalbuffer |0| |
 | ProxyMemoryBufferAge | zabbix_proxy_proxymemorybufferage | 0 | Version 7.0 or Greater |
 | ProxyMemoryBufferSize | zabbix_proxy_proxymemorybuffersize | 0 | Version 7.0 or Greater |

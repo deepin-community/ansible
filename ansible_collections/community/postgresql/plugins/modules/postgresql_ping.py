@@ -15,12 +15,13 @@ short_description: Check remote PostgreSQL server availability
 description:
 - Simple module to check remote PostgreSQL server availability.
 options:
-  db:
+  login_db:
     description:
     - Name of a database to connect to.
+    - The V(db) alias is deprecated and will be removed in version 5.0.0.
     type: str
     aliases:
-    - login_db
+    - db
   session_role:
     description:
     - Switch to session_role after connecting. The specified session_role must
@@ -57,7 +58,7 @@ EXAMPLES = r'''
     Ping PostgreSQL server using non-default credentials and SSL
     registering the return values into the result variable for future use
   community.postgresql.postgresql_ping:
-    db: protected_db
+    login_db: protected_db
     login_host: dbsrv
     login_user: secret
     login_password: secret_pass
@@ -66,7 +67,7 @@ EXAMPLES = r'''
   register: result
   # If you need to fail when the server is not available,
   # uncomment the following line:
-  #failed_when: not result.is_available
+  # failed_when: not result.is_available
 
 # You can use the registered result with another task
 - name: This task should be executed only if the server is available
@@ -160,7 +161,13 @@ class PgPing(object):
 def main():
     argument_spec = postgres_common_argument_spec()
     argument_spec.update(
-        db=dict(type='str', aliases=['login_db']),
+        login_db=dict(type='str', aliases=['db'], deprecated_aliases=[
+            {
+                'name': 'db',
+                'version': '5.0.0',
+                'collection_name': 'community.postgresql',
+            }],
+        ),
         session_role=dict(type='str'),
         trust_input=dict(type='bool', default=True),
     )

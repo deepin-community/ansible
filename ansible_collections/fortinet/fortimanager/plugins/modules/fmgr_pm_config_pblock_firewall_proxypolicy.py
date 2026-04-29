@@ -113,6 +113,7 @@ options:
                     - 'accept'
                     - 'deny'
                     - 'redirect'
+                    - 'isolate'
             application_list:
                 aliases: ['application-list']
                 type: list
@@ -551,12 +552,42 @@ options:
                 type: list
                 elements: str
                 description: Name of an existing MMS profile.
+            isolator_server:
+                aliases: ['isolator-server']
+                type: list
+                elements: str
+                description: Isolator server name.
+            url_risk:
+                aliases: ['url-risk']
+                type: list
+                elements: str
+                description: URL risk level name.
+            ztna_ems_tag_negate:
+                aliases: ['ztna-ems-tag-negate']
+                type: str
+                description: When enabled, ZTNA EMS tags match against any tag EXCEPT the specified ZTNA EMS tags.
+                choices:
+                    - 'disable'
+                    - 'enable'
+            https_sub_category:
+                aliases: ['https-sub-category']
+                type: str
+                description: Enable/disable HTTPS sub-category policy matching.
+                choices:
+                    - 'disable'
+                    - 'enable'
+            telemetry_profile:
+                aliases: ['telemetry-profile']
+                type: list
+                elements: str
+                description: Name of an existing telemetry profile.
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -573,92 +604,97 @@ EXAMPLES = '''
         pblock: <your own value>
         state: present # <value in [present, absent]>
         pm_config_pblock_firewall_proxypolicy:
-          _policy_block: <integer>
-          access_proxy: <list or string>
-          access_proxy6: <list or string>
-          action: <value in [accept, deny, redirect]>
-          application_list: <list or string>
-          av_profile: <list or string>
-          block_notification: <value in [disable, enable]>
-          casb_profile: <list or string>
-          comments: <string>
-          decrypted_traffic_mirror: <list or string>
-          detect_https_in_http_request: <value in [disable, enable]>
-          device_ownership: <value in [disable, enable]>
-          disclaimer: <value in [disable, domain, policy, ...]>
-          dlp_profile: <list or string>
-          dnsfilter_profile: <list or string>
-          dstaddr: <list or string>
-          dstaddr_negate: <value in [disable, enable]>
-          dstaddr6: <list or string>
-          dstintf: <list or string>
-          emailfilter_profile: <list or string>
-          file_filter_profile: <list or string>
-          global_label: <string>
-          groups: <list or string>
-          http_tunnel_auth: <value in [disable, enable]>
-          icap_profile: <list or string>
-          internet_service: <value in [disable, enable]>
-          internet_service_custom: <list or string>
-          internet_service_custom_group: <list or string>
-          internet_service_group: <list or string>
-          internet_service_name: <list or string>
-          internet_service_negate: <value in [disable, enable]>
-          internet_service6: <value in [disable, enable]>
-          internet_service6_custom: <list or string>
-          internet_service6_custom_group: <list or string>
-          internet_service6_group: <list or string>
-          internet_service6_name: <list or string>
-          internet_service6_negate: <value in [disable, enable]>
-          ips_sensor: <list or string>
-          ips_voip_filter: <list or string>
-          label: <string>
-          log_http_transaction: <value in [disable, enable]>
-          logtraffic: <value in [disable, all, utm]>
-          logtraffic_start: <value in [disable, enable]>
-          name: <string>
-          policyid: <integer>
-          poolname: <list or string>
-          profile_group: <list or string>
-          profile_protocol_options: <list or string>
-          profile_type: <value in [single, group]>
-          proxy: <value in [explicit-web, transparent-web, ftp, ...]>
-          redirect_url: <string>
-          replacemsg_override_group: <list or string>
-          schedule: <list or string>
-          sctp_filter_profile: <list or string>
-          service: <list or string>
-          service_negate: <value in [disable, enable]>
-          session_ttl: <string>
-          srcaddr: <list or string>
-          srcaddr_negate: <value in [disable, enable]>
-          srcaddr6: <list or string>
-          srcintf: <list or string>
-          ssh_filter_profile: <list or string>
-          ssh_policy_redirect: <value in [disable, enable]>
-          ssl_ssh_profile: <list or string>
-          status: <value in [disable, enable]>
-          transparent: <value in [disable, enable]>
-          users: <list or string>
-          utm_status: <value in [disable, enable]>
-          uuid: <string>
-          videofilter_profile: <list or string>
-          waf_profile: <list or string>
-          webcache: <value in [disable, enable]>
-          webcache_https: <value in [disable, enable]>
-          webfilter_profile: <list or string>
-          webproxy_forward_server: <list or string>
-          webproxy_profile: <list or string>
-          ztna_ems_tag: <list or string>
-          ztna_proxy: <list or string>
-          ztna_tags_match_logic: <value in [or, and]>
-          diameter_filter_profile: <list or string>
-          virtual_patch_profile: <list or string>
-          voip_profile: <list or string>
-          dlp_sensor: <list or string>
-          cifs_profile: <list or string>
-          internet_service_id: <list or string>
-          mms_profile: <list or string>
+          policyid: 0 # Required variable, integer
+          # _policy_block: <integer>
+          # access_proxy: <list or string>
+          # access_proxy6: <list or string>
+          # action: <value in [accept, deny, redirect, ...]>
+          # application_list: <list or string>
+          # av_profile: <list or string>
+          # block_notification: <value in [disable, enable]>
+          # casb_profile: <list or string>
+          # comments: <string>
+          # decrypted_traffic_mirror: <list or string>
+          # detect_https_in_http_request: <value in [disable, enable]>
+          # device_ownership: <value in [disable, enable]>
+          # disclaimer: <value in [disable, domain, policy, ...]>
+          # dlp_profile: <list or string>
+          # dnsfilter_profile: <list or string>
+          # dstaddr: <list or string>
+          # dstaddr_negate: <value in [disable, enable]>
+          # dstaddr6: <list or string>
+          # dstintf: <list or string>
+          # emailfilter_profile: <list or string>
+          # file_filter_profile: <list or string>
+          # global_label: <string>
+          # groups: <list or string>
+          # http_tunnel_auth: <value in [disable, enable]>
+          # icap_profile: <list or string>
+          # internet_service: <value in [disable, enable]>
+          # internet_service_custom: <list or string>
+          # internet_service_custom_group: <list or string>
+          # internet_service_group: <list or string>
+          # internet_service_name: <list or string>
+          # internet_service_negate: <value in [disable, enable]>
+          # internet_service6: <value in [disable, enable]>
+          # internet_service6_custom: <list or string>
+          # internet_service6_custom_group: <list or string>
+          # internet_service6_group: <list or string>
+          # internet_service6_name: <list or string>
+          # internet_service6_negate: <value in [disable, enable]>
+          # ips_sensor: <list or string>
+          # ips_voip_filter: <list or string>
+          # label: <string>
+          # log_http_transaction: <value in [disable, enable]>
+          # logtraffic: <value in [disable, all, utm]>
+          # logtraffic_start: <value in [disable, enable]>
+          # name: <string>
+          # poolname: <list or string>
+          # profile_group: <list or string>
+          # profile_protocol_options: <list or string>
+          # profile_type: <value in [single, group]>
+          # proxy: <value in [explicit-web, transparent-web, ftp, ...]>
+          # redirect_url: <string>
+          # replacemsg_override_group: <list or string>
+          # schedule: <list or string>
+          # sctp_filter_profile: <list or string>
+          # service: <list or string>
+          # service_negate: <value in [disable, enable]>
+          # session_ttl: <string>
+          # srcaddr: <list or string>
+          # srcaddr_negate: <value in [disable, enable]>
+          # srcaddr6: <list or string>
+          # srcintf: <list or string>
+          # ssh_filter_profile: <list or string>
+          # ssh_policy_redirect: <value in [disable, enable]>
+          # ssl_ssh_profile: <list or string>
+          # status: <value in [disable, enable]>
+          # transparent: <value in [disable, enable]>
+          # users: <list or string>
+          # utm_status: <value in [disable, enable]>
+          # uuid: <string>
+          # videofilter_profile: <list or string>
+          # waf_profile: <list or string>
+          # webcache: <value in [disable, enable]>
+          # webcache_https: <value in [disable, enable]>
+          # webfilter_profile: <list or string>
+          # webproxy_forward_server: <list or string>
+          # webproxy_profile: <list or string>
+          # ztna_ems_tag: <list or string>
+          # ztna_proxy: <list or string>
+          # ztna_tags_match_logic: <value in [or, and]>
+          # diameter_filter_profile: <list or string>
+          # virtual_patch_profile: <list or string>
+          # voip_profile: <list or string>
+          # dlp_sensor: <list or string>
+          # cifs_profile: <list or string>
+          # internet_service_id: <list or string>
+          # mms_profile: <list or string>
+          # isolator_server: <list or string>
+          # url_risk: <list or string>
+          # ztna_ems_tag_negate: <value in [disable, enable]>
+          # https_sub_category: <value in [disable, enable]>
+          # telemetry_profile: <list or string>
 '''
 
 RETURN = '''
@@ -722,7 +758,7 @@ def main():
                 '_policy_block': {'v_range': [['7.6.0', '']], 'type': 'int'},
                 'access-proxy': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'},
                 'access-proxy6': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'},
-                'action': {'v_range': [['7.6.0', '']], 'choices': ['accept', 'deny', 'redirect'], 'type': 'str'},
+                'action': {'v_range': [['7.6.0', '']], 'choices': ['accept', 'deny', 'redirect', 'isolate'], 'type': 'str'},
                 'application-list': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'},
                 'av-profile': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'},
                 'block-notification': {'v_range': [['7.6.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
@@ -807,8 +843,13 @@ def main():
                 'voip-profile': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'},
                 'dlp-sensor': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'},
                 'cifs-profile': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'},
-                'internet-service-id': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'},
-                'mms-profile': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'}
+                'internet-service-id': {'v_range': [['7.6.0', '7.6.2']], 'type': 'list', 'elements': 'str'},
+                'mms-profile': {'v_range': [['7.6.0', '7.6.2']], 'type': 'list', 'elements': 'str'},
+                'isolator-server': {'v_range': [['7.6.2', '']], 'type': 'list', 'elements': 'str'},
+                'url-risk': {'v_range': [['7.6.2', '']], 'type': 'list', 'elements': 'str'},
+                'ztna-ems-tag-negate': {'v_range': [['7.6.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'https-sub-category': {'v_range': [['7.6.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'telemetry-profile': {'v_range': [['7.6.3', '']], 'type': 'list', 'elements': 'str'}
             }
         }
     }

@@ -22,12 +22,17 @@ LEGACY_DOCKER_CONFIG_FILENAME = '.dockercfg'
 log = logging.getLogger(__name__)
 
 
+def get_default_config_file():
+    return os.path.join(home_dir(), DOCKER_CONFIG_FILENAME)
+
+
 def find_config_file(config_path=None):
+    homedir = home_dir()
     paths = list(filter(None, [
         config_path,  # 1
         config_path_from_environment(),  # 2
-        os.path.join(home_dir(), DOCKER_CONFIG_FILENAME),  # 3
-        os.path.join(home_dir(), LEGACY_DOCKER_CONFIG_FILENAME),  # 4
+        os.path.join(homedir, DOCKER_CONFIG_FILENAME),  # 3
+        os.path.join(homedir, LEGACY_DOCKER_CONFIG_FILENAME),  # 4
     ]))
 
     log.debug("Trying paths: %s", repr(paths))
@@ -70,7 +75,7 @@ def load_general_config(config_path=None):
         with open(config_file) as f:
             return json.load(f)
     except (IOError, ValueError) as e:
-        # In the case of a legacy `.dockercfg` file, we won't
+        # In the case of a legacy `.dockercfg` file, we will not
         # be able to load any JSON data.
         log.debug(e)
 

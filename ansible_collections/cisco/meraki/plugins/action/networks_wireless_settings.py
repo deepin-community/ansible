@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -72,13 +72,17 @@ class NetworksWirelessSettings(object):
     def update_all_params(self):
         new_object_params = {}
         if self.new_object.get('ipv6BridgeEnabled') is not None or self.new_object.get('ipv6_bridge_enabled') is not None:
-            new_object_params['ipv6BridgeEnabled'] = self.new_object.get('ipv6BridgeEnabled')
+            new_object_params['ipv6BridgeEnabled'] = self.new_object.get(
+                'ipv6BridgeEnabled')
         if self.new_object.get('ledLightsOn') is not None or self.new_object.get('led_lights_on') is not None:
-            new_object_params['ledLightsOn'] = self.new_object.get('ledLightsOn')
+            new_object_params['ledLightsOn'] = self.new_object.get(
+                'ledLightsOn')
         if self.new_object.get('locationAnalyticsEnabled') is not None or self.new_object.get('location_analytics_enabled') is not None:
-            new_object_params['locationAnalyticsEnabled'] = self.new_object.get('locationAnalyticsEnabled')
+            new_object_params['locationAnalyticsEnabled'] = self.new_object.get(
+                'locationAnalyticsEnabled')
         if self.new_object.get('meshingEnabled') is not None or self.new_object.get('meshing_enabled') is not None:
-            new_object_params['meshingEnabled'] = self.new_object.get('meshingEnabled')
+            new_object_params['meshingEnabled'] = self.new_object.get(
+                'meshingEnabled')
         if self.new_object.get('namedVlans') is not None or self.new_object.get('named_vlans') is not None:
             new_object_params['namedVlans'] = self.new_object.get('namedVlans') or \
                 self.new_object.get('named_vlans')
@@ -119,7 +123,8 @@ class NetworksWirelessSettings(object):
         prev_obj = None
         id_exists = False
         name_exists = False
-        o_id = self.new_object.get("networkId") or self.new_object.get("network_id")
+        o_id = self.new_object.get(
+            "networkId") or self.new_object.get("network_id")
         name = self.new_object.get("name")
         if o_id:
             prev_obj = self.get_object_by_name(o_id)
@@ -151,8 +156,8 @@ class NetworksWirelessSettings(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):

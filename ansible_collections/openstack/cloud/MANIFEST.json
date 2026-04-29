@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "openstack",
   "name": "cloud",
-  "version": "2.3.0",
+  "version": "2.4.1",
   "authors": [
    "Openstack"
   ],
@@ -26,7 +26,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "703d95bb578aa292cd0da4890dc00fc8cfd1193f64617bcc00bc6e5bce65dc85",
+  "chksum_sha256": "3a00ac63d6af4638a7aa2f32cb0bbd9ac3c5626a591911589bdb04e2a36dfef0",
   "format": 1
  },
  "format": 1

@@ -126,6 +126,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -141,12 +142,12 @@ EXAMPLES = '''
         alert_event: <your own value>
         state: present # <value in [present, absent]>
         system_alertevent_alertdestination:
-          from: <string>
-          smtp_name: <string>
-          snmp_name: <string>
-          syslog_name: <string>
-          to: <string>
-          type: <value in [mail, snmp, syslog]>
+          # from: <string>
+          # smtp_name: <string>
+          # snmp_name: <string>
+          # syslog_name: <string>
+          # to: <string>
+          # type: <value in [mail, snmp, syslog]>
 '''
 
 RETURN = '''

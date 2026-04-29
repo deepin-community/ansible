@@ -118,6 +118,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -133,11 +134,11 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         waf_profile_addresslist:
-          blocked_address: <list or string>
-          blocked_log: <value in [disable, enable]>
-          severity: <value in [low, medium, high]>
-          status: <value in [disable, enable]>
-          trusted_address: <list or string>
+          # blocked_address: <list or string>
+          # blocked_log: <value in [disable, enable]>
+          # severity: <value in [low, medium, high]>
+          # status: <value in [disable, enable]>
+          # trusted_address: <list or string>
 '''
 
 RETURN = '''

@@ -124,6 +124,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -139,13 +140,13 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         vpn_certificate_ocspserver:
-          cert: <string>
-          name: <string>
-          secondary_cert: <string>
-          secondary_url: <string>
-          source_ip: <string>
-          unavail_action: <value in [revoke, ignore]>
-          url: <string>
+          name: "your value" # Required variable, string
+          # cert: <string>
+          # secondary_cert: <string>
+          # secondary_url: <string>
+          # source_ip: <string>
+          # unavail_action: <value in [revoke, ignore]>
+          # url: <string>
 '''
 
 RETURN = '''

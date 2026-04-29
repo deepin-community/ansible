@@ -122,6 +122,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -136,17 +137,17 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         interface: <your own value>
         system_interface_ipv6:
-          ip6_address: <string>
-          ip6_allowaccess:
-            - "ping"
-            - "https"
-            - "ssh"
-            - "snmp"
-            - "http"
-            - "webservice"
-            - "https-logging"
-            - "fabric"
-          ip6_autoconf: <value in [disable, enable]>
+          # ip6_address: <string>
+          # ip6_allowaccess:
+          #   - "ping"
+          #   - "https"
+          #   - "ssh"
+          #   - "snmp"
+          #   - "http"
+          #   - "webservice"
+          #   - "https-logging"
+          #   - "fabric"
+          # ip6_autoconf: <value in [disable, enable]>
 '''
 
 RETURN = '''

@@ -99,6 +99,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -113,10 +114,10 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         firewall_vendormac:
-          id: <integer>
-          mac_number: <integer>
-          name: <string>
-          obsolete: <integer>
+          # id: <integer>
+          # mac_number: <integer>
+          # name: <string>
+          # obsolete: <integer>
 '''
 
 RETURN = '''
@@ -175,12 +176,12 @@ def main():
         'adom': {'required': True, 'type': 'str'},
         'firewall_vendormac': {
             'type': 'dict',
-            'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']],
+            'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']],
             'options': {
-                'id': {'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                'mac-number': {'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                'name': {'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']], 'type': 'str'},
-                'obsolete': {'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']], 'type': 'int'}
+                'id': {'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                'mac-number': {'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                'name': {'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']], 'type': 'str'},
+                'obsolete': {'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']], 'type': 'int'}
             }
         }
     }

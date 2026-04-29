@@ -111,6 +111,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -127,9 +128,9 @@ EXAMPLES = '''
         vap: <your own value>
         state: present # <value in [present, absent]>
         vap_vlanpool:
-          _wtp_group: <string>
-          id: <integer>
-          wtp_group: <string>
+          id: 0 # Required variable, integer
+          # _wtp_group: <string>
+          # wtp_group: <string>
 '''
 
 RETURN = '''
@@ -193,7 +194,7 @@ def main():
             'options': {
                 '_wtp-group': {'type': 'str'},
                 'id': {'required': True, 'type': 'int'},
-                'wtp-group': {'v_range': [['6.0.0', '6.2.0'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'}
+                'wtp-group': {'v_range': [['6.0.0', '6.2.0'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'}
             }
         }
     }

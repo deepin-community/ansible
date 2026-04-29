@@ -122,6 +122,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -138,12 +139,12 @@ EXAMPLES = '''
         portal: <your own value>
         state: present # <value in [present, absent]>
         vpnsslweb_portal_splitdns:
-          dns_server1: <string>
-          dns_server2: <string>
-          domains: <string>
-          id: <integer>
-          ipv6_dns_server1: <string>
-          ipv6_dns_server2: <string>
+          id: 0 # Required variable, integer
+          # dns_server1: <string>
+          # dns_server2: <string>
+          # domains: <string>
+          # ipv6_dns_server1: <string>
+          # ipv6_dns_server2: <string>
 '''
 
 RETURN = '''

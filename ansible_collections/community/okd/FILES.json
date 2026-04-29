@@ -46,7 +46,7 @@
    "name": ".github/workflows/linters.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4e72e9b4d746793d9b2766bac960c2535db37061613792c0559113415e7ac196",
+   "chksum_sha256": "054cb8dc612b92118d11b4d020b7ae8542bed5b2430e964a3d34ed07bc4d9afc",
    "format": 1
   },
   {
@@ -95,7 +95,7 @@
    "name": "changelogs/changelog.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "fe08409d1614508842f8226522a19eaa4ecb883a75b3ffc21679f6baa0c42859",
+   "chksum_sha256": "a207cc0f29609ed97019fdd48db2785985f1f94ac3eca1ba4b72c760d57f352d",
    "format": 1
   },
   {
@@ -130,7 +130,7 @@
    "name": "ci/downstream.sh",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7072631ce10d88006e61822342ced6c81fcf49a67e0968fa78ffd1fa7f449059",
+   "chksum_sha256": "8ed4fa086a9214db561dea4e268fca8ee7bc667f9bc81105bb2a4e3f92d0808d",
    "format": 1
   },
   {
@@ -277,7 +277,7 @@
    "name": "meta/runtime.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d1975fde7766e795448927c5ac7a2819046f4b87a2277f1f5bbbe8bbd4601c33",
+   "chksum_sha256": "0bf8a68652a5c8bdc8eb549324d250514f50a94bdcadc21f97c77c7f6d287907",
    "format": 1
   },
   {
@@ -333,7 +333,7 @@
    "name": "molecule/default/files/nginx.env",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a68c2914576119a809943116ce0050ca221c5b8f3a6722fa6abbf15dababde5f",
+   "chksum_sha256": "06bf3273671049b425b4704ece1a059111524885aa934d19cdb7b25bd94fe5d5",
    "format": 1
   },
   {
@@ -543,14 +543,14 @@
    "name": "molecule/default/tasks/openshift_adm_prune_auth_clusterroles.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "419890fac16632424218ef5381d3efe586ddd6445708272a42e1cec533f622de",
+   "chksum_sha256": "31a77aefc301759b68a59f682c9e2a5ee747cb8fc3b9b29d793973adee45aa64",
    "format": 1
   },
   {
    "name": "molecule/default/tasks/openshift_adm_prune_auth_roles.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d1f56bd36062f232e8adfba643be704245f59474c96abf8d0741e8f21125037a",
+   "chksum_sha256": "30a97ac5e1afcb31c0f2a6ace01d0901c6c1c4639456ac04b31e51b4c07e43b1",
    "format": 1
   },
   {
@@ -585,7 +585,7 @@
    "name": "molecule/default/tasks/openshift_process.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "999932ada001df7be263ab2158592c6325d2827ee372ad38e9f0197b807cbf52",
+   "chksum_sha256": "0937e9eb264776686408b951e7f1df705174eda960b1717f9081f80d06eac5e9",
    "format": 1
   },
   {
@@ -655,7 +655,7 @@
    "name": "molecule/default/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "53e1ed3199bf98922cbabb2d30dc2b4df6594790b0dee4cb271aaeba739bdf72",
+   "chksum_sha256": "14d5dc75fd631f7ff7f88c543327c446b164044e58dfc27a7bb7be5d42e85353",
    "format": 1
   },
   {
@@ -669,7 +669,7 @@
    "name": "molecule/default/verify.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0aa66e5d35f985e47345d47e378816189d77cb131520e115f05c8eea2ab3bfc6",
+   "chksum_sha256": "01a794f37a5d3f8c5738d7821e5fe1c5a23b3d3210d73ce57c567cdb3c8a7206",
    "format": 1
   },
   {
@@ -691,20 +691,6 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "cbe3851f75cd5306e8745934d872c5a7e6d1538d03f4a956c4564ad4829ad910",
-   "format": 1
-  },
-  {
-   "name": "plugins/inventory",
-   "ftype": "dir",
-   "chksum_type": null,
-   "chksum_sha256": null,
-   "format": 1
-  },
-  {
-   "name": "plugins/inventory/openshift.py",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "9d7de1a6221e00bc7518dc8d497bec3e044087477a843fea05507202d24a9b40",
    "format": 1
   },
   {
@@ -830,7 +816,7 @@
    "name": "plugins/modules/openshift_adm_migrate_template_instances.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1db241bd4b22890659fc73ef8de575b3f2d61f6819920e67dacea664d58e3620",
+   "chksum_sha256": "d390405b1a3533ef2055609cf41d58847bc95dcae67b9845ecb1cc678a08dfe4",
    "format": 1
   },
   {
@@ -865,7 +851,7 @@
    "name": "plugins/modules/openshift_auth.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9237d7254c4773ff8f1cbb568af501ad0f5c6b00a089b495c67a131f201b017a",
+   "chksum_sha256": "88987a1e92cbf48c14bed7777ee23c1a8d32cbcf4e10bb72ed37af0d1439e019",
    "format": 1
   },
   {
@@ -900,7 +886,7 @@
    "name": "plugins/modules/openshift_route.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "27b4eab0a052bcbc0619d08104f2b040ad1b773b325d5f8b90c70fa54aa9d74f",
+   "chksum_sha256": "01a141aee41728213f9b8b9c01ed0a0c96d4ed4ccf5f0ba0c2f716a79f15abd5",
    "format": 1
   },
   {
@@ -940,6 +926,20 @@
   },
   {
    "name": "tests/sanity/ignore-2.17.txt",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "43bc048d24e8dd8fca8052b6135daaf59207e462f72cb9848f65de9c6e09552c",
+   "format": 1
+  },
+  {
+   "name": "tests/sanity/ignore-2.18.txt",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "43bc048d24e8dd8fca8052b6135daaf59207e462f72cb9848f65de9c6e09552c",
+   "format": 1
+  },
+  {
+   "name": "tests/sanity/ignore-2.19.txt",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "43bc048d24e8dd8fca8052b6135daaf59207e462f72cb9848f65de9c6e09552c",
@@ -1040,7 +1040,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "45ba8fd446a5ec68642ef9e3836e9acf1385b1a5e004d9afa0165a4a76d1f2e7",
+   "chksum_sha256": "ea4c6d355f57fff54fba3e01c633dce858a03f331f2f25b2da3ed317d3ac246d",
    "format": 1
   },
   {
@@ -1061,7 +1061,7 @@
    "name": "Makefile",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cffd66d707939a32719ba05f6b5aea97eaa5068fe5749cba168b9e7dfa97b95c",
+   "chksum_sha256": "36db7e0b8212a62c16032eba977e3830bca296350a18f7ebc57c3956326c9bd5",
    "format": 1
   },
   {
@@ -1082,7 +1082,7 @@
    "name": "README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d547411826a7d85596a4de09de990ac9b2d95f1d4fc6048490c4dceb55eef223",
+   "chksum_sha256": "f85277bc932a3e44d0b601593c1d6d8c3c27635d6d9360f92fb4ab1f5227603b",
    "format": 1
   },
   {
@@ -1117,7 +1117,7 @@
    "name": "tox.ini",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a61868a5974ff417ea848cd6ab079ff0441f30dc652d0c470ddc742658213f84",
+   "chksum_sha256": "a50bb295acbd18a2cde045c72b54d66b898404b09def5affa448e5f1ae8116fb",
    "format": 1
   }
  ],

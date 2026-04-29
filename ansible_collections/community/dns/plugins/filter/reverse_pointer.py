@@ -12,8 +12,7 @@ name: reverse_pointer
 short_description: Convert an IP address into a DNS name for reverse lookup
 version_added: 3.1.0
 description:
-  - Given an IPv4 or IPv6 address, such as V(192.168.1.2), converts it to a DNS name to use for
-    reverse lookups, such as V(2.1.168.192.in-addr.arpa).
+  - Given an IPv4 or IPv6 address, such as V(192.168.1.2), converts it to a DNS name to use for reverse lookups, such as V(2.1.168.192.in-addr.arpa).
 options:
   _input:
     description:
@@ -35,7 +34,7 @@ EXAMPLES = r"""
 - name: Convert IP address to DNS name for reverse lookup
   ansible.builtin.set_fact:
     dns_name: "{{ ip_address | community.dns.reverse_pointer }}"
-    # Should result in '2.1.168.192.in-addr.arpa.'
+  # Should result in '2.1.168.192.in-addr.arpa.'
   vars:
     ip_address: 192.168.1.2
 """
@@ -47,36 +46,44 @@ _value:
 """
 
 
+import typing as t
+
 from ansible.errors import AnsibleFilterError
 from ansible.module_utils.common.text.converters import to_text
+from ansible_collections.community.dns.plugins.plugin_utils.ips import (
+    assert_requirements_present,
+)
 
-from ansible_collections.community.dns.plugins.plugin_utils.ips import assert_requirements_present
 
 try:
     import ipaddress
-except ImportError:
+except ImportError:  # pragma: no cover
     # handled by assert_requirements_present
-    pass
+    pass  # pragma: no cover
 
 
-def reverse_pointer(ip):
-    assert_requirements_present('community.dns.reverse_pointer', 'filter')
+def reverse_pointer(ip: t.Any) -> str:
+    assert_requirements_present("community.dns.reverse_pointer", "filter")
     if not isinstance(ip, (str, bytes)):
-        raise AnsibleFilterError('Input for community.dns.reverse_pointer must be a string')
+        raise AnsibleFilterError(
+            "Input for community.dns.reverse_pointer must be a string"
+        )
     try:
         ipaddr = ipaddress.ip_address(to_text(ip))
     except Exception as e:
-        raise AnsibleFilterError(f'Cannot parse IP address: {e}')
+        raise AnsibleFilterError(f"Cannot parse IP address: {e}")
     res = ipaddr.reverse_pointer
-    if not res.endswith(u'.'):
-        res += u'.'
+    if not res.endswith("."):
+        res += "."
+    else:
+        pass  # pragma: no cover
     return res
 
 
 class FilterModule:
-    '''Ansible jinja2 filters'''
+    """Ansible jinja2 filters"""
 
-    def filters(self):
+    def filters(self) -> dict[str, t.Callable]:
         return {
-            'reverse_pointer': reverse_pointer,
+            "reverse_pointer": reverse_pointer,
         }

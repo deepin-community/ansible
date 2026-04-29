@@ -132,6 +132,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -147,14 +148,13 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         webproxy_forwardservergroup:
-          affinity: <value in [disable, enable]>
-          group_down_option: <value in [block, pass]>
-          ldb_method: <value in [weighted, least-session, active-passive]>
-          name: <string>
-          server_list:
-            -
-              name: <string>
-              weight: <integer>
+          name: "your value" # Required variable, string
+          # affinity: <value in [disable, enable]>
+          # group_down_option: <value in [block, pass]>
+          # ldb_method: <value in [weighted, least-session, active-passive]>
+          # server_list:
+          #   - name: <string>
+          #     weight: <integer>
 '''
 
 RETURN = '''

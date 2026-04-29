@@ -177,6 +177,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -192,26 +193,24 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         cifs_profile:
-          domain_controller: <string>
-          name: <string>
-          server_credential_type: <value in [none, credential-replication, credential-keytab]>
-          server_keytab:
-            -
-              keytab: <string>
-              principal: <string>
-              password: <list or string>
-          file_filter:
-            entries:
-              -
-                action: <value in [block, log]>
-                comment: <string>
-                direction: <value in [incoming, outgoing, any]>
-                file_type: <list or string>
-                filter: <string>
-                protocol:
-                  - "cifs"
-            log: <value in [disable, enable]>
-            status: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # domain_controller: <string>
+          # server_credential_type: <value in [none, credential-replication, credential-keytab]>
+          # server_keytab:
+          #   - keytab: <string>
+          #     principal: <string>
+          #     password: <list or string>
+          # file_filter:
+          #   entries:
+          #     - action: <value in [block, log]>
+          #       comment: <string>
+          #       direction: <value in [incoming, outgoing, any]>
+          #       file_type: <list or string>
+          #       filter: <string>
+          #       protocol:
+          #         - "cifs"
+          #   log: <value in [disable, enable]>
+          #   status: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -287,24 +286,28 @@ def main():
                     'elements': 'dict'
                 },
                 'file-filter': {
-                    'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']],
+                    'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
                     'type': 'dict',
                     'options': {
                         'entries': {
-                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']],
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
                             'type': 'list',
                             'options': {
-                                'action': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['block', 'log'], 'type': 'str'},
-                                'comment': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'str'},
-                                'direction': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['incoming', 'outgoing', 'any'], 'type': 'str'},
-                                'file-type': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'raw'},
-                                'filter': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'str'},
-                                'protocol': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'list', 'choices': ['cifs'], 'elements': 'str'}
+                                'action': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['block', 'log'], 'type': 'str'},
+                                'comment': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'str'},
+                                'direction': {
+                                    'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                                    'choices': ['incoming', 'outgoing', 'any'],
+                                    'type': 'str'
+                                },
+                                'file-type': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'raw'},
+                                'filter': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'str'},
+                                'protocol': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'list', 'choices': ['cifs'], 'elements': 'str'}
                             },
                             'elements': 'dict'
                         },
-                        'log': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                        'status': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                        'log': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'status': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'}
                     }
                 }
             }

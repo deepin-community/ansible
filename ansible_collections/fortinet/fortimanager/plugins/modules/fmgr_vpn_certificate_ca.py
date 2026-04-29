@@ -177,6 +177,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -192,23 +193,23 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         vpn_certificate_ca:
-          _private_key: <string>
-          auto_update_days: <integer>
-          auto_update_days_warning: <integer>
-          ca: <string>
-          last_updated: <integer>
-          name: <string>
-          range: <value in [global, vdom]>
-          scep_url: <string>
-          source: <value in [factory, user, bundle, ...]>
-          source_ip: <string>
-          trusted: <value in [disable, enable]>
-          ssl_inspection_trusted: <value in [disable, enable]>
-          ca_identifier: <string>
-          obsolete: <value in [disable, enable]>
-          est_url: <string>
-          fabric_ca: <value in [disable, enable]>
-          non_fabric_name: <string>
+          name: "your value" # Required variable, string
+          # _private_key: <string>
+          # auto_update_days: <integer>
+          # auto_update_days_warning: <integer>
+          # ca: <string>
+          # last_updated: <integer>
+          # range: <value in [global, vdom]>
+          # scep_url: <string>
+          # source: <value in [factory, user, bundle, ...]>
+          # source_ip: <string>
+          # trusted: <value in [disable, enable]>
+          # ssl_inspection_trusted: <value in [disable, enable]>
+          # ca_identifier: <string>
+          # obsolete: <value in [disable, enable]>
+          # est_url: <string>
+          # fabric_ca: <value in [disable, enable]>
+          # non_fabric_name: <string>
 '''
 
 RETURN = '''

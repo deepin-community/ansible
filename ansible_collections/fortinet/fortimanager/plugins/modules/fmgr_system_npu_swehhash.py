@@ -147,6 +147,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -161,15 +162,15 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         system_npu_swehhash:
-          computation: <value in [xor16, xor8, xor4, ...]>
-          destination_ip_lower_16: <value in [include, exclude]>
-          destination_ip_upper_16: <value in [include, exclude]>
-          destination_port: <value in [include, exclude]>
-          ip_protocol: <value in [include, exclude]>
-          netmask_length: <integer>
-          source_ip_lower_16: <value in [include, exclude]>
-          source_ip_upper_16: <value in [include, exclude]>
-          source_port: <value in [include, exclude]>
+          # computation: <value in [xor16, xor8, xor4, ...]>
+          # destination_ip_lower_16: <value in [include, exclude]>
+          # destination_ip_upper_16: <value in [include, exclude]>
+          # destination_port: <value in [include, exclude]>
+          # ip_protocol: <value in [include, exclude]>
+          # netmask_length: <integer>
+          # source_ip_lower_16: <value in [include, exclude]>
+          # source_ip_upper_16: <value in [include, exclude]>
+          # source_port: <value in [include, exclude]>
 '''
 
 RETURN = '''

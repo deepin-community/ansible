@@ -6,17 +6,17 @@
 # Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 import pytest
-
 from ansible_collections.community.dns.plugins.module_utils import ips
-
 from ansible_collections.community.dns.plugins.module_utils.ips import (
     assert_requirements_present,
     is_ip_address,
 )
+
 
 # We need ipaddress
 ipaddress = pytest.importorskip('ipaddress')
@@ -57,6 +57,6 @@ IS_IP_ADDRESS_DATA = [
 ]
 
 
-@pytest.mark.parametrize("input, output", IS_IP_ADDRESS_DATA)
-def test_is_ip_address(input, output):
-    assert is_ip_address(input) == output
+@pytest.mark.parametrize("input_string, output", IS_IP_ADDRESS_DATA)
+def test_is_ip_address(input_string, output):
+    assert is_ip_address(input_string) == output

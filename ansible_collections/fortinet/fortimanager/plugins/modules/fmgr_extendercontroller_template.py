@@ -117,6 +117,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -132,13 +133,13 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         extendercontroller_template:
-          dataplan: <list or string>
-          description: <string>
-          modem1_ifname: <list or string>
-          modem1_sim_profile: <list or string>
-          modem2_ifname: <list or string>
-          modem2_sim_profile: <list or string>
-          name: <string>
+          name: "your value" # Required variable, string
+          # dataplan: <list or string>
+          # description: <string>
+          # modem1_ifname: <list or string>
+          # modem1_sim_profile: <list or string>
+          # modem2_ifname: <list or string>
+          # modem2_sim_profile: <list or string>
 '''
 
 RETURN = '''

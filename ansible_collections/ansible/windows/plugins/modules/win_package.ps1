@@ -1282,6 +1282,8 @@ $spec = @{
         expected_return_code = @{ type = "list"; elements = "int"; default = @(0, 3010) }
         path = @{ type = "str" }
         chdir = @{ type = "path" }
+        checksum = @{ type = 'str' }
+        checksum_algorithm = @{ type = 'str'; default = 'sha1'; choices = @("md5", "sha1", "sha256", "sha384", "sha512") }
         product_id = @{ type = "str" }
         state = @{
             type = "str"
@@ -1310,6 +1312,8 @@ $arguments = $module.Params.arguments
 $expectedReturnCode = $module.Params.expected_return_code
 $path = $module.Params.path
 $chdir = $module.Params.chdir
+$checksum = $module.Params.checksum
+$checksum_algorithm = $module.Params.checksum_algorithm
 $productId = $module.Params.product_id
 $state = $module.Params.state
 $createsPath = $module.Params.creates_path
@@ -1346,7 +1350,7 @@ try {
         CreatesService = $createsService
     }
 
-    # If the packge is a remote file, productId is set and state is set to present
+    # If the package is a remote file, productId is set and state is set to present
     # then check if the package is installed and avoid downloading the package to a temp file.
     if ($pathType -and $productId -and ($state -eq 'present')) {
         $packageStatus = Get-InstalledStatus @getParams
@@ -1361,7 +1365,7 @@ try {
         $getParams.Path = $path
     }
     elseif ($path -and -not $pathType) {
-        if (-not (Test-Path -LiteralPath $path)) {
+        if (-not (Test-Path -LiteralPath $path) -and -not $module.CheckMode) {
             $module.FailJson("the file at the path '$path' cannot be reached")
         }
         $getParams.Path = $path
@@ -1383,6 +1387,16 @@ try {
             $path = $tempFile
         }
 
+        if ($checksum_algorithm -and $state -eq 'present' -and $path) {
+            $tmp_checksum = (Get-FileHash -LiteralPath $path -Algorithm $checksum_algorithm).Hash
+            $module.Result.checksum = $tmp_checksum
+
+            # If the checksum has been set, verify the checksum of the remote against the input checksum.
+            if ($checksum -and $checksum -ne $tmp_checksum) {
+                $Module.FailJson(("The checksum for {0} did not match '{1}', it was '{2}'" -f $path, $checksum, $tmp_checksum))
+            }
+        }
+
         $setParams = @{
             Arguments = $arguments
             ReturnCodes = $expectedReturnCode
@@ -1396,6 +1410,9 @@ try {
         }
         $setParams += $packageStatus.ExtraInfo
         &$providerInfo."$($packageStatus.Provider)".Set @setParams
+    }
+    if ($state -eq 'absent' -and $null -eq $productId -and $pathType -eq 'url') {
+        $Module.FailJson("Unable to find Product ID from the URL path. Please specify product_id when using state=absent")
     }
     $module.Result.changed = $changed
 }

@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 name: Check for Public Suffix List updates
-on:
+"on":
   push:
     branches:
       - main
@@ -20,8 +20,11 @@ jobs:
     name: Check for Public Suffix List updates
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Update PSL (returns exit code 1 if something changed)
-        run: ./update-psl.sh
+      - name: Check out collection
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Run nox
+        uses: ansible-community/antsibull-nox@main
+        with:
+          sessions: update-psl

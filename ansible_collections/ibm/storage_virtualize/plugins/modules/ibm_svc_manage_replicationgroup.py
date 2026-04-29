@@ -112,30 +112,30 @@ notes:
 EXAMPLES = '''
 - name: Define a new rc consistency group
   ibm.storage_virtualize.ibm_svc_manage_replicationgroup:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     log_path: /tmp/playbook.debug
     name: rccg4test
     remotecluster: remotecluster
     state: present
 - name: Delete rc consistency group
   ibm.storage_virtualize.ibm_svc_manage_replicationgroup:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     log_path: /tmp/playbook.debug
     name: rccg4test
     force: true
     state: absent
 - name: Update rc consistency group
   ibm.storage_virtualize.ibm_svc_manage_replicationgroup:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     log_path: /tmp/playbook.debug
     name: rccg4test
     cyclingperiod: 60
@@ -299,10 +299,6 @@ class IBMSVCRCCG(object):
             self.changed = False
 
     def rccg_delete(self):
-        rccg_data = self.get_existing_rccg()
-        if not rccg_data:
-            self.module.exit_json(msg="rc consistgrp '%s' did not exist" %
-                                      self.name, changed=False)
         if self.module.check_mode:
             self.changed = True
             return

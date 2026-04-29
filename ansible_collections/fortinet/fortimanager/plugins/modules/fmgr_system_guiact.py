@@ -109,6 +109,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -122,15 +123,15 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_guiact:
-          backup_all: <string>
-          backup_conf: <string>
-          eventlog_msg: <string>
-          eventlog_path: <string>
-          reboot: <integer>
-          reset2default: <integer>
-          restore_all: <string>
-          restore_conf: <string>
-          time: <string>
+          # backup_all: <string>
+          # backup_conf: <string>
+          # eventlog_msg: <string>
+          # eventlog_path: <string>
+          # reboot: <integer>
+          # reset2default: <integer>
+          # restore_all: <string>
+          # restore_conf: <string>
+          # time: <string>
 '''
 
 RETURN = '''

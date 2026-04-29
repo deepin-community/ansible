@@ -511,8 +511,9 @@ except ImportError:
 from random import randint
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
-from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi, vmware_argument_spec, \
+from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi, \
     wait_for_task, find_obj, get_all_objs, get_parent_datacenter
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 from ansible_collections.community.vmware.plugins.module_utils.vm_device_helper import PyVmomiDeviceHelper
 
 
@@ -749,7 +750,7 @@ class PyVmomiHelper(PyVmomi):
                                 if disk_change:
                                     self.config_spec.deviceChange.append(disk_spec)
                                     disk_change_list.append(disk_change)
-                                    results['disk_changes'][disk['disk_index']] = "Disk reconfigured."
+                                    results['disk_changes'][str(disk['disk_index'])] = "Disk reconfigured."
 
                             elif disk['state'] == 'absent':
                                 # Disk already exists, deleting
@@ -761,7 +762,7 @@ class PyVmomiHelper(PyVmomi):
                                 self.config_spec.deviceChange.append(disk_spec)
                                 disk_change = True
                                 disk_change_list.append(disk_change)
-                                results['disk_changes'][disk['disk_index']] = "Disk deleted."
+                                results['disk_changes'][str(disk['disk_index'])] = "Disk deleted."
                             break
 
                     if disk_found:
@@ -803,7 +804,7 @@ class PyVmomiHelper(PyVmomi):
                         self.config_spec.deviceChange.append(disk_spec)
                         disk_change = True
                         disk_change_list.append(disk_change)
-                        results['disk_changes'][disk['disk_index']] = "Disk created."
+                        results['disk_changes'][str(disk['disk_index'])] = "Disk created."
                         break
             if disk_change:
                 # Adding multiple disks in a single attempt raises weird errors
@@ -1137,7 +1138,7 @@ class PyVmomiHelper(PyVmomi):
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(
         name=dict(type='str'),
         uuid=dict(type='str'),

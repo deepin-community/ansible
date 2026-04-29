@@ -141,6 +141,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -156,19 +157,17 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         dynamic_virtualwanlink_neighbor:
-          description: <string>
-          dynamic_mapping:
-            -
-              _scope:
-                -
-                  name: <string>
-                  vdom: <string>
-              description: <string>
-              ip: <string>
-              role: <value in [primary, secondary, standalone]>
-          ip: <string>
-          name: <string>
-          role: <value in [primary, secondary, standalone]>
+          name: "your value" # Required variable, string
+          # description: <string>
+          # dynamic_mapping:
+          #   - _scope:
+          #       - name: <string>
+          #         vdom: <string>
+          #     description: <string>
+          #     ip: <string>
+          #     role: <value in [primary, secondary, standalone]>
+          # ip: <string>
+          # role: <value in [primary, secondary, standalone]>
 '''
 
 RETURN = '''

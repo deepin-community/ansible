@@ -8,8 +8,9 @@ __metaclass__ = type
 
 from io import StringIO
 
-from ansible_collections.community.docker.tests.unit.compat import mock
-from ansible_collections.community.docker.tests.unit.compat import unittest
+from ansible_collections.community.internal_test_tools.tests.unit.compat import mock
+from ansible_collections.community.internal_test_tools.tests.unit.compat import unittest
+
 from ansible.errors import AnsibleError
 from ansible.playbook.play_context import PlayContext
 from ansible.plugins.loader import connection_loader
@@ -57,4 +58,4 @@ class TestDockerConnectionClass(unittest.TestCase):
         self.dc._version = None
         self.dc.remote_user = 'foo'
         (self.assertRaisesRegexp if PY2 else self.assertRaisesRegex)(
-            AnsibleError, '^Docker version check (.*?) failed: ', self.dc._get_actual_user)
+            AnsibleError, '^Docker version check (.*?) failed:', self.dc._get_actual_user)

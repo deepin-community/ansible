@@ -297,7 +297,8 @@ options:
     description:
       - Set custom DNS search domains (Use dns_search with '' if you don't wish
         to set the search domain)
-    type: str
+    type: list
+    elements: str
     aliases:
       - dns_search_domains
   entrypoint:
@@ -736,15 +737,15 @@ options:
       - mounts
   network:
     description:
-      - Set the Network mode for the container
-        * bridge create a network stack on the default bridge
-        * none no networking
-        * container:<name|id> reuse another container's network stack
-        * host use the podman host network stack.
-        * <network-name>|<network-id> connect to a user-defined network
-        * ns:<path> path to a network namespace to join
-        * slirp4netns use slirp4netns to create a user network stack.
-          This is the default for rootless containers
+      - Set the Network mode for the container.
+      - I(bridge) - create a network stack on the default bridge.
+      - I(none) - no networking.
+      - I(container:<name|id>) - reuse another container's network stack.
+      - I(host) - use the podman host network stack.
+      - I(<network-name>|<network-id>) - connect to a user-defined network.
+      - I(ns:<path>) - path to a network namespace to join.
+      - I(slirp4netns) - use slirp4netns to create a user network stack.
+        This is the default for rootless containers.
     type: list
     elements: str
     aliases:
@@ -969,6 +970,9 @@ options:
     description:
       - Determines how to use the NOTIFY_SOCKET, as passed with systemd and Type=notify.
         Can be container, conmon, ignore.
+        For quadlets it can also be healthy to use the built in health checks, see
+        L(documentation,https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html#notify-defaults-to-false)
+        for more details.
     type: str
   secrets:
     description:
@@ -1518,28 +1522,29 @@ container:
 
 from ansible.module_utils.basic import AnsibleModule  # noqa: F402
 from ..module_utils.podman.podman_container_lib import PodmanManager  # noqa: F402
-from ..module_utils.podman.podman_container_lib import ARGUMENTS_SPEC_CONTAINER  # noqa: F402
+from ..module_utils.podman.podman_container_lib import (
+    ARGUMENTS_SPEC_CONTAINER,
+)  # noqa: F402
 
 
 def main():
     module = AnsibleModule(
         argument_spec=ARGUMENTS_SPEC_CONTAINER,
-        mutually_exclusive=(
-            ['no_hosts', 'etc_hosts'],
-        ),
+        mutually_exclusive=(["no_hosts", "etc_hosts"],),
         supports_check_mode=True,
     )
 
     # work on input vars
-    if (module.params['state'] in ['present', 'created']
-            and not module.params['force_restart']
-            and not module.params['image']):
-        module.fail_json(msg="State '%s' required image to be configured!" %
-                             module.params['state'])
+    if (
+        module.params["state"] in ["present", "created"]
+        and not module.params["force_restart"]
+        and not module.params["image"]
+    ):
+        module.fail_json(msg="State '%s' required image to be configured!" % module.params["state"])
 
     results = PodmanManager(module, module.params).execute()
     module.exit_json(**results)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

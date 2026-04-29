@@ -603,6 +603,13 @@ options:
                             - 'block'
                             - 'monitor'
                             - 'allow'
+                    http_0_9:
+                        aliases: ['http-0.9']
+                        type: str
+                        description: Configure action to take upon receipt of HTTP 0.
+                        choices:
+                            - 'block'
+                            - 'allow'
             imap:
                 type: dict
                 description: Imap.
@@ -978,6 +985,7 @@ options:
 EXAMPLES = '''
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -1222,7 +1230,8 @@ def main():
                         'h2c': {'v_range': [['7.2.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                         'verify-dns-for-policy-matching': {'v_range': [['7.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                         'unknown-content-encoding': {'v_range': [['7.2.2', '']], 'choices': ['block', 'inspect', 'bypass'], 'type': 'str'},
-                        'domain-fronting': {'v_range': [['7.6.0', '']], 'choices': ['block', 'monitor', 'allow'], 'type': 'str'}
+                        'domain-fronting': {'v_range': [['7.6.0', '']], 'choices': ['block', 'monitor', 'allow'], 'type': 'str'},
+                        'http-0.9': {'v_range': [['7.6.2', '']], 'choices': ['block', 'allow'], 'type': 'str'}
                     }
                 },
                 'imap': {

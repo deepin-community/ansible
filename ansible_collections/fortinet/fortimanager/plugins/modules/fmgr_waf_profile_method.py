@@ -160,6 +160,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -175,35 +176,34 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         waf_profile_method:
-          default_allowed_methods:
-            - "delete"
-            - "get"
-            - "head"
-            - "options"
-            - "post"
-            - "put"
-            - "trace"
-            - "others"
-            - "connect"
-          log: <value in [disable, enable]>
-          method_policy:
-            -
-              address: <string>
-              allowed_methods:
-                - "delete"
-                - "get"
-                - "head"
-                - "options"
-                - "post"
-                - "put"
-                - "trace"
-                - "others"
-                - "connect"
-              id: <integer>
-              pattern: <string>
-              regex: <value in [disable, enable]>
-          severity: <value in [low, medium, high]>
-          status: <value in [disable, enable]>
+          # default_allowed_methods:
+          #   - "delete"
+          #   - "get"
+          #   - "head"
+          #   - "options"
+          #   - "post"
+          #   - "put"
+          #   - "trace"
+          #   - "others"
+          #   - "connect"
+          # log: <value in [disable, enable]>
+          # method_policy:
+          #   - address: <string>
+          #     allowed_methods:
+          #       - "delete"
+          #       - "get"
+          #       - "head"
+          #       - "options"
+          #       - "post"
+          #       - "put"
+          #       - "trace"
+          #       - "others"
+          #       - "connect"
+          #     id: <integer>
+          #     pattern: <string>
+          #     regex: <value in [disable, enable]>
+          # severity: <value in [low, medium, high]>
+          # status: <value in [disable, enable]>
 '''
 
 RETURN = '''

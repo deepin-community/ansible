@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2024, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -20,7 +20,7 @@ short_description: NetApp ONTAP SVM
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: 2.6.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 
 description:
 - Create, modify or delete SVM on NetApp ONTAP
@@ -84,11 +84,11 @@ options:
 
   allowed_protocols:
     description:
-      - Allowed Protocols.
-      - This field represent the list of protocols allowed on the Vserver.
+      - This field represents the list of protocols allowed on the Vserver.
       - When part of modify,
         this field should include the existing list
         along with new protocol list to be added to prevent data disruptions.
+      - Mutually exclusive with C(services).
       - Possible values
       - nfs   NFS protocol,
       - cifs  CIFS protocol,
@@ -108,6 +108,7 @@ options:
       - C(enabled) is not supported for CIFS, to enable it use na_ontap_cifs_server.
       - C(enabled) is not supported for s3, to enable it use na_ontap_s3_services.
       - If a service is not present, it is left unchanged.
+      - Mutually exclusive with C(allowed_protocols).
     type: dict
     version_added: 21.10.0
     suboptions:
@@ -308,49 +309,55 @@ options:
       ocsp_enabled:
         description: whether online certificate status protocol verification is enabled.
         type: bool
+  storage_limit:
+    description:
+      - Specifies the maximum storage permitted on a single SVM, in bytes.
+      - This parameter can be set to zero to disable storage-limit enforcement.
+      - Only supported with REST, requires ONTAP 9.13.1 or later.
+    type: int
+    version_added: 23.1.0
 '''
 
 EXAMPLES = """
+- name: Create SVM
+  netapp.ontap.na_ontap_svm:
+    state: present
+    name: ansibleVServer
+    root_volume: vol1
+    root_volume_aggregate: aggr1
+    root_volume_security_style: mixed
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Create SVM
-      netapp.ontap.na_ontap_svm:
-        state: present
-        name: ansibleVServer
-        root_volume: vol1
-        root_volume_aggregate: aggr1
-        root_volume_security_style: mixed
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Create SVM
+  netapp.ontap.na_ontap_svm:
+    state: present
+    services:
+      cifs:
+        allowed: true
+      fcp:
+        allowed: true
+      nfs:
+        allowed: true
+        enabled: true
+      s3:
+        allowed: true
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: false
 
-    - name: Create SVM
-      netapp.ontap.na_ontap_svm:
-        state: present
-        services:
-          cifs:
-            allowed: true
-          fcp:
-            allowed: true
-          nfs:
-            allowed: true
-            enabled: true
-          s3:
-            allowed: true
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: true
-        validate_certs: false
-
-    - name: Stop SVM REST
-      netapp.ontap.na_ontap_svm:
-        state: present
-        name: ansibleVServer
-        admin_state: stopped
-        use_rest: always
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Stop SVM REST
+  netapp.ontap.na_ontap_svm:
+    state: present
+    name: ansibleVServer
+    admin_state: stopped
+    use_rest: always
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """
@@ -407,7 +414,8 @@ class NetAppOntapSVM():
                 certificate=dict(type='str'),
                 client_enabled=dict(type='bool'),
                 ocsp_enabled=dict(type='bool'),
-            ))
+            )),
+            storage_limit=dict(type='int', required=False),
         ))
 
         self.module = AnsibleModule(
@@ -503,6 +511,9 @@ class NetAppOntapSVM():
                 # so that we can compare UUIDs while using a more friendly name in the user interface
                 self.parameters['web']['certificate'] = {'name': self.parameters['web']['certificate']}
                 self.set_certificate_uuid()
+        if use_rest and self.parameters.get('storage_limit') is not None and \
+                not self.rest_api.meets_rest_minimum_version(use_rest, 9, 13, 1):
+            self.module.fail_json(msg=self.rest_api.options_require_ontap_version('storage_limit', '9.13.1', use_rest=use_rest))
 
         self.validate_int_or_string(self.parameters.get('max_volumes'), 'unlimited')
         return use_rest
@@ -550,6 +561,9 @@ class NetAppOntapSVM():
 
         if services:
             vserver_details['services'] = services
+
+        if 'storage' in vserver_details:
+            vserver_details['storage_limit'] = int(self.na_helper.safe_get(vserver_details, ['storage', 'limit']))
 
         return vserver_details
 
@@ -613,6 +627,8 @@ class NetAppOntapSVM():
                 fields += ',ndmp'
             if self.rest_api.meets_rest_minimum_version(self.use_rest, 9, 7, 0):
                 fields += ',s3'
+            if self.rest_api.meets_rest_minimum_version(self.use_rest, 9, 13, 1):
+                fields += ',storage.limit'
 
             record, error = rest_vserver.get_vserver(self.rest_api, vserver_name, fields)
             if error:
@@ -699,6 +715,8 @@ class NetAppOntapSVM():
                     allowed_protocols[protocol] = allowed
             if acopy:
                 body[protocol] = acopy
+        if 'storage_limit' in keys_to_modify:
+            body['storage.limit'] = self.parameters['storage_limit']
         return body, allowed_protocols
 
     def get_allowed_protocols_and_max_volumes(self):

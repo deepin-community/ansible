@@ -10,116 +10,107 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-DOCUMENTATION = '''
+DOCUMENTATION = r"""
 author:
-    - Lorin Hochestein (!UNKNOWN)
-    - Leendert Brouwer (!UNKNOWN)
+  - Lorin Hochestein (!UNKNOWN)
+  - Leendert Brouwer (!UNKNOWN)
 name: docker
 short_description: Run tasks in docker containers
 description:
-    - Run commands or put/fetch files to an existing docker container.
-    - Uses the Docker CLI to execute commands in the container. If you prefer
-      to directly connect to the Docker daemon, use the
-      P(community.docker.docker_api#connection) connection plugin.
+  - Run commands or put/fetch files to an existing docker container.
+  - Uses the Docker CLI to execute commands in the container. If you prefer to directly connect to the Docker daemon, use
+    the P(community.docker.docker_api#connection) connection plugin.
 options:
-    remote_addr:
-        description:
-            - The name of the container you want to access.
-        default: inventory_hostname
-        vars:
-            - name: inventory_hostname
-            - name: ansible_host
-            - name: ansible_docker_host
-    remote_user:
-        description:
-            - The user to execute as inside the container.
-            - If Docker is too old to allow this (< 1.7), the one set by Docker itself will be used.
-        vars:
-            - name: ansible_user
-            - name: ansible_docker_user
-        ini:
-            - section: defaults
-              key: remote_user
-        env:
-            - name: ANSIBLE_REMOTE_USER
-        cli:
-            - name: user
-        keyword:
-            - name: remote_user
-    docker_extra_args:
-        description:
-            - Extra arguments to pass to the docker command line.
-        default: ''
-        vars:
-            - name: ansible_docker_extra_args
-        ini:
-            - section: docker_connection
-              key: extra_cli_args
-    container_timeout:
-        default: 10
-        description:
-            - Controls how long we can wait to access reading output from the container once execution started.
-        env:
-            - name: ANSIBLE_TIMEOUT
-            - name: ANSIBLE_DOCKER_TIMEOUT
-              version_added: 2.2.0
-        ini:
-            - key: timeout
-              section: defaults
-            - key: timeout
-              section: docker_connection
-              version_added: 2.2.0
-        vars:
-          - name: ansible_docker_timeout
-            version_added: 2.2.0
-        cli:
-          - name: timeout
-        type: integer
-    extra_env:
-        description:
-          - Provide extra environment variables to set when running commands in the Docker container.
-          - This option can currently only be provided as Ansible variables due to limitations of
-            ansible-core's configuration manager.
-        # env:
-        #   - name: ANSIBLE_DOCKER_EXTRA_ENV
-        # ini:
-        #   - key: extra_env
-        #     section: docker_connection
-        # ansible-core's config manager does NOT support converting JSON strings (or other things) to dictionaries,
-        # it only accepts actual dictionaries (which don't happen to come from env and ini vars). So there's no way
-        # to actually provide this parameter from env and ini sources... :-(
-        vars:
-          - name: ansible_docker_extra_env
-        type: dict
-        version_added: 3.12.0
-    working_dir:
-        description:
-          - The directory inside the container to run commands in.
-          - Requires Docker CLI version 18.06 or later.
-        env:
-          - name: ANSIBLE_DOCKER_WORKING_DIR
-        ini:
-          - key: working_dir
-            section: docker_connection
-        vars:
-          - name: ansible_docker_working_dir
-        type: string
-        version_added: 3.12.0
-    privileged:
-        description:
-          - Whether commands should be run with extended privileges.
-          - B(Note) that this allows command to potentially break out of the container. Use with care!
-        env:
-          - name: ANSIBLE_DOCKER_PRIVILEGED
-        ini:
-          - key: privileged
-            section: docker_connection
-        vars:
-          - name: ansible_docker_privileged
-        type: boolean
-        default: false
-        version_added: 3.12.0
-'''
+  remote_addr:
+    description:
+      - The name of the container you want to access.
+    default: inventory_hostname
+    vars:
+      - name: inventory_hostname
+      - name: ansible_host
+      - name: ansible_docker_host
+  remote_user:
+    description:
+      - The user to execute as inside the container.
+      - If Docker is too old to allow this (< 1.7), the one set by Docker itself will be used.
+    vars:
+      - name: ansible_user
+      - name: ansible_docker_user
+    ini:
+      - section: defaults
+        key: remote_user
+    env:
+      - name: ANSIBLE_REMOTE_USER
+    cli:
+      - name: user
+    keyword:
+      - name: remote_user
+  docker_extra_args:
+    description:
+      - Extra arguments to pass to the docker command line.
+    default: ''
+    vars:
+      - name: ansible_docker_extra_args
+    ini:
+      - section: docker_connection
+        key: extra_cli_args
+  container_timeout:
+    default: 10
+    description:
+      - Controls how long we can wait to access reading output from the container once execution started.
+    env:
+      - name: ANSIBLE_TIMEOUT
+      - name: ANSIBLE_DOCKER_TIMEOUT
+        version_added: 2.2.0
+    ini:
+      - key: timeout
+        section: defaults
+      - key: timeout
+        section: docker_connection
+        version_added: 2.2.0
+    vars:
+      - name: ansible_docker_timeout
+        version_added: 2.2.0
+    cli:
+      - name: timeout
+    type: integer
+  extra_env:
+    description:
+      - Provide extra environment variables to set when running commands in the Docker container.
+      - This option can currently only be provided as Ansible variables due to limitations of ansible-core's configuration
+        manager.
+    vars:
+      - name: ansible_docker_extra_env
+    type: dict
+    version_added: 3.12.0
+  working_dir:
+    description:
+      - The directory inside the container to run commands in.
+      - Requires Docker CLI version 18.06 or later.
+    env:
+      - name: ANSIBLE_DOCKER_WORKING_DIR
+    ini:
+      - key: working_dir
+        section: docker_connection
+    vars:
+      - name: ansible_docker_working_dir
+    type: string
+    version_added: 3.12.0
+  privileged:
+    description:
+      - Whether commands should be run with extended privileges.
+      - B(Note) that this allows command to potentially break out of the container. Use with care!
+    env:
+      - name: ANSIBLE_DOCKER_PRIVILEGED
+    ini:
+      - key: privileged
+        section: docker_connection
+    vars:
+      - name: ansible_docker_privileged
+    type: boolean
+    default: false
+    version_added: 3.12.0
+"""
 
 import fcntl
 import os
@@ -153,7 +144,7 @@ class Connection(ConnectionBase):
         # Note: docker supports running as non-root in some configurations.
         # (For instance, setting the UNIX socket file to be readable and
         # writable by a specific UNIX group and then putting users into that
-        # group).  Therefore we don't check that the user is root when using
+        # group).  Therefore we do not check that the user is root when using
         # this connection.  But if the user is getting a permission denied
         # error it probably means that docker on their system is only
         # configured to be connected to by root and they are not running as
@@ -333,9 +324,9 @@ class Connection(ConnectionBase):
                                     .format(self.docker_version, self.actual_user or u'?'))
                 return actual_user
         elif self._display.verbosity > 2:
-            # Since we're not setting the actual_user, look it up so we have it for logging later
+            # Since we are not setting the actual_user, look it up so we have it for logging later
             # Only do this if display verbosity is high enough that we'll need the value
-            # This saves overhead from calling into docker when we don't need to.
+            # This saves overhead from calling into docker when we do not need to.
             return self._get_docker_remote_user()
         else:
             return None
@@ -418,11 +409,11 @@ class Connection(ConnectionBase):
         ''' Make sure that we put files into a standard path
 
             If a path is relative, then we need to choose where to put it.
-            ssh chooses $HOME but we aren't guaranteed that a home dir will
-            exist in any given chroot.  So for now we're choosing "/" instead.
+            ssh chooses $HOME but we are not guaranteed that a home dir will
+            exist in any given chroot.  So for now we are choosing "/" instead.
             This also happens to be the former default.
 
-            Can revisit using $HOME instead if it's a problem
+            Can revisit using $HOME instead if it is a problem
         '''
         if getattr(self._shell, "_IS_WINDOWS", False):
             import ntpath
@@ -444,7 +435,7 @@ class Connection(ConnectionBase):
                 "file or module does not exist: %s" % to_native(in_path))
 
         out_path = shlex_quote(out_path)
-        # Older docker doesn't have native support for copying files into
+        # Older docker does not have native support for copying files into
         # running containers, so we use docker exec to implement this
         # Although docker version 1.8 and later provide support, the
         # owner and group of the files are always set to root
@@ -490,7 +481,7 @@ class Connection(ConnectionBase):
             actual_out_path = os.path.join(out_dir, os.path.basename(in_path))
 
         if p.returncode != 0:
-            # Older docker doesn't have native support for fetching files command `cp`
+            # Older docker does not have native support for fetching files command `cp`
             # If `cp` fails, try to use `dd` instead
             args = self._build_exec_cmd([self._play_context.executable, "-c", "dd if=%s bs=%s" % (in_path, BUFSIZE)])
             args = [to_bytes(i, errors='surrogate_or_strict') for i in args]

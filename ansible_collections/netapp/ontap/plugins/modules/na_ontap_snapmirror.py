@@ -4,14 +4,14 @@
 na_ontap_snapmirror
 '''
 
-# (c) 2018-2023, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
 DOCUMENTATION = '''
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Create/Delete/Update/Initialize/Break/Resync/Resume SnapMirror volume/vserver relationships for ONTAP/ONTAP
   - This includes SVM replication, aka vserver DR
@@ -294,6 +294,12 @@ options:
     default: 300
     type: int
     version_added: 21.20.0
+  quiesced_time_out:
+    description:
+        - How long to wait for a relationship to quiesce. Unit is seconds.
+    default: 300
+    type: int
+    version_added: 22.14.0
   clean_up_failure:
     description:
       - An optional parameter to recover from an aborted or failed restore operation.
@@ -320,6 +326,14 @@ options:
     type: str
     choices: ['full', 'exclude_network_config', 'exclude_network_and_protocol_config']
     version_added: '22.4.0'
+  quick_resync:
+    description:
+      - Set to true to reduce resync time by not preserving storage efficiency.
+      - This property is applicable only for relationships with FlexVol volume endpoints and SVMDR relationships
+        when the PATCH state is being changed to "snapmirrored".
+      - Only supported with REST.
+    type: bool
+    version_added: 23.1.0
 
 short_description: "NetApp ONTAP or ElementSW Manage SnapMirror"
 version_added: 2.7.0
@@ -333,149 +347,167 @@ notes:
 '''
 
 EXAMPLES = """
+# creates and initializes the snapmirror
+- name: Create ONTAP/ONTAP SnapMirror
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    source_volume: test_src
+    destination_volume: test_dest
+    source_vserver: ansible_src
+    destination_vserver: ansible_dest
+    schedule: hourly
+    policy: MirrorAllSnapshots
+    max_transfer_rate: 1000
+    initialize: false
+    hostname: "{{ destination_cluster_hostname }}"
+    username: "{{ destination_cluster_username }}"
+    password: "{{ destination_cluster_password }}"
 
-    # creates and initializes the snapmirror
-    - name: Create ONTAP/ONTAP SnapMirror
-      netapp.ontap.na_ontap_snapmirror:
-        state: present
-        source_volume: test_src
-        destination_volume: test_dest
-        source_vserver: ansible_src
-        destination_vserver: ansible_dest
-        schedule: hourly
-        policy: MirrorAllSnapshots
-        max_transfer_rate: 1000
-        initialize: False
-        hostname: "{{ destination_cluster_hostname }}"
-        username: "{{ destination_cluster_username }}"
-        password: "{{ destination_cluster_password }}"
+# creates and initializes the snapmirror between vservers
+- name: Create ONTAP/ONTAP vserver SnapMirror
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    source_vserver: ansible_src
+    destination_vserver: ansible_dest
+    identity_preserve: true
+    hostname: "{{ destination_cluster_hostname }}"
+    username: "{{ destination_cluster_username }}"
+    password: "{{ destination_cluster_password }}"
 
-    # creates and initializes the snapmirror between vservers
-    - name: Create ONTAP/ONTAP vserver SnapMirror
-      netapp.ontap.na_ontap_snapmirror:
-        state: present
-        source_vserver: ansible_src
-        destination_vserver: ansible_dest
-        identity_preserve: true
-        hostname: "{{ destination_cluster_hostname }}"
-        username: "{{ destination_cluster_username }}"
-        password: "{{ destination_cluster_password }}"
+# existing snapmirror relation with status 'snapmirrored' will be initialized
+- name: Inititalize ONTAP/ONTAP SnapMirror
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    source_path: 'ansible:test'
+    destination_path: 'ansible:dest'
+    relationship_state: active
+    hostname: "{{ destination_cluster_hostname }}"
+    username: "{{ destination_cluster_username }}"
+    password: "{{ destination_cluster_password }}"
 
-    # existing snapmirror relation with status 'snapmirrored' will be initialized
-    - name: Inititalize ONTAP/ONTAP SnapMirror
-      netapp.ontap.na_ontap_snapmirror:
-        state: present
-        source_path: 'ansible:test'
-        destination_path: 'ansible:dest'
-        relationship_state: active
-        hostname: "{{ destination_cluster_hostname }}"
-        username: "{{ destination_cluster_username }}"
-        password: "{{ destination_cluster_password }}"
+- name: Delete SnapMirror
+  netapp.ontap.na_ontap_snapmirror:
+    state: absent
+    destination_path: <path>
+    relationship_info_only: true
+    source_hostname: "{{ source_hostname }}"
+    hostname: "{{ destination_cluster_hostname }}"
+    username: "{{ destination_cluster_username }}"
+    password: "{{ destination_cluster_password }}"
 
-    - name: Delete SnapMirror
-      netapp.ontap.na_ontap_snapmirror:
-        state: absent
-        destination_path: <path>
-        relationship_info_only: True
-        source_hostname: "{{ source_hostname }}"
-        hostname: "{{ destination_cluster_hostname }}"
-        username: "{{ destination_cluster_username }}"
-        password: "{{ destination_cluster_password }}"
+- name: Break SnapMirror
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    relationship_state: broken
+    destination_path: <path>
+    source_hostname: "{{ source_hostname }}"
+    hostname: "{{ destination_cluster_hostname }}"
+    username: "{{ destination_cluster_username }}"
+    password: "{{ destination_cluster_password }}"
 
-    - name: Break SnapMirror
-      netapp.ontap.na_ontap_snapmirror:
-        state: present
-        relationship_state: broken
-        destination_path: <path>
-        source_hostname: "{{ source_hostname }}"
-        hostname: "{{ destination_cluster_hostname }}"
-        username: "{{ destination_cluster_username }}"
-        password: "{{ destination_cluster_password }}"
+- name: Restore SnapMirror volume using location (Idempotency)
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    source_path: <path>
+    destination_path: <path>
+    relationship_type: restore
+    source_snapshot: "{{ snapshot }}"
+    hostname: "{{ destination_cluster_hostname }}"
+    username: "{{ destination_cluster_username }}"
+    password: "{{ destination_cluster_password }}"
 
-    - name: Restore SnapMirror volume using location (Idempotency)
-      netapp.ontap.na_ontap_snapmirror:
-        state: present
-        source_path: <path>
-        destination_path: <path>
-        relationship_type: restore
-        source_snapshot: "{{ snapshot }}"
-        hostname: "{{ destination_cluster_hostname }}"
-        username: "{{ destination_cluster_username }}"
-        password: "{{ destination_cluster_password }}"
+- name: Set schedule to NULL
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    destination_path: <path>
+    schedule: ""
+    hostname: "{{ destination_cluster_hostname }}"
+    username: "{{ destination_cluster_username }}"
+    password: "{{ destination_cluster_password }}"
 
-    - name: Set schedule to NULL
-      netapp.ontap.na_ontap_snapmirror:
-        state: present
-        destination_path: <path>
-        schedule: ""
-        hostname: "{{ destination_cluster_hostname }}"
-        username: "{{ destination_cluster_username }}"
-        password: "{{ destination_cluster_password }}"
+- name: Create SnapMirror from ElementSW to ONTAP
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    connection_type: elementsw_ontap
+    source_path: '10.10.10.10:/lun/300'
+    destination_path: 'ansible_test:ansible_dest_vol'
+    schedule: hourly
+    policy: MirrorLatest
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    source_hostname: " {{ Element_cluster_mvip }}"
+    source_username: "{{ Element_cluster_username }}"
+    source_password: "{{ Element_cluster_password }}"
 
-    - name: Create SnapMirror from ElementSW to ONTAP
-      netapp.ontap.na_ontap_snapmirror:
-        state: present
-        connection_type: elementsw_ontap
-        source_path: '10.10.10.10:/lun/300'
-        destination_path: 'ansible_test:ansible_dest_vol'
-        schedule: hourly
-        policy: MirrorLatest
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        source_hostname: " {{ Element_cluster_mvip }}"
-        source_username: "{{ Element_cluster_username }}"
-        source_password: "{{ Element_cluster_password }}"
+- name: Create SnapMirror from ONTAP to ElementSW
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    connection_type: ontap_elementsw
+    destination_path: '10.10.10.10:/lun/300'
+    source_path: 'ansible_test:ansible_dest_vol'
+    policy: MirrorLatest
+    hostname: "{{ Element_cluster_mvip }}"
+    username: "{{ Element_cluster_username }}"
+    password: "{{ Element_cluster_password }}"
+    source_hostname: " {{ netapp_hostname }}"
+    source_username: "{{ netapp_username }}"
+    source_password: "{{ netapp_password }}"
 
-    - name: Create SnapMirror from ONTAP to ElementSW
-      netapp.ontap.na_ontap_snapmirror:
-        state: present
-        connection_type: ontap_elementsw
-        destination_path: '10.10.10.10:/lun/300'
-        source_path: 'ansible_test:ansible_dest_vol'
-        policy: MirrorLatest
-        hostname: "{{ Element_cluster_mvip }}"
-        username: "{{ Element_cluster_username }}"
-        password: "{{ Element_cluster_password }}"
-        source_hostname: " {{ netapp_hostname }}"
-        source_username: "{{ netapp_username }}"
-        source_password: "{{ netapp_password }}"
+- name: Create SnapMirror relationship (create destination volume)
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    source_endpoint:
+      cluster: "{{ _source_cluster }}"
+      path: "{{ source_vserver + ':' + source_volume }}"
+    destination_endpoint:
+      cluster: "{{ _destination_cluster }}"
+      path: "{{ destination_vserver_VOLDP + ':' + destination_volume }}"
+    create_destination:
+      enabled: true
+    hostname: "{{ destination_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    https: true
+    validate_certs: false
 
-    - name: Create SnapMirror relationship (create destination volume)
-      tags: create
-      netapp.ontap.na_ontap_snapmirror:
-        state: present
-        source_endpoint:
-          cluster: "{{ _source_cluster }}"
-          path: "{{ source_vserver + ':' + source_volume }}"
-        destination_endpoint:
-          cluster: "{{ _destination_cluster }}"
-          path: "{{ destination_vserver_VOLDP + ':' + destination_volume }}"
-        create_destination:
-          enabled: true
-        hostname: "{{ destination_hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        https: true
-        validate_certs: false
+- name: Create SnapMirror relationship - SVM DR (creating and peering destination svm)
+  tags: create_svmdr
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    source_endpoint:
+    cluster: "{{ _source_cluster }}"
+    path: "{{ source_vserver + ':' }}"
+    destination_endpoint:
+      cluster: "{{ _destination_cluster }}"
+      path: "{{ destination_vserver_SVMDR + ':' }}"
+    create_destination:
+      enabled: true
+    hostname: "{{ destination_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    https: true
+    validate_certs: false
 
-    - name: Create SnapMirror relationship - SVM DR (creating and peering destination svm)
-      tags: create_svmdr
-      netapp.ontap.na_ontap_snapmirror:
-        state: present
-        source_endpoint:
-          cluster: "{{ _source_cluster }}"
-          path: "{{ source_vserver + ':' }}"
-        destination_endpoint:
-          cluster: "{{ _destination_cluster }}"
-          path: "{{ destination_vserver_SVMDR + ':' }}"
-        create_destination:
-          enabled: true
-        hostname: "{{ destination_hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        https: true
-        validate_certs: false
+- name: Resync SnapMirror relationship - SVM DR
+  tags: resync_svmdr
+  netapp.ontap.na_ontap_snapmirror:
+    state: present
+    source_endpoint:
+    cluster: "{{ _source_cluster }}"
+    path: "{{ source_vserver + ':' }}"
+    destination_endpoint:
+      cluster: "{{ _destination_cluster }}"
+      path: "{{ destination_vserver_SVMDR + ':' }}"
+    create_destination:
+      enabled: true
+    relationship_state: active
+    quick_resync: true
+    hostname: "{{ destination_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    https: true
+    validate_certs: false
 """
 
 RETURN = """
@@ -566,8 +598,10 @@ class NetAppONTAPSnapmirror(object):
             source_cluster=dict(required=False, type='str'),
             destination_cluster=dict(required=False, type='str'),
             transferring_time_out=dict(required=False, type='int', default=300),
+            quiesced_time_out=dict(required=False, type='int', default=300),
             clean_up_failure=dict(required=False, type='bool', default=False),
-            validate_source_path=dict(required=False, type='bool', default=True)
+            validate_source_path=dict(required=False, type='bool', default=True),
+            quick_resync=dict(required=False, type='bool'),
         ))
 
         self.module = AnsibleModule(
@@ -742,13 +776,15 @@ class NetAppONTAPSnapmirror(object):
         return current
 
     def wait_for_quiesced_status(self):
-        # sleep for a maximum of 25 seconds, in 5 seconds increments
-        for __ in range(5):
-            time.sleep(5)
+        # sleep for a maximum of X seconds (with a default of 5 minutes), in 10 seconds increments
+        quiesced_time_out = self.parameters['quiesced_time_out']
+        increment = 10
+        for __ in range(0, quiesced_time_out, increment):
+            time.sleep(increment)
             sm_info = self.snapmirror_get()
-            if sm_info['status'] == 'quiesced' or sm_info['mirror_state'] == 'paused':
+            if sm_info and (sm_info['status'] == 'quiesced' or sm_info['mirror_state'] == 'paused'):
                 return
-        self.module.fail_json(msg='Taking a long time to quiesce SnapMirror relationship, try again later')
+        self.module.fail_json(msg='Taking a long time to quiesce SnapMirror relationship after %d seconds, try again later' % quiesced_time_out)
 
     def check_if_remote_volume_exists(self):
         """
@@ -1026,7 +1062,8 @@ class NetAppONTAPSnapmirror(object):
             current = self.snapmirror_get()
         if self.use_rest:
             if current['mirror_state'] == 'uninitialized' and current['status'] != 'transferring':
-                self.snapmirror_mod_init_resync_break_quiesce_resume_rest(state="snapmirrored")
+                state = 'in_sync' if self.policy_type == 'sync' else 'snapmirrored'
+                self.snapmirror_mod_init_resync_break_quiesce_resume_rest(state=state)
                 self.wait_for_idle_status()
             return
         if current['mirror_state'] != 'snapmirrored':
@@ -1047,13 +1084,16 @@ class NetAppONTAPSnapmirror(object):
                                       exception=traceback.format_exc())
             self.wait_for_idle_status()
 
-    def snapmirror_resync(self):
+    def snapmirror_resync(self, current=None):
         """
         resync SnapMirror based on relationship state
         """
         if self.use_rest:
             state = 'in_sync' if self.policy_type == 'sync' else 'snapmirrored'
-            self.snapmirror_mod_init_resync_break_quiesce_resume_rest(state=state)
+            quick_resync = False
+            if 'quick_resync' in self.parameters:
+                quick_resync = self.parameters.get('quick_resync')
+            self.snapmirror_mod_init_resync_break_quiesce_resume_rest(state=state, quick_resync=quick_resync)
         else:
             options = {'destination-location': self.parameters['destination_path']}
             snapmirror_resync = netapp_utils.zapi.NaElement.create_node_with_children('snapmirror-resync', **options)
@@ -1373,11 +1413,11 @@ class NetAppONTAPSnapmirror(object):
             self.snapmirror_get()
         return self.parameters.get('uuid')
 
-    def snapmirror_mod_init_resync_break_quiesce_resume_rest(self, state=None, modify=None, before_delete=False):
+    def snapmirror_mod_init_resync_break_quiesce_resume_rest(self, state=None, modify=None, before_delete=False, quick_resync=False):
         """
         To perform SnapMirror modify, init, resume, resync and break.
         1. Modify only update SnapMirror policy which passes the policy in body.
-        2. To perform SnapMirror init - state=snapmirrored and mirror_state=uninitialized.
+        2. To perform SnapMirror init - state=in_sync when type=sync otherwise state=snapmirrored and mirror_state=uninitialized.
         3. To perform SnapMirror resync - state=snapmirrored and mirror_state=broken_off.
         4. To perform SnapMirror break -  state=broken_off and transfer_state not transferring.
         5. To perform SnapMirror quiesce - state=pause and mirror_state not broken_off.
@@ -1388,6 +1428,8 @@ class NetAppONTAPSnapmirror(object):
             self.module.fail_json(msg="Error in updating SnapMirror relationship: unable to get UUID for the SnapMirror relationship.")
 
         body = {}
+        if quick_resync:
+            body['quick_resync'] = self.parameters.get('quick_resync')
         if state is not None:
             body["state"] = state
         elif modify:
@@ -1456,12 +1498,20 @@ class NetAppONTAPSnapmirror(object):
         if uuid is None:
             self.module.fail_json(msg='Error in deleting SnapMirror: %s, unable to get UUID for the SnapMirror relationship.' % uuid)
         api = 'snapmirror/relationships'
-        dummy, error = rest_generic.delete_async(self.rest_api, api, uuid)
-        if error:
-            msg = 'Error deleting SnapMirror: %s' % to_native(error)
-            if self.previous_errors:
-                msg += '.  Previous error(s): %s' % ' -- '.join(self.previous_errors)
-            self.module.fail_json(msg=msg, exception=traceback.format_exc())
+        query = dict(return_timeout=120)
+        retry = 3
+        while retry > 0:
+            dummy, error = rest_generic.delete_async(self.rest_api, api, uuid, query)
+            if error and 'Timeout error: Process still running' in error:
+                time.sleep(120)
+                retry -= 1
+            elif error:
+                msg = 'Error deleting SnapMirror: %s' % to_native(error)
+                if self.previous_errors:
+                    msg += '.  Previous error(s): %s' % ' -- '.join(self.previous_errors)
+                self.module.fail_json(msg=msg, exception=traceback.format_exc())
+            else:
+                return
 
     def snapmirror_rest_create(self):
         """
@@ -1703,7 +1753,7 @@ class NetAppONTAPSnapmirror(object):
         if 'resume' in actions:
             self.snapmirror_resume()
         if 'resync' in actions:
-            self.snapmirror_resync()
+            self.snapmirror_resync(current)
 
     def apply(self):
         """

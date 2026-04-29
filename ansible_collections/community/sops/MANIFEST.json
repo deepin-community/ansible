@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "community",
   "name": "sops",
-  "version": "2.0.0",
+  "version": "2.2.2",
   "authors": [
    "Edoardo Tenani"
   ],
@@ -30,7 +30,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "3378e1eb864ca791de465baf437743ddd81dd4bad619ed5b8968f719418bf1be",
+  "chksum_sha256": "3e0f6808ebd9c41e688403e30d944daa00f3babc48ad127a9490869faa7f30dd",
   "format": 1
  },
  "format": 1

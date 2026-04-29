@@ -133,6 +133,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -148,14 +149,14 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         utmprofile:
-          antivirus_profile: <string>
-          application_list: <string>
-          comment: <string>
-          ips_sensor: <string>
-          name: <string>
-          scan_botnet_connections: <value in [disable, block, monitor]>
-          utm_log: <value in [disable, enable]>
-          webfilter_profile: <string>
+          name: "your value" # Required variable, string
+          # antivirus_profile: <string>
+          # application_list: <string>
+          # comment: <string>
+          # ips_sensor: <string>
+          # scan_botnet_connections: <value in [disable, block, monitor]>
+          # utm_log: <value in [disable, enable]>
+          # webfilter_profile: <string>
 '''
 
 RETURN = '''

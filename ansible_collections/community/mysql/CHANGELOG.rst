@@ -6,6 +6,85 @@ Community MySQL and MariaDB Collection Release Notes
 
 This changelog describes changes after version 2.0.0.
 
+v3.15.0
+=======
+
+Release Summary
+---------------
+
+This is a minor release of the ``community.mysql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.'
+
+Minor Changes
+-------------
+
+- mysql_db - Add support for ``sql_log_bin`` option (https://github.com/ansible-collections/community.mysql/issues/700).
+
+Bugfixes
+--------
+
+- mysql_query - fix a Python 2 compatibility issue caused by the addition of ``execution_time_ms`` in version 3.12 (see https://github.com/ansible-collections/community.mysql/issues/716).
+- mysql_user - fix a crash (unable to parse the MySQL grant string: SET DEFAULT ROLE `somerole` FOR `someuser`@`%`) when using the ``mysql_user`` module with a DEFAULT role present in MariaDB. The DEFAULT role is now ignored by the parser (https://github.com/ansible-collections/community.mysql/issues/710).
+
+v3.14.0
+=======
+
+Release Summary
+---------------
+
+This is a minor release of the ``community.mysql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.'
+
+Minor Changes
+-------------
+
+- mysql_replication - change default value for ``primary_ssl_verify_server_cert`` from False to None. This should not affect existing playbooks (https://github.com/ansible-collections/community.mysql/pull/707).
+
+Bugfixes
+--------
+
+- mysql_info - fix a crash (ERROR 1141, There is no such grant defined for user 'PUBLIC' on host '%') when using the ``users_info`` filter with a PUBLIC role present in MariaDB 10.11+. Do note that the fix doesn't change the fact that the module won't return the privileges from the PUBLIC role in the users privileges list. It can't do that because you have to login as the particular user and use `SHOW GRANTS FOR CURRENT_USER`. We considered using an aggregation with the `SHOW GRANTS FOR PUBLIC` command. However, this approach would make copying users from one server to another transform the privileges inherited from the role as if they were direct privileges on the user.
+- mysql_replication - fixed an issue where setting ``primary_ssl_verify_server_cert`` to false had no effect (https://github.com/ansible-collections/community.mysql/issues/689).
+
+v3.13.0
+=======
+
+Release Summary
+---------------
+
+This is a minor release of the ``community.mysql`` collection.
+This changelog contains all changes to the modules and plugins in this
+collection that have been made after the previous release.
+
+Minor Changes
+-------------
+
+- Integration tests for MariaDB 11.4 have replaced those for 10.5. The previous version is now 10.11.
+- mysql_user - add ``locked`` option to lock/unlock users, this is mainly used to have users that will act as definers on stored procedures.
+
+Bugfixes
+--------
+
+- mysql_db - fix dump and import to find MariaDB binaries (mariadb and mariadb-dump) when MariaDB 11+ is used and symbolic links to MySQL binaries are absent.
+
+v3.12.0
+=======
+
+Release Summary
+---------------
+
+This is a minor release of the ``community.mysql`` collection.
+This changelog contains all changes to the modules and plugins in this
+collection that have been made after the previous release.
+
+Minor Changes
+-------------
+
+- mysql_db - added ``zstd`` (de)compression support for ``import``/``dump`` states (https://github.com/ansible-collections/community.mysql/issues/696).
+- mysql_query - returns the ``execution_time_ms`` list containing execution time per query in milliseconds.
+
 v3.11.0
 =======
 
@@ -13,6 +92,7 @@ Release Summary
 ---------------
 
 This is a minor release of the ``community.mysql`` collection.
+
 This changelog contains all changes to the modules and plugins in this
 collection that have been made after the previous release.
 

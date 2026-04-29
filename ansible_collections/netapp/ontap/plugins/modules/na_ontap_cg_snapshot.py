@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2023, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -12,7 +12,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 
 DOCUMENTATION = '''
 short_description: NetApp ONTAP manage consistency group snapshot
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Create or delete consistency group snapshot for ONTAP volumes.
 extends_documentation_fragment:
@@ -76,49 +76,49 @@ notes:
 '''
 
 EXAMPLES = """
-    - name:
-      na_ontap_cg_snapshot:
-        state: present
-        vserver: vserver_name
-        snapshot: snapshot name
-        volumes: vol_name
-        username: "{{ netapp username }}"
-        password: "{{ netapp password }}"
-        hostname: "{{ netapp hostname }}"
+- name: Create CG snapshot
+  na_ontap_cg_snapshot:
+    state: present
+    vserver: vserver_name
+    snapshot: snapshot name
+    volumes: vol_name
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 
-    - name: Create CG snapshot using CG name - REST
-      na_ontap_cg_snapshot:
-        state: present
-        vserver: vserver_name
-        snapshot: snapshot_name
-        consistency_group: cg_name
-        snapmirror_label: sm_label
-        username: "{{ netapp username }}"
-        password: "{{ netapp password }}"
-        hostname: "{{ netapp hostname }}"
+- name: Create CG snapshot using CG name - REST
+  na_ontap_cg_snapshot:
+    state: present
+    vserver: vserver_name
+    snapshot: snapshot_name
+    consistency_group: cg_name
+    snapmirror_label: sm_label
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 
-    - name: Create CG snapshot using volumes - REST
-      na_ontap_cg_snapshot:
-        state: present
-        vserver: vserver_name
-        snapshot: snapshot_name
-        volumes:
-          - vol1
-          - vol2
-        snapmirror_label: sm_label
-        username: "{{ netapp username }}"
-        password: "{{ netapp password }}"
-        hostname: "{{ netapp hostname }}"
+- name: Create CG snapshot using volumes - REST
+  na_ontap_cg_snapshot:
+    state: present
+    vserver: vserver_name
+    snapshot: snapshot_name
+    volumes:
+      - vol1
+      - vol2
+    snapmirror_label: sm_label
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 
-    - name: Delete CG snapshot - REST
-      na_ontap_cg_snapshot:
-        state: absent
-        vserver: vserver_name
-        snapshot: snapshot_name
-        consistency_group: cg_name
-        username: "{{ netapp username }}"
-        password: "{{ netapp password }}"
-        hostname: "{{ netapp hostname }}"
+- name: Delete CG snapshot - REST
+  na_ontap_cg_snapshot:
+    state: absent
+    vserver: vserver_name
+    snapshot: snapshot_name
+    consistency_group: cg_name
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 """
 
 RETURN = """
@@ -299,13 +299,13 @@ class NetAppONTAPCGSnapshot(object):
             query['fields'] += 'volumes.name,'
             records, error = rest_generic.get_0_or_more_records(self.rest_api, api, query)
             if error:
-                self.module.fail_json(msg='Error searching for consistency group having volumes %s: %s' % (self.parameters['volumes'], to_native(error)),
+                self.module.fail_json(msg='Error searching for consistency group having volumes %s: %s' % (set(self.parameters['volumes']), to_native(error)),
                                       exception=traceback.format_exc())
             if records:
                 for record in records:
                     if record.get('volumes') is not None:
                         cg_volumes = [vol_item['name'] for vol_item in record['volumes']]
-                        if cg_volumes == self.parameters['volumes']:
+                        if sorted(cg_volumes) == sorted(set(self.parameters['volumes'])):
                             self.cg_uuid = record.get('uuid')
                             break
         return None

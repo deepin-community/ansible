@@ -42,7 +42,8 @@ attributes:
     description: The check_mode support.
     support: full
 extends_documentation_fragment:
-- vmware.vmware.vmware_rest_client.documentation
+    - vmware.vmware.base_options
+    - vmware.vmware.additional_rest_options
 
 '''
 
@@ -178,10 +179,11 @@ appliance:
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_rest_client import VmwareRestClient
+from ansible_collections.vmware.vmware.plugins.module_utils._module_rest_base import ModuleRestBase
+from ansible_collections.vmware.vmware.plugins.module_utils.argument_spec import rest_compatible_argument_spec
 
 
-class VmwareApplianceInfo(VmwareRestClient):
+class VmwareApplianceInfo(ModuleRestBase):
     def __init__(self, module):
         super(VmwareApplianceInfo, self).__init__(module)
         self.module = module
@@ -302,7 +304,7 @@ class VmwareApplianceInfo(VmwareRestClient):
 
 
 def main():
-    argument_spec = VmwareRestClient.vmware_client_argument_spec()
+    argument_spec = rest_compatible_argument_spec()
     argument_spec.update(
         dict(
             properties=dict(

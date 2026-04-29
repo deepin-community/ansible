@@ -153,6 +153,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -169,18 +170,17 @@ EXAMPLES = '''
         profile: <your own value>
         state: present # <value in [present, absent]>
         waf_profile_urlaccess:
-          access_pattern:
-            -
-              id: <integer>
-              negate: <value in [disable, enable]>
-              pattern: <string>
-              regex: <value in [disable, enable]>
-              srcaddr: <string>
-          action: <value in [bypass, permit, block]>
-          address: <string>
-          id: <integer>
-          log: <value in [disable, enable]>
-          severity: <value in [low, medium, high]>
+          id: 0 # Required variable, integer
+          # access_pattern:
+          #   - id: <integer>
+          #     negate: <value in [disable, enable]>
+          #     pattern: <string>
+          #     regex: <value in [disable, enable]>
+          #     srcaddr: <string>
+          # action: <value in [bypass, permit, block]>
+          # address: <string>
+          # log: <value in [disable, enable]>
+          # severity: <value in [low, medium, high]>
 '''
 
 RETURN = '''

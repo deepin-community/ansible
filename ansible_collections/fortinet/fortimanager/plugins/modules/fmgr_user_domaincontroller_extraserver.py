@@ -120,6 +120,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -136,11 +137,11 @@ EXAMPLES = '''
         domain_controller: <your own value>
         state: present # <value in [present, absent]>
         user_domaincontroller_extraserver:
-          id: <integer>
-          ip_address: <string>
-          port: <integer>
-          source_ip_address: <string>
-          source_port: <integer>
+          id: 0 # Required variable, integer
+          # ip_address: <string>
+          # port: <integer>
+          # source_ip_address: <string>
+          # source_port: <integer>
 '''
 
 RETURN = '''

@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -191,6 +192,10 @@ options:
                 description:
                     - Maximum number of station cap"s wtp info stored on the controller (1 - 16).
                 type: int
+            max_wids_entry:
+                description:
+                    - Maximum number of wids entries stored on the controller .
+                type: int
             mesh_eth_type:
                 description:
                     - Mesh Ethernet identifier included in backhaul packets (0 - 65535).
@@ -264,9 +269,10 @@ EXAMPLES = """
           max_rogue_sta: "0"
           max_sta_cap: "0"
           max_sta_cap_wtp: "8"
+          max_wids_entry: "0"
           mesh_eth_type: "8755"
           nac_interval: "120"
-          name: "default_name_26"
+          name: "default_name_27"
           rogue_scan_mac_adjacency: "7"
           rolling_wtp_upgrade: "enable"
           rolling_wtp_upgrade_threshold: "<your_own_value>"
@@ -352,6 +358,18 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_wireless_controller_global_data(json):
@@ -377,6 +395,7 @@ def filter_wireless_controller_global_data(json):
         "max_rogue_sta",
         "max_sta_cap",
         "max_sta_cap_wtp",
+        "max_wids_entry",
         "mesh_eth_type",
         "nac_interval",
         "name",
@@ -403,8 +422,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -431,21 +449,25 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def wireless_controller_global(data, fos, check_mode=False):
 
-def wireless_controller_global(data, fos):
     state = None
     vdom = data["vdom"]
+    state = data.get("state", None)
     wireless_controller_global_data = data["wireless_controller_global"]
 
     filtered_data = filter_wireless_controller_global_data(
@@ -454,9 +476,90 @@ def wireless_controller_global(data, fos):
     filtered_data = flatten_multilists_attributes(filtered_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("wireless-controller", "global", filtered_data, vdom=vdom)
+        current_data = fos.get("wireless-controller", "global", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["wireless_controller_global"] = converted_data
+    data_copy["wireless_controller_global"] = filtered_data
     fos.do_member_operation(
         "wireless-controller",
         "global",
@@ -478,14 +581,16 @@ def is_successful_status(resp):
     )
 
 
-def fortios_wireless_controller(data, fos):
+def fortios_wireless_controller(data, fos, check_mode):
+
     if data["wireless_controller_global"]:
-        resp = wireless_controller_global(data, fos)
+        resp = wireless_controller_global(data, fos, check_mode)
     else:
         fos._module.fail_json(
             msg="missing task body: %s" % ("wireless_controller_global")
         )
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -574,6 +679,7 @@ versioned_schema = {
         "max_rogue_ap": {"v_range": [["v7.4.4", ""]], "type": "integer"},
         "max_rogue_ap_wtp": {"v_range": [["v7.4.4", ""]], "type": "integer"},
         "max_rogue_sta": {"v_range": [["v7.4.4", ""]], "type": "integer"},
+        "max_wids_entry": {"v_range": [["v7.6.1", ""]], "type": "integer"},
         "max_ble_device": {"v_range": [["v7.4.4", ""]], "type": "integer"},
         "dfs_lab_test": {
             "v_range": [["v7.0.12", "v7.0.12"], ["v7.2.1", ""]],
@@ -613,7 +719,7 @@ def main():
                 "required"
             ] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -637,7 +743,7 @@ def main():
         )
 
         is_error, has_changed, result, diff = fortios_wireless_controller(
-            module.params, fos
+            module.params, fos, module.check_mode
         )
 
     else:

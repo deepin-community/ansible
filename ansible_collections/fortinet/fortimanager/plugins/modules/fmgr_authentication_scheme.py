@@ -125,6 +125,7 @@ options:
                     - 'cert'
                     - 'x-auth-user'
                     - 'saml-sp'
+                    - 'entra-sso'
             name:
                 type: str
                 description: Authentication scheme name.
@@ -173,12 +174,32 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            external_idp:
+                aliases: ['external-idp']
+                type: raw
+                description: (list) External identity provider configuration.
+            digest_algo:
+                aliases: ['digest-algo']
+                type: list
+                elements: str
+                description: Digest Authentication Algorithms.
+                choices:
+                    - 'md5'
+                    - 'sha-256'
+            group_attr_type:
+                aliases: ['group-attr-type']
+                type: str
+                description: Group attribute type used to match SCIM groups
+                choices:
+                    - 'display-name'
+                    - 'external-id'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -194,32 +215,38 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         authentication_scheme:
-          domain_controller: <string>
-          fsso_agent_for_ntlm: <string>
-          fsso_guest: <value in [disable, enable]>
-          kerberos_keytab: <string>
-          method:
-            - "ntlm"
-            - "basic"
-            - "digest"
-            - "form"
-            - "negotiate"
-            - "fsso"
-            - "rsso"
-            - "ssh-publickey"
-            - "saml"
-            - "cert"
-            - "x-auth-user"
-            - "saml-sp"
-          name: <string>
-          negotiate_ntlm: <value in [disable, enable]>
-          require_tfa: <value in [disable, enable]>
-          ssh_ca: <string>
-          user_database: <list or string>
-          ems_device_owner: <value in [disable, enable]>
-          saml_server: <string>
-          saml_timeout: <integer>
-          user_cert: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # domain_controller: <string>
+          # fsso_agent_for_ntlm: <string>
+          # fsso_guest: <value in [disable, enable]>
+          # kerberos_keytab: <string>
+          # method:
+          #   - "ntlm"
+          #   - "basic"
+          #   - "digest"
+          #   - "form"
+          #   - "negotiate"
+          #   - "fsso"
+          #   - "rsso"
+          #   - "ssh-publickey"
+          #   - "saml"
+          #   - "cert"
+          #   - "x-auth-user"
+          #   - "saml-sp"
+          #   - "entra-sso"
+          # negotiate_ntlm: <value in [disable, enable]>
+          # require_tfa: <value in [disable, enable]>
+          # ssh_ca: <string>
+          # user_database: <list or string>
+          # ems_device_owner: <value in [disable, enable]>
+          # saml_server: <string>
+          # saml_timeout: <integer>
+          # user_cert: <value in [disable, enable]>
+          # external_idp: <list or string>
+          # digest_algo:
+          #   - "md5"
+          #   - "sha-256"
+          # group_attr_type: <value in [display-name, external-id]>
 '''
 
 RETURN = '''
@@ -287,7 +314,10 @@ def main():
                 'method': {
                     'v_range': [['6.2.1', '']],
                     'type': 'list',
-                    'choices': ['ntlm', 'basic', 'digest', 'form', 'negotiate', 'fsso', 'rsso', 'ssh-publickey', 'saml', 'cert', 'x-auth-user', 'saml-sp'],
+                    'choices': [
+                        'ntlm', 'basic', 'digest', 'form', 'negotiate', 'fsso', 'rsso', 'ssh-publickey', 'saml', 'cert', 'x-auth-user', 'saml-sp',
+                        'entra-sso'
+                    ],
                     'elements': 'str'
                 },
                 'name': {'v_range': [['6.2.1', '']], 'required': True, 'type': 'str'},
@@ -298,7 +328,10 @@ def main():
                 'ems-device-owner': {'v_range': [['7.0.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'saml-server': {'v_range': [['7.0.0', '']], 'type': 'str'},
                 'saml-timeout': {'v_range': [['7.0.0', '']], 'type': 'int'},
-                'user-cert': {'v_range': [['7.0.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'user-cert': {'v_range': [['7.0.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'external-idp': {'v_range': [['7.6.2', '']], 'type': 'raw'},
+                'digest-algo': {'v_range': [['7.6.3', '']], 'type': 'list', 'choices': ['md5', 'sha-256'], 'elements': 'str'},
+                'group-attr-type': {'v_range': [['7.6.3', '']], 'choices': ['display-name', 'external-id'], 'type': 'str'}
             }
         }
     }

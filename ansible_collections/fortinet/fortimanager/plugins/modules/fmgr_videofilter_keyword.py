@@ -135,6 +135,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -150,16 +151,15 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         videofilter_keyword:
-          comment: <string>
-          id: <integer>
-          match: <value in [or, and]>
-          name: <string>
-          word:
-            -
-              comment: <string>
-              name: <string>
-              pattern_type: <value in [wildcard, regex]>
-              status: <value in [disable, enable]>
+          id: 0 # Required variable, integer
+          # comment: <string>
+          # match: <value in [or, and]>
+          # name: <string>
+          # word:
+          #   - comment: <string>
+          #     name: <string>
+          #     pattern_type: <value in [wildcard, regex]>
+          #     status: <value in [disable, enable]>
 '''
 
 RETURN = '''

@@ -16,10 +16,21 @@ from ansible.module_utils.urls import fetch_url, open_url
 import json
 import time
 
+from ansible_collections.community.hrobot.plugins.module_utils.common import (
+    PluginException,
+    CheckDoneTimeoutException,
+)
+
 
 ROBOT_DEFAULT_ARGUMENT_SPEC = dict(
     hetzner_user=dict(type='str', required=True),
     hetzner_password=dict(type='str', required=True, no_log=True),
+    rate_limit_retry_timeout=dict(type='int', default=-1),
+)
+
+_ROBOT_DEFAULT_ARGUMENT_SPEC_COMPAT = dict(
+    hetzner_user=dict(type='str', required=False),
+    hetzner_password=dict(type='str', required=False, no_log=True),
 )
 
 # The API endpoint is fixed.
@@ -40,7 +51,11 @@ def _format_list(obj):
     return [_format_list(e) for e in obj]
 
 
-def format_error_msg(error):
+_RATE_LIMITING_ERROR = 'RATE_LIMIT_EXCEEDED'
+_RATE_LIMITING_START_DELAY = 5
+
+
+def format_error_msg(error, rate_limit_timeout=None):
     # Reference: https://robot.hetzner.com/doc/webservice/en.html#errors
     msg = 'Request failed: {0} {1} ({2})'.format(
         error['status'],
@@ -55,28 +70,27 @@ def format_error_msg(error):
         msg += '. Maximum allowed requests: {0}'.format(error['max_request'])
     if error.get('interval') is not None:
         msg += '. Time interval in seconds: {0}'.format(error['interval'])
+    if rate_limit_timeout is not None and rate_limit_timeout > 0 and error['code'] == _RATE_LIMITING_ERROR:
+        msg += '. Waited a total of {0:.1f} seconds for rate limit errors to go away'.format(rate_limit_timeout)
     return msg
 
 
-class PluginException(Exception):
-    def __init__(self, message):
-        super(PluginException, self).__init__(message)
-        self.error_message = message
-
-
-def plugin_open_url_json(plugin, url, method='GET', timeout=10, data=None, headers=None,
-                         accept_errors=None, allow_empty_result=False,
-                         allowed_empty_result_status_codes=(200, 204), templar=None):
+def raw_plugin_open_url_json(plugin, url, method='GET', timeout=10, data=None, headers=None,
+                             accept_errors=None, allow_empty_result=False,
+                             allowed_empty_result_status_codes=(200, 204), templar=None,
+                             rate_limit_timeout=None):
     '''
     Make general request to Hetzner's JSON robot API.
+    Does not handle rate limiting especially.
     '''
+    accept_errors = accept_errors or ()
     user = plugin.get_option('hetzner_user')
     password = plugin.get_option('hetzner_password')
     if templar is not None:
         if templar.is_template(user):
-            user = templar.template(variable=user, disable_lookups=False)
+            user = templar.template(variable=user)
         if templar.is_template(password):
-            password = templar.template(variable=password, disable_lookups=False)
+            password = templar.template(variable=password)
     try:
         response = open_url(
             url,
@@ -90,8 +104,10 @@ def plugin_open_url_json(plugin, url, method='GET', timeout=10, data=None, heade
         )
         status = response.code
         content = response.read()
+        reason = response.reason
     except HTTPError as e:
         status = e.code
+        reason = e.reason
         try:
             content = e.read()
         except AttributeError:
@@ -102,26 +118,32 @@ def plugin_open_url_json(plugin, url, method='GET', timeout=10, data=None, heade
     if not content:
         if allow_empty_result and status in allowed_empty_result_status_codes:
             return None, None
-        raise PluginException('Cannot retrieve content from {0}, HTTP status code {1}'.format(url, status))
+        raise PluginException(
+            "Cannot retrieve content from {0} {1}, HTTP status code {2} ({3})".format(
+                method, url, status, reason
+            )
+        )
 
     try:
         result = json.loads(content.decode('utf-8'))
         if 'error' in result:
-            if accept_errors:
-                if result['error']['code'] in accept_errors:
-                    return result, result['error']['code']
-            raise PluginException(format_error_msg(result['error']))
+            if result['error']['code'] in accept_errors:
+                return result, result['error']['code']
+            raise PluginException(format_error_msg(result['error'], rate_limit_timeout=rate_limit_timeout))
         return result, None
     except ValueError:
         raise PluginException('Cannot decode content retrieved from {0}'.format(url))
 
 
-def fetch_url_json(module, url, method='GET', timeout=10, data=None, headers=None,
-                   accept_errors=None, allow_empty_result=False,
-                   allowed_empty_result_status_codes=(200, 204)):
+def raw_fetch_url_json(module, url, method='GET', timeout=10, data=None, headers=None,
+                       accept_errors=None, allow_empty_result=False,
+                       allowed_empty_result_status_codes=(200, 204),
+                       rate_limit_timeout=None):
     '''
     Make general request to Hetzner's JSON robot API.
+    Does not handle rate limiting especially.
     '''
+    accept_errors = accept_errors or ()
     module.params['url_username'] = module.params['hetzner_user']
     module.params['url_password'] = module.params['hetzner_password']
     module.params['force_basic_auth'] = True
@@ -138,25 +160,112 @@ def fetch_url_json(module, url, method='GET', timeout=10, data=None, headers=Non
     if not content:
         if allow_empty_result and info.get('status') in allowed_empty_result_status_codes:
             return None, None
-        module.fail_json(msg='Cannot retrieve content from {0}, HTTP status code {1}'.format(url, info.get('status')))
+        module.fail_json(
+            msg='Cannot retrieve content from {0} {1}, HTTP status code {2} ({3})'.format(
+                method, url, info.get('status'), info.get('msg')
+            )
+        )
 
     try:
         result = module.from_json(content.decode('utf8'))
         if 'error' in result:
-            if accept_errors:
-                if result['error']['code'] in accept_errors:
-                    return result, result['error']['code']
-            module.fail_json(msg=format_error_msg(result['error']), error=result['error'])
+            if result['error']['code'] in accept_errors:
+                return result, result['error']['code']
+            module.fail_json(
+                msg=format_error_msg(result['error'], rate_limit_timeout=rate_limit_timeout),
+                error=result['error'],
+            )
         return result, None
     except ValueError:
         module.fail_json(msg='Cannot decode content retrieved from {0}'.format(url))
 
 
-class CheckDoneTimeoutException(Exception):
-    def __init__(self, result, error):
-        super(CheckDoneTimeoutException, self).__init__()
-        self.result = result
-        self.error = error
+def _handle_rate_limit(accept_errors, check_done_timeout, call):
+    original_accept_errors, accept_errors = accept_errors, accept_errors or ()
+    check_done_delay = _RATE_LIMITING_START_DELAY
+    if _RATE_LIMITING_ERROR in accept_errors or check_done_timeout == 0:
+        return call(original_accept_errors, None)
+    accept_errors = [_RATE_LIMITING_ERROR] + list(accept_errors)
+
+    start_time = time.time()
+    first = True
+    timeout = False
+    while True:
+        if first:
+            elapsed = 0
+            first = False
+        else:
+            elapsed = (time.time() - start_time)
+            if check_done_timeout > 0:
+                left_time = check_done_timeout - elapsed
+                wait = max(min(check_done_delay, left_time), 0)
+                timeout = left_time <= check_done_delay
+            else:
+                wait = check_done_delay
+            time.sleep(wait)
+        result, error = call(
+            original_accept_errors if timeout else accept_errors,
+            elapsed,
+        )
+        if error != _RATE_LIMITING_ERROR:
+            return result, error
+        if result['error'].get('interval') and check_done_delay > result['error']['interval'] > 0:
+            check_done_delay = result['error']['interval']
+
+
+def plugin_open_url_json(plugin, url, method='GET', timeout=10, data=None, headers=None,
+                         accept_errors=None, allow_empty_result=False,
+                         allowed_empty_result_status_codes=(200, 204), templar=None):
+    '''
+    Make general request to Hetzner's JSON robot API.
+    '''
+    def call(accept_errors_, rate_limit_timeout):
+        return raw_plugin_open_url_json(
+            plugin,
+            url,
+            method=method,
+            timeout=timeout,
+            data=data,
+            headers=headers,
+            accept_errors=accept_errors_,
+            allow_empty_result=allow_empty_result,
+            allowed_empty_result_status_codes=allowed_empty_result_status_codes,
+            templar=templar,
+            rate_limit_timeout=rate_limit_timeout,
+        )
+
+    return _handle_rate_limit(
+        accept_errors,
+        plugin.get_option('rate_limit_retry_timeout'),
+        call,
+    )
+
+
+def fetch_url_json(module, url, method='GET', timeout=10, data=None, headers=None,
+                   accept_errors=None, allow_empty_result=False,
+                   allowed_empty_result_status_codes=(200, 204)):
+    '''
+    Make general request to Hetzner's JSON robot API.
+    '''
+    def call(accept_errors_, rate_limit_timeout):
+        return raw_fetch_url_json(
+            module,
+            url,
+            method=method,
+            timeout=timeout,
+            data=data,
+            headers=headers,
+            accept_errors=accept_errors_,
+            allow_empty_result=allow_empty_result,
+            allowed_empty_result_status_codes=allowed_empty_result_status_codes,
+            rate_limit_timeout=rate_limit_timeout,
+        )
+
+    return _handle_rate_limit(
+        accept_errors,
+        module.params['rate_limit_retry_timeout'],
+        call,
+    )
 
 
 def fetch_url_json_with_retries(module, url, check_done_callback, check_done_delay=10, check_done_timeout=180, skip_first=False, **kwargs):

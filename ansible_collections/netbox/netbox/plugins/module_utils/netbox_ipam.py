@@ -162,6 +162,8 @@ class NetboxIpamModule(NetboxModule):
         - vlans
         - vlan_groups
         - vrfs
+        - services
+        - service_template
         """
         # Used to dynamically set key when returning results
         endpoint_name = ENDPOINT_NAME_MAPPING[self.endpoint]
@@ -205,9 +207,26 @@ class NetboxIpamModule(NetboxModule):
         else:
             name = data.get("name")
 
+        if self.endpoint == "ip_addresses":
+            if "interface" in data:
+                data["assigned_object_id"] = data["interface"]
+                data["assigned_object_type"] = "dcim.interface"
+
         if self.endpoint in SLUG_REQUIRED:
             if not data.get("slug"):
                 data["slug"] = self._to_slug(name)
+
+        if self.endpoint == "services" and self._version_check_greater(
+            self.version, "4.3", greater_or_equal=True
+        ):
+            if "device" in data:
+                data["parent_object_type"] = "dcim.device"
+                data["parent_object_id"] = data["device"]
+                del data["device"]
+            elif "virtual_machine" in data:
+                data["parent_object_type"] = "virtualization.virtualmachine"
+                data["parent_object_id"] = data["virtual_machine"]
+                del data["virtual_machine"]
 
         if self.module.params.get("first_available"):
             first_available = True

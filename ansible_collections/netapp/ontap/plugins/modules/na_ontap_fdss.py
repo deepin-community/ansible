@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2021-2024, NetApp, Inc
+# (c) 2021-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -12,7 +12,7 @@ short_description: NetApp ONTAP File Directory Security Set.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: 21.8.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 
 description:
 - Set file directory security information.
@@ -37,14 +37,14 @@ options:
     type: str
 """
 EXAMPLES = """
-    - name: Set File Directory Security
-      netapp.ontap.na_ontap_fdss:
-        state: present
-        vserver: "svm1"
-        name: "ansible_pl"
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+- name: Set File Directory Security
+  netapp.ontap.na_ontap_fdss:
+    state: present
+    vserver: "svm1"
+    name: "ansible_pl"
+    hostname: "{{ hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
 """
 
 RETURN = """

@@ -8,8 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: docker_image_remove
 
 short_description: Remove Docker images
@@ -18,7 +17,6 @@ version_added: 3.6.0
 
 description:
   - Remove Docker images from the Docker daemon.
-
 extends_documentation_fragment:
   - community.docker.docker.api_documentation
   - community.docker.attributes
@@ -29,12 +27,14 @@ attributes:
     support: full
   diff_mode:
     support: full
+  idempotent:
+    support: full
 
 options:
   name:
     description:
-      - "Image name. Name format will be one of: C(name), C(repository/name), C(registry_server:port/name).
-        When pushing or pulling an image the name can optionally include the tag by appending C(:tag_name)."
+      - 'Image name. Name format will be one of: C(name), C(repository/name), C(registry_server:port/name). When pushing or
+        pulling an image the name can optionally include the tag by appending C(:tag_name).'
       - Note that image IDs (hashes) can also be used.
     type: str
     required: true
@@ -65,38 +65,38 @@ seealso:
   - module: community.docker.docker_image_load
   - module: community.docker.docker_image_pull
   - module: community.docker.docker_image_tag
-'''
+"""
 
-EXAMPLES = '''
-
+EXAMPLES = r"""
+---
 - name: Remove an image
   community.docker.docker_image_remove:
     name: pacur/centos-7
-'''
+"""
 
-RETURN = '''
+RETURN = r"""
 image:
-    description:
-      - Image inspection results for the affected image before removal.
-      - Empty if the image was not found.
-    returned: success
-    type: dict
-    sample: {}
+  description:
+    - Image inspection results for the affected image before removal.
+    - Empty if the image was not found.
+  returned: success
+  type: dict
+  sample: {}
 deleted:
-    description:
-      - The digests of the images that were deleted.
-    returned: success
-    type: list
-    elements: str
-    sample: []
+  description:
+    - The digests of the images that were deleted.
+  returned: success
+  type: list
+  elements: str
+  sample: []
 untagged:
-    description:
-      - The digests of the images that were untagged.
-    returned: success
-    type: list
-    elements: str
-    sample: []
-'''
+  description:
+    - The digests of the images that were untagged.
+  returned: success
+  type: list
+  elements: str
+  sample: []
+"""
 
 import traceback
 
@@ -190,7 +190,7 @@ class ImageRemover(DockerBaseClass):
             try:
                 res = self.client.delete_json('/images/{0}', name, params={'force': self.force, 'noprune': not self.prune})
             except NotFound:
-                # If the image vanished while we were trying to remove it, don't fail
+                # If the image vanished while we were trying to remove it, do not fail
                 res = []
             except Exception as exc:
                 self.fail("Error removing image %s - %s" % (name, to_native(exc)))

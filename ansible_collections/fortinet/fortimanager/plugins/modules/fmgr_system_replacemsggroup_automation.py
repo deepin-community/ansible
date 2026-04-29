@@ -122,6 +122,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -138,10 +139,10 @@ EXAMPLES = '''
         replacemsg_group: <your own value>
         state: present # <value in [present, absent]>
         system_replacemsggroup_automation:
-          buffer: <string>
-          format: <value in [none, text, html]>
-          header: <value in [none, http, 8bit]>
-          msg_type: <string>
+          # buffer: <string>
+          # format: <value in [none, text, html]>
+          # header: <value in [none, http, 8bit]>
+          # msg_type: <string>
 '''
 
 RETURN = '''

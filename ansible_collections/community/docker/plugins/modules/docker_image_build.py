@@ -8,8 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: docker_image_build
 
 short_description: Build Docker images using Docker buildx
@@ -18,10 +17,8 @@ version_added: 3.6.0
 
 description:
   - This module allows you to build Docker images using Docker's buildx plugin (BuildKit).
-  - Note that the module is B(not idempotent) in the sense of classical Ansible modules.
-    The only idempotence check is whether the built image already exists. This check can
-    be disabled with the O(rebuild) option.
-
+  - Note that the module is B(not idempotent) in the sense of classical Ansible modules. The only idempotence check is whether
+    the built image already exists. This check can be disabled with the O(rebuild) option.
 extends_documentation_fragment:
   - community.docker.docker.cli_documentation
   - community.docker.attributes
@@ -32,12 +29,16 @@ attributes:
     support: full
   diff_mode:
     support: none
+  idempotent:
+    support: partial
+    details:
+      - If O(rebuild=always) the module is not idempotent.
 
 options:
   name:
     description:
-      - "Image name. Name format will be one of: C(name), C(repository/name), C(registry_server:port/name).
-        When pushing or pulling an image the name can optionally include the tag by appending C(:tag_name)."
+      - 'Image name. Name format will be one of: C(name), C(repository/name), C(registry_server:port/name). When pushing or
+        pulling an image the name can optionally include the tag by appending C(:tag_name).'
       - Note that image IDs (hashes) and names with digest cannot be used.
     type: str
     required: true
@@ -79,9 +80,8 @@ options:
   etc_hosts:
     description:
       - Extra hosts to add to C(/etc/hosts) in building containers, as a mapping of hostname to IP address.
-      - Instead of an IP address, the special value V(host-gateway) can also be used, which
-        resolves to the host's gateway IP and allows building containers to connect to services running
-        on the host.
+      - Instead of an IP address, the special value V(host-gateway) can also be used, which resolves to the host's gateway
+        IP and allows building containers to connect to services running on the host.
     type: dict
   args:
     description:
@@ -90,8 +90,7 @@ options:
     type: dict
   target:
     description:
-      - When building an image specifies an intermediate build stage by
-        name as a final stage for the resulting image.
+      - When building an image specifies an intermediate build stage by name as a final stage for the resulting image.
     type: str
   platform:
     description:
@@ -101,9 +100,8 @@ options:
     elements: str
   shm_size:
     description:
-      - "Size of C(/dev/shm) in format C(<number>[<unit>]). Number is positive integer.
-        Unit can be V(B) (byte), V(K) (kibibyte, 1024B), V(M) (mebibyte), V(G) (gibibyte),
-        V(T) (tebibyte), or V(P) (pebibyte)."
+      - Size of C(/dev/shm) in format C(<number>[<unit>]). Number is positive integer. Unit can be V(B) (byte), V(K) (kibibyte,
+        1024B), V(M) (mebibyte), V(G) (gibibyte), V(T) (tebibyte), or V(P) (pebibyte).
       - Omitting the unit defaults to bytes. If you omit the size entirely, Docker daemon uses V(64M).
     type: str
   labels:
@@ -145,8 +143,8 @@ options:
             - Note that this requires the Buildkit plugin to have version 0.6.0 or newer.
           value:
             - Provides the secret from a given value O(secrets[].value).
-            - B(Note) that the secret will be passed as an environment variable to C(docker compose).
-              Use another mean of transport if you consider this not safe enough.
+            - B(Note) that the secret will be passed as an environment variable to C(docker compose). Use another mean of
+              transport if you consider this not safe enough.
             - Note that this requires the Buildkit plugin to have version 0.6.0 or newer.
         required: true
       src:
@@ -162,19 +160,23 @@ options:
       value:
         description:
           - Value of the secret.
-          - B(Note) that the secret will be passed as an environment variable to C(docker compose).
-            Use another mean of transport if you consider this not safe enough.
+          - B(Note) that the secret will be passed as an environment variable to C(docker compose). Use another mean of transport
+            if you consider this not safe enough.
           - Only supported and required for O(secrets[].type=value).
         type: str
   outputs:
     description:
       - Output destinations.
-      - You can provide a list of exporters to export the built image in various places.
-        Note that not all exporters might be supported by the build driver used.
-      - Note that depending on how this option is used, no image with name O(name) and tag O(tag) might
-        be created, which can cause the basic idempotency this module offers to not work.
-      - Providing an empty list to this option is equivalent to not specifying it at all.
-        The default behavior is a single entry with O(outputs[].type=image).
+      - You can provide a list of exporters to export the built image in various places. Note that not all exporters might
+        be supported by the build driver used.
+      - Note that depending on how this option is used, no image with name O(name) and tag O(tag) might be created, which
+        can cause the basic idempotency this module offers to not work.
+      - Providing an empty list to this option is equivalent to not specifying it at all. The default behavior is a single
+        entry with O(outputs[].type=image).
+      - B(Note) that since community.docker 4.2.0, an entry for O(name)/O(tag) is added if O(outputs) has at least one entry
+        and no entry has type O(outputs[].type=image) and includes O(name)/O(tag) in O(outputs[].name). This is because the
+        module would otherwise pass C(--tag name:image) to the buildx plugin, which for some reason overwrites all images
+        in O(outputs) by the C(name:image) provided in O(name)/O(tag).
     type: list
     elements: dict
     version_added: 3.10.0
@@ -185,30 +187,28 @@ options:
         type: str
         choices:
           local:
-            - This export type writes all result files to a directory on the client.
-              The new files will be owned by the current user.
-              On multi-platform builds, all results will be put in subdirectories by their platform.
+            - This export type writes all result files to a directory on the client. The new files will be owned by the current
+              user. On multi-platform builds, all results will be put in subdirectories by their platform.
             - The destination has to be provided in O(outputs[].dest).
           tar:
-            - This export type export type writes all result files as a single tarball on the client.
-              On multi-platform builds, all results will be put in subdirectories by their platform.
+            - This export type export type writes all result files as a single tarball on the client. On multi-platform builds,
+              all results will be put in subdirectories by their platform.
             - The destination has to be provided in O(outputs[].dest).
           oci:
-            - This export type writes the result image or manifest list as an
-              L(OCI image layout, https://github.com/opencontainers/image-spec/blob/v1.0.1/image-layout.md)
+            - This export type writes the result image or manifest list as an L(OCI image layout,
+              https://github.com/opencontainers/image-spec/blob/v1.0.1/image-layout.md)
               tarball on the client.
             - The destination has to be provided in O(outputs[].dest).
           docker:
             - This export type writes the single-platform result image as a Docker image specification tarball on the client.
               Tarballs created by this exporter are also OCI compatible.
-            - The destination can be provided in O(outputs[].dest).
-              If not specified, the tar will be loaded automatically to the local image store.
+            - The destination can be provided in O(outputs[].dest). If not specified, the tar will be loaded automatically
+              to the local image store.
             - The Docker context where to import the result can be provided in O(outputs[].context).
           image:
-            - This exporter writes the build result as an image or a manifest list.
-              When using this driver, the image will appear in C(docker images).
-            - The image name can be provided in O(outputs[].name). If it is not provided,
-              O(name) and O(tag) will be used.
+            - This exporter writes the build result as an image or a manifest list. When using this driver, the image will
+              appear in C(docker images).
+            - The image name can be provided in O(outputs[].name). If it is not provided, O(name) and O(tag) will be used.
             - Optionally, image can be automatically pushed to a registry by setting O(outputs[].push=true).
         required: true
       dest:
@@ -224,10 +224,12 @@ options:
         type: str
       name:
         description:
-          - Name under which the image is stored under.
+          - Name(s) under which the image is stored under.
           - If not provided, O(name) and O(tag) will be used.
           - Optional for O(outputs[].type=image).
-        type: str
+          - This can be a list of strings since community.docker 4.2.0.
+        type: list
+        elements: str
       push:
         description:
           - Whether to push the built image to a registry.
@@ -243,9 +245,10 @@ author:
 seealso:
   - module: community.docker.docker_image_push
   - module: community.docker.docker_image_tag
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
+---
 - name: Build Python 3.12 image
   community.docker.docker_image_build:
     name: localhost/python/3.12:latest
@@ -260,15 +263,22 @@ EXAMPLES = '''
     platform:
       - linux/amd64
       - linux/arm64/v8
-'''
+"""
 
-RETURN = '''
+RETURN = r"""
 image:
-    description: Image inspection results for the affected image.
-    returned: success
-    type: dict
-    sample: {}
-'''
+  description: Image inspection results for the affected image.
+  returned: success
+  type: dict
+  sample: {}
+
+command:
+  description: The command executed.
+  returned: success and for some failures
+  type: list
+  elements: str
+  version_added: 4.2.0
+"""
 
 import base64
 import os
@@ -309,6 +319,12 @@ def convert_to_bytes(value, module, name, unlimited_value=None):
 
 def dict_to_list(dictionary, concat='='):
     return ['%s%s%s' % (k, concat, v) for k, v in sorted(dictionary.items())]
+
+
+def _quote_csv(input):
+    if input.strip() == input and all(i not in input for i in '",\r\n'):
+        return input
+    return '"{0}"'.format(input.replace('"', '""'))
 
 
 class ImageBuilder(DockerBaseClass):
@@ -373,6 +389,31 @@ class ImageBuilder(DockerBaseClass):
         if is_image_name_id(self.tag):
             self.fail('Image name must not contain a digest, but have a tag')
 
+        if self.outputs:
+            found = False
+            name_tag = '%s:%s' % (self.name, self.tag)
+            for output in self.outputs:
+                if output['type'] == 'image':
+                    if not output['name']:
+                        # Since we no longer pass --tag if --output is provided, we need to set this manually
+                        output['name'] = [name_tag]
+                    if output['name'] and name_tag in output['name']:
+                        found = True
+            if not found:
+                self.outputs.append({
+                    'type': 'image',
+                    'name': [name_tag],
+                    'push': False,
+                })
+                if LooseVersion(buildx_version) < LooseVersion('0.13.0'):
+                    self.fail(
+                        "The output does not include an image with name {name_tag}, and the Docker"
+                        " buildx plugin has version {version} which only supports one output.".format(
+                            name_tag=name_tag,
+                            version=buildx_version,
+                        ),
+                    )
+
     def fail(self, msg, **kwargs):
         self.client.fail(msg, **kwargs)
 
@@ -382,7 +423,8 @@ class ImageBuilder(DockerBaseClass):
 
     def add_args(self, args):
         environ_update = {}
-        args.extend(['--tag', '%s:%s' % (self.name, self.tag)])
+        if not self.outputs:
+            args.extend(['--tag', '%s:%s' % (self.name, self.tag)])
         if self.dockerfile:
             args.extend(['--file', os.path.join(self.path, self.dockerfile)])
         if self.cache_from:
@@ -427,26 +469,27 @@ class ImageBuilder(DockerBaseClass):
                     args.extend(['--secret', 'id={id},type=env,env={env}'.format(id=secret['id'], env=env_name)])
         if self.outputs:
             for output in self.outputs:
+                subargs = []
                 if output['type'] == 'local':
-                    args.extend(['--output', 'type=local,dest={dest}'.format(dest=output['dest'])])
+                    subargs.extend(['type=local', 'dest={dest}'.format(dest=output['dest'])])
                 if output['type'] == 'tar':
-                    args.extend(['--output', 'type=tar,dest={dest}'.format(dest=output['dest'])])
+                    subargs.extend(['type=tar', 'dest={dest}'.format(dest=output['dest'])])
                 if output['type'] == 'oci':
-                    args.extend(['--output', 'type=oci,dest={dest}'.format(dest=output['dest'])])
+                    subargs.extend(['type=oci', 'dest={dest}'.format(dest=output['dest'])])
                 if output['type'] == 'docker':
-                    subargs = ['type=docker']
+                    subargs.append('type=docker')
                     if output['dest'] is not None:
                         subargs.append('dest={dest}'.format(dest=output['dest']))
                     if output['context'] is not None:
                         subargs.append('context={context}'.format(context=output['context']))
-                    args.extend(['--output', ','.join(subargs)])
                 if output['type'] == 'image':
-                    subargs = ['type=image']
+                    subargs.append('type=image')
                     if output['name'] is not None:
-                        subargs.append('name={name}'.format(name=output['name']))
+                        subargs.append('name={name}'.format(name=','.join(output['name'])))
                     if output['push']:
                         subargs.append('push=true')
-                    args.extend(['--output', ','.join(subargs)])
+                if subargs:
+                    args.extend(['--output', ','.join(_quote_csv(subarg) for subarg in subargs)])
         return environ_update
 
     def build_image(self):
@@ -468,10 +511,11 @@ class ImageBuilder(DockerBaseClass):
             args.extend(['--', self.path])
             rc, stdout, stderr = self.client.call_cli(*args, environ_update=environ_update)
             if rc != 0:
-                self.fail('Building %s:%s failed' % (self.name, self.tag), stdout=to_native(stdout), stderr=to_native(stderr))
+                self.fail('Building %s:%s failed' % (self.name, self.tag), stdout=to_native(stdout), stderr=to_native(stderr), command=args)
             results['stdout'] = to_native(stdout)
             results['stderr'] = to_native(stderr)
             results['image'] = self.client.find_image(self.name, self.tag) or {}
+            results['command'] = args
 
         return results
 
@@ -520,7 +564,7 @@ def main():
                 type=dict(type='str', choices=['local', 'tar', 'oci', 'docker', 'image'], required=True),
                 dest=dict(type='path'),
                 context=dict(type='str'),
-                name=dict(type='str'),
+                name=dict(type='list', elements='str'),
                 push=dict(type='bool', default=False),
             ),
             required_if=[

@@ -197,6 +197,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -211,37 +212,36 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         firewall_internetservice:
-          database: <value in [isdb, irdb]>
-          direction: <value in [src, dst, both]>
-          entry:
-            -
-              id: <integer>
-              ip_number: <integer>
-              ip_range_number: <integer>
-              port: <list or integer>
-              protocol: <integer>
-          icon_id: <integer>
-          id: <integer>
-          name: <string>
-          offset: <integer>
-          reputation: <integer>
-          sld_id: <integer>
-          extra_ip_range_number: <integer>
-          ip_number: <integer>
-          ip_range_number: <integer>
-          jitter_threshold: <integer>
-          latency_threshold: <integer>
-          obsolete: <integer>
-          packetloss_threshold: <integer>
-          singularity: <integer>
-          city: <list or integer>
-          country: <list or integer>
-          region: <list or integer>
-          city6: <list or integer>
-          country6: <list or integer>
-          extra_ip6_range_number: <integer>
-          ip6_range_number: <integer>
-          region6: <list or integer>
+          # database: <value in [isdb, irdb]>
+          # direction: <value in [src, dst, both]>
+          # entry:
+          #   - id: <integer>
+          #     ip_number: <integer>
+          #     ip_range_number: <integer>
+          #     port: <list or integer>
+          #     protocol: <integer>
+          # icon_id: <integer>
+          # id: <integer>
+          # name: <string>
+          # offset: <integer>
+          # reputation: <integer>
+          # sld_id: <integer>
+          # extra_ip_range_number: <integer>
+          # ip_number: <integer>
+          # ip_range_number: <integer>
+          # jitter_threshold: <integer>
+          # latency_threshold: <integer>
+          # obsolete: <integer>
+          # packetloss_threshold: <integer>
+          # singularity: <integer>
+          # city: <list or integer>
+          # country: <list or integer>
+          # region: <list or integer>
+          # city6: <list or integer>
+          # country6: <list or integer>
+          # extra_ip6_range_number: <integer>
+          # ip6_range_number: <integer>
+          # region6: <list or integer>
 '''
 
 RETURN = '''
@@ -320,8 +320,8 @@ def main():
                 'id': {'type': 'int'},
                 'name': {'type': 'str'},
                 'offset': {'v_range': [['6.0.0', '7.2.1']], 'type': 'int'},
-                'reputation': {'type': 'int'},
-                'sld-id': {'type': 'int'},
+                'reputation': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'sld-id': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
                 'extra-ip-range-number': {'v_range': [['6.2.0', '']], 'type': 'int'},
                 'ip-number': {'v_range': [['6.2.0', '']], 'type': 'int'},
                 'ip-range-number': {'v_range': [['6.2.0', '']], 'type': 'int'},

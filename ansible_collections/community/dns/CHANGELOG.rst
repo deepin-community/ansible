@@ -4,6 +4,194 @@ Community DNS Collection Release Notes
 
 .. contents:: Topics
 
+v3.3.2
+======
+
+Release Summary
+---------------
+
+Bugfix and maintenance release with updated PSL.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+- various DNS lookup plugins and modules - improve handling of invalid nameserver IPs/names (https://github.com/ansible-collections/community.dns/issues/282, https://github.com/ansible-collections/community.dns/pull/284).
+
+v3.3.1
+======
+
+Release Summary
+---------------
+
+Bugfix and maintenance release with updated PSL.
+
+Bugfixes
+--------
+
+- Avoid deprecated functionality in ansible-core 2.20 (https://github.com/ansible-collections/community.dns/pull/280).
+- Update Public Suffix List.
+- nameserver_record_info - removed type ``ALL``, which never worked (https://github.com/ansible-collections/community.dns/issues/278, https://github.com/ansible-collections/community.dns/pull/279).
+
+v3.3.0
+======
+
+Release Summary
+---------------
+
+Feature release with support for AdGuard Home.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+
+New Modules
+-----------
+
+- community.dns.adguardhome_rewrite - Add, update or delete DNS rewrite rules from AdGuardHome.
+- community.dns.adguardhome_rewrite_info - Retrieve DNS rewrite rules from AdGuardHome.
+
+v3.2.7
+======
+
+Release Summary
+---------------
+
+Maintenance release with updated PSL.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+
+v3.2.6
+======
+
+Release Summary
+---------------
+
+Regular bugfix and maintenance release with updated PSL.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+- hetzner_dns_records inventory plugin - avoid using deprecated option when templating options (https://github.com/ansible-collections/community.dns/pull/266).
+- hosttech_dns_records inventory plugin - avoid using deprecated option when templating options (https://github.com/ansible-collections/community.dns/pull/266).
+
+v3.2.5
+======
+
+Release Summary
+---------------
+
+Regular maintenance release with bugfixes and updated PSL.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+- lookup and lookup_as_dict lookup plugins - removed type ``ALL``, which never worked (https://github.com/ansible-collections/community.dns/issues/264, https://github.com/ansible-collections/community.dns/pull/265).
+
+v3.2.4
+======
+
+Release Summary
+---------------
+
+Regular maintenance release with updated PSL.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+
+v3.2.3
+======
+
+Release Summary
+---------------
+
+Maintenance release with updated PSL.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+
+v3.2.2
+======
+
+Release Summary
+---------------
+
+Regular maintenance release with updated PSL.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+
+v3.2.1
+======
+
+Release Summary
+---------------
+
+Maintenance release with updated PSL.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+
+v3.2.0
+======
+
+Release Summary
+---------------
+
+Feature/maintenance release with updated PSL.
+
+Minor Changes
+-------------
+
+- all filter, inventory, and lookup plugins, and plugin utils - add type hints to all Python 3 only code (https://github.com/ansible-collections/community.dns/pull/239).
+- get_public_suffix, get_registrable_domain, remove_public_suffix, and remove_registrable_domain filter plugin - validate parameters, and correctly handle byte strings when passed for input (https://github.com/ansible-collections/community.dns/pull/239).
+
+Bugfixes
+--------
+
+- Fix various issues and potential bugs pointed out by linters (https://github.com/ansible-collections/community.dns/pull/242, https://github.com/ansible-collections/community.dns/pull/243).
+- Update Public Suffix List.
+
+v3.1.2
+======
+
+Release Summary
+---------------
+
+Regular maintenance release with updated PSL.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+
+v3.1.1
+======
+
+Release Summary
+---------------
+
+Maintenance release with updated documentation and PSL.
+
+Bugfixes
+--------
+
+- Update Public Suffix List.
+
 v3.1.0
 ======
 

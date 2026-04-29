@@ -157,6 +157,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -171,18 +172,18 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         pm_pblock_adom:
-          name: <string>
-          oid: <integer>
-          package_settings:
-            central_nat: <value in [disable, enable]>
-            consolidated_firewall_mode: <value in [disable, enable]>
-            fwpolicy_implicit_log: <value in [disable, enable]>
-            fwpolicy6_implicit_log: <value in [disable, enable]>
-            inspection_mode: <value in [proxy, flow]>
-            ngfw_mode: <value in [profile-based, policy-based]>
-            policy_offload_level: <value in [disable, default, dos-offload, ...]>
-            ssl_ssh_profile: <string>
-          type: <value in [pblock]>
+          # name: <string>
+          # oid: <integer>
+          # package_settings:
+          #   central_nat: <value in [disable, enable]>
+          #   consolidated_firewall_mode: <value in [disable, enable]>
+          #   fwpolicy_implicit_log: <value in [disable, enable]>
+          #   fwpolicy6_implicit_log: <value in [disable, enable]>
+          #   inspection_mode: <value in [proxy, flow]>
+          #   ngfw_mode: <value in [profile-based, policy-based]>
+          #   policy_offload_level: <value in [disable, default, dos-offload, ...]>
+          #   ssl_ssh_profile: <string>
+          # type: <value in [pblock]>
 '''
 
 RETURN = '''

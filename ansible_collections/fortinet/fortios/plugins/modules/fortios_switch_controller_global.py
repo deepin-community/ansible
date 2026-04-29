@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -236,6 +237,13 @@ options:
                 choices:
                     - 'enable'
                     - 'disable'
+            switch_on_deauth:
+                description:
+                    - No-operation/Factory-reset the managed FortiSwitch on deauthorization.
+                type: str
+                choices:
+                    - 'no-op'
+                    - 'factory-reset'
             update_user_device:
                 description:
                     - Control which sources update the device user list.
@@ -266,6 +274,9 @@ options:
                     - FortiLink VLAN optimization.
                 type: str
                 choices:
+                    - 'prune'
+                    - 'configured'
+                    - 'none'
                     - 'enable'
                     - 'disable'
 """
@@ -302,10 +313,11 @@ EXAMPLES = """
           mac_violation_timer: "0"
           quarantine_mode: "by-vlan"
           sn_dns_resolution: "enable"
+          switch_on_deauth: "no-op"
           update_user_device: "mac-cache"
           vlan_all_mode: "all"
           vlan_identity: "description"
-          vlan_optimization: "enable"
+          vlan_optimization: "prune"
 """
 
 RETURN = """
@@ -385,6 +397,18 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_switch_controller_global_data(json):
@@ -411,6 +435,7 @@ def filter_switch_controller_global_data(json):
         "mac_violation_timer",
         "quarantine_mode",
         "sn_dns_resolution",
+        "switch_on_deauth",
         "update_user_device",
         "vlan_all_mode",
         "vlan_identity",
@@ -432,8 +457,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -462,30 +486,115 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def switch_controller_global(data, fos, check_mode=False):
 
-def switch_controller_global(data, fos):
     state = None
     vdom = data["vdom"]
+    state = data.get("state", None)
     switch_controller_global_data = data["switch_controller_global"]
 
     filtered_data = filter_switch_controller_global_data(switch_controller_global_data)
     filtered_data = flatten_multilists_attributes(filtered_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("switch-controller", "global", filtered_data, vdom=vdom)
+        current_data = fos.get("switch-controller", "global", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["switch_controller_global"] = converted_data
+    data_copy["switch_controller_global"] = filtered_data
     fos.do_member_operation(
         "switch-controller",
         "global",
@@ -507,14 +616,16 @@ def is_successful_status(resp):
     )
 
 
-def fortios_switch_controller(data, fos):
+def fortios_switch_controller(data, fos, check_mode):
+
     if data["switch_controller_global"]:
-        resp = switch_controller_global(data, fos)
+        resp = switch_controller_global(data, fos, check_mode)
     else:
         fos._module.fail_json(
             msg="missing task body: %s" % ("switch_controller_global")
         )
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -542,7 +653,13 @@ versioned_schema = {
         "vlan_optimization": {
             "v_range": [["v6.2.0", ""]],
             "type": "string",
-            "options": [{"value": "enable"}, {"value": "disable"}],
+            "options": [
+                {"value": "prune", "v_range": [["v7.6.1", ""]]},
+                {"value": "configured", "v_range": [["v7.6.1", ""]]},
+                {"value": "none", "v_range": [["v7.6.1", ""]]},
+                {"value": "enable", "v_range": [["v6.2.0", "v7.6.0"]]},
+                {"value": "disable", "v_range": [["v6.2.0", "v7.6.0"]]},
+            ],
         },
         "vlan_identity": {
             "v_range": [["v7.4.1", ""]],
@@ -665,6 +782,11 @@ versioned_schema = {
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
+        "switch_on_deauth": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "no-op"}, {"value": "factory-reset"}],
+        },
         "allow_multiple_interfaces": {
             "v_range": [["v6.0.0", "v6.2.7"], ["v6.4.1", "v6.4.1"]],
             "type": "string",
@@ -703,7 +825,7 @@ def main():
                 "required"
             ] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -727,7 +849,7 @@ def main():
         )
 
         is_error, has_changed, result, diff = fortios_switch_controller(
-            module.params, fos
+            module.params, fos, module.check_mode
         )
 
     else:

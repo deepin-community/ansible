@@ -213,12 +213,17 @@ options:
             serial:
                 type: raw
                 description: (list) Serial numbers of the FortiAnalyzer.
+            vrf_select:
+                aliases: ['vrf-select']
+                type: int
+                description: VRF ID used for connection to server.
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -234,29 +239,30 @@ EXAMPLES = '''
         adom: <your own value>
         devprof: <your own value>
         devprof_log_fortianalyzercloud_setting:
-          __change_ip: <integer>
-          access_config: <value in [disable, enable]>
-          certificate: <string>
-          conn_timeout: <integer>
-          enc_algorithm: <value in [high, low, high-medium, ...]>
-          hmac_algorithm: <value in [sha256, sha1]>
-          ips_archive: <value in [disable, enable]>
-          monitor_failure_retry_period: <integer>
-          monitor_keepalive_period: <integer>
-          source_ip: <string>
-          ssl_min_proto_version: <value in [default, TLSv1-1, TLSv1-2, ...]>
-          status: <value in [disable, enable]>
-          upload_day: <string>
-          upload_interval: <value in [daily, weekly, monthly]>
-          upload_option: <value in [store-and-upload, realtime, 1-minute, ...]>
-          upload_time: <string>
-          max_log_rate: <integer>
-          priority: <value in [low, default]>
-          interface: <string>
-          interface_select_method: <value in [auto, sdwan, specify]>
-          preshared_key: <string>
-          certificate_verification: <value in [disable, enable]>
-          serial: <list or string>
+          # __change_ip: <integer>
+          # access_config: <value in [disable, enable]>
+          # certificate: <string>
+          # conn_timeout: <integer>
+          # enc_algorithm: <value in [high, low, high-medium, ...]>
+          # hmac_algorithm: <value in [sha256, sha1]>
+          # ips_archive: <value in [disable, enable]>
+          # monitor_failure_retry_period: <integer>
+          # monitor_keepalive_period: <integer>
+          # source_ip: <string>
+          # ssl_min_proto_version: <value in [default, TLSv1-1, TLSv1-2, ...]>
+          # status: <value in [disable, enable]>
+          # upload_day: <string>
+          # upload_interval: <value in [daily, weekly, monthly]>
+          # upload_option: <value in [store-and-upload, realtime, 1-minute, ...]>
+          # upload_time: <string>
+          # max_log_rate: <integer>
+          # priority: <value in [low, default]>
+          # interface: <string>
+          # interface_select_method: <value in [auto, sdwan, specify]>
+          # preshared_key: <string>
+          # certificate_verification: <value in [disable, enable]>
+          # serial: <list or string>
+          # vrf_select: <integer>
 '''
 
 RETURN = '''
@@ -355,7 +361,8 @@ def main():
                 'interface-select-method': {'v_range': [['6.2.7', '6.2.13'], ['6.4.3', '']], 'choices': ['auto', 'sdwan', 'specify'], 'type': 'str'},
                 'preshared-key': {'v_range': [['7.0.0', '']], 'no_log': True, 'type': 'str'},
                 'certificate-verification': {'v_range': [['7.0.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'serial': {'v_range': [['7.0.3', '']], 'type': 'raw'}
+                'serial': {'v_range': [['7.0.3', '']], 'type': 'raw'},
+                'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'}
             }
         }
     }

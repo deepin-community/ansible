@@ -2108,7 +2108,17 @@ $startupWait = {
 # The scheduled task might need to fallback to run as SYSTEM so grant that SID rights to tmpdir
 $systemSid = (New-Object -TypeName Security.Principal.SecurityIdentifier -ArgumentList @(
         [Security.Principal.WellKnownSidType ]::LocalSystemSid, $null))
-$outputDirAcl = Get-Acl -LiteralPath $module.Tmpdir
+
+# .NET 5+ uses a different mechanism to get/set the ACLs. We cannot use
+# Set-Acl as it may try and set the SACL which requires SeSecurityPrivilege
+# which the user may not have.
+$tempDirectory = Get-Item -LiteralPath $module.Tmpdir
+if ($PSVersionTable.PSVersion -lt [Version]'6.0') {
+    $outputDirAcl = $tempDirectory.GetAccessControl('Access')
+}
+else {
+    $outputDirAcl = [System.IO.FileSystemAclExtensions]::GetAccessControl($tempDirectory, 'Access')
+}
 $systemAce = $outputDirAcl.AccessRuleFactory(
     $systemSid,
     [System.Security.AccessControl.FileSystemRights]'Modify,Read,ExecuteFile,Synchronize',
@@ -2118,7 +2128,12 @@ $systemAce = $outputDirAcl.AccessRuleFactory(
     [System.Security.AccessControl.AccessControlType]::Allow
 )
 $outputDirAcl.AddAccessRule($systemAce)
-Set-Acl -LiteralPath $module.Tmpdir -AclObject $outputDirAcl
+if ($PSVersionTable.PSVersion -lt [Version]'6.0') {
+    $tempDirectory.SetAccessControl($outputDirAcl)
+}
+else {
+    [System.IO.FileSystemAclExtensions]::SetAccessControl($tempDirectory, $outputDirAcl)
+}
 
 $updateParameters = @{
     Category = $categoryNames
@@ -2260,15 +2275,7 @@ if ($wait) {
 
                     if ($updateInfo.id -in $filterMap.Keys) {
                         $reasons = @($filterMap[$updateInfo.id])
-
-                        # This value is deprecated in favour of the full list and should be removed in 2023-06-01. We also
-                        # need to rename the whitelist/blacklist reasons for backwards compatibility.
-                        $depReason = $reasons[0]
-                        if ($depReason -eq 'accept_list') { $depReason = 'whitelist' }
-                        if ($depReason -eq 'reject_list') { $depReason = 'blacklist' }
-
                         $resultInfo.filtered_reasons = $reasons
-                        $resultInfo.filtered_reason = $depReason
                     }
 
                     $updates[$updateInfo.id] = $resultInfo

@@ -49,7 +49,7 @@ extends_documentation_fragment:
 
 EXAMPLES = r'''
   - name: Gather information about all snapshots in VMware vCenter
-    vmware_snapshot_info_all:
+    vmware_all_snapshots_info:
       hostname: '{{ vcenter_hostname }}'
       username: '{{ vcenter_username }}'
       password: '{{ vcenter_password }}'
@@ -57,7 +57,7 @@ EXAMPLES = r'''
       datacenter: '{{ datacenter_name }}'
     delegate_to: localhost
   - name: Gather information of a snapshot with filters applied and match_type in exacts.
-    vmware_snapshot_info_all:
+    vmware_all_snapshots_info:
       hostname: '{{ vcenter_hostname }}'
       username: '{{ vcenter_username }}'
       password: '{{ vcenter_password }}'
@@ -68,7 +68,7 @@ EXAMPLES = r'''
         vm_name: "you_marchine_name"
     delegate_to: localhost
   - name: Gather information of snapshots that in their name contain the "test" in their name.
-    vmware_snapshot_info_all:
+    vmware_all_snapshots_info:
       hostname: '{{ vcenter_hostname }}'
       username: '{{ vcenter_username }}'
       password: '{{ vcenter_password }}'
@@ -123,11 +123,8 @@ vmware_all_snapshots_info:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.community.vmware.plugins.module_utils.vmware import (
-    PyVmomi,
-    vmware_argument_spec,
-    list_snapshots_recursively,
-)
+from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi, list_snapshots_recursively
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 
 try:
     from pyVmomi import vim
@@ -185,7 +182,7 @@ class VMwareSnapshotInfo(PyVmomi):
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(
         datacenter=dict(required=True, type="str"),
         filters=dict(required=False, type="dict", default={}),

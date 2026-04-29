@@ -117,6 +117,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -134,9 +135,9 @@ EXAMPLES = '''
         exclude_list: <your own value>
         state: present # <value in [present, absent]>
         devprof_log_syslogd_filter_excludelist_fields:
-          args: <list or string>
-          field: <string>
-          negate: <value in [disable, enable]>
+          # args: <list or string>
+          # field: <string>
+          # negate: <value in [disable, enable]>
 '''
 
 RETURN = '''

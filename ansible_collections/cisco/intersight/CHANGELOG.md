@@ -1,5 +1,14 @@
 # cisco.intersight Ansible Collection Changelog
 
+## Version 2.2.0
+- New Policy (VLAN, Thermal, Syslog, SNMP, Power, Network Conn., Multicast) and Pool (UUID, MAC, IP) modules
+
+## Version 2.1.0
+- Bump minor version to support semantic versioning for new features in server_profile
+
+## Version 2.0.21
+- Info example playbook added and removed playbooks dir from collection
+
 ## Version 2.0.20
 - Replace 2.0.19 release and remove unneeded directory
 

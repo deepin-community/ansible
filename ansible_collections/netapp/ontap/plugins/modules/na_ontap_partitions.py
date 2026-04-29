@@ -14,7 +14,7 @@ short_description: NetApp ONTAP Assign partitions and disks to nodes.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: 21.8.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 
 description:
 - Assign the specified number of partitions or disks eligible for partitioning to a node.
@@ -75,18 +75,18 @@ options:
 
 EXAMPLES = """
 - name: Assign specified total partitions to node cluster-01
-  na_ontap_disk_partitions_custom:
+  netapp.ontap.na_ontap_partitions:
     node: cluster-01
     partition_count: 56
-    disk_type: FSAS
-    partition_type: data
-    hostname: "{{ hostname }}"
-    username: "{{ admin username }}"
-    password: "{{ admin password }}"
+    disk_type: SSD
+    partition_type: data1
+    partition_method: root_data1_data2
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """
-
 """
 
 from ansible.module_utils.basic import AnsibleModule

@@ -24,7 +24,7 @@ options:
     description:
       - The parent template of this monitor template. Once this value has
         been set, it cannot be changed.
-    type: str
+    type: raw
     default: /Common/serverssl
   ciphers:
     description:
@@ -269,6 +269,7 @@ class Parameters(AnsibleF5Parameters):
         'caFile',
         'authenticateName',
         'tmOptions',
+        'passphrase'
     ]
 
     returnables = [
@@ -382,10 +383,11 @@ class ModuleParameters(Parameters):
 
     @property
     def parent(self):
-        if self._values['parent'] is None:
+        parent = self._values.get("parent")
+        if parent in [None, "", "None"]:
             return None
-        if self._values['parent'] == 'serverssl':
-            return '/Common/serverssl'
+        if parent == "serverssl":
+            return "/Common/serverssl"
         result = fq_name(self.partition, self._values['parent'])
         return result
 
@@ -439,6 +441,14 @@ class ModuleParameters(Parameters):
         if is_empty_list(options):
             return []
         return options
+
+    @property
+    def passphrase(self):
+        if self._values['passphrase'] is None:
+            return None
+        if self._values['passphrase'] in ['', 'none']:
+            return ''
+        return self._values['passphrase']
 
 
 class Changes(Parameters):
@@ -699,6 +709,7 @@ class ModuleManager(object):
             self.client.provider['server'],
             self.client.provider['server_port']
         )
+        params['passphrase'] = self.want.passphrase
         resp = self.client.api.post(uri, json=params)
         try:
             response = resp.json()
@@ -775,7 +786,7 @@ class ArgumentSpec(object):
             chain=dict(),
             key=dict(no_log=True),
             passphrase=dict(no_log=True),
-            parent=dict(default='/Common/serverssl'),
+            parent=dict(type='raw', default='/Common/serverssl'),
             ciphers=dict(),
             cipher_group=dict(),
             authenticate_name=dict(),

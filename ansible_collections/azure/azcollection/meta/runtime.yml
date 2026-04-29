@@ -64,6 +64,10 @@ action_groups:
     - azure.azcollection.azure_rm_containerinstance_info
     - azure.azcollection.azure_rm_containerregistry
     - azure.azcollection.azure_rm_containerregistry_info
+    - azure.azcollection.azure_rm_containerregistryscopemap
+    - azure.azcollection.azure_rm_containerregistryscopemap_info
+    - azure.azcollection.azure_rm_containerregistrytoken
+    - azure.azcollection.azure_rm_containerregistrytoken_info
     - azure.azcollection.azure_rm_containerregistryreplication
     - azure.azcollection.azure_rm_containerregistryreplication_info
     - azure.azcollection.azure_rm_containerregistrytag
@@ -132,6 +136,7 @@ action_groups:
     - azure.azcollection.azure_rm_ipgroup_info
     - azure.azcollection.azure_rm_keyvault
     - azure.azcollection.azure_rm_keyvault_info
+    - azure.azcollection.azure_rm_keyvaultsecuritydomain
     - azure.azcollection.azure_rm_keyvaultkey
     - azure.azcollection.azure_rm_keyvaultkey_info
     - azure.azcollection.azure_rm_keyvaultsecret
@@ -156,9 +161,17 @@ action_groups:
     - azure.azcollection.azure_rm_mariadbfirewallrule_info
     - azure.azcollection.azure_rm_mariadbserver
     - azure.azcollection.azure_rm_mariadbserver_info
+    - azure.azcollection.azure_rm_monitoractiongroups
+    - azure.azcollection.azure_rm_monitoractiongroups_info
+    - azure.azcollection.azure_rm_monitoractivitylogalerts
+    - azure.azcollection.azure_rm_monitoractivitylogalerts_info
+    - azure.azcollection.azure_rm_monitordatacollectionrules
+    - azure.azcollection.azure_rm_monitordatacollectionrules_info
     - azure.azcollection.azure_rm_monitordiagnosticsetting
     - azure.azcollection.azure_rm_monitordiagnosticsetting_info
     - azure.azcollection.azure_rm_monitorlogprofile
+    - azure.azcollection.azure_rm_monitormetricalerts
+    - azure.azcollection.azure_rm_monitormetricalerts_info
     - azure.azcollection.azure_rm_multiplemanageddisks
     - azure.azcollection.azure_rm_mysqlconfiguration
     - azure.azcollection.azure_rm_mysqlconfiguration_info
@@ -203,6 +216,10 @@ action_groups:
     - azure.azcollection.azure_rm_postgresqlflexiblefirewallrule_info
     - azure.azcollection.azure_rm_postgresqlflexibleserver
     - azure.azcollection.azure_rm_postgresqlflexibleserver_info
+    - azure.azcollection.azure_rm_postgresqlflexiblebackup
+    - azure.azcollection.azure_rm_postgresqlflexiblebackup_info
+    - azure.azcollection.azure_rm_postgresqlflexiblevirtualendpoint
+    - azure.azcollection.azure_rm_postgresqlflexiblevirtualendpoint_info
     - azure.azcollection.azure_rm_postgresqlserver
     - azure.azcollection.azure_rm_postgresqlserver_info
     - azure.azcollection.azure_rm_privatednsrecordset
@@ -227,6 +244,8 @@ action_groups:
     - azure.azcollection.azure_rm_publicipprefix_info
     - azure.azcollection.azure_rm_recoveryservicesvault
     - azure.azcollection.azure_rm_recoveryservicesvault_info
+    - azure.azcollection.azure_rm_recoveryservicesvaultconfig
+    - azure.azcollection.azure_rm_recoveryservicesvaultconfig_info
     - azure.azcollection.azure_rm_rediscache
     - azure.azcollection.azure_rm_rediscache_info
     - azure.azcollection.azure_rm_rediscachefirewallrule
@@ -342,3 +361,24 @@ action_groups:
     - azure.azcollection.azure_rm_batchaccountpool_info
     - azure.azcollection.azure_rm_batchaccountapplicationpackage
     - azure.azcollection.azure_rm_batchaccountapplicationpackage_info
+    - azure.azcollection.azure_rm_applicationfirewallpolicy
+    - azure.azcollection.azure_rm_applicationfirewallpolicy_info
+    - azure.azcollection.azure_rm_keyvaultcertificate
+    - azure.azcollection.azure_rm_keyvaultcertificate_info
+    - azure.azcollection.azure_rm_diskaccess
+    - azure.azcollection.azure_rm_diskaccess_info
+    - azure.azcollection.azure_rm_resourcehealthstates_info
+    - azure.azcollection.azure_rm_afdroute
+    - azure.azcollection.azure_rm_afdroute_info
+    - azure.azcollection.azure_rm_afdorigingroup
+    - azure.azcollection.azure_rm_afdorigingroup_info
+    - azure.azcollection.azure_rm_afdorigin
+    - azure.azcollection.azure_rm_afdorigin_info
+    - azure.azcollection.azure_rm_afdruleset
+    - azure.azcollection.azure_rm_afdruleset_info
+    - azure.azcollection.azure_rm_afdrules
+    - azure.azcollection.azure_rm_afdrules_info
+    - azure.azcollection.azure_rm_tags
+    - azure.azcollection.azure_rm_tags_info
+    - azure.azcollection.azure_rm_dedicatedhost
+    - azure.azcollection.azure_rm_dedicatedhost_info

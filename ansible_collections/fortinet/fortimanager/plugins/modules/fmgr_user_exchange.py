@@ -179,12 +179,20 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            validate_server_certificate:
+                aliases: ['validate-server-certificate']
+                type: str
+                description: Enable/disable exchange server certificate validation.
+                choices:
+                    - 'disable'
+                    - 'enable'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -200,21 +208,22 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         user_exchange:
-          addr_type: <value in [ipv4, ipv6]>
-          auth_level: <value in [low, medium, normal, ...]>
-          auth_type: <value in [spnego, ntlm, kerberos]>
-          connect_protocol: <value in [rpc-over-tcp, rpc-over-http, rpc-over-https]>
-          domain_name: <string>
-          http_auth_type: <value in [ntlm, basic]>
-          ip: <string>
-          ip6: <string>
-          kdc_ip: <list or string>
-          name: <string>
-          password: <list or string>
-          server_name: <string>
-          ssl_min_proto_version: <value in [default, TLSv1-1, TLSv1-2, ...]>
-          username: <string>
-          auto_discover_kdc: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # addr_type: <value in [ipv4, ipv6]>
+          # auth_level: <value in [low, medium, normal, ...]>
+          # auth_type: <value in [spnego, ntlm, kerberos]>
+          # connect_protocol: <value in [rpc-over-tcp, rpc-over-http, rpc-over-https]>
+          # domain_name: <string>
+          # http_auth_type: <value in [ntlm, basic]>
+          # ip: <string>
+          # ip6: <string>
+          # kdc_ip: <list or string>
+          # password: <list or string>
+          # server_name: <string>
+          # ssl_min_proto_version: <value in [default, TLSv1-1, TLSv1-2, ...]>
+          # username: <string>
+          # auto_discover_kdc: <value in [disable, enable]>
+          # validate_server_certificate: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -297,7 +306,8 @@ def main():
                     'type': 'str'
                 },
                 'username': {'v_range': [['6.2.0', '']], 'type': 'str'},
-                'auto-discover-kdc': {'v_range': [['6.4.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'auto-discover-kdc': {'v_range': [['6.4.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'validate-server-certificate': {'v_range': [['7.6.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }
         }
     }

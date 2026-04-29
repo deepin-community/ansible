@@ -217,6 +217,7 @@ class TestIBMSVCvolume(unittest.TestCase):
             v = IBMSVCvolume()
             v.mandatory_parameter_validation()
         self.assertTrue(exc.value.args[0]['failed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'Mutually exclusive parameters detected: [volumegroup] and [novolumegroup]')
 
     @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
            'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
@@ -478,6 +479,29 @@ class TestIBMSVCvolume(unittest.TestCase):
         v.create_volume()
 
     @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_failure_volume_state_present_with_unmap(self, svc_authorize_mock):
+        """
+        Parameter [unmap] cannot be specified when creating or updating a volume.
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'novolumegroup': True,
+            'state': 'present',
+            'unmap': ['host_mappings']
+        })
+
+        with pytest.raises(AnsibleFailJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['failed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'Parameter [unmap] cannot be specified when creating or updating a volume.')
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
            'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
     @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
            'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
@@ -493,6 +517,42 @@ class TestIBMSVCvolume(unittest.TestCase):
         svc_run_command_mock.return_value = None
         v = IBMSVCvolume()
         v.remove_volume()
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_remove_volume_with_unmap(self,
+                                      svc_authorize_mock,
+                                      svc_obj_info_mock,
+                                      svc_run_command_mock):
+        """
+        Remove a volume and unmap it from host mappings, remote copy relationships, and flashcopy mappings.
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'state': 'absent',
+            'unmap': ['host_mappings', 'remotecopy_relationships', 'flashcopy_mappings']
+        })
+        svc_obj_info_mock.return_value = [  # lsvdisk detailed mock object
+            {
+                "name:": "test_volume",
+                "type": "striped",
+                "RC_name": ""
+            },
+            {}
+        ]
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['changed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'volume [test_volume] has been deleted.')
 
     @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
            'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
@@ -1442,7 +1502,8 @@ class TestIBMSVCvolume(unittest.TestCase):
            'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
     @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
            'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
-    def test_cloud_backup_validation(self, auth, obj_mock, src):
+    def test_failure_volume_creation_cloud_backup_validation(self, auth, obj_mock, src):
+
         set_module_args({
             'clustername': 'clustername',
             'domain': 'domain',
@@ -1459,6 +1520,37 @@ class TestIBMSVCvolume(unittest.TestCase):
             v = IBMSVCvolume()
             v.apply()
         self.assertTrue(exc.value.args[0]['failed'])
+        self.assertEqual(exc.value.args[0]['msg'], "Following parameter not applicable for creation: enable_cloud_snapshot")
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_failure_volume_creation_invalid_params_cloud_account(self,
+                                                                  svc_authorize_mock,
+                                                                  svc_obj_info_mock):
+        """
+        Following parameter not applicable for creation: cloud_account_name
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'pool': 'test_pool',
+            'size': '1',
+            'unit': 'gb',
+            'volumegroup': 'test_volumegroup',
+            'cloud_account_name': 'test'
+        })
+        svc_obj_info_mock.side_effect = [{}, {}]
+        with pytest.raises(AnsibleFailJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['failed'])
+        self.assertEqual(exc.value.args[0]['msg'], "Following parameter not applicable for creation: cloud_account_name")
 
     @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
            'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
@@ -1725,6 +1817,671 @@ class TestIBMSVCvolume(unittest.TestCase):
         v = IBMSVCvolume()
         snapshot_id = v.create_transient_snapshot()
         self.assertEqual(snapshot_id, '3')
+
+    # converttoclone implementation UTs: SKG:DBG
+    # Convert thinclone volume to clone
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_convert_thinclone_volume_to_clone(self, svc_authorize_mock, svc_run_command_mock, svc_obj_info_mock):
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'vol0',
+            'type': 'clone'
+        })
+
+        # 3 volumes are enough for all converttoclone scenarios.
+        # One currently thinclone, one clone and with blank volume_type
+
+        svc_obj_info_mock.return_value = [
+            {"id": "0", "name": "vol0", "volume_type": "thinclone"},
+            {"id": "1", "name": "vol1", "volume_type": "clone"},
+            {"id": "2", "name": "vol2", "volume_type": ""}
+        ]
+
+        svc_run_command_mock.return_value = ""
+
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['changed'])
+
+    # Try converting such volume to clone which is in copying state (i.e. volume_type=clone currently)
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_convert_thinclone_volume_to_clone_idempotency_when_copy_in_progress(self,
+                                                                                 svc_authorize_mock,
+                                                                                 svc_run_command_mock,
+                                                                                 svc_obj_info_mock):
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'vol1',
+            'type': 'clone'
+        })
+
+        svc_obj_info_mock.return_value = [
+            {"id": "0", "name": "vol0", "volume_type": "thinclone"},
+            {"id": "1", "name": "vol1", "volume_type": "clone"},
+            {"id": "2", "name": "vol2", "volume_type": ""}
+        ]
+
+        svc_run_command_mock.return_value = ""
+
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertFalse(exc.value.args[0]['changed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'Volume vol1 is not a thinclone.')
+
+    # Try converting an already cloned volume to clone (for which volume_type is clone
+    # currently, becaue copy is still in progress); should pass.
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_convert_thinclone_volume_to_clone_idempotency(self,
+                                                           svc_authorize_mock,
+                                                           svc_run_command_mock,
+                                                           svc_obj_info_mock):
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'vol1',
+            'type': 'clone'
+        })
+
+        svc_obj_info_mock.return_value = [
+            {"id": "0", "name": "vol0", "volume_type": "thinclone"},
+            {"id": "1", "name": "vol1", "volume_type": "clone"},
+            {"id": "2", "name": "vol2", "volume_type": ""}
+        ]
+
+        svc_run_command_mock.return_value = ""
+
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertFalse(exc.value.args[0]['changed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'Volume vol2 is not a thinclone.')
+
+    # Convert thinclone volume to clone
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_convert_thinclone_volume_to_clone(self,
+                                               svc_authorize_mock,
+                                               svc_run_command_mock,
+                                               svc_obj_info_mock):
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'vol0',
+            'type': 'clone'
+        })
+
+        # 3 volumes are enough for all converttoclone scenarios.
+        # One currently thinclone, one clone and with blank volume_type
+
+        svc_obj_info_mock.return_value = [
+            {"id": "0", "name": "vol0", "volume_type": "thinclone"}
+        ]
+
+        svc_run_command_mock.return_value = ""
+
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['changed'])
+
+    # Try converting such volume to clone which is in copying state (i.e. volume_type=clone currently)
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_convert_thinclone_volume_to_clone_idempotency_when_copy_in_progress(self,
+                                                                                 svc_authorize_mock,
+                                                                                 svc_run_command_mock,
+                                                                                 svc_obj_info_mock):
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'vol1',
+            'type': 'clone'
+        })
+
+        svc_obj_info_mock.return_value = [
+            {"id": "1", "name": "vol1", "volume_type": "clone"}
+        ]
+
+        svc_run_command_mock.return_value = ""
+
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertFalse(exc.value.args[0]['changed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'Volume vol1 is not a thinclone.')
+
+    # Try converting a normal volume to clone; should pass without any change because
+    # volume might have converted to clone previously and copy might have been completed.
+    # Once copy completes, a cloned volume's volume_type changes to blank.
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_convert_thinclone_volume_to_clone_idempotency(self,
+                                                           svc_authorize_mock,
+                                                           svc_run_command_mock,
+                                                           svc_obj_info_mock):
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'vol2',
+            'type': 'clone'
+        })
+
+        svc_obj_info_mock.return_value = [
+            {"id": "2", "name": "vol2", "volume_type": ""}
+        ]
+
+        svc_run_command_mock.return_value = ""
+
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertFalse(exc.value.args[0]['changed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'Volume vol2 is not a thinclone.')
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_convert_thinclone_volume_list_to_clone(self,
+                                                    svc_authorize_mock,
+                                                    svc_run_command_mock,
+                                                    svc_obj_info_mock):
+        # Test converting a list of volumes to clone when all of them are thinclone
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'vol0:vol1:vol2',
+            'type': 'clone'
+        })
+
+        svc_obj_info_mock.return_value = [
+            {"id": "0", "name": "vol0", "volume_type": "thinclone"},
+            {"id": "1", "name": "vol1", "volume_type": "thinclone"},
+            {"id": "2", "name": "vol2", "volume_type": "thinclone"}
+        ]
+
+        svc_run_command_mock.return_value = ""
+
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['changed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'Volume(s) [vol0:vol1:vol2] converted to clone.')
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_convert_mixed_type_volume_list_to_clone(self,
+                                                     svc_authorize_mock,
+                                                     svc_run_command_mock,
+                                                     svc_obj_info_mock):
+        # Test converting a list of volumes to clone when some of them are thinclone
+        # and others are in copying state (i.e. volume_type=clone currently)
+        # Idempotency case where a subset of volumes has been cloned
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'vol0:vol1:vol2',
+            'type': 'clone'
+        })
+
+        svc_obj_info_mock.return_value = [
+            {"id": "0", "name": "vol0", "volume_type": "thinclone"},
+            {"id": "1", "name": "vol1", "volume_type": "clone"},
+            {"id": "2", "name": "vol2", "volume_type": "thinclone"}
+        ]
+
+        svc_run_command_mock.return_value = ""
+
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['changed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'Volume(s) [vol0:vol1:vol2] converted to clone.')
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_convert_thinclone_volume_list_to_clone_idempotency(self,
+                                                                svc_authorize_mock,
+                                                                svc_run_command_mock,
+                                                                svc_obj_info_mock):
+        # Test converting a list of volumes to clone when none of them are thinclone
+        # Idempotency case where a all volumes have either been cloned or were not
+        # thinclone originally (but ansible does not know which case is true, so pass it)
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'vol0:vol1:vol2',
+            'type': 'clone'
+        })
+
+        svc_obj_info_mock.return_value = [
+            {"id": "0", "name": "vol0", "volume_type": ""},
+            {"id": "1", "name": "vol1", "volume_type": ""},
+            {"id": "2", "name": "vol2", "volume_type": ""}
+        ]
+
+        svc_run_command_mock.return_value = ""
+
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertFalse(exc.value.args[0]['changed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'Volume(s) [vol0:vol1:vol2] are not thinclone!!')
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_failure_convert_invalid_volumes_in_list_to_clone(self,
+                                                              svc_authorize_mock,
+                                                              svc_run_command_mock,
+                                                              svc_obj_info_mock):
+        # Test converting a list of volumes to clone when some of them are invalid,
+        # meaning they don't exist on the cluster (vol1 and vol4 in this example)
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'vol0:vol1:vol2:vol4',
+            'type': 'clone'
+        })
+
+        svc_obj_info_mock.return_value = [
+            {"id": "0", "name": "vol0", "volume_type": "thinclone"},
+            {"id": "2", "name": "vol2", "volume_type": ""},
+            {"id": "3", "name": "vol3", "volume_type": ""},
+        ]
+
+        svc_run_command_mock.return_value = ""
+
+        with pytest.raises(AnsibleFailJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertEqual(exc.value.args[0]['msg'], 'CMMVC9855E The command failed because one or more of'
+                         ' the specified volumes does not exist.')
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_failure_volume_creation_warning_invalid_params(self,
+                                                            svc_authorize_mock,
+                                                            svc_obj_info_mock):
+        """
+        Parameter [warning] is invalid without [thin] or [compressed]
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'pool': 'test_pool',
+            'size': '1',
+            'unit': 'gb',
+            'volumegroup': 'test_volumegroup',
+            'warning': '70'
+        })
+        svc_obj_info_mock.side_effect = [{}]  # lsvdisk [name]
+        with pytest.raises(AnsibleFailJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['failed'])
+        self.assertEqual(exc.value.args[0]['msg'], "Parameter [warning] is invalid without [thin] or [compressed]")
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_volume_creation_thin_with_warning(self,
+                                               svc_authorize_mock,
+                                               svc_obj_info_mock,
+                                               svc_run_command_mock):
+        """
+        Create a thin-provisioned volume with warning.
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'pool': 'test_pool',
+            'size': '1',
+            'unit': 'gb',
+            'volumegroup': 'test_volumegroup',
+            'thin': True,
+            'warning': '70'
+        })
+        svc_obj_info_mock.side_effect = [{}]  # lsvdisk [name]
+        svc_run_command_mock.return_value = {
+            'id': '25',
+            'message': 'Volume, id [25], successfully created'
+        }
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['changed'])
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_volume_creation_compressed_with_warning(self,
+                                                     svc_authorize_mock,
+                                                     svc_obj_info_mock,
+                                                     svc_run_command_mock):
+        """
+        Create a compressed volume with warning.
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'pool': 'test_pool',
+            'size': '1',
+            'unit': 'gb',
+            'volumegroup': 'test_volumegroup',
+            'compressed': True,
+            'warning': '70'
+        })
+        svc_obj_info_mock.side_effect = [{}]  # lsvdisk [name]
+        svc_run_command_mock.return_value = {
+            'id': '25',
+            'message': 'Volume, id [25], successfully created'
+        }
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['changed'])
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_failure_volume_warning_update_invalid_vol_type(self,
+                                                            svc_authorize_mock,
+                                                            svc_obj_info_mock,
+                                                            svc_run_command_mock):
+        """
+        Parameter [warning] is applicable only for thin-provisioned and compressed volumes.
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'size': '1',
+            'unit': 'gb',
+            'warning': '70'
+        })
+        svc_obj_info_mock.side_effect = [
+            [
+                {"capacity": "1073741824", "type": "striped", "RC_name": ""},
+                {"real_capacity": "1073741824", "warning": "80", "compressed_copy": "no"}
+            ]  # lsvdisk [name]
+        ]
+        with pytest.raises(AnsibleFailJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['failed'])
+        self.assertEqual(exc.value.args[0]['msg'], 'Parameter [warning] is applicable only for thin-provisioned and compressed volumes.')
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_volume_warning_update_thin(self,
+                                        svc_authorize_mock,
+                                        svc_obj_info_mock,
+                                        svc_run_command_mock):
+        """
+        Update the warning parameter when volume is of type thin-provisioned
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'size': '1',
+            'unit': 'gb',
+            'warning': '70'
+        })
+        svc_obj_info_mock.side_effect = [
+            [
+                {"capacity": "1073741824", "RC_name": "", "type": "striped"},
+                {"real_capacity": "1073741820", "compressed_copy": "no", "warning": "80"}
+            ]  # lsvdisk [name]
+        ]
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['changed'])
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_volume_warning_thin_idempotency(self,
+                                             svc_authorize_mock,
+                                             svc_obj_info_mock,
+                                             svc_run_command_mock):
+        """
+        Update the warning parameter when volume is of type thin-provisioned
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'size': '1',
+            'unit': 'gb',
+            'warning': '70'
+        })
+        svc_obj_info_mock.side_effect = [
+            [
+                {"capacity": "1073741824", "RC_name": "", "type": "striped"},
+                {"real_capacity": "1073741820", "compressed_copy": "no", "warning": "70"}
+            ]  # lsvdisk [name]
+        ]
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertFalse(exc.value.args[0]['changed'])
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_volume_warning_update_compressed(self,
+                                              svc_authorize_mock,
+                                              svc_obj_info_mock,
+                                              svc_run_command_mock):
+        """
+        Update the warning parameter when volume is of type compressed.
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'size': '1',
+            'unit': 'gb',
+            'warning': '70'
+        })
+        svc_obj_info_mock.side_effect = [
+            [
+                {"capacity": "1073741824", "RC_name": "", "type": "striped"},
+                {"real_capacity": "1073741824", "compressed_copy": "yes", "warning": "80"}
+            ]  # lsvdisk [name]
+        ]
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['changed'])
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_volume_warning_compressed_idempotency(self,
+                                                   svc_authorize_mock,
+                                                   svc_obj_info_mock,
+                                                   svc_run_command_mock):
+        """
+        Update the warning parameter when volume is of type compressed.
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'size': '1',
+            'unit': 'gb',
+            'warning': '70'
+        })
+        svc_obj_info_mock.side_effect = [
+            [
+                {"capacity": "1073741824", "RC_name": "", "type": "striped"},
+                {"real_capacity": "1073741824", "compressed_copy": "yes", "warning": "70"}
+            ]  # lsvdisk [name]
+        ]
+        with pytest.raises(AnsibleExitJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertFalse(exc.value.args[0]['changed'])
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_obj_info')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_failure_volume_delete_with_invalid_params(self,
+                                                       svc_authorize_mock,
+                                                       svc_obj_info_mock):
+        """
+        Following parameter(s) are invalid while deletion of volume: warning
+        """
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'absent',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_volume',
+            'warning': '70'
+        })
+        svc_obj_info_mock.side_effect = [
+            [
+                {"capacity": "1073741824", "RC_name": "", "type": "striped"},
+                {"real_capacity": "1073741824", "compressed_copy": "yes", "warning": "70"}
+            ]  # lsvdisk [name]
+        ]
+        with pytest.raises(AnsibleFailJson) as exc:
+            v = IBMSVCvolume()
+            v.apply()
+        self.assertTrue(exc.value.args[0]['failed'])
+        self.assertEqual(exc.value.args[0]['msg'], "Following parameter(s) are invalid while deletion of volume: warning")
 
 
 if __name__ == '__main__':

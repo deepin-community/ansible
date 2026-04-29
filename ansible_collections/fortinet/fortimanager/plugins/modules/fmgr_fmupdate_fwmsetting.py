@@ -267,6 +267,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -280,38 +281,38 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         fmupdate_fwmsetting:
-          fds_image_timeout: <integer>
-          max_fds_retry: <integer>
-          multiple_steps_interval: <integer>
-          skip_disk_check: <value in [disable, enable]>
-          auto_scan_fgt_disk: <value in [disable, enable]>
-          check_fgt_disk: <value in [disable, enable]>
-          fds_failover_fmg: <value in [disable, enable]>
-          immx_source: <value in [fmg, fgt, cloud]>
-          log: <value in [fwm, fwm_dm, fwm_dm_json]>
-          upgrade_timeout:
-            check_status_timeout: <integer>
-            ctrl_check_status_timeout: <integer>
-            ctrl_put_image_by_fds_timeout: <integer>
-            ha_sync_timeout: <integer>
-            license_check_timeout: <integer>
-            prepare_image_timeout: <integer>
-            put_image_by_fds_timeout: <integer>
-            put_image_timeout: <integer>
-            reboot_of_fsck_timeout: <integer>
-            reboot_of_upgrade_timeout: <integer>
-            retrieve_timeout: <integer>
-            rpc_timeout: <integer>
-            total_timeout: <integer>
-            health_check_timeout: <integer>
-          retry_interval: <integer>
-          retry_max: <integer>
-          health_check: <value in [disable, enable]>
-          max_device_history: <integer>
-          max_profile_history: <integer>
-          retrieve: <value in [disable, enable]>
-          revision_diff: <value in [disable, enable]>
-          send_image_retry: <integer>
+          # fds_image_timeout: <integer>
+          # max_fds_retry: <integer>
+          # multiple_steps_interval: <integer>
+          # skip_disk_check: <value in [disable, enable]>
+          # auto_scan_fgt_disk: <value in [disable, enable]>
+          # check_fgt_disk: <value in [disable, enable]>
+          # fds_failover_fmg: <value in [disable, enable]>
+          # immx_source: <value in [fmg, fgt, cloud]>
+          # log: <value in [fwm, fwm_dm, fwm_dm_json]>
+          # upgrade_timeout:
+          #   check_status_timeout: <integer>
+          #   ctrl_check_status_timeout: <integer>
+          #   ctrl_put_image_by_fds_timeout: <integer>
+          #   ha_sync_timeout: <integer>
+          #   license_check_timeout: <integer>
+          #   prepare_image_timeout: <integer>
+          #   put_image_by_fds_timeout: <integer>
+          #   put_image_timeout: <integer>
+          #   reboot_of_fsck_timeout: <integer>
+          #   reboot_of_upgrade_timeout: <integer>
+          #   retrieve_timeout: <integer>
+          #   rpc_timeout: <integer>
+          #   total_timeout: <integer>
+          #   health_check_timeout: <integer>
+          # retry_interval: <integer>
+          # retry_max: <integer>
+          # health_check: <value in [disable, enable]>
+          # max_device_history: <integer>
+          # max_profile_history: <integer>
+          # retrieve: <value in [disable, enable]>
+          # revision_diff: <value in [disable, enable]>
+          # send_image_retry: <integer>
 '''
 
 RETURN = '''
@@ -399,14 +400,14 @@ def main():
                         'health-check-timeout': {'v_range': [['7.4.2', '']], 'type': 'int'}
                     }
                 },
-                'retry-interval': {'v_range': [['7.0.10', '7.0.13'], ['7.2.5', '7.2.8'], ['7.4.2', '']], 'type': 'int'},
-                'retry-max': {'v_range': [['7.0.10', '7.0.13'], ['7.2.5', '7.2.8'], ['7.4.2', '']], 'type': 'int'},
+                'retry-interval': {'v_range': [['7.0.10', '7.0.13'], ['7.2.5', '7.2.9'], ['7.4.2', '']], 'type': 'int'},
+                'retry-max': {'v_range': [['7.0.10', '7.0.13'], ['7.2.5', '7.2.9'], ['7.4.2', '']], 'type': 'int'},
                 'health-check': {'v_range': [['7.4.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'max-device-history': {'v_range': [['7.4.2', '']], 'type': 'int'},
                 'max-profile-history': {'v_range': [['7.4.2', '']], 'type': 'int'},
                 'retrieve': {'v_range': [['7.4.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'revision-diff': {'v_range': [['7.4.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'send-image-retry': {'v_range': [['7.2.6', '7.2.8'], ['7.4.4', '7.4.5']], 'type': 'int'}
+                'send-image-retry': {'v_range': [['7.2.6', '7.2.9'], ['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'int'}
             }
         }
     }

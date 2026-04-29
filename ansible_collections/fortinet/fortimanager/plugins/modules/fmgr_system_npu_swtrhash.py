@@ -99,6 +99,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -113,8 +114,8 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         system_npu_swtrhash:
-          draco15: <value in [disable, enable]>
-          tcp_udp_port: <value in [include, exclude]>
+          # draco15: <value in [disable, enable]>
+          # tcp_udp_port: <value in [include, exclude]>
 '''
 
 RETURN = '''

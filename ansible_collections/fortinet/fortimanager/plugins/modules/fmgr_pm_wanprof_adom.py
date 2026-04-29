@@ -112,6 +112,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -126,14 +127,13 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         pm_wanprof_adom:
-          description: <string>
-          name: <string>
-          oid: <integer>
-          scope_member:
-            -
-              name: <string>
-              vdom: <string>
-          type: <value in [wanprof]>
+          # description: <string>
+          # name: <string>
+          # oid: <integer>
+          # scope_member:
+          #   - name: <string>
+          #     vdom: <string>
+          # type: <value in [wanprof]>
 '''
 
 RETURN = '''

@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "telekom_mms",
   "name": "icinga_director",
-  "version": "2.2.1",
+  "version": "2.4.0",
   "authors": [
    "Sebastian Gumprich <sebastian.gumprich@telekom.de>",
    "Lars Krahl <lars.krahl@telekom.de>"
@@ -27,7 +27,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "915419d67d9212d37d2c53cb7f032de9a9b591eb485310e89e08a7b4de819dfb",
+  "chksum_sha256": "9c22c37740ca2d491223aa97f65214d0130bc91a9718a2e6242ffd5b2e59e1d4",
   "format": 1
  },
  "format": 1

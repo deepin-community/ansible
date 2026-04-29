@@ -114,6 +114,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -131,8 +132,8 @@ EXAMPLES = '''
         interface_policy: <your own value>
         state: present # <value in [present, absent]>
         pkg_firewall_interfacepolicy_sectionvalue:
-          attr: <value in [label, global-label]>
-          name: <string>
+          # attr: <value in [label, global-label]>
+          # name: <string>
 '''
 
 RETURN = '''
@@ -193,10 +194,10 @@ def main():
         'interface_policy': {'type': 'str'},
         'pkg_firewall_interfacepolicy_sectionvalue': {
             'type': 'dict',
-            'v_range': [['6.0.0', '7.2.2'], ['7.2.6', '7.2.8'], ['7.4.3', '']],
+            'v_range': [['6.0.0', '7.2.2'], ['7.2.6', '7.2.9'], ['7.4.3', '']],
             'options': {
-                'attr': {'v_range': [['6.0.0', '7.2.2'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'choices': ['label', 'global-label'], 'type': 'str'},
-                'name': {'v_range': [['6.0.0', '7.2.2'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'}
+                'attr': {'v_range': [['6.0.0', '7.2.2'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'choices': ['label', 'global-label'], 'type': 'str'},
+                'name': {'v_range': [['6.0.0', '7.2.2'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'}
             }
         }
     }

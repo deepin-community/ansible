@@ -127,11 +127,16 @@ options:
                     - 'auto'
                     - 'sdwan'
                     - 'specify'
+            vrf_select:
+                aliases: ['vrf-select']
+                type: int
+                description: VRF ID used for connection to server.
 '''
 
 EXAMPLES = '''
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -235,7 +240,8 @@ def main():
                 'source-ip': {'type': 'str'},
                 'status': {'choices': ['disable', 'enable'], 'type': 'str'},
                 'interface': {'v_range': [['6.2.5', '6.2.13'], ['6.4.1', '']], 'type': 'str'},
-                'interface-select-method': {'v_range': [['6.2.5', '6.2.13'], ['6.4.1', '']], 'choices': ['auto', 'sdwan', 'specify'], 'type': 'str'}
+                'interface-select-method': {'v_range': [['6.2.5', '6.2.13'], ['6.4.1', '']], 'choices': ['auto', 'sdwan', 'specify'], 'type': 'str'},
+                'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'}
             }
         }
     }

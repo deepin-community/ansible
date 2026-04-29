@@ -6,6 +6,80 @@ Cisco MSO Ansible Collection Release Notes
 
 This changelog describes changes after version 0.0.4.
 
+v2.11.0
+=======
+
+Release Summary
+---------------
+
+Release v2.11.0 of the ``ansible-mso`` collection on 2025-07-17.
+This changelog describes all changes made to the modules and plugins included in this collection since v2.10.0.
+
+Minor Changes
+-------------
+
+- Add admin_state attribute to mso_schema_site_anp_epg module.
+- Improved ndo modules returned current value with actual API response.
+
+Bugfixes
+--------
+
+- Fix API endpoint to query local and remote users in ND4.0
+
+New Modules
+-----------
+
+- cisco.mso.ndo_fabric_span_session - Manage Fabric SPAN Sessions on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_fabric_span_session_source - Manage Fabric SPAN Sessions Source on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_fabric_span_session_source_filter - Manage Fabric SPAN Sessions Source Filter on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_l3out_bgp_peer - Manage L3Out BGP Peer on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_l3out_node_static_route - Manage L3Out Node Static Routes on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_l3out_node_static_route_next_hop - Manage L3Out Node Static Route Next Hops on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_l3out_routed_interface - Manage L3Out Routed Interfaces on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_l3out_routed_sub_interface - Manage L3Out Routed Sub-Interfaces on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_pod_profile - Manage Pod Profiles on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_pod_settings - Manage Pod Settings on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_qos_class_policy - Manage QoS Class Policies on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_schema_template_contract_service_chain - Manage the Schema Template Contract Service Chaining workflow on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_service_device_cluster - Manage Service Device Clusters on Cisco Nexus Dashboard Orchestrator (NDO).
+- cisco.mso.ndo_tenant_span_session - Manage Tenant SPAN Sessions on Cisco Nexus Dashboard Orchestrator (NDO).
+
+v2.10.0
+=======
+
+Release Summary
+---------------
+
+Release v2.10.0 of the ``ansible-mso`` collection on 2025-04-19.
+This changelog describes all changes made to the modules and plugins included in this collection since v2.9.0.
+
+Minor Changes
+-------------
+
+- Add ep_move_detection_mode attribute in mso_schema_template_bd.
+- Add mso_schema_template_anp_epg_annotation module.
+- Add mso_schema_template_anp_epg_intra_epg_contract module.
+- Add name attribute to mso_schema_template_external_epg_subnet module.
+- Add ndo_ipsla_track_list and ndo_ipsla_monitoring_policy modules.
+- Add ndo_l3out_node_routing_policy, ndo_l3out_interface_routing_policy, and ndo_tenant_bgp_peer_prefix_policy modules.
+- Add ndo_l3out_template, ndo_l3out_annotation, ndo_l3out_interface_group_policy, and ndo_l3out_node_group_policy modules.
+- Add ndo_mcp_global_policy module.
+- Add ndo_ntp_policy, ndo_ptp_policy, and ndo_ptp_policy_profiles modules.
+- Add ndo_physical_interface, ndo_port_channel_interface, ndo_virtual_port_channel_interface, ndo_node_profile, and ndo_fex_device modules to support NDO Fabric Resource Policies.
+- Add ndo_qos_dscp_cos_translation_policy module.
+- Add ndo_synce_interface_policy, ndo_interface_setting, ndo_node_setting, and ndo_macsec_policy modules.
+- Add ndo_tenant_custom_qos_policy module.
+- Add ndo_tenant_igmp_interface_policy, ndo_tenant_igmp_snooping_policy, and ndo_tenant_mld_snooping_policy modules.
+- Add qos_level attribute to the mso_schema_template_external_epg module.
+- Add support for Ansible 2.18 and dropped support for Ansible 2.15 as required by Ansible Galaxy.
+- Add support for site configuration for tenant policy template in ndo_template module.
+
+Bugfixes
+--------
+
+- Fix query results for bulk query to display correct static_paths in mso_schema_site_anp_epg_staticport module
+- Fix replace operation for bulk present without force replace in mso_schema_site_anp_epg_staticport module
+
 v2.9.0
 ======
 

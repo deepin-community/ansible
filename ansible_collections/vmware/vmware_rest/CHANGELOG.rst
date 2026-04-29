@@ -4,6 +4,77 @@ vmware.vmware\_rest Release Notes
 
 .. contents:: Topics
 
+v4.9.0
+======
+
+Major Changes
+-------------
+
+- Remove ``cloud.common`` as a dependency, so it will not be installed automatically anymore (https://github.com/ansible-collections/vmware.vmware_rest/pull/621).
+
+Known Issues
+------------
+
+- The lookup plugins use ``cloud.common``, but this collection does not support ansible-core 2.19 or higher (https://github.com/ansible-collections/vmware.vmware_rest/pull/621).
+
+v4.8.1
+======
+
+Bugfixes
+--------
+
+- Allow cloud.common 5.0.0 and later again (https://github.com/ansible-collections/vmware.vmware_rest/pull/614).
+
+v4.8.0
+======
+
+Major Changes
+-------------
+
+- modules - disable turbo mode for module execution by default. Make it optional to enable it using an environment variable (https://github.com/ansible-collections/vmware.vmware_rest/issues/499)
+
+Minor Changes
+-------------
+
+- change cloud.common dependency to 4.1 to support anisble 2.19
+
+Deprecated Features
+-------------------
+
+- lookup plugins - Deprecate all lookup plugins in favor of vmware.vmware.moid_from_path (https://github.com/ansible-collections/vmware.vmware_rest/pull/608)
+
+v4.7.0
+======
+
+Minor Changes
+-------------
+
+- Deprecated modules with redundant functionality in vmware.vmware. The next major release is currently not planned, so no removal date is provided. See https://github.com/ansible-collections/vmware.vmware_rest/issues/589
+
+v4.6.0
+======
+
+v4.5.0
+======
+
+Minor Changes
+-------------
+
+- info - changed relative links in README.md to absolute links
+
+Bugfixes
+--------
+
+- module_utils - fixed return value for vmware.vmware_rest.vcenter_vm_guest_filesystem_directories module
+
+v4.4.0
+======
+
+Bugfixes
+--------
+
+- vcenter_ovf_libraryitem - Update documentation to mention the metadata cannot be updated via conventional means. Added example showing workaround (https://github.com/ansible-collections/vmware.vmware_rest/issues/385)
+
 v4.3.0
 ======
 

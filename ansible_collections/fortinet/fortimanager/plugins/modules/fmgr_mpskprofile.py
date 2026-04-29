@@ -204,6 +204,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -219,31 +220,29 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         mpskprofile:
-          mpsk_concurrent_clients: <integer>
-          mpsk_group:
-            -
-              mpsk_key:
-                -
-                  comment: <string>
-                  concurrent_client_limit_type: <value in [default, unlimited, specified]>
-                  concurrent_clients: <integer>
-                  mac: <string>
-                  mpsk_schedules: <list or string>
-                  name: <string>
-                  passphrase: <list or string>
-                  pmk: <list or string>
-                  key_type: <value in [wpa2-personal, wpa3-sae]>
-                  sae_password: <list or string>
-                  sae_pk: <value in [disable, enable]>
-                  sae_private_key: <string>
-              name: <string>
-              vlan_id: <integer>
-              vlan_type: <value in [no-vlan, fixed-vlan]>
-          name: <string>
-          ssid: <string>
-          mpsk_external_server: <list or string>
-          mpsk_external_server_auth: <value in [disable, enable]>
-          mpsk_type: <value in [wpa2-personal, wpa3-sae, wpa3-sae-transition]>
+          name: "your value" # Required variable, string
+          # mpsk_concurrent_clients: <integer>
+          # mpsk_group:
+          #   - mpsk_key:
+          #       - comment: <string>
+          #         concurrent_client_limit_type: <value in [default, unlimited, specified]>
+          #         concurrent_clients: <integer>
+          #         mac: <string>
+          #         mpsk_schedules: <list or string>
+          #         name: <string>
+          #         passphrase: <list or string>
+          #         pmk: <list or string>
+          #         key_type: <value in [wpa2-personal, wpa3-sae]>
+          #         sae_password: <list or string>
+          #         sae_pk: <value in [disable, enable]>
+          #         sae_private_key: <string>
+          #     name: <string>
+          #     vlan_id: <integer>
+          #     vlan_type: <value in [no-vlan, fixed-vlan]>
+          # ssid: <string>
+          # mpsk_external_server: <list or string>
+          # mpsk_external_server_auth: <value in [disable, enable]>
+          # mpsk_type: <value in [wpa2-personal, wpa3-sae, wpa3-sae-transition]>
 '''
 
 RETURN = '''

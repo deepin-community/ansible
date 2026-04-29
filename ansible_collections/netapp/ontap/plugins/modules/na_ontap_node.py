@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2023, NetApp, Inc
+# (c) 2018-2024, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -17,7 +17,7 @@ short_description: NetApp ONTAP Modify or Rename a node.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: 2.7.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Modify or Rename an ONTAP node.
 options:
@@ -45,8 +45,8 @@ options:
 '''
 
 EXAMPLES = """
-- name: modify node
-  na_ontap_node:
+- name: Modify node
+  netapp.ontap.na_ontap_node:
     name: laurentncluster-2
     location: SF1
     asset_tag: mytag
@@ -54,16 +54,16 @@ EXAMPLES = """
     username: "{{ netapp_username }}"
     password: "{{ netapp_password }}"
 
-- name: rename node
-  na_ontap_node:
+- name: Rename node
+  netapp.ontap.na_ontap_node:
     hostname: "{{ netapp_hostname }}"
     username: "{{ netapp_username }}"
     password: "{{ netapp_password }}"
     from_name: laurentn-vsim1
     name: laurentncluster-2
 
-- name: modify and rename node
-  na_ontap_node:
+- name: Modify and rename node
+  netapp.ontap.na_ontap_node:
     hostname: "{{ netapp_hostname }}"
     username: "{{ netapp_username }}"
     password: "{{ netapp_password }}"
@@ -73,7 +73,6 @@ EXAMPLES = """
 """
 
 RETURN = """
-
 """
 import traceback
 

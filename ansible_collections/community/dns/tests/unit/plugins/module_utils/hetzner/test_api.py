@@ -6,23 +6,20 @@
 # Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 import pytest
-
-from ansible_collections.community.internal_test_tools.tests.unit.compat.mock import MagicMock
-
-from ansible_collections.community.dns.plugins.module_utils.record import (
-    DNSRecord,
+from ansible_collections.community.dns.plugins.module_utils.hetzner.api import (
+    HetznerAPI,
 )
-
+from ansible_collections.community.dns.plugins.module_utils.record import DNSRecord
 from ansible_collections.community.dns.plugins.module_utils.zone_record_api import (
     DNSAPIError,
 )
-
-from ansible_collections.community.dns.plugins.module_utils.hetzner.api import (
-    HetznerAPI,
+from ansible_collections.community.internal_test_tools.tests.unit.compat.mock import (
+    MagicMock,
 )
 
 
@@ -47,18 +44,17 @@ def test_list_pagination():
                     },
                 },
             }, {'status': 200}
-        else:
-            return {
-                'data': [],
-                'meta': {
-                    'pagination': {
-                        'page': query['page'],
-                        'per_page': 1,
-                        'last_page': 3,
-                        'total_entries': 2,
-                    },
+        return {
+            'data': [],
+            'meta': {
+                'pagination': {
+                    'page': query['page'],
+                    'per_page': 1,
+                    'last_page': 3,
+                    'total_entries': 2,
                 },
-            }, {'status': 200}
+            },
+        }, {'status': 200}
 
     def get_2(url, query=None, must_have_content=True, expected=None):
         assert url == 'https://example.com'
@@ -81,18 +77,17 @@ def test_list_pagination():
                     },
                 },
             }, {'status': 200}
-        else:
-            return {
-                'foobar': ['foo'],
-                'meta': {
-                    'pagination': {
-                        'page': query['page'],
-                        'per_page': 2,
-                        'last_page': 2,
-                        'total_entries': 3,
-                    },
+        return {
+            'foobar': ['foo'],
+            'meta': {
+                'pagination': {
+                    'page': query['page'],
+                    'per_page': 2,
+                    'last_page': 2,
+                    'total_entries': 3,
                 },
-            }, {'status': 200}
+            },
+        }, {'status': 200}
 
     def get_3(url, query=None, must_have_content=True, expected=None):
         assert url == 'https://example.com'
@@ -111,7 +106,7 @@ def test_list_pagination():
     assert result == [1, 2]
 
     api._get = MagicMock(side_effect=get_2)
-    result = api._list_pagination('https://example.com', 'foobar', query=dict(foo='bar'), block_size=2, accept_404=True)
+    result = api._list_pagination('https://example.com', 'foobar', query={'foo': 'bar'}, block_size=2, accept_404=True)
     assert result == ['bar', 'baz', 'foo']
 
     api._get = MagicMock(side_effect=get_3)
@@ -137,14 +132,14 @@ def test_extract_error_message():
     api = HetznerAPI(MagicMock(), '123')
     assert api._extract_error_message(None) == ''
     assert api._extract_error_message('foo') == ' with data: foo'
-    assert api._extract_error_message(dict()) == ' with data: {}'
-    assert api._extract_error_message(dict(message='')) == " with data: {'message': ''}"
-    assert api._extract_error_message(dict(message='foo')) == ' with message "foo"'
-    assert api._extract_error_message(dict(message='foo', error='')) == ' with message "foo"'
-    assert api._extract_error_message(dict(message='foo', error=dict())) == ' with message "foo"'
-    assert api._extract_error_message(dict(message='foo', error=dict(code=123))) == ' (error code 123) with message "foo"'
-    assert api._extract_error_message(dict(message='foo', error=dict(message='baz'))) == ' with error message "baz" with message "foo"'
-    assert api._extract_error_message(dict(message='foo', error=dict(message='baz', code=123))) == (
+    assert api._extract_error_message({}) == ' with data: {}'
+    assert api._extract_error_message({'message': ''}) == " with data: {'message': ''}"
+    assert api._extract_error_message({'message': 'foo'}) == ' with message "foo"'
+    assert api._extract_error_message({'message': 'foo', 'error': ''}) == ' with message "foo"'
+    assert api._extract_error_message({'message': 'foo', 'error': {}}) == ' with message "foo"'
+    assert api._extract_error_message({'message': 'foo', 'error': {'code': 123}}) == ' (error code 123) with message "foo"'
+    assert api._extract_error_message({'message': 'foo', 'error': {'message': 'baz'}}) == ' with error message "baz" with message "foo"'
+    assert api._extract_error_message({'message': 'foo', 'error': {'message': 'baz', 'code': 123}}) == (
         ' with error message "baz" (error code 123) with message "foo"'
     )
-    assert api._extract_error_message(dict(error=dict(message='baz', code=123))) == ' with error message "baz" (error code 123)'
+    assert api._extract_error_message({'error': {'message': 'baz', 'code': 123}}) == ' with error message "baz" (error code 123)'

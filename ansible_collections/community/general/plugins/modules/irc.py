@@ -9,8 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: irc
 short_description: Send a message to an IRC channel or a nick
 description:
@@ -26,12 +25,12 @@ options:
   server:
     type: str
     description:
-      - IRC server name/address
+      - IRC server name/address.
     default: localhost
   port:
     type: int
     description:
-      - IRC server port number
+      - IRC server port number.
     default: 6667
   nick:
     type: str
@@ -46,45 +45,60 @@ options:
   topic:
     type: str
     description:
-      - Set the channel topic
+      - Set the channel topic.
   color:
     type: str
     description:
       - Text color for the message.
     default: "none"
-    choices: [ "none", "white", "black", "blue", "green", "red", "brown", "purple", "orange", "yellow", "light_green", "teal", "light_cyan",
-               "light_blue", "pink", "gray", "light_gray"]
+    choices:
+      - none
+      - white
+      - black
+      - blue
+      - green
+      - red
+      - brown
+      - purple
+      - orange
+      - yellow
+      - light_green
+      - teal
+      - light_cyan
+      - light_blue
+      - pink
+      - gray
+      - light_gray
     aliases: [colour]
   channel:
     type: str
     description:
-      - Channel name.  One of nick_to or channel needs to be set.  When both are set, the message will be sent to both of them.
+      - Channel name. One of nick_to or channel needs to be set. When both are set, the message is sent to both of them.
   nick_to:
     type: list
     elements: str
     description:
-      - A list of nicknames to send the message to. One of nick_to or channel needs to be set.  When both are defined, the message will be sent to both of them.
+      - A list of nicknames to send the message to. One of nick_to or channel needs to be set. When both are defined, the
+        message is sent to both of them.
   key:
     type: str
     description:
-      - Channel key
+      - Channel key.
   passwd:
     type: str
     description:
-      - Server password
+      - Server password.
   timeout:
     type: int
     description:
-      - Timeout to use while waiting for successful registration and join
-        messages, this is to prevent an endless loop
+      - Timeout to use while waiting for successful registration and join messages, this is to prevent an endless loop.
     default: 30
   use_tls:
     description:
-      - Designates whether TLS/SSL should be used when connecting to the IRC server
-      - O(use_tls) is available since community.general 8.1.0, before the option
-        was exlusively called O(use_ssl). The latter is now an alias of O(use_tls).
-      - B(Note:) for security reasons, you should always set O(use_tls=true) and
-        O(validate_certs=true) whenever possible.
+      - Designates whether TLS/SSL should be used when connecting to the IRC server.
+      - O(use_tls) is available since community.general 8.1.0, before the option was exlusively called O(use_ssl). The latter
+        is now an alias of O(use_tls).
+      - B(Note:) for security reasons, you should always set O(use_tls=true) and O(validate_certs=true) whenever possible.
       - The default of this option changed to V(true) in community.general 10.0.0.
     type: bool
     default: true
@@ -92,42 +106,41 @@ options:
       - use_ssl
   part:
     description:
-      - Designates whether user should part from channel after sending message or not.
-        Useful for when using a faux bot and not wanting join/parts between messages.
+      - Designates whether user should part from channel after sending message or not. Useful for when using a mock bot and
+        not wanting join/parts between messages.
     type: bool
     default: true
   style:
     type: str
     description:
-      - Text style for the message. Note italic does not work on some clients
-    choices: [ "bold", "underline", "reverse", "italic", "none" ]
+      - Text style for the message. Note italic does not work on some clients.
+    choices: ["bold", "underline", "reverse", "italic", "none"]
     default: none
   validate_certs:
     description:
-      - If set to V(false), the SSL certificates will not be validated.
-      - This should always be set to V(true). Using V(false) is unsafe and should only be done
-        if the network between between Ansible and the IRC server is known to be safe.
-      - B(Note:) for security reasons, you should always set O(use_tls=true) and
-        O(validate_certs=true) whenever possible.
+      - If set to V(false), the SSL certificates are not validated.
+      - This should always be set to V(true). Using V(false) is unsafe and should only be done if the network between between
+        Ansible and the IRC server is known to be safe.
+      - B(Note:) for security reasons, you should always set O(use_tls=true) and O(validate_certs=true) whenever possible.
       - The default of this option changed to V(true) in community.general 10.0.0.
     type: bool
     default: true
     version_added: 8.1.0
 
 # informational: requirements for nodes
-requirements: [ socket ]
+requirements: [socket]
 author:
-    - "Jan-Piet Mens (@jpmens)"
-    - "Matt Martz (@sivel)"
-'''
+  - "Jan-Piet Mens (@jpmens)"
+  - "Matt Martz (@sivel)"
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Send a message to an IRC channel from nick ansible
   community.general.irc:
     server: irc.example.net
     use_tls: true
     validate_certs: true
-    channel: #t1
+    channel: '#t1'
     msg: Hello world
 
 - name: Send a message to an IRC channel
@@ -137,7 +150,7 @@ EXAMPLES = '''
     server: irc.example.net
     use_tls: true
     validate_certs: true
-    channel: #t1
+    channel: '#t1'
     msg: 'All finished at {{ ansible_date_time.iso8601 }}'
     color: red
     nick: ansibleIRC
@@ -149,14 +162,14 @@ EXAMPLES = '''
     server: irc.example.net
     use_tls: true
     validate_certs: true
-    channel: #t1
+    channel: '#t1'
     nick_to:
       - nick1
       - nick2
     msg: 'All finished at {{ ansible_date_time.iso8601 }}'
     color: red
     nick: ansibleIRC
-'''
+"""
 
 # ===========================================
 # IRC module support methods.
@@ -219,9 +232,11 @@ def send_msg(msg, server='localhost', port='6667', channel=None, nick_to=None, k
 
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     if use_tls:
+        kwargs = {}
         if validate_certs:
             try:
                 context = ssl.create_default_context()
+                kwargs["server_hostname"] = server
             except AttributeError:
                 raise Exception('Need at least Python 2.7.9 for SSL certificate validation')
         else:
@@ -231,7 +246,7 @@ def send_msg(msg, server='localhost', port='6667', channel=None, nick_to=None, k
             else:
                 context = ssl.SSLContext()
             context.verify_mode = ssl.CERT_NONE
-        irc = context.wrap_socket(irc)
+        irc = context.wrap_socket(irc, **kwargs)
     irc.connect((server, int(port)))
 
     if passwd:
@@ -296,7 +311,7 @@ def main():
             server=dict(default='localhost'),
             port=dict(type='int', default=6667),
             nick=dict(default='ansible'),
-            nick_to=dict(required=False, type='list', elements='str'),
+            nick_to=dict(type='list', elements='str'),
             msg=dict(required=True),
             color=dict(default="none", aliases=['colour'], choices=["white", "black", "blue",
                                                                     "green", "red", "brown",
@@ -305,7 +320,7 @@ def main():
                                                                     "light_blue", "pink", "gray",
                                                                     "light_gray", "none"]),
             style=dict(default="none", choices=["underline", "reverse", "bold", "italic", "none"]),
-            channel=dict(required=False),
+            channel=dict(),
             key=dict(no_log=True),
             topic=dict(),
             passwd=dict(no_log=True),

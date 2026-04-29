@@ -13,16 +13,15 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: scaleway_lb
 short_description: Scaleway load-balancer management module
 author: Remy Leone (@remyleone)
 description:
-    - "This module manages load-balancers on Scaleway."
+  - This module manages load-balancers on Scaleway.
 extends_documentation_fragment:
-    - community.general.scaleway
-    - community.general.attributes
+  - community.general.scaleway
+  - community.general.attributes
 
 attributes:
   check_mode:
@@ -53,7 +52,7 @@ options:
   state:
     type: str
     description:
-     - Indicate desired state of the instance.
+      - Indicate desired state of the instance.
     default: present
     choices:
       - present
@@ -62,7 +61,7 @@ options:
   region:
     type: str
     description:
-    - Scaleway zone.
+      - Scaleway zone.
     required: true
     choices:
       - nl-ams
@@ -74,30 +73,29 @@ options:
     elements: str
     default: []
     description:
-    - List of tags to apply to the load-balancer.
-
+      - List of tags to apply to the load-balancer.
   wait:
     description:
-    - Wait for the load-balancer to reach its desired state before returning.
+      - Wait for the load-balancer to reach its desired state before returning.
     type: bool
     default: false
 
   wait_timeout:
     type: int
     description:
-    - Time to wait for the load-balancer to reach the expected state.
+      - Time to wait for the load-balancer to reach the expected state.
     required: false
     default: 300
 
   wait_sleep_time:
     type: int
     description:
-    - Time to wait before every attempt to check the state of the load-balancer.
+      - Time to wait before every attempt to check the state of the load-balancer.
     required: false
     default: 3
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Create a load-balancer
   community.general.scaleway_lb:
     name: foobar
@@ -113,38 +111,42 @@ EXAMPLES = '''
     state: absent
     organization_id: 951df375-e094-4d26-97c1-ba548eeb9c42
     region: fr-par
-'''
+"""
 
-RETURNS = '''
-{
-   "scaleway_lb": {
+RETURN = r"""
+scaleway_lb:
+  description: The load-balancer object.
+  returned: success
+  type: dict
+  sample:
+    {
       "backend_count": 0,
       "frontend_count": 0,
       "description": "Description of my load-balancer",
       "id": "00000000-0000-0000-0000-000000000000",
       "instances": [
-         {
-            "id": "00000000-0000-0000-0000-000000000000",
-            "ip_address": "10.0.0.1",
-            "region": "fr-par",
-            "status": "ready"
-         },
-         {
-            "id": "00000000-0000-0000-0000-000000000000",
-            "ip_address": "10.0.0.2",
-            "region": "fr-par",
-            "status": "ready"
-         }
+        {
+          "id": "00000000-0000-0000-0000-000000000000",
+          "ip_address": "10.0.0.1",
+          "region": "fr-par",
+          "status": "ready"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000000",
+          "ip_address": "10.0.0.2",
+          "region": "fr-par",
+          "status": "ready"
+        }
       ],
       "ip": [
-         {
-            "id": "00000000-0000-0000-0000-000000000000",
-            "ip_address": "192.168.0.1",
-            "lb_id": "00000000-0000-0000-0000-000000000000",
-            "region": "fr-par",
-            "organization_id": "00000000-0000-0000-0000-000000000000",
-            "reverse": ""
-         }
+        {
+          "id": "00000000-0000-0000-0000-000000000000",
+          "ip_address": "192.168.0.1",
+          "lb_id": "00000000-0000-0000-0000-000000000000",
+          "region": "fr-par",
+          "organization_id": "00000000-0000-0000-0000-000000000000",
+          "reverse": ""
+        }
       ],
       "name": "lb_ansible_test",
       "organization_id": "00000000-0000-0000-0000-000000000000",
@@ -154,9 +156,8 @@ RETURNS = '''
         "first_tag",
         "second_tag"
       ]
-   }
-}
-'''
+    }
+"""
 
 import datetime
 import time

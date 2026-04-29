@@ -239,12 +239,17 @@ options:
             server:
                 type: str
                 description: The remote FortiAnalyzer.
+            vrf_select:
+                aliases: ['vrf-select']
+                type: int
+                description: VRF ID used for connection to server.
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -260,34 +265,35 @@ EXAMPLES = '''
         adom: <your own value>
         devprof: <your own value>
         devprof_log_fortianalyzer_setting:
-          certificate: <string>
-          conn_timeout: <integer>
-          enc_algorithm: <value in [default, high, low, ...]>
-          hmac_algorithm: <value in [sha256, sha1]>
-          ips_archive: <value in [disable, enable]>
-          monitor_failure_retry_period: <integer>
-          monitor_keepalive_period: <integer>
-          reliable: <value in [disable, enable]>
-          ssl_min_proto_version: <value in [default, TLSv1, TLSv1-1, ...]>
-          upload_day: <string>
-          upload_interval: <value in [daily, weekly, monthly]>
-          upload_option: <value in [store-and-upload, realtime, 1-minute, ...]>
-          upload_time: <string>
-          access_config: <value in [disable, enable]>
-          certificate_verification: <value in [disable, enable]>
-          max_log_rate: <integer>
-          priority: <value in [low, default]>
-          interface: <string>
-          interface_select_method: <value in [auto, sdwan, specify]>
-          preshared_key: <string>
-          alt_server: <string>
-          fallback_to_primary: <value in [disable, enable]>
-          server_cert_ca: <string>
-          serial: <list or string>
-          source_ip: <string>
-          status: <value in [disable, enable]>
-          __change_ip: <integer>
-          server: <string>
+          # certificate: <string>
+          # conn_timeout: <integer>
+          # enc_algorithm: <value in [default, high, low, ...]>
+          # hmac_algorithm: <value in [sha256, sha1]>
+          # ips_archive: <value in [disable, enable]>
+          # monitor_failure_retry_period: <integer>
+          # monitor_keepalive_period: <integer>
+          # reliable: <value in [disable, enable]>
+          # ssl_min_proto_version: <value in [default, TLSv1, TLSv1-1, ...]>
+          # upload_day: <string>
+          # upload_interval: <value in [daily, weekly, monthly]>
+          # upload_option: <value in [store-and-upload, realtime, 1-minute, ...]>
+          # upload_time: <string>
+          # access_config: <value in [disable, enable]>
+          # certificate_verification: <value in [disable, enable]>
+          # max_log_rate: <integer>
+          # priority: <value in [low, default]>
+          # interface: <string>
+          # interface_select_method: <value in [auto, sdwan, specify]>
+          # preshared_key: <string>
+          # alt_server: <string>
+          # fallback_to_primary: <value in [disable, enable]>
+          # server_cert_ca: <string>
+          # serial: <list or string>
+          # source_ip: <string>
+          # status: <value in [disable, enable]>
+          # __change_ip: <integer>
+          # server: <string>
+          # vrf_select: <integer>
 '''
 
 RETURN = '''
@@ -389,13 +395,14 @@ def main():
                 'interface-select-method': {'v_range': [['6.2.7', '6.2.13'], ['6.4.3', '']], 'choices': ['auto', 'sdwan', 'specify'], 'type': 'str'},
                 'preshared-key': {'v_range': [['7.0.0', '']], 'no_log': True, 'type': 'str'},
                 'alt-server': {'v_range': [['7.2.2', '']], 'type': 'str'},
-                'fallback-to-primary': {'v_range': [['7.2.5', '7.2.8'], ['7.4.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'server-cert-ca': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'type': 'str'},
-                'serial': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'source-ip': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'status': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                '__change_ip': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'server': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'}
+                'fallback-to-primary': {'v_range': [['7.2.5', '7.2.9'], ['7.4.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'server-cert-ca': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'type': 'str'},
+                'serial': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'source-ip': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'status': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                '__change_ip': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'server': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'}
             }
         }
     }

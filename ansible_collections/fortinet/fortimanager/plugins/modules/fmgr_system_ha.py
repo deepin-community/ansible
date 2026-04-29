@@ -206,6 +206,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -219,35 +220,32 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_ha:
-          clusterid: <integer>
-          file_quota: <integer>
-          hb_interval: <integer>
-          hb_lost_threshold: <integer>
-          mode: <value in [standalone, master, slave, ...]>
-          password: <list or string>
-          peer:
-            -
-              id: <integer>
-              ip: <string>
-              ip6: <string>
-              serial_number: <string>
-              status: <value in [disable, enable]>
-          local_cert: <string>
-          failover_mode: <value in [manual, vrrp]>
-          monitored_interfaces:
-            -
-              interface_name: <string>
-          monitored_ips:
-            -
-              id: <integer>
-              interface: <string>
-              ip: <string>
-          priority: <integer>
-          unicast: <value in [disable, enable]>
-          vip: <string>
-          vrrp_adv_interval: <integer>
-          vrrp_interface: <string>
-          vip_interface: <string>
+          # clusterid: <integer>
+          # file_quota: <integer>
+          # hb_interval: <integer>
+          # hb_lost_threshold: <integer>
+          # mode: <value in [standalone, master, slave, ...]>
+          # password: <list or string>
+          # peer:
+          #   - id: <integer>
+          #     ip: <string>
+          #     ip6: <string>
+          #     serial_number: <string>
+          #     status: <value in [disable, enable]>
+          # local_cert: <string>
+          # failover_mode: <value in [manual, vrrp]>
+          # monitored_interfaces:
+          #   - interface_name: <string>
+          # monitored_ips:
+          #   - id: <integer>
+          #     interface: <string>
+          #     ip: <string>
+          # priority: <integer>
+          # unicast: <value in [disable, enable]>
+          # vip: <string>
+          # vrrp_adv_interval: <integer>
+          # vrrp_interface: <string>
+          # vip_interface: <string>
 '''
 
 RETURN = '''
@@ -346,7 +344,7 @@ def main():
                 'vip': {'v_range': [['7.2.0', '']], 'type': 'str'},
                 'vrrp-adv-interval': {'v_range': [['7.2.0', '']], 'type': 'int'},
                 'vrrp-interface': {'v_range': [['7.2.0', '']], 'type': 'str'},
-                'vip-interface': {'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']], 'type': 'str'}
+                'vip-interface': {'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']], 'type': 'str'}
             }
         }
     }

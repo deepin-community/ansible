@@ -130,6 +130,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -147,14 +148,14 @@ EXAMPLES = '''
         health_check: <your own value>
         state: present # <value in [present, absent]>
         wanprof_system_virtualwanlink_healthcheck_sla:
-          id: <integer>
-          jitter_threshold: <integer>
-          latency_threshold: <integer>
-          link_cost_factor:
-            - "latency"
-            - "jitter"
-            - "packet-loss"
-          packetloss_threshold: <integer>
+          id: 0 # Required variable, integer
+          # jitter_threshold: <integer>
+          # latency_threshold: <integer>
+          # link_cost_factor:
+          #   - "latency"
+          #   - "jitter"
+          #   - "packet-loss"
+          # packetloss_threshold: <integer>
 '''
 
 RETURN = '''
@@ -215,13 +216,13 @@ def main():
         'health_check': {'type': 'str'},
         'wanprof_system_virtualwanlink_healthcheck_sla': {
             'type': 'dict',
-            'v_range': [['6.0.0', '']],
+            'v_range': [['6.0.0', '7.6.2']],
             'options': {
-                'id': {'required': True, 'type': 'int'},
-                'jitter-threshold': {'type': 'int'},
-                'latency-threshold': {'type': 'int'},
-                'link-cost-factor': {'type': 'list', 'choices': ['latency', 'jitter', 'packet-loss'], 'elements': 'str'},
-                'packetloss-threshold': {'type': 'int'}
+                'id': {'v_range': [['6.0.0', '7.6.2']], 'required': True, 'type': 'int'},
+                'jitter-threshold': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'latency-threshold': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'link-cost-factor': {'v_range': [['6.0.0', '7.6.2']], 'type': 'list', 'choices': ['latency', 'jitter', 'packet-loss'], 'elements': 'str'},
+                'packetloss-threshold': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'}
             }
         }
     }

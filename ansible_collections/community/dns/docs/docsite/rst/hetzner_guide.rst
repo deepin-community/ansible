@@ -12,7 +12,7 @@ Hetzner DNS Guide
    :local:
    :depth: 2
 
-The :ref:`community.dns collection <plugins_in_community.dns>` offers several modules for working with the `Hetzner DNS service <https://docs.hetzner.com/dns-console/dns/>`_.
+The :anscollection:`community.dns collection <community.dns>` offers several modules for working with the `Hetzner DNS service <https://docs.hetzner.com/dns-console/dns/>`_.
 The modules use the `JSON REST based API <https://dns.hetzner.com/api-docs/>`_.
 
 The collection provides six modules for working with Hetzner DNS:
@@ -30,6 +30,8 @@ It also provides an inventory plugin:
 
 - :ansplugin:`community.dns.hetzner_dns_records#inventory`: create inventory from DNS records
 
+To find out which record types are supported and how to use them, look at :ref:`ansible_collections.community.dns.docsite.hetzner_guide.records`.
+
 Authentication
 --------------
 
@@ -39,7 +41,7 @@ To use Hetzner's API, you need to create an API token. You can manage API tokens
 
   - community.dns.hetzner_dns_record:
       hetzner_token: '{{ token }}'
-      ...
+      # ...
 
 In the examples in this guide, we will leave the authentication options away. Please note that you can set them globally with ``module_defaults`` (see :ref:`module_defaults`) or with an environment variable for the user and machine where the modules are run on.
 
@@ -55,7 +57,7 @@ To avoid having to specify common parameters for all Hetzner DNS modules in ever
       hosts: localhost
       gather_facts: false
       module_defaults:
-        group/community.dns.hetzner
+        group/community.dns.hetzner:
           hetzner_token: '{{ token }}'
       tasks:
         - name: Query zone information
@@ -130,12 +132,12 @@ The :ansplugin:`community.dns.hetzner_dns_record_set_info module <community.dns.
         msg: >
           IPv4s are {{ result.set.value | join(', ') }},
           TTL is {{ result.set.ttl }}
-      when: result.set
+      when: result.set is truthy
 
     - name: Show that record is not set
       ansible.builtin.debug:
         msg: There is no A record for www.example.com
-      when: not result.set
+      when: result.set is falsy
 
 In all examples in this section, you can replace :ansopt:`community.dns.hetzner_dns_record_set_info#module:zone_name=example.com` by :ansopt:`community.dns.hetzner_dns_record_set_info#module:zone_id=aBcDeFgHiJlMnOpQrStUvW` with the zone's ID string.
 
@@ -482,3 +484,48 @@ The markuman.hetzner_dns.inventory inventory plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``markuman.hetzner_dns.inventory`` inventory plugin can be replaced by the :ansplugin:`community.dns.hetzner_dns_records inventory plugin <community.dns.hetzner_dns_records#inventory>`. Besides the plugin name, no change should be necessary.
+
+
+.. _ansible_collections.community.dns.docsite.hetzner_guide.records:
+
+Supported DNS records
+---------------------
+
+Here you can find a list of supported DNS records together with their syntax for the :ansopt:`value` field:
+
+- **A** records: IPv4 address.
+
+  Simply provide the IPv4 address as :ansopt:`value`, such as ``127.0.0.1``.
+- **AAAA** records: IPv6 address.
+
+  Simply provide the IPv6 address as :ansopt:`value`, such as ``3fff::1:2``.
+- **CAA** records: Certification Authority Authorization
+
+  The record's :ansopt:`value` is of the form ``<flags> <tag> <value>``,
+  where ``<flags>`` is an unsigned integer between 0 and 255;
+  ``<tag>`` is a ASCII string such as ``issue``, ``issuewild``, or ``iodef``;
+  and ``<value>`` is the value enclosed in double quotes.
+  An example entry is ``0 issue "letsencrypt.org"``.
+  The exact syntax is explained in L(Section 4.1.1 of RFC 8659, https://datatracker.ietf.org/doc/html/rfc8659#name-syntax).
+- **CNAME** records: Canonical Name.
+- **DANE** records: DNS-based Authentication of Named Entities.
+- **DS** records: Delegation Signer.
+- **HINFO** records: Host Information.
+- **MX** records: Mail Exchange.
+
+  The record's :ansopt:`value` is of the form ``<priority> <hostname>``,
+  where ``<priority>`` is an unsigned integer and ``<hostname>`` a DNS hostname.
+- **NS** records: Name Server record.
+
+  The record's :ansopt:`value` is the list of DNS names of the authoritative nameservers for this zone.
+- **RP** records: Responsible Person.
+- **SOA** records: Start Of Authority record.
+- **SRV** records: Service locator.
+
+  The record's :ansopt:`value` is of the form ``<priority> <weight> <port> <target>``.
+- **TLSA** records: TLSA certificate association.
+
+  This record is for DANE.
+- **TXT** records: Text record.
+
+  The value is simply a free form text. Its use depends on its context.

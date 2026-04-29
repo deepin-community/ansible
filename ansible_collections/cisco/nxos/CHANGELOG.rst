@@ -4,6 +4,121 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v11.0.0
+=======
+
+Release Summary
+---------------
+
+With this release, the minimum required version of `ansible.netcommon` for this collection is `>=8.1.0`. The last version known to be compatible with `ansible-core<=2.18.x` is ansible.netcommon `v8.0.1` and cisco.nxos `v10.2.0`.
+
+Major Changes
+-------------
+
+- Bumping `dependencies` of ansible.netcommon to `>=8.1.0`, since previous versions of the dependency had compatibility issues with `ansible-core>=2.19`.
+
+Minor Changes
+-------------
+
+- cisco.nxos.nxos_l3_interfaces - Rewrite of l3_interfaces with bug fixes and enhancements.
+
+Bugfixes
+--------
+
+- cisco.nxos.nxos_vrf_global - Added support for rd attribute for nxos_vrf_global module.
+
+v10.2.0
+=======
+
+Minor Changes
+-------------
+
+- nxos_interfaces - Added service-policy, logging, mac-address and snmp configuration options for interface.
+- nxos_l2_interfaces - Enhances capability of the module to deal with addition attributes under l2 interfaces. Adds support for CDP, Link flap and beacon.
+
+Bugfixes
+--------
+
+- nxos_acls - Fix issue where Not sufficient TCAM bank error not being captured by error regex.
+
+v10.1.0
+=======
+
+Minor Changes
+-------------
+
+- hsrp_interfaces - Fixes and enhances capability of the module to deal with entire hsrp configuration under interfaces.
+
+Deprecated Features
+-------------------
+
+- nxos_hsrp - deprecate nxos.nxos.nxos_hsrp in favor of nxos.nxos.nxos_hsrp_interfaces.
+- nxos_vrf_interface - deprecate nxos.nxos.nxos_vrf_interface in favor of nxos.nxos.nxos_vrf_interfaces.
+
+v10.0.0
+=======
+
+Release Summary
+---------------
+
+With this release, the minimum required version of `ansible-core` for this collection is `2.16.0`. The last version known to be compatible with `ansible-core` versions below `2.16` is v5.1.2.
+
+Major Changes
+-------------
+
+- Bumping `requires_ansible` to `>=2.16.0`, since previous ansible-core versions are EoL now.
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- This release removes all deprecated plugins that have reached their end-of-life, including:
+- nxos_snmp_community
+- nxos_snmp_contact
+- nxos_snmp_host
+- nxos_snmp_location
+- nxos_snmp_user
+
+v9.4.0
+======
+
+Minor Changes
+-------------
+
+- nxos_vpc - Added support for peer-switch feature configuration.
+
+Bugfixes
+--------
+
+- nxos_facts - Fixes an issue in nxos_facts where IPv6 addresses within VRF contexts were not being collected in `net_all_ipv6_addresses`.
+- nxos_user - fixes wrong command being generated for purge function
+- nxos_vpc - fixes failure due to kickstart_ver_str not being present
+
+v9.3.0
+======
+
+Minor Changes
+-------------
+
+- Add support for VRF address family via `vrf_address_family` resource module.
+- Added nxos_vrf_interfaces resource module, that helps with configuration of vrfs within interface in favor of nxos_vrf_interface module.
+- nxos_telemetry - Added support for 'overridden' state to provide complete configuration override capabilities.
+
+Bugfixes
+--------
+
+- Fixed hardware fact gathering failure for CPU utilization parsing on NX-OS 9.3(3) by handling both list and single value formats of onemin_percent
+- Fixed the invalid feature name error for port-security by updating the feature mapping from `eth_port_sec` to `eth-port-sec`.
+- Fixes mixed usage of f-string and format string in action plugin for consistency.
+- Fixes nxos_user purge deleting non-local users,ensuring only local users are removed.
+- [bgp_templates] - fix the show commands used to ensure task does not fail if BGP is not enabled on the device.
+- lag_interfaces - Fix bug where lag interfaces was not erroring on command failure. (https://github.com/ansible-collections/cisco.nxos/pull/923)
+- nxos_l2_interfaces - Fixed handling of 'none' value in allowed_vlans to properly set trunk VLAN none
+
+New Modules
+-----------
+
+- nxos_vrf_address_family - Resource module to configure VRF address family definitions.
+
 v9.2.1
 ======
 

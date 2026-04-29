@@ -183,6 +183,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -198,25 +199,23 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         webfilter_profile_antiphish:
-          check_basic_auth: <value in [disable, enable]>
-          check_uri: <value in [disable, enable]>
-          custom_patterns:
-            -
-              category: <value in [username, password]>
-              pattern: <string>
-              type: <value in [regex, literal]>
-          default_action: <value in [log, block, exempt]>
-          domain_controller: <string>
-          inspection_entries:
-            -
-              action: <value in [log, block, exempt]>
-              fortiguard_category: <list or string>
-              name: <string>
-          max_body_len: <integer>
-          status: <value in [disable, enable]>
-          check_username_only: <value in [disable, enable]>
-          authentication: <value in [domain-controller, ldap]>
-          ldap: <string>
+          # check_basic_auth: <value in [disable, enable]>
+          # check_uri: <value in [disable, enable]>
+          # custom_patterns:
+          #   - category: <value in [username, password]>
+          #     pattern: <string>
+          #     type: <value in [regex, literal]>
+          # default_action: <value in [log, block, exempt]>
+          # domain_controller: <string>
+          # inspection_entries:
+          #   - action: <value in [log, block, exempt]>
+          #     fortiguard_category: <list or string>
+          #     name: <string>
+          # max_body_len: <integer>
+          # status: <value in [disable, enable]>
+          # check_username_only: <value in [disable, enable]>
+          # authentication: <value in [domain-controller, ldap]>
+          # ldap: <string>
 '''
 
 RETURN = '''

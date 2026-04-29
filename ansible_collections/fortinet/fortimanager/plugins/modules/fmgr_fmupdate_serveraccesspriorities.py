@@ -130,6 +130,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -143,15 +144,14 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         fmupdate_serveraccesspriorities:
-          access_public: <value in [disable, enable]>
-          av_ips: <value in [disable, enable]>
-          private_server:
-            -
-              id: <integer>
-              ip: <string>
-              ip6: <string>
-              time_zone: <integer>
-          web_spam: <value in [disable, enable]>
+          # access_public: <value in [disable, enable]>
+          # av_ips: <value in [disable, enable]>
+          # private_server:
+          #   - id: <integer>
+          #     ip: <string>
+          #     ip6: <string>
+          #     time_zone: <integer>
+          # web_spam: <value in [disable, enable]>
 '''
 
 RETURN = '''

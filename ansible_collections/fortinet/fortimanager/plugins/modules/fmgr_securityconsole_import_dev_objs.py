@@ -125,6 +125,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -138,16 +139,16 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         securityconsole_import_dev_objs:
-          add_mappings: <value in [disable, enable]>
-          adom: <string>
-          dst_name: <string>
-          dst_parent: <string>
-          if_all_objs: <value in [none, all, filter]>
-          if_all_policy: <value in [disable, enable]>
-          import_action: <value in [do, policy_search, obj_search]>
-          name: <string>
-          position: <value in [bottom, top]>
-          vdom: <string>
+          # add_mappings: <value in [disable, enable]>
+          # adom: <string>
+          # dst_name: <string>
+          # dst_parent: <string>
+          # if_all_objs: <value in [none, all, filter]>
+          # if_all_policy: <value in [disable, enable]>
+          # import_action: <value in [do, policy_search, obj_search]>
+          # name: <string>
+          # position: <value in [bottom, top]>
+          # vdom: <string>
 '''
 
 RETURN = '''

@@ -240,6 +240,12 @@ options:
       - To remove SNAT, specify the word C(none).
       - To specify automap, use the word C(automap).
     type: str
+  serverssl_use_sni:
+    description:
+      - When C(enabled), specifies whether SNI is enabled on the server-side SSL connection
+      - When C(disabled), specifies whether SNI is disabled on the server-side SSL connection
+      - When creating a new virtual server, the default is C(disabled).
+    type: bool
   default_persistence_profile:
     description:
       - Default profile which manages the session persistence.
@@ -835,6 +841,11 @@ snat:
   returned: changed
   type: str
   sample: Automap
+serverssl_use_sni:
+  description: Specifies whether SNI is enabled or disabled on the server-side SSL connection.
+  returned: changed
+  type: bool
+  sample: true
 source:
   description: Source address set on the virtual server, in CIDR format.
   returned: changed
@@ -982,6 +993,7 @@ class Parameters(AnsibleF5Parameters):
         'fwStagedPolicy': 'firewall_staged_policy',
         'securityLogProfiles': 'security_log_profiles',
         'securityNatPolicy': 'security_nat_policy',
+        'serversslUseSni': 'serverssl_use_sni',
         'sourcePort': 'source_port',
         'ipIntelligencePolicy': 'ip_intelligence_policy',
         'rateLimit': 'rate_limit',
@@ -1009,6 +1021,7 @@ class Parameters(AnsibleF5Parameters):
         'rules',
         'source',
         'sourceAddressTranslation',
+        'serversslUseSni',
         'serviceDownImmediateAction',
         'vlans',
         'vlansEnabled',
@@ -1057,6 +1070,7 @@ class Parameters(AnsibleF5Parameters):
         'profiles',
         'service_down_immediate_action',
         'snat',
+        'serverssl_use_sni',
         'source',
         'type',
         'firewall_enforced_policy',
@@ -1096,6 +1110,7 @@ class Parameters(AnsibleF5Parameters):
         'profiles',
         'service_down_immediate_action',
         'snat',
+        'serverssl_use_sni',
         'source',
         'vlans',
         'vlans_enabled',
@@ -1644,12 +1659,16 @@ class ApiParameters(Parameters):
         for item in self._values['profiles']['items']:
             context = item['context']
             name = item['name']
-            path = item['nameReference']['link']
+            if 'nameReference' not in item:
+                path = item['selfLink']
+            else:
+                path = item['nameReference']['link']
             if context in ['all', 'serverside', 'clientside']:
-                if path.startswith(prof_path):
-                    result.append(dict(name=name, context=context, fullPath=item['fullPath']))
-                if path.startswith(accprof_path):
-                    result.append(dict(name=name, context=context, fullPath=item['fullPath']))
+                result.append(dict(name=name, context=context, fullPath=item['fullPath']))
+                # if path.startswith(prof_path):
+                #     result.append(dict(name=name, context=context, fullPath=item['fullPath']))
+                # if path.startswith(accprof_path):
+                #     result.append(dict(name=name, context=context, fullPath=item['fullPath']))
             else:
                 raise F5ModuleError(
                     "Unknown profile context found: '{0}'".format(context)
@@ -2170,6 +2189,14 @@ class ModuleParameters(Parameters):
         return dict(pool=snat_pool, type='snat')
 
     @property
+    def serverssl_use_sni(self):
+        if self._values['serverssl_use_sni'] is None:
+            return None
+        if self._values['serverssl_use_sni']:
+            return 'enabled'
+        return 'disabled'
+
+    @property
     def default_persistence_profile(self):
         if self._values['default_persistence_profile'] is None:
             return None
@@ -2531,6 +2558,14 @@ class ReportableChanges(Changes):
             return 'none'
         result = self._values['snat'].get('pool', None)
         return result
+
+    @property
+    def serverssl_use_sni(self):
+        if self._values['serverssl_use_sni'] is None:
+            return None
+        if self._values['serverssl_use_sni'] == 'enabled':
+            return True
+        return False
 
     @property
     def destination(self):
@@ -3255,6 +3290,7 @@ class Difference(object):
     def profiles(self):
         if self.want.profiles is None:
             return None
+        # raise F5ModuleError(f"want:{self.want.profiles} Have: {self.have.profiles}")
         if self.want.profiles == '' and len(self.have.profiles) > 0:
             have = set([(p['name'], p['context'], p['fullPath']) for p in self.have.profiles])
             if len(self.have.profiles) == 1:
@@ -3419,6 +3455,10 @@ class Difference(object):
 
     @property
     def type(self):
+        if self.want.state in ["disabled", "enabled"] and self.want.type in [None, "standard"]:
+            # when type is missing
+            self.want.type = self.have.type
+
         if self.want.type != self.have.type:
             raise F5ModuleError(
                 "Changing the 'type' parameter is not supported."
@@ -3722,6 +3762,7 @@ class ArgumentSpec(object):
             pool=dict(),
             description=dict(),
             snat=dict(),
+            serverssl_use_sni=dict(type='bool'),
             default_persistence_profile=dict(),
             fallback_persistence_profile=dict(),
             source=dict(),

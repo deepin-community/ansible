@@ -412,6 +412,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -427,59 +428,59 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         wanopt_profile:
-          auth_group: <string>
-          comments: <string>
-          name: <string>
-          transparent: <value in [disable, enable]>
-          cifs:
-            byte_caching: <value in [disable, enable]>
-            log_traffic: <value in [disable, enable]>
-            prefer_chunking: <value in [dynamic, fix]>
-            protocol_opt: <value in [protocol, tcp]>
-            secure_tunnel: <value in [disable, enable]>
-            status: <value in [disable, enable]>
-            tunnel_sharing: <value in [private, shared, express-shared]>
-            port: <list or integer>
-          ftp:
-            byte_caching: <value in [disable, enable]>
-            log_traffic: <value in [disable, enable]>
-            prefer_chunking: <value in [dynamic, fix]>
-            protocol_opt: <value in [protocol, tcp]>
-            secure_tunnel: <value in [disable, enable]>
-            ssl: <value in [disable, enable]>
-            status: <value in [disable, enable]>
-            tunnel_sharing: <value in [private, shared, express-shared]>
-            port: <list or integer>
-          http:
-            byte_caching: <value in [disable, enable]>
-            log_traffic: <value in [disable, enable]>
-            prefer_chunking: <value in [dynamic, fix]>
-            protocol_opt: <value in [protocol, tcp]>
-            secure_tunnel: <value in [disable, enable]>
-            ssl: <value in [disable, enable]>
-            status: <value in [disable, enable]>
-            tunnel_sharing: <value in [private, shared, express-shared]>
-            tunnel_non_http: <value in [disable, enable]>
-            unknown_http_version: <value in [best-effort, reject, tunnel]>
-            port: <list or integer>
-            ssl_port: <list or integer>
-          mapi:
-            byte_caching: <value in [disable, enable]>
-            log_traffic: <value in [disable, enable]>
-            secure_tunnel: <value in [disable, enable]>
-            status: <value in [disable, enable]>
-            tunnel_sharing: <value in [private, shared, express-shared]>
-            port: <list or integer>
-          tcp:
-            byte_caching: <value in [disable, enable]>
-            byte_caching_opt: <value in [mem-only, mem-disk]>
-            log_traffic: <value in [disable, enable]>
-            port: <string>
-            secure_tunnel: <value in [disable, enable]>
-            ssl: <value in [disable, enable]>
-            ssl_port: <list or integer>
-            status: <value in [disable, enable]>
-            tunnel_sharing: <value in [private, shared, express-shared]>
+          name: "your value" # Required variable, string
+          # auth_group: <string>
+          # comments: <string>
+          # transparent: <value in [disable, enable]>
+          # cifs:
+          #   byte_caching: <value in [disable, enable]>
+          #   log_traffic: <value in [disable, enable]>
+          #   prefer_chunking: <value in [dynamic, fix]>
+          #   protocol_opt: <value in [protocol, tcp]>
+          #   secure_tunnel: <value in [disable, enable]>
+          #   status: <value in [disable, enable]>
+          #   tunnel_sharing: <value in [private, shared, express-shared]>
+          #   port: <list or integer>
+          # ftp:
+          #   byte_caching: <value in [disable, enable]>
+          #   log_traffic: <value in [disable, enable]>
+          #   prefer_chunking: <value in [dynamic, fix]>
+          #   protocol_opt: <value in [protocol, tcp]>
+          #   secure_tunnel: <value in [disable, enable]>
+          #   ssl: <value in [disable, enable]>
+          #   status: <value in [disable, enable]>
+          #   tunnel_sharing: <value in [private, shared, express-shared]>
+          #   port: <list or integer>
+          # http:
+          #   byte_caching: <value in [disable, enable]>
+          #   log_traffic: <value in [disable, enable]>
+          #   prefer_chunking: <value in [dynamic, fix]>
+          #   protocol_opt: <value in [protocol, tcp]>
+          #   secure_tunnel: <value in [disable, enable]>
+          #   ssl: <value in [disable, enable]>
+          #   status: <value in [disable, enable]>
+          #   tunnel_sharing: <value in [private, shared, express-shared]>
+          #   tunnel_non_http: <value in [disable, enable]>
+          #   unknown_http_version: <value in [best-effort, reject, tunnel]>
+          #   port: <list or integer>
+          #   ssl_port: <list or integer>
+          # mapi:
+          #   byte_caching: <value in [disable, enable]>
+          #   log_traffic: <value in [disable, enable]>
+          #   secure_tunnel: <value in [disable, enable]>
+          #   status: <value in [disable, enable]>
+          #   tunnel_sharing: <value in [private, shared, express-shared]>
+          #   port: <list or integer>
+          # tcp:
+          #   byte_caching: <value in [disable, enable]>
+          #   byte_caching_opt: <value in [mem-only, mem-disk]>
+          #   log_traffic: <value in [disable, enable]>
+          #   port: <string>
+          #   secure_tunnel: <value in [disable, enable]>
+          #   ssl: <value in [disable, enable]>
+          #   ssl_port: <list or integer>
+          #   status: <value in [disable, enable]>
+          #   tunnel_sharing: <value in [private, shared, express-shared]>
 '''
 
 RETURN = '''
@@ -559,7 +560,7 @@ def main():
                             'choices': ['private', 'shared', 'express-shared'],
                             'type': 'str'
                         },
-                        'port': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'raw'}
+                        'port': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'raw'}
                     }
                 },
                 'ftp': {
@@ -578,7 +579,7 @@ def main():
                             'choices': ['private', 'shared', 'express-shared'],
                             'type': 'str'
                         },
-                        'port': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'raw'}
+                        'port': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'raw'}
                     }
                 },
                 'http': {
@@ -597,14 +598,14 @@ def main():
                             'choices': ['private', 'shared', 'express-shared'],
                             'type': 'str'
                         },
-                        'tunnel-non-http': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'tunnel-non-http': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                         'unknown-http-version': {
-                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']],
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
                             'choices': ['best-effort', 'reject', 'tunnel'],
                             'type': 'str'
                         },
-                        'port': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'raw'},
-                        'ssl-port': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'raw'}
+                        'port': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'raw'},
+                        'ssl-port': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'raw'}
                     }
                 },
                 'mapi': {
@@ -620,7 +621,7 @@ def main():
                             'choices': ['private', 'shared', 'express-shared'],
                             'type': 'str'
                         },
-                        'port': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'raw'}
+                        'port': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'raw'}
                     }
                 },
                 'tcp': {

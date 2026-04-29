@@ -113,6 +113,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -129,11 +130,10 @@ EXAMPLES = '''
         server: <your own value>
         state: present # <value in [present, absent]>
         dynamic_virtualwanlink_server_dynamicmapping:
-          _scope:
-            -
-              name: <string>
+          _scope: # Required variable, list of device
+            - name: <string>
               vdom: <string>
-          server: <list or string>
+          # server: <list or string>
 '''
 
 RETURN = '''

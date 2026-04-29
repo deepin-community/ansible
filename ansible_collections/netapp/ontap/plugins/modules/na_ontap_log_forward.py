@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2021, NetApp, Inc
+# (c) 2021-2024, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -17,7 +17,7 @@ short_description: NetApp ONTAP Log Forward Configuration
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: '21.2.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Create, delete or modify the log forward configuration
 options:
@@ -65,37 +65,36 @@ options:
 
 EXAMPLES = """
 - name: Create log forward configuration
-  na_ontap_log_forward:
+  netapp.ontap.na_ontap_log_forward:
     state: present
     destination: 10.11.12.13
     port: 514
     protocol: udp_unencrypted
-    username: "{{ username }}"
-    password: "{{ password }}"
-    hostname: "{{ hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 
 - name: Modify log forward configuration
-  na_ontap_log_forward:
+  netapp.ontap.na_ontap_log_forward:
     state: present
     destination: 10.11.12.13
     port: 514
     protocol: tcp_unencrypted
-    username: "{{ username }}"
-    password: "{{ password }}"
-    hostname: "{{ hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 
 - name: Delete log forward configuration
-  na_ontap_log_forward:
+  netapp.ontap.na_ontap_log_forward:
     state: absent
     destination: 10.11.12.13
     port: 514
-    username: "{{ username }}"
-    password: "{{ password }}"
-    hostname: "{{ hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 """
 
 RETURN = """
-
 """
 
 import traceback

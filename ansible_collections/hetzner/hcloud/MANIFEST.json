@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "hetzner",
   "name": "hcloud",
-  "version": "4.2.2",
+  "version": "5.2.0",
   "authors": [
    "Hetzner Cloud (github.com/hetznercloud)"
   ],
@@ -27,7 +27,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "659f0cbed8178da8513f96c2abff01870553dd6f3ff05561edde22d3642b294a",
+  "chksum_sha256": "fabc8fc259e69e356b372f5f617309b45a7dd74834b7ba997daf4e12667e19cb",
   "format": 1
  },
  "format": 1

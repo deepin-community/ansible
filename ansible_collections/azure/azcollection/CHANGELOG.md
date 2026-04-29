@@ -1,4 +1,285 @@
 # Change Log
+## v3.8.0 (2025-08-29)
+
+### NEW MODULES
+  - azure_rm_monitormetricalerts.py: ([#1952](https://github.com/ansible-collections/azure/pull/2016))
+  - azure_rm_monitormetricalerts_info.py: ([#1952](https://github.com/ansible-collections/azure/pull/2016))
+  - azure_rm_monitoractivitylogalerts.py: ([#1971](https://github.com/ansible-collections/azure/pull/1971))
+  - azure_rm_monitoractivitylogalerts_info.py: ([#1971](https://github.com/ansible-collections/azure/pull/1971))
+  - azure_rm_dedicatedhost.py: ([#1955](https://github.com/ansible-collections/azure/pull/1955))
+  - azure_rm_dedicatedhost_info.py: ([#1955](https://github.com/ansible-collections/azure/pull/1955))
+
+### FEATURE ENHANCEMENT
+  - plugins/module_utils/azure_rm_common.py:
+    - Set monitor management client for metric alert ([#1952](https://github.com/ansible-collections/azure/pull/2016))
+    - Set monitor management client for activity log alert ([#1971](https://github.com/ansible-collections/azure/pull/1971))
+    - Delete import get cli profile ([#2030](https://github.com/ansible-collections/azure/pull/2030))
+    - Get 'subscription_id' when configuring the authentication parameter ([#2033](https://github.com/ansible-collections/azure/pull/2033))
+    - Replacement will send raw.githubusercontent.com request method ([#2039](https://github.com/ansible-collections/azure/pull/2039))
+  - plugins/module_utils/azure_rm_common_ext.py: Enhance default_compare ([1971](https://github.com/ansible-collections/azure/pull/1971))
+  - azure_rm_aks.py: Add support addon's wqazureKeyvaultSecretsProvider ([#2026](https://github.com/ansible-collections/azure/pull/2026))
+  - README.md: Update readme.md per https://access.redhat.com/articles/7068606 ([#2029](https://github.com/ansible-collections/azure/pull/2029))
+  - azure_rm_azurefirewall.py: Add supportr 'destination_fqdns' ([#2031](https://github.com/ansible-collections/azure/pull/2031))
+  - azure_rm_azurefirewall_info.py: Support return 'destination_fqdns' ([#2031](https://github.com/ansible-collections/azure/pull/2031))
+  - requirements.txt: Update azure-cli-core to v2.75.0 ([#2032](https://github.com/ansible-collections/azure/pull/2032))
+  - tests/utils/ado/ado.sh: Specify the ansible-lint version to v25.8.1 ([#2038](https://github.com/ansible-collections/azure/pull/2038))
+
+### BUG FIXING
+  - azure_rm_keyvaultcertificate.py: Convert the certificate data of type bytearray to base64 ([#1996](https://github.com/ansible-collections/azure/pull/1996))
+  - azure_rm_galleryimageversion.py: Fix the keyword input error when assigning values to a dictionary ([#2037](https://github.com/ansible-collections/azure/pull/2037))
+  - azure_rm_publicipaddress.py: Keep the check mode consistent with the print output ([#2043](https://github.com/ansible-collections/azure/pull/2043))
+
+
+## v3.7.0 (2025-07-29)
+
+### NEW MODULES
+  - azure_rm_monitordatacollectionrules.py: ([#1952](https://github.com/ansible-collections/azure/pull/1952))
+  - azure_rm_monitordatacollectionrules_info.py: ([#1952](https://github.com/ansible-collections/azure/pull/1952))
+  - plugins/doc_fragments/azure_kql.py: ([#1944](https://github.com/ansible-collections/azure/pull/1994))
+  - plugins/inventory/azure_kql.py: ([#1944](https://github.com/ansible-collections/azure/pull/1994))
+  - azure_rm_monitoractiongroups.py: ([1964](https://github.com/ansible-collections/azure/pull/1964))
+  - azure_rm_monitoractiongroups_info: ([1964](https://github.com/ansible-collections/azure/pull/1964))
+  - extensions/eda/plugins/event_source/azure_service_bus.py: ([#1967](https://github.com/ansible-collections/azure/pull/1967))
+  - extensions/eda/plugins/event_source/schemas/azure_service_bus.json: ([#1967](https://github.com/ansible-collections/azure/pull/1967))
+  - azure_rm_containerregistryscopemap.py: ([#2019](https://github.com/ansible-collections/azure/pull/2019))
+  - azure_rm_containerregistryscopemap_info.py: ([#2019](https://github.com/ansible-collections/azure/pull/2019))
+  - azure_rm_containerregistrytoken.py: ([#2023](https://github.com/ansible-collections/azure/pull/2023))
+  - azure_rm_containerregistrytoken_info.py: ([#2023](https://github.com/ansible-collections/azure/pull/2023))
+  - azure_rm_containerregistrytokenpassword.py: ([#2023](https://github.com/ansible-collections/azure/pull/2023))
+
+### FEATURE ENHANCEMENT
+  - plugins/module_utils/azure_rm_common.py:
+    - Add the constraint of requied_by and set monitor client for data collection rule ([1952](https://github.com/ansible-collections/azure/pull/1952))
+    - Set monitor client for action groups ([1964](https://github.com/ansible-collections/azure/pull/1964))
+    - Set container registry client for scope map: ([#2019](https://github.com/ansible-collections/azure/pull/2019))
+    - Set container registry client for token: ([#2023](https://github.com/ansible-collections/azure/pull/2023))
+  - azure_rm_loadbalancer: Support to append sub-properties instead of overwriting ([#1969](https://github.com/ansible-collections/azure/pull/1969))
+  - azure_rm_virtualmachinescaleset.py: Support Priority Type Regular on azure_rm_virtualmachinescaleset Module ([#2001](https://github.com/ansible-collections/azure/pull/2001))
+  - azure_rm_privatednszonelink.py: Add support for 'resolution_policy' ([#1962](https://github.com/ansible-collections/azure/pull/1962))
+  - azure_rm_privatednszonelink_info.py: Support return 'resolution_policy' ([#1962](https://github.com/ansible-collections/azure/pull/1962))
+  - azure_rm_subnet.py: Add support for Microsoft.App/environments in subnet delegations ([#2007](https://github.com/ansible-collections/azure/pull/2007))
+  - tests/unit/event_source/test_azure_service_bus.py: Add async functionality ([#2017](https://github.com/ansible-collections/azure/pull/2017))
+  - textensions/eda/plugins/event_source/azure_service_bus.py: Add async functionality ([#2017](https://github.com/ansible-collections/azure/pull/2017))
+  - pr-pipeline.yml: Delete the creation of resource groups that are not needed ([#2014](https://github.com/ansible-collections/azure/pull/2014))
+  - azure_rm_sqlmanagedinstance.py: Add waiting processing LROPoller results ([#2018](https://github.com/ansible-collections/azure/pull/2018))
+  - azure_rm_virtualwan.py: Add waiting processing LROPoller results ([#2021](https://github.com/ansible-collections/azure/pull/2021))
+  - azure_rm_virtualhubconnection.py: Add waiting processing LROPoller results ([#2022](https://github.com/ansible-collections/azure/pull/2022))
+  - azure_rm_virtualhub.py: Add waiting processing LROPoller results ([#2020](https://github.com/ansible-collections/azure/pull/2020))
+
+### BUG FIXING
+  - plugins/module_utils/security_domain_utils.py: Add future import and metaclass boilerplate ([#1987](https://github.com/ansible-collections/azure/pull/1987))
+  - plugins/modules/azure_rm_keyvaultsecret_info.py: Fix the handling error that get disabled secret ([#1992](https://github.com/ansible-collections/azure/pull/1992))
+  - azure_rm_virtualmachine.py: Used required_by instead of required_if ([#1998](https://github.com/ansible-collections/azure/pull/1998))
+  - azure_rm_virtualnetwork.py: Used required_by instead of required_if ([#1998](https://github.com/ansible-collections/azure/pull/1998))
+
+
+## v3.6.0 (2025-06-30)
+
+### NEW MODULES
+  - azure_rm_virtualnetworkgateway_info.py: ([#1966](https://github.com/ansible-collections/azure/pull/1966))
+  - azure_rm_tag.py: ([#1943](https://github.com/ansible-collections/azure/pull/1943))
+  - azure_rm_tag_info.py: ([#1943](https://github.com/ansible-collections/azure/pull/1943))
+  - azure_rm_postgresqlflexiblebackup.py: ([1914](https://github.com/ansible-collections/azure/pull/1914))
+  - azure_rm_postgresqlflexiblebackup_info.py: ([1914](https://github.com/ansible-collections/azure/pull/1914))
+  - azure_rm_postgresqlflexiblevirtualendpoint.py: ([1914](https://github.com/ansible-collections/azure/pull/1914))
+  - azure_rm_postgresqlflexiblevirtualendpoint_info.py: ([1914](https://github.com/ansible-collections/azure/pull/1914))
+  - azure_rm_postgresqlflexibleadministrator.py: ([1914](https://github.com/ansible-collections/azure/pull/1914))
+  - azure_rm_postgresqlflexibleadministrator_info.py: ([1914](https://github.com/ansible-collections/azure/pull/1914))
+
+### FEATURE ENHANCEMENT
+  - ad.sh: Cleanup ado.sh ([#1972](https://github.com/ansible-collections/azure/pull/1972))
+  - pr-pipeline.yml:
+    - Set default for pr-pipeline to latest versions (python+ansible) ([#1972](https://github.com/ansible-collections/azure/pull/1972))
+    - Restore the trigger that synchronizes the dev branch during the PR test ([#1978](https://github.com/ansible-collections/azure/pull/1978))
+  - azure_rm_virtualnetworkgatewayconnection_info.py: Support return 'local_network_gateway2' ([#1958](https://github.com/ansible-collections/azure/pull/1958))
+  - azure_rm_loadbalancer.py: Add support for 'outbound_rules' ([#1965](https://github.com/ansible-collections/azure/pull/1965))
+  - azure_rm_loadbalancer_info.py: Support return 'outbound_rules' ([#1965](https://github.com/ansible-collections/azure/pull/1965))
+  - azure_rm_keyvault.py: New function to purge the deleted vaults ([#1981](https://github.com/ansible-collections/azure/pull/1981))
+  - azure_rm_postgresqlflexibleserver.py: Add support for 'auth_config' ([1914](https://github.com/ansible-collections/azure/pull/1914))
+  - azure_rm_postgresqlflexibleserver_info.py: Support return 'auth_config' ([1914](https://github.com/ansible-collections/azure/pull/1914))
+  - azure_rm_manageddisk_info.py: Support return 'last_ownership_update_time' ([#1984](https://github.com/ansible-collections/azure/pull/1984))
+
+### BUG FIXING
+  - azure_rm_managementgroup_info.py: Fix the error of devel branch ansible detecting invalid document ([#1975](https://github.com/ansible-collections/azure/pull/1975))
+  - azure_rm_virtualnetworkgatewayconnection.py: Fix the bug that IPSec type connection not work ([#1958](https://github.com/ansible-collections/azure/pull/1958))
+  - azure_rm_loganalyticsworkspace_info.py: Fix the function reference error ([#1983](https://github.com/ansible-collections/azure/pull/1983))
+
+
+## v3.5.0 (2025-06-18)
+
+### NEW MODULES
+  - security_domain_utils: ([#1717](https://github.com/ansible-collections/azure/pull/1717))
+  - azure_rm_keyvaultsecuritydomain: ([#1717](https://github.com/ansible-collections/azure/pull/1717))
+
+### FEATURE ENHANCEMENT
+  - Integration tests:
+    - Separate the VM test into different region ([#1951](https://github.com/ansible-collections/azure/pull/1951))
+    - Update test cases to work under ansible-2.19 Group2 ([#1953](https://github.com/ansible-collections/azure/pull/1953))
+  - azure_rm_keyvault: Add support for `hsm_name`, `administrators` and `identity` ([#1717](https://github.com/ansible-collections/azure/pull/1717))
+  - azure_rm_keyvault_info: Add support for `hsm_name`, `administrators` and `identity` ([#1717](https://github.com/ansible-collections/azure/pull/1717))
+  - Remove deprecated code since ansible-2.9 has been EOL [1949](https://github.com/ansible-collections/azure/pull/1949)
+  - pr-pipelines.yml: Add python `v3.12` and `v3.13` to CI pipeline ([#1954](https://github.com/ansible-collections/azure/pull/1954))
+  - requirements.txt: Bump `azure-cli-core` to `v2.74.0`  ([#1956](https://github.com/ansible-collections/azure/pull/1956))
+  - sanity-requirements.txt: Bump sanity test dependency ([#1956](https://github.com/ansible-collections/azure/pull/1956))
+
+### BUG FIXING
+  - azure_rm_resource_info: Fix failure on response with bytes body ([#1957](https://github.com/ansible-collections/azure/pull/1957))
+
+## v3.4.0 (2025-05-29)
+
+### NEW MODULES
+  - azure_rm_afdroute: ([#1885](https://github.com/ansible-collections/azure/pull/1885))
+  - azure_rm_afdroute_info: ([#1885](https://github.com/ansible-collections/azure/pull/1885))
+  - azure_rm_afdorigingroup: ([#1885](https://github.com/ansible-collections/azure/pull/1885))
+  - azure_rm_afdorigingroup_info: ([#1885](https://github.com/ansible-collections/azure/pull/1885))
+  - azure_rm_afdorigin: ([#1885](https://github.com/ansible-collections/azure/pull/1885))
+  - azure_rm_afdorigin_info: ([#1885](https://github.com/ansible-collections/azure/pull/1885))
+  - azure_rm_afdruleset: ([#1885](https://github.com/ansible-collections/azure/pull/1885))
+  - azure_rm_afdruleset_info: ([#1885](https://github.com/ansible-collections/azure/pull/1885))
+  - azure_rm_afdrules: ([#1885](https://github.com/ansible-collections/azure/pull/1885))
+  - azure_rm_afdrules_info: ([#1885](https://github.com/ansible-collections/azure/pull/1885))
+  - extensions/audit/event_query.yml: This event_query file is used by Ansible Automation Platform. It allows for the tracking of resources in cloud providers. ([#1922](https://github.com/ansible-collections/azure/pull/1922))
+  - azure_rm_recoveryservicesvaultconfig: ([#1926](https://github.com/ansible-collections/azure/pull/1926))
+  - azure_rm_recoveryservicesvaultconfig_info: ([#1926](https://github.com/ansible-collections/azure/pull/1926))
+  - azure_rm_keyvaultcertificate: ([#1806](https://github.com/ansible-collections/azure/pull/1806))
+  - azure_rm_keyvaultcertificate_info: ([#1806](https://github.com/ansible-collections/azure/pull/1806))
+
+### FEATURE ENHANCEMENT
+  - azure_rm_keyvaultsecret_info: Optimize the return value ([#1851](https://github.com/ansible-collections/azure/pull/1851))
+  - azure_rm_galleryimageversion: Set the timeout for creating an image version ([#1848](https://github.com/ansible-collections/azure/pull/1848))
+  - azure_rm_adapplication: Add support for `notes` ([#1852](https://github.com/ansible-collections/azure/pull/1852))
+  - azure_rm_adapplication_info: Add support for `notes` ([#1852](https://github.com/ansible-collections/azure/pull/1852))
+  - azure_rm_virtualmachine:
+    - Add support for datadisk `name` ([#1847](https://github.com/ansible-collections/azure/pull/1847))
+    - Add support for `shared_gallery_image_id` ([#1883](https://github.com/ansible-collections/azure/pull/1883))
+  - azure_rm_aks: Compatible with `os_type` case sensitivity ([#1879](https://github.com/ansible-collections/azure/pull/1879))
+  - azure_rm_image: Add support for `os_disk_encryption_set` and `data_disk_encryption_set` ([#1891](https://github.com/ansible-collections/azure/pull/1891))
+  - azure_rm_image_info: Add support for `os_disk_encryption_set` and `data_disk_encryption_set` ([#1891](https://github.com/ansible-collections/azure/pull/1891))
+  - azure_rm_virtualmachinescaleset:
+    - Add support for `os_disk_encryption_set` ([#1892](https://github.com/ansible-collections/azure/pull/1892))
+    - Add support for `application_security_groups` and `private_ip_address_version` ([#1910](https://github.com/ansible-collections/azure/pull/1910))
+  - azure_rm_virtualmachinescaleset_info: Add support for `application_security_groups` and `private_ip_address_version` ([#1910](https://github.com/ansible-collections/azure/pull/1910))
+  - azure_rm_backuppolicy: Add support for `policy_type` ([#1887](https://github.com/ansible-collections/azure/pull/1887))
+  - plugins/module_utils/azure_rm_common:
+    - Upgrade azure_rm_galleryimageverison dependency api version to `v2023-07-03` ([#1845](https://github.com/ansible-collections/azure/pull/1845))
+    - Migrate postgresql flexible relate SDK to `azure-mgmt-postgresqlflexibleservers` ([#1876](https://github.com/ansible-collections/azure/pull/1876))
+    - Support alternative MSGraph cloud endpoints ([#1912](https://github.com/ansible-collections/azure/pull/1912))
+    - Migrate mysql flexible relate SDK to `azure-mgmt-mysqlflexibleservers` ([#1906](https://github.com/ansible-collections/azure/pull/1906))
+  - azure_rm_adserviceprincipal: Add support for `notes`, `account_enabled` and `service_principal_type` ([1902](https://github.com/ansible-collections/azure/pull/1902))
+  - azure_rm_adserviceprincipal_info: Support return `notes`, `account_enabled` and `service_principal_type` ([1902](https://github.com/ansible-collections/azure/pull/1902))
+  - plugins/inventory/azure_rm: 
+    - Upgrade Compute API version to `v2024-07-01` ([#1918](https://github.com/ansible-collections/azure/pull/1918))
+    - Upgrade Network API version to `v2024-05-01` ([#1918](https://github.com/ansible-collections/azure/pull/1918))
+  - azure_rm_aksagentpool: Add support for `os_disk_type`, `capacity_reservation_group_id`, `host_group_id` etc.   ([#1913](https://github.com/ansible-collections/azure/pull/1913))
+  - azure_rm_aksagentpool_info: Add support for `os_disk_type`, `capacity_reservation_group_id`, `host_group_id` etc.([#1913](https://github.com/ansible-collections/azure/pull/1913))
+  - Integration tests:
+    - Add a test case for `azure_rm_manageddisk` ([#1866](https://github.com/ansible-collections/azure/pull/1866))
+    - Add idempotency test for `azure_rm_backuppolicy` ([#1889](https://github.com/ansible-collections/azure/pull/1889))
+    - Add test for keeping public IPs on `azure_rm_networkinterface` updates ([#1917](https://github.com/ansible-collections/azure/pull/1917))
+    - Update test cases to work under ansible-2.19 Group1 ([#1940](https://github.com/ansible-collections/azure/pull/1940))
+    - Update test cases to work under ansible-2.19 Group7 ([#1941](https://github.com/ansible-collections/azure/pull/1941))
+    - Update test cases to work under ansible-2.19 Group9 ([#1942](https://github.com/ansible-collections/azure/pull/1942))
+    - Show failure of idempotency in integration tests for `azure_rm_roleassignment` ([#1864](https://github.com/ansible-collections/azure/pull/1864))
+    - Update pipeline test ([#1893]( https://github.com/ansible-collections/azure/pull/1893))
+    - Move VM-related tests to group1 ([#1924]( https://github.com/ansible-collections/azure/pull/1924))
+
+### BUG FIXING
+  - azure_rm_manageddisk: Gets the image return value during idempotent testing ([#1860](https://github.com/ansible-collections/azure/pull/1860))
+  - azure_rm_roleassignment: Ignore case when comparing strings ([#1869](https://github.com/ansible-collections/azure/pull/1869))
+  - azure_rm_servicebus: Update `premium_messaging_partitions` settings ([#1871](https://github.com/ansible-collections/azure/pull/1871))
+  - azure_rm_publicipaddress: Delete sku type `basic` ([#1877](https://github.com/ansible-collections/azure/pull/1877))
+  - plugins/inventory/azure_rm: Decrease the timeout period ([#1878](https://github.com/ansible-collections/azure/pull/1878))
+  - azure_rm_networkinterface:
+    - Fix tags cannot be updated ([#1881](https://github.com/ansible-collections/azure/pull/1881))
+    - Fix the bug of public ip loss ([#1921](https://github.com/ansible-collections/azure/pull/1921))
+  - azure_rm_adserviceprincipal: Fix `app_role_assignment_required` not set bug ([#1861](https://github.com/ansible-collections/azure/pull/1861))
+  - azure_rm_backuppolicy: Fix the idempotent issue ([#1890](https://github.com/ansible-collections/azure/pull/1890))
+  - azure_rm_virtualmachine: Fix the bug of getting disk name ([#1845](https://github.com/ansible-collections/azure/pull/1845))
+  - azure_rm_recoveryservicesvault: Fix idempotent fail ([#1908](https://github.com/ansible-collections/azure/pull/1908)
+  - azure_rm_virtualnetworkpeering: Support virtual networks cross subscription ([#1909](https://github.com/ansible-collections/azure/pull/1909))
+  - azure_rm_privateendpoint_info: Fix the error in the document description ([#1933](https://github.com/ansible-collections/azure/pull/1933))
+  - azure_rm_virtualmachine_info: Correct spelling for VM info property identity ([#1936](https://github.com/ansible-collections/azure/pull/1936))
+  - azure_rm_networkflowlog: Fix the bug of location was not set to the default resource group of location ([#1939](https://github.com/ansible-collections/azure/pull/1939))
+  - azure_rm_automationaccount_info: Fix documentation error ([#1928](https://github.com/ansible-collections/azure/pull/1928))
+  - azure_rm_gallery: Fix `description` setting bug ([#1935](https://github.com/ansible-collections/azure/pull/1935))
+  - azure_rm_gallery_info: Fix `description` setting bug ([#1935](https://github.com/ansible-collections/azure/pull/1935))
+
+
+## v3.3.1 (2025-03-13)
+
+### Fix compile issue with python v3.6
+
+## v3.3.0 (2025-03-12)
+
+### NEW MODULES
+  - azure_rm_diskaccess: ([#1831](https://github.com/ansible-collections/azure/pull/1831))
+  - azure_rm_diskaccess_info: ([#1831](https://github.com/ansible-collections/azure/pull/1831))
+  - azure_rm_resourcehealthstates_info: ([#1838](https://github.com/ansible-collections/azure/pull/1838))
+
+### FEATURE ENHANCEMENT
+  - README.md:
+    - Add pipx alternative for deps installation ([#1797](https://github.com/ansible-collections/azure/pull/1797))
+    - Update README.md: ([#1832](https://github.com/ansible-collections/azure/pull/1832))
+  - azure_rm_storageaccount: Add support for `immutable_storage_with_versioning` ([#1802](https://github.com/ansible-collections/azure/pull/1802))
+  - azure_rm_storageaccount_info: Support return `immutable_storage_with_versioning` ([#1802](https://github.com/ansible-collections/azure/pull/1802))
+  - azure_rm_trafficmanagerprofile: Add support for `custom_header`, `expected_status_code_ranges`, `max_return` and `allowed_endpoint_record_types` ([#1800](https://github.com/ansible-collections/azure/pull/1800))
+  - azure_rm_trafficmanagerprofile_info: Support return `custom_header`, `expected_status_code_ranges`, `max_return` and `allowed_endpoint_record_types` ([#1800](https://github.com/ansible-collections/azure/pull/1800))
+  - azure_rm_virtualmachine:
+    - Allow creation from snapshot image ([#1816](https://github.com/ansible-collections/azure/pull/1816))
+    - Add support `user_data` ([#1844](https://github.com/ansible-collections/azure/pull/1844))
+  - azure_rm_virtualmachine_info:
+    - Support return `storage_profile.os_disk` ([#1816](https://github.com/ansible-collections/azure/pull/1816))
+    - Support return `write_accelerator_enabled` ([#1808](https://github.com/ansible-collections/azure/pull/1808))
+    - support return `maintenance_redeploy_status` ([#1822](https://github.com/ansible-collections/azure/pull/1822))
+  - azure_rm_manageddisk:
+    - Add support for `write_accelerator_enabled` ([#1808](https://github.com/ansible-collections/azure/pull/1808))
+    - Add `upload`, `fromimage`, `restore`, `uploadpreparedsecure`  to `create_option` and add support for `performance_plus`, `upload_size_bytes`, `gallery_image_reference`, `image_reference`, `logical_sector_size`, `source_resource_id`, `security_profile` ([#1833](https://github.com/ansible-collections/azure/pull/1833))
+  - azure_rm_manageddisk_info: Support return `performance_plus`, `upload_size_bytes`, `gallery_image_reference`, `image_reference`, `logical_sector_size`, `source_resource_id`, `security_profile` ([#1833](https://github.com/ansible-collections/azure/pull/1833))
+  - azure_rm.py: Add cache support to inventory plugin cache ([#1828](https://github.com/ansible-collections/azure/pull/1828))
+  - azure_keyvault_secret: Add support for `use_cli`, use CLI credential ([#1836](https://github.com/ansible-collections/azure/pull/1836))
+
+### BUG FIXING
+  - tests/integration/targets/azure_rm_dnsrecordset/tasks/main.yml: Update the random value ([#1803](https://github.com/ansible-collections/azure/pull/1803))
+  - azure_rm_roleassignment: Delete scope tail `/` when comparing scopes ([#1807](https://github.com/ansible-collections/azure/pull/1807))
+  - azure_rm_subnet_info: Fix incorrect API call ([#1826](https://github.com/ansible-collections/azure/pull/1826))
+  - azure_rm_virtualmachine_info: Fix the bug that `capacity_reservation_group` not being handled ([#1827](https://github.com/ansible-collections/azure/pull/1827))
+  - azure_rm_aks: Fixed the bug that `agent_pool.security_profile` returning `None` ([#1835](https://github.com/ansible-collections/azure/pull/1835))
+  - azure_rm_servicebus: Do not compare the `zone_redundant` return value during idempotency testing ([#1840](https://github.com/ansible-collections/azure/pull/1840))
+  - azure_rm_subnet: Fixed the bug caused by the user defining `subscription_id` in `route_table` ([#1837](https://github.com/ansible-collections/azure/pull/1837))
+
+
+## v3.2.0 (2025-02-06)
+
+### NEW MODULES
+  - azure_rm_applicationfirewallpolicy: ([#1783](https://github.com/ansible-collections/azure/pull/1783))
+  - azure_rm_applicationfirewallpolicy_info: ([#1783](https://github.com/ansible-collections/azure/pull/1783))
+  - azure_rm_arcssh: Builds on HCI inventory and adds ARC support as well ([#1735](https://github.com/ansible-collections/azure/pull/1735))
+
+### FEATURE ENHANCEMENT
+  - azure_rm_dnsrecordset: Add support for `target_resource` ([#1767](https://github.com/ansible-collections/azure/pull/1767))
+  - azure_rm_dnsrecordset_info: Support return `target_resource` ([#1767](https://github.com/ansible-collections/azure/pull/1767))
+  - azure_rm_loadbalancer: Add support for `enable_tcp_reset` to `load_balancing_rules` ([#1774](https://github.com/ansible-collections/azure/pull/1774))
+  - azure_rm_privateendpoint: Add support for `application_security_groups`, `custom_dns_configs`,`custom_network_interface_name`, `ip_configurations` ([#1771](https://github.com/ansible-collections/azure/pull/1771))
+  - azure_rm_privateendpoint_info: Add support for `application_security_groups`, `custom_dns_configs`,`custom_network_interface_name`, `ip_configurations` ([#1771](https://github.com/ansible-collections/azure/pull/1771))
+  - azure_rm_manageddisk:
+    - Add support for `public_network_access` and `network_access_policy` ([#1782](https://github.com/ansible-collections/azure/pull/1782))
+    - Add support for display/modification of disk performance `tier` ([#1787](https://github.com/ansible-collections/azure/pull/1787))
+  - azure_rm_manageddisk_info:
+    - Support return `public_network_access` and `network_access_policy` ([#1782](https://github.com/ansible-collections/azure/pull/1782))
+    - Support return `tier` ([#1787](https://github.com/ansible-collections/azure/pull/1787))
+  - azure_rm_iotdevice: Add support for `device_scope` ([#1790](https://github.com/ansible-collections/azure/pull/1790))
+  - azure_rm_cdnprofile: Add more `sku` selection options ([#1789](https://github.com/ansible-collections/azure/pull/1789))
+  - azure_rm_webapp: Add support for updating `startup_file` ([#1792](https://github.com/ansible-collections/azure/pull/1792))
+  - azure_rm_appgateway: Add support for setting WAF policy ([#1725](https://github.com/ansible-collections/azure/pull/1725))
+  - azure_rm_servicebus: Add support for `minimum_tls_version`, `zone_redundant`, `disable_local_auth`, `public_network_access` and `premium_messaging_partitions` ([#1793](https://github.com/ansible-collections/azure/pull/1793))
+  - plugins/inventory/azure_rm.py: Add support for `batch_fetch_interval` and `batch_fetch_timeout` ([#1804](https://github.com/ansible-collections/azure/pull/1804))
+  - azure_rm_aduser_info: Add support for `surname` and `given_name` ([#1815](https://github.com/ansible-collections/azure/pull/1815))
+  - azure_rm_keyvaultsecret - Remove unnecessary constraints ([#1810](https://github.com/ansible-collections/azure/pull/1810))
+
+### BUG FIXING
+  - inventory azure_rm: Return the VM NIC details ([#1770](https://github.com/ansible-collections/azure/pull/1770))
+  - azure_keyvault_secret: Include Key Vault URL to error messages ([#1785](https://github.com/ansible-collections/azure/pull/1785))
+
 
 ## v3.1.0 (2024-12-02)
 

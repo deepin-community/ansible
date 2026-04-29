@@ -158,6 +158,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -173,20 +174,19 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         emailfilter_bwl:
-          comment: <string>
-          entries:
-            -
-              action: <value in [spam, clear, reject]>
-              addr_type: <value in [ipv4, ipv6]>
-              email_pattern: <string>
-              id: <integer>
-              ip4_subnet: <string>
-              ip6_subnet: <string>
-              pattern_type: <value in [wildcard, regexp]>
-              status: <value in [disable, enable]>
-              type: <value in [ip, email]>
-          id: <integer>
-          name: <string>
+          id: 0 # Required variable, integer
+          # comment: <string>
+          # entries:
+          #   - action: <value in [spam, clear, reject]>
+          #     addr_type: <value in [ipv4, ipv6]>
+          #     email_pattern: <string>
+          #     id: <integer>
+          #     ip4_subnet: <string>
+          #     ip6_subnet: <string>
+          #     pattern_type: <value in [wildcard, regexp]>
+          #     status: <value in [disable, enable]>
+          #     type: <value in [ip, email]>
+          # name: <string>
 '''
 
 RETURN = '''

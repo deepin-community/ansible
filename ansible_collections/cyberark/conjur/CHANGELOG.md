@@ -6,6 +6,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.3.7] - 2025-08-13
+
+### Changed
+- Raised minimum required Ansible version to 2.17.
+
+## [1.3.6] - 2025-06-11
+
+### Added
+- Added support for AWS, Azure, and GCP authentication
+
+## [1.3.5] - 2025-03-28
+
+### Added
+- Added Telemetry Headers
+
+## [1.3.4] - 2025-03-26
+
+### Added
+- Added Codacy integration
+
+## [1.3.3] - 2025-02-26
+
+### Fixed
+- Fixed various code quality issues (CNJR-6414)
+
+## [1.3.2] - 2024-12-12
+
+### Added
+- Added ignore file for ansible-core 2.18 sanity test
+- The Lookup plugin now supports certificate content as a parameter variable
+
 ## [1.3.1] - 2024-10-16
 
 ### Added

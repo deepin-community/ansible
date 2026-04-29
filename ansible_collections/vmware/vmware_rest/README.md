@@ -15,10 +15,17 @@ System programmers can enable pipelines to setup, tear down and deploy VMs while
 These modules are based on the [vSphere REST API](https://developer.vmware.com/apis/vsphere-automation/latest/). This API doesn't provide any mechanism to list or clone VM templates when they are stored in a VM folder.
 To circumvent this limitation, you should store your VM templates in a [Content Library](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.vm_admin.doc/GUID-254B2CE8-20A8-43F0-90E8-3F6776C2C896.html).
 
+#### Slower execution times
+
+This collection is capable of leveraging a feature of the cloud.common collection called the "turbo server". This is a caching mechanism that speeds up repeated API calls, but it does come with some downsides.
+
+This collection has used turbo mode up until version 4.8.0. With the release of 4.8.0, turbo mode is disabled by default but can be re-enabled using an environment variable. Read more [here](docs/turbo_mode.md).
+
+
 
 ## Requirements
 
-The host running the tasks must have the python requirements described in [requirements.txt](./requirements.txt)
+The host running the tasks must have the python requirements described in [requirements.txt](https://github.com/ansible-collections/vmware.vmware_rest/blob/main/requirements.txt)
 Once the collection is installed, you can install them into a python environment using pip: `pip install -r ~/.ansible/collections/ansible_collections/vmware/vmware_rest/requirements.txt`
 
 ### vSphere compatibility
@@ -126,7 +133,7 @@ ansible-galaxy collection install vmware.vmware_rest:1.0.0
 
 All releases will meet the following test criteria.
 
-* 100% success for [Integration](./tests/integration) tests.
+* 100% success for [Integration](https://github.com/ansible-collections/vmware.vmware_rest/blob/main/tests/integration) tests.
 * 100% success for [Sanity](https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/index.html#all-sanity-tests) tests as part of [ansible-test](https://docs.ansible.com/ansible/latest/dev_guide/testing.html#run-sanity-tests).
 * 100% success for [ansible-lint](https://ansible.readthedocs.io/projects/lint/) allowing only false positives.
 
@@ -167,7 +174,7 @@ If a support case cannot be opened with Red Hat and the collection has been obta
 ## Release Notes and Roadmap
 
 A list of available releases can be found on the github [release page](https://github.com/ansible-collections/vmware.vmware_rest/releases).
-A changelog may be found attached to the release, or in the [CHANGELOG.rst](CHANGELOG.rst)
+A changelog may be found attached to the release, or in the [CHANGELOG.rst](https://github.com/ansible-collections/vmware.vmware_rest/blob/main/CHANGELOG.rst)
 
 Note, some collections release before an ansible-core version reaches End of Life (EOL), thus the version of ansible-core that is supported must be a version that is currently supported.
 For AAP users, to see the supported ansible-core versions, review the [AAP Life Cycle](https://access.redhat.com/support/policy/updates/ansible-automation-platform).
@@ -186,4 +193,4 @@ The `community.vmware` collection offers additional community supported function
 ## License Information
 
 GNU General Public License v3.0 or later
-See [LICENSE](LICENSE) to see the full text.
+See [LICENSE](https://github.com/ansible-collections/vmware.vmware_rest/blob/main/LICENSE) to see the full text.

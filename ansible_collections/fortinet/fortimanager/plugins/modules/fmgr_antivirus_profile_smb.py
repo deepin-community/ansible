@@ -143,6 +143,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -158,33 +159,33 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         antivirus_profile_smb:
-          archive_block:
-            - "encrypted"
-            - "corrupted"
-            - "multipart"
-            - "nested"
-            - "mailbomb"
-            - "unhandled"
-            - "partiallycorrupted"
-            - "fileslimit"
-            - "timeout"
-          archive_log:
-            - "encrypted"
-            - "corrupted"
-            - "multipart"
-            - "nested"
-            - "mailbomb"
-            - "unhandled"
-            - "partiallycorrupted"
-            - "fileslimit"
-            - "timeout"
-          emulator: <value in [disable, enable]>
-          options:
-            - "scan"
-            - "quarantine"
-            - "avquery"
-            - "avmonitor"
-          outbreak_prevention: <value in [disabled, files, full-archive]>
+          # archive_block:
+          #   - "encrypted"
+          #   - "corrupted"
+          #   - "multipart"
+          #   - "nested"
+          #   - "mailbomb"
+          #   - "unhandled"
+          #   - "partiallycorrupted"
+          #   - "fileslimit"
+          #   - "timeout"
+          # archive_log:
+          #   - "encrypted"
+          #   - "corrupted"
+          #   - "multipart"
+          #   - "nested"
+          #   - "mailbomb"
+          #   - "unhandled"
+          #   - "partiallycorrupted"
+          #   - "fileslimit"
+          #   - "timeout"
+          # emulator: <value in [disable, enable]>
+          # options:
+          #   - "scan"
+          #   - "quarantine"
+          #   - "avquery"
+          #   - "avmonitor"
+          # outbreak_prevention: <value in [disabled, files, full-archive]>
 '''
 
 RETURN = '''

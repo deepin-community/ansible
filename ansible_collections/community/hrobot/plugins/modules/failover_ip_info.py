@@ -9,8 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = r'''
----
+DOCUMENTATION = r"""
 module: failover_ip_info
 short_description: Retrieve information on Hetzner's failover IPs
 author:
@@ -27,6 +26,7 @@ extends_documentation_fragment:
   - community.hrobot.robot
   - community.hrobot.attributes
   - community.hrobot.attributes.actiongroup_robot
+  - community.hrobot.attributes.idempotent_not_modify_state
   - community.hrobot.attributes.info_module
 
 attributes:
@@ -38,9 +38,10 @@ options:
     description: The failover IP address.
     type: str
     required: true
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
+---
 - name: Get value of failover IP 1.2.3.4
   community.hrobot.failover_ip_info:
     hetzner_user: foo
@@ -53,9 +54,9 @@ EXAMPLES = r'''
   ansible.builtin.debug:
     msg: "1.2.3.4 routes to {{ result.value }}"
   when: result.state == 'routed'
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 value:
   description:
     - The value of the failover IP.
@@ -91,7 +92,7 @@ server_number:
     - This is I(not) the server the failover IP is routed to.
   returned: success
   type: int
-'''
+"""
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.community.hrobot.plugins.module_utils.robot import (

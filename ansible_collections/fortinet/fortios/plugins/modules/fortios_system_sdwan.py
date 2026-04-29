@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -206,6 +207,10 @@ options:
                                     - Interface, zone or SDWAN zone name. Source system.interface.name system.zone.name system.sdwan.zone.name.
                                 required: true
                                 type: str
+            duplication_max_discrepancy:
+                description:
+                    - Maximum discrepancy between two packets for deduplication in milliseconds (250 - 1000).
+                type: int
             duplication_max_num:
                 description:
                     - Maximum number of interface members a packet is duplicated in the SD-WAN zone (2 - 4).
@@ -279,6 +284,17 @@ options:
                         description:
                             - Number of failures before server is considered lost (1 - 3600).
                         type: int
+                    fortiguard:
+                        description:
+                            - Enable/disable use of FortiGuard predefined server.
+                        type: str
+                        choices:
+                            - 'disable'
+                            - 'enable'
+                    fortiguard_name:
+                        description:
+                            - Predefined health-check target name. Source system.health-check-fortiguard.name.
+                        type: str
                     ftp_file:
                         description:
                             - Full path and file name on the FTP server to download for FTP health-check to probe.
@@ -918,7 +934,7 @@ options:
                 suboptions:
                     health_check:
                         description:
-                            - SD-WAN health-check name. Source system.sdwan.health-check.name system.sdwan.health-check-fortiguard.target-name.
+                            - SD-WAN health-check name. Source system.sdwan.health-check.name.
                         type: str
                     ip:
                         description:
@@ -955,6 +971,13 @@ options:
                             - 'standalone'
                             - 'primary'
                             - 'secondary'
+                    route_metric:
+                        description:
+                            - Route-metric of neighbor.
+                        type: str
+                        choices:
+                            - 'preferable'
+                            - 'priority'
                     service_id:
                         description:
                             - SD-WAN service ID to work with the neighbor. Source system.sdwan.service.id.
@@ -1109,7 +1132,7 @@ options:
                         suboptions:
                             name:
                                 description:
-                                    - Health check name. Source system.sdwan.health-check.name system.sdwan.health-check-fortiguard.target-name.
+                                    - Health check name. Source system.sdwan.health-check.name.
                                 required: true
                                 type: str
                     hold_down_time:
@@ -1366,7 +1389,7 @@ options:
                         suboptions:
                             health_check:
                                 description:
-                                    - SD-WAN health-check. Source system.sdwan.health-check.name system.sdwan.health-check-fortiguard.target-name.
+                                    - SD-WAN health-check. Source system.sdwan.health-check.name.
                                 required: true
                                 type: str
                             id:
@@ -1566,10 +1589,11 @@ EXAMPLES = """
                   srcintf:
                       -
                           name: "default_name_24 (source system.interface.name system.zone.name system.sdwan.zone.name)"
+          duplication_max_discrepancy: "250"
           duplication_max_num: "2"
           fail_alert_interfaces:
               -
-                  name: "default_name_27 (source system.interface.name)"
+                  name: "default_name_28 (source system.interface.name)"
           fail_detect: "enable"
           health_check:
               -
@@ -1581,6 +1605,8 @@ EXAMPLES = """
                   dns_request_domain: "<your_own_value>"
                   embed_measured_health: "enable"
                   failtime: "5"
+                  fortiguard: "disable"
+                  fortiguard_name: "<your_own_value> (source system.health-check-fortiguard.name)"
                   ftp_file: "<your_own_value>"
                   ftp_mode: "passive"
                   ha_priority: "1"
@@ -1592,7 +1618,7 @@ EXAMPLES = """
                       -
                           seq_num: "<you_own_value>"
                   mos_codec: "g711"
-                  name: "default_name_48"
+                  name: "default_name_51"
                   packet_size: "124"
                   password: "<your_own_value>"
                   port: "0"
@@ -1606,7 +1632,7 @@ EXAMPLES = """
                   server: "192.168.100.40"
                   sla:
                       -
-                          id: "61"
+                          id: "64"
                           jitter_threshold: "5"
                           latency_threshold: "5"
                           link_cost_factor: "latency"
@@ -1664,7 +1690,7 @@ EXAMPLES = """
                   server: "192.168.100.40"
                   sla:
                       -
-                          id: "116"
+                          id: "119"
                           jitter_threshold: "5"
                           latency_threshold: "5"
                           link_cost_factor: "latency"
@@ -1714,7 +1740,7 @@ EXAMPLES = """
                   zone: "<your_own_value> (source system.sdwan.zone.name)"
           neighbor:
               -
-                  health_check: "<your_own_value> (source system.sdwan.health-check.name system.sdwan.health-check-fortiguard.target-name)"
+                  health_check: "<your_own_value> (source system.sdwan.health-check.name)"
                   ip: "<your_own_value> (source router.bgp.neighbor-group.name router.bgp.neighbor.ip)"
                   member:
                       -
@@ -1722,6 +1748,7 @@ EXAMPLES = """
                   minimum_sla_meet_members: "1"
                   mode: "sla"
                   role: "standalone"
+                  route_metric: "preferable"
                   service_id: "0"
                   sla_id: "0"
           neighbor_hold_boot_time: "0"
@@ -1740,52 +1767,52 @@ EXAMPLES = """
                   dscp_reverse_tag: "<your_own_value>"
                   dst:
                       -
-                          name: "default_name_187 (source firewall.address.name firewall.addrgrp.name)"
+                          name: "default_name_191 (source firewall.address.name firewall.addrgrp.name)"
                   dst_negate: "enable"
                   dst6:
                       -
-                          name: "default_name_190 (source firewall.address6.name firewall.addrgrp6.name)"
+                          name: "default_name_194 (source firewall.address6.name firewall.addrgrp6.name)"
                   end_port: "65535"
                   end_src_port: "65535"
                   gateway: "enable"
                   groups:
                       -
-                          name: "default_name_195 (source user.group.name)"
+                          name: "default_name_199 (source user.group.name)"
                   hash_mode: "round-robin"
                   health_check:
                       -
-                          name: "default_name_198 (source system.sdwan.health-check.name system.sdwan.health-check-fortiguard.target-name)"
+                          name: "default_name_202 (source system.sdwan.health-check.name)"
                   hold_down_time: "0"
-                  id: "200"
+                  id: "204"
                   input_device:
                       -
-                          name: "default_name_202 (source system.interface.name)"
+                          name: "default_name_206 (source system.interface.name)"
                   input_device_negate: "enable"
                   input_zone:
                       -
-                          name: "default_name_205 (source system.sdwan.zone.name)"
+                          name: "default_name_209 (source system.sdwan.zone.name)"
                   internet_service: "enable"
                   internet_service_app_ctrl:
                       -
-                          id: "208"
+                          id: "212"
                   internet_service_app_ctrl_category:
                       -
-                          id: "210"
+                          id: "214"
                   internet_service_app_ctrl_group:
                       -
-                          name: "default_name_212 (source application.group.name)"
+                          name: "default_name_216 (source application.group.name)"
                   internet_service_custom:
                       -
-                          name: "default_name_214 (source firewall.internet-service-custom.name)"
+                          name: "default_name_218 (source firewall.internet-service-custom.name)"
                   internet_service_custom_group:
                       -
-                          name: "default_name_216 (source firewall.internet-service-custom-group.name)"
+                          name: "default_name_220 (source firewall.internet-service-custom-group.name)"
                   internet_service_group:
                       -
-                          name: "default_name_218 (source firewall.internet-service-group.name)"
+                          name: "default_name_222 (source firewall.internet-service-group.name)"
                   internet_service_name:
                       -
-                          name: "default_name_220 (source firewall.internet-service-name.name)"
+                          name: "default_name_224 (source firewall.internet-service-name.name)"
                   jitter_weight: "0"
                   latency_weight: "0"
                   link_cost_factor: "latency"
@@ -1793,7 +1820,7 @@ EXAMPLES = """
                   load_balance: "enable"
                   minimum_sla_meet_members: "0"
                   mode: "auto"
-                  name: "default_name_228"
+                  name: "default_name_232"
                   packet_loss_weight: "0"
                   passive_measurement: "enable"
                   priority_members:
@@ -1801,7 +1828,7 @@ EXAMPLES = """
                           seq_num: "<you_own_value>"
                   priority_zone:
                       -
-                          name: "default_name_234 (source system.sdwan.zone.name)"
+                          name: "default_name_238 (source system.sdwan.zone.name)"
                   protocol: "0"
                   quality_link: "0"
                   role: "standalone"
@@ -1811,17 +1838,17 @@ EXAMPLES = """
                   shortcut_stickiness: "enable"
                   sla:
                       -
-                          health_check: "<your_own_value> (source system.sdwan.health-check.name system.sdwan.health-check-fortiguard.target-name)"
-                          id: "244"
+                          health_check: "<your_own_value> (source system.sdwan.health-check.name)"
+                          id: "248"
                   sla_compare_method: "order"
                   sla_stickiness: "enable"
                   src:
                       -
-                          name: "default_name_248 (source firewall.address.name firewall.addrgrp.name)"
+                          name: "default_name_252 (source firewall.address.name firewall.addrgrp.name)"
                   src_negate: "enable"
                   src6:
                       -
-                          name: "default_name_251 (source firewall.address6.name firewall.addrgrp6.name)"
+                          name: "default_name_255 (source firewall.address6.name firewall.addrgrp6.name)"
                   standalone_action: "enable"
                   start_port: "1"
                   start_src_port: "1"
@@ -1832,7 +1859,7 @@ EXAMPLES = """
                   use_shortcut_sla: "enable"
                   users:
                       -
-                          name: "default_name_261 (source user.local.name)"
+                          name: "default_name_265 (source user.local.name)"
                   zone_mode: "enable"
           speedtest_bypass_routing: "disable"
           status: "disable"
@@ -1841,7 +1868,7 @@ EXAMPLES = """
                   advpn_health_check: "<your_own_value> (source system.sdwan.health-check.name)"
                   advpn_select: "enable"
                   minimum_sla_meet_members: "1"
-                  name: "default_name_269"
+                  name: "default_name_273"
                   service_sla_tie_break: "cfg-order"
 """
 
@@ -1922,12 +1949,25 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_system_sdwan_data(json):
     option_list = [
         "app_perf_log_period",
         "duplication",
+        "duplication_max_discrepancy",
         "duplication_max_num",
         "fail_alert_interfaces",
         "fail_detect",
@@ -1960,8 +2000,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -1991,30 +2030,115 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def system_sdwan(data, fos, check_mode=False):
 
-def system_sdwan(data, fos):
     state = None
     vdom = data["vdom"]
+    state = data.get("state", None)
     system_sdwan_data = data["system_sdwan"]
 
     filtered_data = filter_system_sdwan_data(system_sdwan_data)
     filtered_data = flatten_multilists_attributes(filtered_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("system", "sdwan", filtered_data, vdom=vdom)
+        current_data = fos.get("system", "sdwan", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["system_sdwan"] = converted_data
+    data_copy["system_sdwan"] = filtered_data
     fos.do_member_operation(
         "system",
         "sdwan",
@@ -2036,12 +2160,14 @@ def is_successful_status(resp):
     )
 
 
-def fortios_system(data, fos):
+def fortios_system(data, fos, check_mode):
+
     if data["system_sdwan"]:
-        resp = system_sdwan(data, fos)
+        resp = system_sdwan(data, fos, check_mode)
     else:
         fos._module.fail_json(msg="missing task body: %s" % ("system_sdwan"))
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -2080,6 +2206,7 @@ versioned_schema = {
             "v_range": [["v6.4.0", "v6.4.0"], ["v6.4.4", ""]],
             "type": "integer",
         },
+        "duplication_max_discrepancy": {"v_range": [["v7.6.1", ""]], "type": "integer"},
         "neighbor_hold_down": {
             "v_range": [["v6.4.0", ""]],
             "type": "string",
@@ -2183,6 +2310,12 @@ versioned_schema = {
                     "type": "string",
                     "required": True,
                 },
+                "fortiguard": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "disable"}, {"value": "enable"}],
+                },
+                "fortiguard_name": {"v_range": [["v7.6.1", ""]], "type": "string"},
                 "probe_packets": {
                     "v_range": [["v6.4.0", ""]],
                     "type": "string",
@@ -2396,213 +2529,6 @@ versioned_schema = {
                 },
             },
             "v_range": [["v6.4.0", ""]],
-        },
-        "health_check_fortiguard": {
-            "type": "list",
-            "elements": "dict",
-            "children": {
-                "target_name": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "required": True,
-                },
-                "probe_packets": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [{"value": "disable"}, {"value": "enable"}],
-                },
-                "addr_mode": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [{"value": "ipv4"}, {"value": "ipv6"}],
-                },
-                "system_dns": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [{"value": "disable"}, {"value": "enable"}],
-                },
-                "server": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "list",
-                    "multiple_values": True,
-                    "elements": "str",
-                },
-                "detect_mode": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [
-                        {"value": "active"},
-                        {"value": "passive"},
-                        {"value": "prefer-passive"},
-                        {"value": "remote"},
-                        {"value": "agent-based"},
-                    ],
-                },
-                "protocol": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [
-                        {"value": "ping"},
-                        {"value": "tcp-echo"},
-                        {"value": "udp-echo"},
-                        {"value": "http"},
-                        {"value": "https"},
-                        {"value": "twamp"},
-                        {"value": "dns"},
-                        {"value": "tcp-connect"},
-                        {"value": "ftp"},
-                    ],
-                },
-                "port": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "quality_measured_method": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [{"value": "half-open"}, {"value": "half-close"}],
-                },
-                "security_mode": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [{"value": "none"}, {"value": "authentication"}],
-                },
-                "user": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "password": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "packet_size": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "ha_priority": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "ftp_mode": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [{"value": "passive"}, {"value": "port"}],
-                },
-                "ftp_file": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "http_get": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "http_agent": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "http_match": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "dns_request_domain": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "dns_match_ip": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "interval": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "probe_timeout": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "failtime": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "recoverytime": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "probe_count": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "diffservcode": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "update_cascade_interface": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [{"value": "enable"}, {"value": "disable"}],
-                },
-                "update_static_route": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [{"value": "enable"}, {"value": "disable"}],
-                },
-                "embed_measured_health": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [{"value": "enable"}, {"value": "disable"}],
-                },
-                "sla_id_redistribute": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "sla_fail_log_period": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "sla_pass_log_period": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "threshold_warning_packetloss": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "integer",
-                },
-                "threshold_alert_packetloss": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "integer",
-                },
-                "threshold_warning_latency": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "integer",
-                },
-                "threshold_alert_latency": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "integer",
-                },
-                "threshold_warning_jitter": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "integer",
-                },
-                "threshold_alert_jitter": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "integer",
-                },
-                "vrf": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "source": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "source6": {"v_range": [["v7.6.0", ""]], "type": "string"},
-                "members": {
-                    "type": "list",
-                    "elements": "dict",
-                    "children": {
-                        "seq_num": {
-                            "v_range": [["v7.6.0", ""]],
-                            "type": "integer",
-                            "required": True,
-                        }
-                    },
-                    "v_range": [["v7.6.0", ""]],
-                },
-                "mos_codec": {
-                    "v_range": [["v7.6.0", ""]],
-                    "type": "string",
-                    "options": [
-                        {"value": "g711"},
-                        {"value": "g722"},
-                        {"value": "g729"},
-                    ],
-                },
-                "class_id": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "sla": {
-                    "type": "list",
-                    "elements": "dict",
-                    "children": {
-                        "id": {
-                            "v_range": [["v7.6.0", ""]],
-                            "type": "integer",
-                            "required": True,
-                        },
-                        "link_cost_factor": {
-                            "v_range": [["v7.6.0", ""]],
-                            "type": "list",
-                            "options": [
-                                {"value": "latency"},
-                                {"value": "jitter"},
-                                {"value": "packet-loss"},
-                                {"value": "mos"},
-                                {"value": "remote"},
-                            ],
-                            "multiple_values": True,
-                            "elements": "str",
-                        },
-                        "latency_threshold": {
-                            "v_range": [["v7.6.0", ""]],
-                            "type": "integer",
-                        },
-                        "jitter_threshold": {
-                            "v_range": [["v7.6.0", ""]],
-                            "type": "integer",
-                        },
-                        "packetloss_threshold": {
-                            "v_range": [["v7.6.0", ""]],
-                            "type": "integer",
-                        },
-                        "mos_threshold": {
-                            "v_range": [["v7.6.0", ""]],
-                            "type": "string",
-                        },
-                        "priority_in_sla": {
-                            "v_range": [["v7.6.0", ""]],
-                            "type": "integer",
-                        },
-                        "priority_out_sla": {
-                            "v_range": [["v7.6.0", ""]],
-                            "type": "integer",
-                        },
-                    },
-                    "v_range": [["v7.6.0", ""]],
-                },
-            },
-            "v_range": [["v7.6.0", ""]],
         },
         "service": {
             "type": "list",
@@ -3068,6 +2994,11 @@ versioned_schema = {
                         {"value": "secondary"},
                     ],
                 },
+                "route_metric": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "preferable"}, {"value": "priority"}],
+                },
                 "health_check": {"v_range": [["v6.4.0", ""]], "type": "string"},
                 "sla_id": {"v_range": [["v6.4.0", ""]], "type": "integer"},
             },
@@ -3200,6 +3131,225 @@ versioned_schema = {
             },
             "v_range": [["v6.4.0", "v6.4.0"], ["v6.4.4", ""]],
         },
+        "health_check_fortiguard": {
+            "type": "list",
+            "elements": "dict",
+            "children": {
+                "target_name": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "required": True,
+                },
+                "probe_packets": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [{"value": "disable"}, {"value": "enable"}],
+                },
+                "addr_mode": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [{"value": "ipv4"}, {"value": "ipv6"}],
+                },
+                "system_dns": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [{"value": "disable"}, {"value": "enable"}],
+                },
+                "server": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "list",
+                    "multiple_values": True,
+                    "elements": "str",
+                },
+                "detect_mode": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [
+                        {"value": "active"},
+                        {"value": "passive"},
+                        {"value": "prefer-passive"},
+                        {"value": "remote"},
+                        {"value": "agent-based"},
+                    ],
+                },
+                "protocol": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [
+                        {"value": "ping"},
+                        {"value": "tcp-echo"},
+                        {"value": "udp-echo"},
+                        {"value": "http"},
+                        {"value": "https"},
+                        {"value": "twamp"},
+                        {"value": "dns"},
+                        {"value": "tcp-connect"},
+                        {"value": "ftp"},
+                    ],
+                },
+                "port": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+                "quality_measured_method": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [{"value": "half-open"}, {"value": "half-close"}],
+                },
+                "security_mode": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [{"value": "none"}, {"value": "authentication"}],
+                },
+                "user": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+                "password": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+                "packet_size": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+                "ha_priority": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+                "ftp_mode": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [{"value": "passive"}, {"value": "port"}],
+                },
+                "ftp_file": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+                "http_get": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+                "http_agent": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+                "http_match": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+                "dns_request_domain": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                },
+                "dns_match_ip": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+                "interval": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+                "probe_timeout": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+                "failtime": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+                "recoverytime": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+                "probe_count": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+                "diffservcode": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+                "update_cascade_interface": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+                "update_static_route": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+                "embed_measured_health": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+                "sla_id_redistribute": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
+                "sla_fail_log_period": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
+                "sla_pass_log_period": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
+                "threshold_warning_packetloss": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
+                "threshold_alert_packetloss": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
+                "threshold_warning_latency": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
+                "threshold_alert_latency": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
+                "threshold_warning_jitter": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
+                "threshold_alert_jitter": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
+                "vrf": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+                "source": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+                "source6": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+                "members": {
+                    "type": "list",
+                    "elements": "dict",
+                    "children": {
+                        "seq_num": {
+                            "v_range": [["v7.6.0", "v7.6.0"]],
+                            "type": "integer",
+                            "required": True,
+                        }
+                    },
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                },
+                "mos_codec": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "string",
+                    "options": [
+                        {"value": "g711"},
+                        {"value": "g722"},
+                        {"value": "g729"},
+                    ],
+                },
+                "class_id": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+                "sla": {
+                    "type": "list",
+                    "elements": "dict",
+                    "children": {
+                        "id": {
+                            "v_range": [["v7.6.0", "v7.6.0"]],
+                            "type": "integer",
+                            "required": True,
+                        },
+                        "link_cost_factor": {
+                            "v_range": [["v7.6.0", "v7.6.0"]],
+                            "type": "list",
+                            "options": [
+                                {"value": "latency"},
+                                {"value": "jitter"},
+                                {"value": "packet-loss"},
+                                {"value": "mos"},
+                                {"value": "remote"},
+                            ],
+                            "multiple_values": True,
+                            "elements": "str",
+                        },
+                        "latency_threshold": {
+                            "v_range": [["v7.6.0", "v7.6.0"]],
+                            "type": "integer",
+                        },
+                        "jitter_threshold": {
+                            "v_range": [["v7.6.0", "v7.6.0"]],
+                            "type": "integer",
+                        },
+                        "packetloss_threshold": {
+                            "v_range": [["v7.6.0", "v7.6.0"]],
+                            "type": "integer",
+                        },
+                        "mos_threshold": {
+                            "v_range": [["v7.6.0", "v7.6.0"]],
+                            "type": "string",
+                        },
+                        "priority_in_sla": {
+                            "v_range": [["v7.6.0", "v7.6.0"]],
+                            "type": "integer",
+                        },
+                        "priority_out_sla": {
+                            "v_range": [["v7.6.0", "v7.6.0"]],
+                            "type": "integer",
+                        },
+                    },
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                },
+            },
+            "v_range": [["v7.6.0", "v7.6.0"]],
+        },
     },
 }
 
@@ -3231,7 +3381,7 @@ def main():
         if mkeyname and mkeyname == attribute_name:
             fields["system_sdwan"]["options"][attribute_name]["required"] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -3254,7 +3404,9 @@ def main():
             fos, versioned_schema, "system_sdwan"
         )
 
-        is_error, has_changed, result, diff = fortios_system(module.params, fos)
+        is_error, has_changed, result, diff = fortios_system(
+            module.params, fos, module.check_mode
+        )
 
     else:
         module.fail_json(**FAIL_SOCKET_MSG)

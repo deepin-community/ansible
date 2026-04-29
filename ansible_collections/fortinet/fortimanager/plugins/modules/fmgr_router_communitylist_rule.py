@@ -117,6 +117,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -133,10 +134,10 @@ EXAMPLES = '''
         community_list: <your own value>
         state: present # <value in [present, absent]>
         router_communitylist_rule:
-          action: <value in [deny, permit]>
-          id: <integer>
-          match: <string>
-          regexp: <string>
+          id: 0 # Required variable, integer
+          # action: <value in [deny, permit]>
+          # match: <string>
+          # regexp: <string>
 '''
 
 RETURN = '''

@@ -167,10 +167,11 @@ vm_boot_status:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
-from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi, vmware_argument_spec, find_vm_by_id, wait_for_task, TaskError
+from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi, find_vm_by_id, wait_for_task, TaskError
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 
 try:
-    from pyVmomi import vim, VmomiSupport
+    from pyVmomi import vim, VmomiJSONEncoder
 except ImportError:
     pass
 
@@ -203,7 +204,7 @@ class VmBootManager(PyVmomi):
                     vms.append(temp_vm_object.obj)
 
         elif self.moid:
-            vm_obj = VmomiSupport.templateOf('VirtualMachine')(self.module.params['moid'], self.si._stub)
+            vm_obj = VmomiJSONEncoder.templateOf('VirtualMachine')(self.module.params['moid'], self.si._stub)
             if vm_obj:
                 vms.append(vm_obj)
 
@@ -375,7 +376,7 @@ class VmBootManager(PyVmomi):
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(
         name=dict(type='str'),
         uuid=dict(type='str'),

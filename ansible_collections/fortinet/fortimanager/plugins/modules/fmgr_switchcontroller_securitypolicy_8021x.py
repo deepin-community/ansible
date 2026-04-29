@@ -241,6 +241,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -256,31 +257,31 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_securitypolicy_8021x:
-          auth_fail_vlan: <value in [disable, enable]>
-          auth_fail_vlan_id: <string>
-          auth_fail_vlanid: <integer>
-          eap_passthru: <value in [disable, enable]>
-          guest_auth_delay: <integer>
-          guest_vlan: <value in [disable, enable]>
-          guest_vlan_id: <string>
-          guest_vlanid: <integer>
-          mac_auth_bypass: <value in [disable, enable]>
-          name: <string>
-          open_auth: <value in [disable, enable]>
-          policy_type: <value in [802.1X]>
-          radius_timeout_overwrite: <value in [disable, enable]>
-          security_mode: <value in [802.1X, 802.1X-mac-based]>
-          user_group: <list or string>
-          framevid_apply: <value in [disable, enable]>
-          eap_auto_untagged_vlans: <value in [disable, enable]>
-          authserver_timeout_period: <integer>
-          authserver_timeout_vlan: <value in [disable, enable]>
-          authserver_timeout_vlanid: <string>
-          authserver_timeout_tagged: <value in [static, disable, lldp-voice]>
-          authserver_timeout_tagged_vlanid: <list or string>
-          dacl: <value in [disable, enable]>
-          auth_order: <value in [dot1x-mab, mab-dot1x, mab]>
-          auth_priority: <value in [dot1x-mab, mab-dot1x, legacy]>
+          name: "your value" # Required variable, string
+          # auth_fail_vlan: <value in [disable, enable]>
+          # auth_fail_vlan_id: <string>
+          # auth_fail_vlanid: <integer>
+          # eap_passthru: <value in [disable, enable]>
+          # guest_auth_delay: <integer>
+          # guest_vlan: <value in [disable, enable]>
+          # guest_vlan_id: <string>
+          # guest_vlanid: <integer>
+          # mac_auth_bypass: <value in [disable, enable]>
+          # open_auth: <value in [disable, enable]>
+          # policy_type: <value in [802.1X]>
+          # radius_timeout_overwrite: <value in [disable, enable]>
+          # security_mode: <value in [802.1X, 802.1X-mac-based]>
+          # user_group: <list or string>
+          # framevid_apply: <value in [disable, enable]>
+          # eap_auto_untagged_vlans: <value in [disable, enable]>
+          # authserver_timeout_period: <integer>
+          # authserver_timeout_vlan: <value in [disable, enable]>
+          # authserver_timeout_vlanid: <string>
+          # authserver_timeout_tagged: <value in [static, disable, lldp-voice]>
+          # authserver_timeout_tagged_vlanid: <list or string>
+          # dacl: <value in [disable, enable]>
+          # auth_order: <value in [dot1x-mab, mab-dot1x, mab]>
+          # auth_priority: <value in [dot1x-mab, mab-dot1x, legacy]>
 '''
 
 RETURN = '''
@@ -362,11 +363,11 @@ def main():
                 'authserver-timeout-vlan': {'v_range': [['6.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'authserver-timeout-vlanid': {'v_range': [['6.4.3', '']], 'type': 'str'},
                 'authserver-timeout-tagged': {
-                    'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']],
+                    'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']],
                     'choices': ['static', 'disable', 'lldp-voice'],
                     'type': 'str'
                 },
-                'authserver-timeout-tagged-vlanid': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
+                'authserver-timeout-tagged-vlanid': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
                 'dacl': {'v_range': [['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'auth-order': {'v_range': [['7.6.0', '']], 'choices': ['dot1x-mab', 'mab-dot1x', 'mab'], 'type': 'str'},
                 'auth-priority': {'v_range': [['7.6.0', '']], 'choices': ['dot1x-mab', 'mab-dot1x', 'legacy'], 'type': 'str'}

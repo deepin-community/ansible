@@ -57,7 +57,7 @@ This results in the following output:
     }
 
     PLAY RECAP *******************************************************************************************************
-    localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 Check out the documentation of the :ansplugin:`community.routeros.api module <community.routeros.api#module>` for details on the options.
 
@@ -191,7 +191,7 @@ When this playbook completed successfully, you should be able to use the HTTPS a
 .. code-block:: yaml+jinja
 
     - community.routeros.api:
-        ...
+        # ...
         tls: true
         validate_certs: true
         validate_cert_hostname: true

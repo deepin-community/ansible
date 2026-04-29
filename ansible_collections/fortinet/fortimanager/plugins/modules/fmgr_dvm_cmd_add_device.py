@@ -102,7 +102,7 @@ options:
                     meta_fields:
                         aliases: ['meta fields']
                         type: raw
-                        description: (dict or str) Meta fields.
+                        description: (dict or str) Add real and model device.
                     mgmt_mode:
                         type: str
                         description: Add real and model device.
@@ -245,6 +245,7 @@ EXAMPLES = '''
 
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true

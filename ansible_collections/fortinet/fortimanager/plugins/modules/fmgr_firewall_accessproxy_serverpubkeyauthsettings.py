@@ -162,6 +162,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -177,19 +178,18 @@ EXAMPLES = '''
         adom: <your own value>
         access_proxy: <your own value>
         firewall_accessproxy_serverpubkeyauthsettings:
-          auth_ca: <string>
-          cert_extension:
-            -
-              critical: <value in [no, yes]>
-              data: <string>
-              name: <string>
-              type: <value in [fixed, user]>
-          permit_agent_forwarding: <value in [disable, enable]>
-          permit_port_forwarding: <value in [disable, enable]>
-          permit_pty: <value in [disable, enable]>
-          permit_user_rc: <value in [disable, enable]>
-          permit_x11_forwarding: <value in [disable, enable]>
-          source_address: <value in [disable, enable]>
+          # auth_ca: <string>
+          # cert_extension:
+          #   - critical: <value in [no, yes]>
+          #     data: <string>
+          #     name: <string>
+          #     type: <value in [fixed, user]>
+          # permit_agent_forwarding: <value in [disable, enable]>
+          # permit_port_forwarding: <value in [disable, enable]>
+          # permit_pty: <value in [disable, enable]>
+          # permit_user_rc: <value in [disable, enable]>
+          # permit_x11_forwarding: <value in [disable, enable]>
+          # source_address: <value in [disable, enable]>
 '''
 
 RETURN = '''

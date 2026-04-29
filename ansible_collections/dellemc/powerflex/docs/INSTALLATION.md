@@ -1,13 +1,3 @@
-<!--
-Copyright (c) 2024 Dell Inc., or its subsidiaries. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
--->
-
 # Installation and execution of Ansible modules for Dell PowerFlex
 
 ## Installation of SDK
@@ -41,7 +31,7 @@ You may obtain a copy of the License at
 
   * Download the latest tar build from any of the available distribution channel [Ansible Galaxy](https://galaxy.ansible.com/dellemc/powerflex) /[Automation Hub](https://console.redhat.com/ansible/automation-hub/repo/published/dellemc/powerflex) and use this command to install the collection anywhere in your system:
  
-        ansible-galaxy collection install dellemc-powerflex-2.5.0.tar.gz -p <install_path>
+        ansible-galaxy collection install dellemc-powerflex-2.6.1.tar.gz -p <install_path>
 
   * Set the environment variable:
   

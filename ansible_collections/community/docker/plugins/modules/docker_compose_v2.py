@@ -10,8 +10,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
-
+DOCUMENTATION = r"""
 module: docker_compose_v2
 
 short_description: Manage multi-container Docker applications with Docker Compose CLI plugin
@@ -20,7 +19,6 @@ version_added: 3.6.0
 
 description:
   - Uses Docker Compose to start or shutdown services.
-
 extends_documentation_fragment:
   - community.docker.compose_v2
   - community.docker.compose_v2.minimum_version
@@ -35,6 +33,10 @@ attributes:
       - In check mode, pulling the image does not result in a changed result.
   diff_mode:
     support: none
+  idempotent:
+    support: partial
+    details:
+      - If O(state=restarted) or O(recreate=always) the module is not idempotent.
 
 options:
   state:
@@ -56,7 +58,8 @@ options:
       - Whether to pull images before running. This is used when C(docker compose up) is run.
       - V(always) ensures that the images are always pulled, even when already present on the Docker daemon.
       - V(missing) only pulls them when they are not present on the Docker daemon.
-      - V(never) never pulls images. If they are not present, the module will fail when trying to create the containers that need them.
+      - V(never) never pulls images. If they are not present, the module will fail when trying to create the containers that
+        need them.
       - V(policy) use the Compose file's C(pull_policy) defined for the service to figure out what to do.
     type: str
     choices:
@@ -68,8 +71,10 @@ options:
   build:
     description:
       - Whether to build images before starting containers. This is used when C(docker compose up) is run.
-      - V(always) always builds before starting containers. This is equivalent to the C(--build) option of C(docker compose up).
-      - V(never) never builds before starting containers. This is equivalent to the C(--no-build) option of C(docker compose up).
+      - V(always) always builds before starting containers. This is equivalent to the C(--build) option of C(docker compose
+        up).
+      - V(never) never builds before starting containers. This is equivalent to the C(--no-build) option of C(docker compose
+        up).
       - V(policy) uses the policy as defined in the Compose file.
     type: str
     choices:
@@ -82,6 +87,16 @@ options:
       - When O(state) is V(present) or V(restarted), specify whether or not to include linked services.
     type: bool
     default: true
+  ignore_build_events:
+    description:
+      - Ignores image building events for change detection.
+      - If O(state=present) and O(ignore_build_events=true) and O(build=always), a rebuild that does not trigger a container
+        restart no longer results in RV(ignore:changed=true).
+      - Note that Docker Compose 2.31.0 is the first Compose 2.x version to emit build events. For older versions, the behavior
+        is always as if O(ignore_build_events=true).
+    type: bool
+    default: true
+    version_added: 4.2.0
   recreate:
     description:
       - By default containers will be recreated when their configuration differs from the service definition.
@@ -129,8 +144,8 @@ options:
   scale:
     description:
       - Define how to scale services when running C(docker compose up).
-      - Provide a dictionary of key/value pairs where the key is the name of the service
-        and the value is an integer count for the number of containers.
+      - Provide a dictionary of key/value pairs where the key is the name of the service and the value is an integer count
+        for the number of containers.
     type: dict
     version_added: 3.7.0
   wait:
@@ -145,15 +160,25 @@ options:
       - When O(wait=true), wait at most this amount of seconds.
     type: int
     version_added: 3.8.0
+  assume_yes:
+    description:
+      - When O(assume_yes=true), pass C(-y)/C(--yes) to assume "yes" as answer to all prompts and run non-interactively.
+      - Right now a prompt is asked whenever a non-matching volume should be re-created. O(assume_yes=false)
+        results in the question being answered by "no", which will simply re-use the existing volume.
+      - This option is only available on Docker Compose 2.32.0 or newer.
+    type: bool
+    default: false
+    version_added: 4.5.0
 
 author:
   - Felix Fontein (@felixfontein)
 
 seealso:
   - module: community.docker.docker_compose_v2_pull
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
+---
 # Examples use the django example at https://docs.docker.com/compose/django. Follow it to create the
 # flask directory
 
@@ -228,9 +253,9 @@ EXAMPLES = '''
           {{ output.containers | selectattr("Service", "equalto", "web") | first }}
         db_container: >-
           {{ output.containers | selectattr("Service", "equalto", "db") | first }}
-'''
+"""
 
-RETURN = '''
+RETURN = r"""
 containers:
   description:
     - A list of containers associated to the service.
@@ -410,7 +435,7 @@ actions:
         - Recreating
         - Pulling
         - Building
-'''
+"""
 
 import traceback
 
@@ -429,6 +454,8 @@ from ansible_collections.community.docker.plugins.module_utils.compose_v2 import
     is_failed,
 )
 
+from ansible_collections.community.docker.plugins.module_utils.version import LooseVersion
+
 
 class ServicesManager(BaseComposeManager):
     def __init__(self, client):
@@ -439,6 +466,7 @@ class ServicesManager(BaseComposeManager):
         self.dependencies = parameters['dependencies']
         self.pull = parameters['pull']
         self.build = parameters['build']
+        self.ignore_build_events = parameters['ignore_build_events']
         self.recreate = parameters['recreate']
         self.remove_images = parameters['remove_images']
         self.remove_volumes = parameters['remove_volumes']
@@ -449,6 +477,9 @@ class ServicesManager(BaseComposeManager):
         self.scale = parameters['scale'] or {}
         self.wait = parameters['wait']
         self.wait_timeout = parameters['wait_timeout']
+        self.yes = parameters['assume_yes']
+        if self.compose_version < LooseVersion('2.32.0') and self.yes:
+            self.fail('assume_yes=true needs Docker Compose 2.32.0 or newer, not version %s' % (self.compose_version, ))
 
         for key, value in self.scale.items():
             if not isinstance(key, string_types):
@@ -506,6 +537,10 @@ class ServicesManager(BaseComposeManager):
             args.append('--no-start')
         if dry_run:
             args.append('--dry-run')
+        if self.yes:
+            # Note that for Docker Compose 2.32.x and 2.33.x, the long form is '--y' and not '--yes'.
+            # This was fixed in Docker Compose 2.34.0 (https://github.com/docker/compose/releases/tag/v2.34.0).
+            args.append('-y' if self.compose_version < LooseVersion('2.34.0') else '--yes')
         args.append('--')
         for service in self.services:
             args.append(service)
@@ -517,7 +552,7 @@ class ServicesManager(BaseComposeManager):
         rc, stdout, stderr = self.client.call_cli(*args, cwd=self.project_src)
         events = self.parse_events(stderr, dry_run=self.check_mode, nonzero_rc=rc != 0)
         self.emit_warnings(events)
-        self.update_result(result, events, stdout, stderr, ignore_service_pull_events=True)
+        self.update_result(result, events, stdout, stderr, ignore_service_pull_events=True, ignore_build_events=self.ignore_build_events)
         self.update_failed(result, events, args, stdout, stderr, rc)
         return result
 
@@ -539,7 +574,7 @@ class ServicesManager(BaseComposeManager):
         return True
 
     def cmd_stop(self):
-        # Since 'docker compose stop' **always** claims its stopping containers, even if they are already
+        # Since 'docker compose stop' **always** claims it is stopping containers, even if they are already
         # stopped, we have to do this a bit more complicated.
 
         result = dict()
@@ -548,7 +583,7 @@ class ServicesManager(BaseComposeManager):
         rc_1, stdout_1, stderr_1 = self.client.call_cli(*args_1, cwd=self.project_src)
         events_1 = self.parse_events(stderr_1, dry_run=self.check_mode, nonzero_rc=rc_1 != 0)
         self.emit_warnings(events_1)
-        self.update_result(result, events_1, stdout_1, stderr_1, ignore_service_pull_events=True)
+        self.update_result(result, events_1, stdout_1, stderr_1, ignore_service_pull_events=True, ignore_build_events=self.ignore_build_events)
         is_failed_1 = is_failed(events_1, rc_1)
         if not is_failed_1 and not self._are_containers_stopped():
             # Make sure all containers are stopped
@@ -639,6 +674,8 @@ def main():
         scale=dict(type='dict'),
         wait=dict(type='bool', default=False),
         wait_timeout=dict(type='int'),
+        ignore_build_events=dict(type='bool', default=True),
+        assume_yes=dict(type='bool', default=False),
     )
     argspec_ex = common_compose_argspec_ex()
     argument_spec.update(argspec_ex.pop('argspec'))

@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -109,7 +109,8 @@ class NetworksWirelessSsidsDeviceTypeGroupPolicies(object):
         prev_obj = None
         id_exists = False
         name_exists = False
-        o_id = self.new_object.get("networkId") or self.new_object.get("network_id")
+        o_id = self.new_object.get(
+            "networkId") or self.new_object.get("network_id")
         name = self.new_object.get("name")
         if o_id:
             prev_obj = self.get_object_by_name(o_id)
@@ -138,8 +139,8 @@ class NetworksWirelessSsidsDeviceTypeGroupPolicies(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):
@@ -190,7 +191,8 @@ class ActionModule(ActionBase):
         self._check_argspec()
 
         meraki = MERAKI(self._task.args)
-        obj = NetworksWirelessSsidsDeviceTypeGroupPolicies(self._task.args, meraki)
+        obj = NetworksWirelessSsidsDeviceTypeGroupPolicies(
+            self._task.args, meraki)
 
         state = self._task.args.get("state")
 

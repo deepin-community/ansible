@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-# Copyright: (c) 2023, Dell Technologies
-# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+# Copyright: (c) 2023-2025, Dell Technologies
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """ Ansible module for managing snapshot policies on Dell Technologies (Dell) PowerFlex"""
 
@@ -459,7 +459,7 @@ class PowerFlexSnapshotPolicy(object):
                 policy_id = self.powerflex_conn.snapshot_policy.create(
                     auto_snap_creation_cadence_in_min=auto_snapshot_creation_cadence_in_min,
                     retained_snaps_per_level=num_of_retained_snapshots_per_level, name=snapshot_policy_name,
-                    snapshotAccessMode=access_mode, secureSnapshots=secure_snapshots)
+                    snapshot_access_mode=access_mode, secure_snapshots=secure_snapshots)
                 return policy_id
 
         except Exception as e:

@@ -14,6 +14,11 @@ from ansible_collections.community.internal_test_tools.tests.unit.utils.fetch_ur
 from ansible_collections.community.hrobot.plugins.module_utils.robot import BASE_URL
 from ansible_collections.community.hrobot.plugins.modules import boot
 
+from ..data import (
+    SSH_PUBLIC_KEY_1,
+    SSH_FINGERPRINT_1,
+)
+
 
 def _amend_server_data(data):
     data.update({
@@ -92,6 +97,33 @@ def create_vnc_inactive():
     }
 
 
+def create_vnc_active():
+    return {
+        "server_ip": "123.123.123.123",
+        "server_ipv6_net": "2a01:4f8:111:4221::",
+        "server_number": 321,
+        "dist": "centOS-5.0",
+        "arch": 32,
+        "lang": "en_US",
+        "active": True,
+        "password": "jEt0dtUvomlyOwRr",
+    }
+
+
+def create_cpanel_active(hostname):
+    return {
+        "server_ip": "123.123.123.123",
+        "server_ipv6_net": "2a01:4f8:111:4221::",
+        "server_number": 321,
+        "dist": "CentOS 5.6 + cPanel",
+        "arch": 64,
+        "lang": "en",
+        "active": True,
+        "password": "ie8Nhz6R",
+        "hostname": hostname,
+    }
+
+
 def _amend_boot(data=None):
     if data is None:
         data = {}
@@ -160,7 +192,7 @@ class TestHetznerBoot(BaseTestModule):
                 'os': 'linux',
                 'arch': 32,
                 'authorized_keys': [
-                    'e4:47:42:71:81:62:bf:06:1c:23:fa:f3:8f:7b:6f:d0',
+                    SSH_PUBLIC_KEY_1,
                     'aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99',
                     '0f:1e:2d:3c:4b:5a:69:78:87:96:a5:b4:c3:d2:e1:f0',
                 ],
@@ -171,7 +203,7 @@ class TestHetznerBoot(BaseTestModule):
                 'rescue': create_rescue_active(os='linux', arch=32, authorized_key=[
                     {
                         'key': {
-                            'fingerprint': 'e4:47:42:71:81:62:bf:06:1c:23:fa:f3:8f:7b:6f:d0',
+                            'fingerprint': SSH_FINGERPRINT_1,
                             'name': 'baz',
                             'size': 4096,
                             'type': 'RSA',
@@ -504,6 +536,97 @@ class TestHetznerBoot(BaseTestModule):
         assert result['configuration_type'] == 'install_linux'
         assert result['password'] == 'aBcDeFgHiJ1234'
 
+    def test_install_vnc_deactivate(self, mocker):
+        result = self.run_module_success(mocker, boot, {
+            'hetzner_user': '',
+            'hetzner_password': '',
+            'server_number': 23,
+            'regular_boot': True,
+        }, [
+            FetchUrlCall('GET', 200)
+            .result_json(_amend_boot({
+                'vnc': create_vnc_active(),
+            }))
+            .expect_url('{0}/boot/23'.format(BASE_URL)),
+            FetchUrlCall('DELETE', 200)
+            .expect_url('{0}/boot/23/vnc'.format(BASE_URL)),
+        ])
+        assert result['changed'] is True
+        assert result['configuration_type'] == 'regular_boot'
+        assert result['password'] is None
+
+    def test_install_vnc_activate(self, mocker):
+        result = self.run_module_success(mocker, boot, {
+            'hetzner_user': '',
+            'hetzner_password': '',
+            'server_number': 23,
+            'install_vnc': {
+                'dist': 'Arch Linux latest minimal',
+                'lang': 'en',
+            },
+        }, [
+            FetchUrlCall('GET', 200)
+            .result_json(_amend_boot())
+            .expect_url('{0}/boot/23'.format(BASE_URL)),
+            FetchUrlCall('POST', 200)
+            .expect_form_value('dist', 'Arch Linux latest minimal')
+            .expect_form_value_absent('arch')
+            .expect_form_value_absent('authorized_key')
+            .result_json({
+                'vnc': create_vnc_active(),
+            })
+            .expect_url('{0}/boot/23/vnc'.format(BASE_URL)),
+        ])
+        assert result['changed'] is True
+        assert result['configuration_type'] == 'install_vnc'
+        assert result['password'] == 'jEt0dtUvomlyOwRr'
+
+    def test_install_cpanel_deactivate(self, mocker):
+        result = self.run_module_success(mocker, boot, {
+            'hetzner_user': '',
+            'hetzner_password': '',
+            'server_number': 23,
+            'regular_boot': True,
+        }, [
+            FetchUrlCall('GET', 200)
+            .result_json(_amend_boot({
+                'cpanel': create_cpanel_active('foobar'),
+            }))
+            .expect_url('{0}/boot/23'.format(BASE_URL)),
+            FetchUrlCall('DELETE', 200)
+            .expect_url('{0}/boot/23/cpanel'.format(BASE_URL)),
+        ])
+        assert result['changed'] is True
+        assert result['configuration_type'] == 'regular_boot'
+        assert result['password'] is None
+
+    def test_install_cpanel_activate(self, mocker):
+        result = self.run_module_success(mocker, boot, {
+            'hetzner_user': '',
+            'hetzner_password': '',
+            'server_number': 23,
+            'install_cpanel': {
+                'dist': 'Arch Linux latest minimal',
+                'lang': 'en',
+                'hostname': 'foobar',
+            },
+        }, [
+            FetchUrlCall('GET', 200)
+            .result_json(_amend_boot())
+            .expect_url('{0}/boot/23'.format(BASE_URL)),
+            FetchUrlCall('POST', 200)
+            .expect_form_value('dist', 'Arch Linux latest minimal')
+            .expect_form_value_absent('arch')
+            .expect_form_value_absent('authorized_key')
+            .result_json({
+                'cpanel': create_cpanel_active('foobar'),
+            })
+            .expect_url('{0}/boot/23/cpanel'.format(BASE_URL)),
+        ])
+        assert result['changed'] is True
+        assert result['configuration_type'] == 'install_cpanel'
+        assert result['password'] == 'ie8Nhz6R'
+
     def test_server_not_found(self, mocker):
         result = self.run_module_failed(mocker, boot, {
             'hetzner_user': '',
@@ -541,3 +664,27 @@ class TestHetznerBoot(BaseTestModule):
             .expect_url('{0}/boot/23'.format(BASE_URL)),
         ])
         assert result['msg'] == 'There is no boot configuration available for this server'
+
+    def test_invalid_fingerprint(self, mocker):
+        result = self.run_module_failed(mocker, boot, {
+            'hetzner_user': '',
+            'hetzner_password': '',
+            'server_number': 23,
+            'rescue': {
+                'os': 'linux',
+                'arch': 32,
+                'authorized_keys': [
+                    'asdf a-b',
+                ],
+            },
+        }, [
+            FetchUrlCall('GET', 200)
+            .result_json(_amend_boot({
+                'rescue': create_rescue_active(os='linux', arch=32, authorized_key=[]),
+            }))
+            .expect_url('{0}/boot/23'.format(BASE_URL)),
+        ])
+        assert result['msg'] == (
+            "Error while extracting fingerprint of rescue.authorized_keys[1]'s value 'asdf a-b':"
+            " Error while extracting fingerprint from public key data: Incorrect padding"
+        )

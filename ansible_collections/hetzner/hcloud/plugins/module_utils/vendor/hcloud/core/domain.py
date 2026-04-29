@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 
 class BaseDomain:
     __api_properties__: tuple
@@ -15,6 +17,15 @@ class BaseDomain:
     def __repr__(self) -> str:
         kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__api_properties__]  # type: ignore[var-annotated]
         return f"{self.__class__.__qualname__}({', '.join(kwargs)})"
+
+    def __eq__(self, other: Any) -> bool:
+        """Compare a domain object with another of the same type."""
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+        for key in self.__api_properties__:
+            if getattr(self, key) != getattr(other, key):
+                return False
+        return True
 
 
 class DomainIdentityMixin:
@@ -41,15 +52,22 @@ class DomainIdentityMixin:
         the comparison will not work as expected (e.g. the domains are the same but
         cannot be equal, if one provides an id and the other the name).
         """
-        values: list[int | str] = []
+        result = None
+
         if self.id is not None:
-            values.append(self.id)
+            value = id_or_name
+            if isinstance(id_or_name, str) and id_or_name.isnumeric():
+                value = int(id_or_name)
+
+            result = result or self.id == value
+
         if self.name is not None:
-            values.append(self.name)
-        if not values:
+            result = result or self.name == str(id_or_name)
+
+        if result is None:
             raise ValueError("id or name must be set")
 
-        return id_or_name in values
+        return result
 
 
 class Pagination(BaseDomain):
@@ -88,13 +106,12 @@ class Meta(BaseDomain):
         self.pagination = pagination
 
     @classmethod
-    def parse_meta(cls, response: dict) -> Meta | None:
+    def parse_meta(cls, response: dict) -> Meta:
         """
         If present, extract the meta details from the response and return a meta object.
         """
-        meta = None
+        meta = cls()
         if response and "meta" in response:
-            meta = cls()
             try:
                 meta.pagination = Pagination(**response["meta"]["pagination"])
             except KeyError:

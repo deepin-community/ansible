@@ -175,6 +175,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -192,22 +193,22 @@ EXAMPLES = '''
         dynamic_mapping: <your own value>
         state: present # <value in [present, absent]>
         firewall_vip_dynamicmapping_realservers:
-          client_ip: <list or string>
-          healthcheck: <value in [disable, enable, vip]>
-          holddown_interval: <integer>
-          http_host: <string>
-          ip: <string>
-          max_connections: <integer>
-          monitor: <list or string>
-          port: <integer>
-          seq: <integer>
-          status: <value in [active, standby, disable]>
-          weight: <integer>
-          address: <string>
-          id: <integer>
-          type: <value in [ip, address]>
-          translate_host: <value in [disable, enable]>
-          health_check_proto: <value in [ping, http]>
+          seq: 0 # Required variable, integer
+          # client_ip: <list or string>
+          # healthcheck: <value in [disable, enable, vip]>
+          # holddown_interval: <integer>
+          # http_host: <string>
+          # ip: <string>
+          # max_connections: <integer>
+          # monitor: <list or string>
+          # port: <integer>
+          # status: <value in [active, standby, disable]>
+          # weight: <integer>
+          # address: <string>
+          # id: <integer>
+          # type: <value in [ip, address]>
+          # translate_host: <value in [disable, enable]>
+          # health_check_proto: <value in [ping, http]>
 '''
 
 RETURN = '''

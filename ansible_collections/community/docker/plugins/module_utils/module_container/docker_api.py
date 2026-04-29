@@ -353,7 +353,7 @@ class DockerAPIEngineDriver(EngineDriver):
             except APIError as exc:
                 if 'Unpause the container before stopping or killing' in exc.explanation:
                     # New docker daemon versions do not allow containers to be removed
-                    # if they are paused. Make sure we don't end up in an infinite loop.
+                    # if they are paused. Make sure we do not end up in an infinite loop.
                     if count == 3:
                         raise Exception('%s [tried to unpause three times]' % to_native(exc))
                     count += 1
@@ -379,7 +379,7 @@ class DockerAPIEngineDriver(EngineDriver):
             except APIError as exc:
                 if 'Unpause the container before stopping or killing' in exc.explanation:
                     # New docker daemon versions do not allow containers to be removed
-                    # if they are paused. Make sure we don't end up in an infinite loop.
+                    # if they are paused. Make sure we do not end up in an infinite loop.
                     if count == 3:
                         raise Exception('%s [tried to unpause three times]' % to_native(exc))
                     count += 1
@@ -802,7 +802,7 @@ def _get_image_labels(image):
     if not image:
         return {}
 
-    # Can't use get('Labels', {}) because 'Labels' may be present and be None
+    # Cannot use get('Labels', {}) because 'Labels' may be present and be None
     return image['Config'].get('Labels') or {}
 
 
@@ -1267,11 +1267,39 @@ def _preprocess_container_names(module, client, api_version, value):
     # name (and in the latter case, retrieve its ID)
     container = client.get_container(container_name)
     if container is None:
-        # If we can't find the container, issue a warning and continue with
+        # If we cannot find the container, issue a warning and continue with
         # what the user specified.
         module.warn('Cannot find a container with name or ID "{0}"'.format(container_name))
         return value
     return 'container:{0}'.format(container['Id'])
+
+
+def _get_value_command(module, container, api_version, options, image, host_info):
+    value = container['Config'].get('Cmd', _SENTRY)
+    if value is _SENTRY:
+        return {}
+    return {"command": value}
+
+
+def _set_value_command(module, data, api_version, options, values):
+    if "command" not in values:
+        return
+    value = values["command"]
+    data['Cmd'] = value
+
+
+def _get_expected_values_command(module, client, api_version, options, image, values, host_info):
+    expected_values = {}
+    if 'command' in values:
+        command = values['command']
+        if command == [] and image and image["Config"].get("Cmd"):
+            command = image["Config"].get("Cmd")
+        expected_values['command'] = command
+    return expected_values
+
+
+def _needs_container_image_command(values):
+    return values.get('command') == []
 
 
 OPTION_AUTO_REMOVE.add_engine('docker_api', DockerAPIEngine.host_config_value('AutoRemove'))
@@ -1286,7 +1314,12 @@ OPTION_CGROUP_NS_MODE.add_engine('docker_api', DockerAPIEngine.host_config_value
 
 OPTION_CGROUP_PARENT.add_engine('docker_api', DockerAPIEngine.host_config_value('CgroupParent'))
 
-OPTION_COMMAND.add_engine('docker_api', DockerAPIEngine.config_value('Cmd'))
+OPTION_COMMAND.add_engine('docker_api', DockerAPIEngine(
+    get_value=_get_value_command,
+    set_value=_set_value_command,
+    get_expected_values=_get_expected_values_command,
+    needs_container_image=_needs_container_image_command,
+))
 
 OPTION_CPU_PERIOD.add_engine('docker_api', DockerAPIEngine.host_config_value('CpuPeriod', update_parameter='CpuPeriod'))
 

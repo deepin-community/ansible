@@ -23,7 +23,9 @@ def run(ansible_project, environment):
         str(ansible_project.log_file),
         "--skip-tags",
         "local,nxapi",
+        "-vvv",
     ]
+
     process = subprocess.run(
         args=args,
         env=environment,
@@ -32,10 +34,9 @@ def run(ansible_project, environment):
         check=False,
         shell=False,
     )
+
     if process.returncode:
         print(process.stdout.decode("utf-8"))
-        print(process.stderr.decode("utf-8"))
-
         pytest.fail(reason=f"Integration test failed: {ansible_project.role}")
 
 

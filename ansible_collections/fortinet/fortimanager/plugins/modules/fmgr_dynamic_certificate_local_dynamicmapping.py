@@ -114,6 +114,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -130,11 +131,10 @@ EXAMPLES = '''
         local: <your own value>
         state: present # <value in [present, absent]>
         dynamic_certificate_local_dynamicmapping:
-          _scope:
-            -
-              name: <string>
+          _scope: # Required variable, list of device
+            - name: <string>
               vdom: <string>
-          local_cert: <string>
+          # local_cert: <string>
 '''
 
 RETURN = '''

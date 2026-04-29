@@ -176,6 +176,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -190,27 +191,27 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         system_npu_hpe:
-          all_protocol: <integer>
-          arp_max: <integer>
-          enable_shaper: <value in [disable, enable]>
-          esp_max: <integer>
-          high_priority: <integer>
-          icmp_max: <integer>
-          ip_frag_max: <integer>
-          ip_others_max: <integer>
-          l2_others_max: <integer>
-          pri_type_max: <integer>
-          sctp_max: <integer>
-          tcp_max: <integer>
-          tcpfin_rst_max: <integer>
-          tcpsyn_ack_max: <integer>
-          tcpsyn_max: <integer>
-          udp_max: <integer>
-          enable_queue_shaper: <value in [disable, enable]>
-          exception_code: <integer>
-          fragment_with_sess: <integer>
-          fragment_without_session: <integer>
-          queue_shaper_max: <integer>
+          # all_protocol: <integer>
+          # arp_max: <integer>
+          # enable_shaper: <value in [disable, enable]>
+          # esp_max: <integer>
+          # high_priority: <integer>
+          # icmp_max: <integer>
+          # ip_frag_max: <integer>
+          # ip_others_max: <integer>
+          # l2_others_max: <integer>
+          # pri_type_max: <integer>
+          # sctp_max: <integer>
+          # tcp_max: <integer>
+          # tcpfin_rst_max: <integer>
+          # tcpsyn_ack_max: <integer>
+          # tcpsyn_max: <integer>
+          # udp_max: <integer>
+          # enable_queue_shaper: <value in [disable, enable]>
+          # exception_code: <integer>
+          # fragment_with_sess: <integer>
+          # fragment_without_session: <integer>
+          # queue_shaper_max: <integer>
 '''
 
 RETURN = '''
@@ -288,14 +289,14 @@ def main():
                 'tcpsyn-max': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'type': 'int'},
                 'udp-max': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'type': 'int'},
                 'enable-queue-shaper': {
-                    'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']],
+                    'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']],
                     'choices': ['disable', 'enable'],
                     'type': 'str'
                 },
-                'exception-code': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']], 'type': 'int'},
-                'fragment-with-sess': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']], 'type': 'int'},
-                'fragment-without-session': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']], 'type': 'int'},
-                'queue-shaper-max': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']], 'type': 'int'}
+                'exception-code': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']], 'type': 'int'},
+                'fragment-with-sess': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']], 'type': 'int'},
+                'fragment-without-session': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']], 'type': 'int'},
+                'queue-shaper-max': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']], 'type': 'int'}
             }
         }
     }

@@ -159,6 +159,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -174,22 +175,22 @@ EXAMPLES = '''
         adom: <your own value>
         profile_protocol_options: <your own value>
         firewall_profileprotocoloptions_ssh:
-          comfort_amount: <integer>
-          comfort_interval: <integer>
-          options:
-            - "oversize"
-            - "clientcomfort"
-            - "servercomfort"
-          oversize_limit: <integer>
-          scan_bzip2: <value in [disable, enable]>
-          uncompressed_nest_limit: <integer>
-          uncompressed_oversize_limit: <integer>
-          ssl_offloaded: <value in [no, yes]>
-          stream_based_uncompressed_limit: <integer>
-          tcp_window_maximum: <integer>
-          tcp_window_minimum: <integer>
-          tcp_window_size: <integer>
-          tcp_window_type: <value in [system, static, dynamic, ...]>
+          # comfort_amount: <integer>
+          # comfort_interval: <integer>
+          # options:
+          #   - "oversize"
+          #   - "clientcomfort"
+          #   - "servercomfort"
+          # oversize_limit: <integer>
+          # scan_bzip2: <value in [disable, enable]>
+          # uncompressed_nest_limit: <integer>
+          # uncompressed_oversize_limit: <integer>
+          # ssl_offloaded: <value in [no, yes]>
+          # stream_based_uncompressed_limit: <integer>
+          # tcp_window_maximum: <integer>
+          # tcp_window_minimum: <integer>
+          # tcp_window_size: <integer>
+          # tcp_window_type: <value in [system, static, dynamic, ...]>
 '''
 
 RETURN = '''

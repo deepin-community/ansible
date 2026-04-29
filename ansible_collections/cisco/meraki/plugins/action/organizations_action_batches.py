@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -91,7 +91,8 @@ class OrganizationsActionBatches(object):
         if self.new_object.get('confirmed') is not None or self.new_object.get('confirmed') is not None:
             new_object_params['confirmed'] = self.new_object.get('confirmed')
         if self.new_object.get('synchronous') is not None or self.new_object.get('synchronous') is not None:
-            new_object_params['synchronous'] = self.new_object.get('synchronous')
+            new_object_params['synchronous'] = self.new_object.get(
+                'synchronous')
         if self.new_object.get('organizationId') is not None or self.new_object.get('organization_id') is not None:
             new_object_params['organizationId'] = self.new_object.get('organizationId') or \
                 self.new_object.get('organization_id')
@@ -112,7 +113,8 @@ class OrganizationsActionBatches(object):
         if self.new_object.get('confirmed') is not None or self.new_object.get('confirmed') is not None:
             new_object_params['confirmed'] = self.new_object.get('confirmed')
         if self.new_object.get('synchronous') is not None or self.new_object.get('synchronous') is not None:
-            new_object_params['synchronous'] = self.new_object.get('synchronous')
+            new_object_params['synchronous'] = self.new_object.get(
+                'synchronous')
         if self.new_object.get('organizationId') is not None or self.new_object.get('organization_id') is not None:
             new_object_params['organizationId'] = self.new_object.get('organizationId') or \
                 self.new_object.get('organization_id')
@@ -199,8 +201,8 @@ class OrganizationsActionBatches(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (DNAC) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def create(self):

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2021-2024, NetApp, Inc
+# (c) 2021-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -17,7 +17,7 @@ short_description: NetApp ONTAP domain tunnel
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: '21.3.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Create, delete or modify the domain tunnel.
 options:
@@ -36,13 +36,13 @@ options:
 '''
 
 EXAMPLES = """
-    - name: Create Domain Tunnel
-      na_ontap_domain_tunnel:
-        state: present
-        vserver: svm1
-        hostname: "{{ hostname }}"
-        username: "{{ admin username }}"
-        password: "{{ admin password }}"
+- name: Create Domain Tunnel
+  netapp.ontap.na_ontap_domain_tunnel:
+    state: present
+    vserver: svm1
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 """
 
 RETURN = """

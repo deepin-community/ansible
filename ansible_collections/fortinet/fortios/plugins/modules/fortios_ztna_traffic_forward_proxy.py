@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -96,6 +97,10 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            auth_virtual_host:
+                description:
+                    - Virtual host for authentication portal. Source firewall.access-proxy-virtual-host.name.
+                type: str
             client_cert:
                 description:
                     - Enable/disable to request client certificate.
@@ -106,6 +111,10 @@ options:
             comment:
                 description:
                     - Comment.
+                type: str
+            decrypted_traffic_mirror:
+                description:
+                    - Decrypted traffic mirror. Source firewall.decrypted-traffic-mirror.name.
                 type: str
             empty_cert_action:
                 description:
@@ -122,6 +131,10 @@ options:
                 choices:
                     - 'enable'
                     - 'disable'
+            host:
+                description:
+                    - Virtual or real host name. Source firewall.access-proxy-virtual-host.name.
+                type: str
             interface:
                 description:
                     - interface name Source system.interface.name.
@@ -131,11 +144,11 @@ options:
                     - Enable/disable logging of blocked traffic.
                 type: str
                 choices:
-                    - 'enable'
                     - 'disable'
+                    - 'enable'
             name:
                 description:
-                    - Traffic forward proxy name
+                    - ZTNA proxy name.
                 required: true
                 type: str
             port:
@@ -651,6 +664,14 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            vip:
+                description:
+                    - Virtual IP name. Source firewall.vip.name.
+                type: str
+            vip6:
+                description:
+                    - Virtual IPv6 name. Source firewall.vip6.name.
+                type: str
 """
 
 EXAMPLES = """
@@ -661,13 +682,16 @@ EXAMPLES = """
       access_token: "<your_own_value>"
       ztna_traffic_forward_proxy:
           auth_portal: "disable"
+          auth_virtual_host: "myhostname (source firewall.access-proxy-virtual-host.name)"
           client_cert: "disable"
           comment: "Comment."
+          decrypted_traffic_mirror: "<your_own_value> (source firewall.decrypted-traffic-mirror.name)"
           empty_cert_action: "accept"
           h3_support: "enable"
+          host: "myhostname (source firewall.access-proxy-virtual-host.name)"
           interface: "<your_own_value> (source system.interface.name)"
-          log_blocked_traffic: "enable"
-          name: "default_name_10"
+          log_blocked_traffic: "disable"
+          name: "default_name_13"
           port: "<your_own_value>"
           quic:
               ack_delay_exponent: "3"
@@ -682,7 +706,7 @@ EXAMPLES = """
           ssl_algorithm: "high"
           ssl_certificate:
               -
-                  name: "default_name_24 (source vpn.certificate.local.name)"
+                  name: "default_name_27 (source vpn.certificate.local.name)"
           ssl_cipher_suites:
               -
                   cipher: "TLS-AES-128-GCM-SHA256"
@@ -729,6 +753,8 @@ EXAMPLES = """
           svr_pool_server_max_request: "0"
           svr_pool_ttl: "15"
           user_agent_detect: "disable"
+          vip: "<your_own_value> (source firewall.vip.name)"
+          vip6: "<your_own_value> (source firewall.vip6.name)"
 """
 
 RETURN = """
@@ -808,15 +834,30 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_ztna_traffic_forward_proxy_data(json):
     option_list = [
         "auth_portal",
+        "auth_virtual_host",
         "client_cert",
         "comment",
+        "decrypted_traffic_mirror",
         "empty_cert_action",
         "h3_support",
+        "host",
         "interface",
         "log_blocked_traffic",
         "name",
@@ -863,6 +904,8 @@ def filter_ztna_traffic_forward_proxy_data(json):
         "svr_pool_server_max_request",
         "svr_pool_ttl",
         "user_agent_detect",
+        "vip",
+        "vip6",
     ]
 
     json = remove_invalid_fields(json)
@@ -880,8 +923,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -909,24 +951,25 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def ztna_traffic_forward_proxy(data, fos, check_mode=False):
 
-def ztna_traffic_forward_proxy(data, fos):
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     ztna_traffic_forward_proxy_data = data["ztna_traffic_forward_proxy"]
 
     filtered_data = filter_ztna_traffic_forward_proxy_data(
@@ -935,9 +978,90 @@ def ztna_traffic_forward_proxy(data, fos):
     filtered_data = flatten_multilists_attributes(filtered_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("ztna", "traffic-forward-proxy", filtered_data, vdom=vdom)
+        current_data = fos.get("ztna", "traffic-forward-proxy", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["ztna_traffic_forward_proxy"] = converted_data
+    data_copy["ztna_traffic_forward_proxy"] = filtered_data
     fos.do_member_operation(
         "ztna",
         "traffic-forward-proxy",
@@ -967,14 +1091,16 @@ def is_successful_status(resp):
     )
 
 
-def fortios_ztna(data, fos):
+def fortios_ztna(data, fos, check_mode):
+
     if data["ztna_traffic_forward_proxy"]:
-        resp = ztna_traffic_forward_proxy(data, fos)
+        resp = ztna_traffic_forward_proxy(data, fos, check_mode)
     else:
         fos._module.fail_json(
             msg="missing task body: %s" % ("ztna_traffic_forward_proxy")
         )
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -989,19 +1115,10 @@ versioned_schema = {
     "elements": "dict",
     "children": {
         "name": {"v_range": [["v7.6.0", ""]], "type": "string", "required": True},
-        "status": {
-            "v_range": [["v7.6.0", ""]],
-            "type": "string",
-            "options": [{"value": "enable"}, {"value": "disable"}],
-        },
-        "interface": {"v_range": [["v7.6.0", ""]], "type": "string"},
-        "port": {"v_range": [["v7.6.0", ""]], "type": "string"},
-        "client_cert": {
-            "v_range": [["v7.6.0", ""]],
-            "type": "string",
-            "options": [{"value": "disable"}, {"value": "enable"}],
-        },
-        "user_agent_detect": {
+        "vip": {"v_range": [["v7.6.1", ""]], "type": "string"},
+        "host": {"v_range": [["v7.6.1", ""]], "type": "string"},
+        "decrypted_traffic_mirror": {"v_range": [["v7.6.1", ""]], "type": "string"},
+        "log_blocked_traffic": {
             "v_range": [["v7.6.0", ""]],
             "type": "string",
             "options": [{"value": "disable"}, {"value": "enable"}],
@@ -1011,8 +1128,27 @@ versioned_schema = {
             "type": "string",
             "options": [{"value": "disable"}, {"value": "enable"}],
         },
+        "auth_virtual_host": {"v_range": [["v7.6.1", ""]], "type": "string"},
+        "vip6": {"v_range": [["v7.6.1", ""]], "type": "string"},
+        "status": {
+            "v_range": [["v7.6.0", "v7.6.0"]],
+            "type": "string",
+            "options": [{"value": "enable"}, {"value": "disable"}],
+        },
+        "interface": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+        "port": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+        "client_cert": {
+            "v_range": [["v7.6.0", "v7.6.0"]],
+            "type": "string",
+            "options": [{"value": "disable"}, {"value": "enable"}],
+        },
+        "user_agent_detect": {
+            "v_range": [["v7.6.0", "v7.6.0"]],
+            "type": "string",
+            "options": [{"value": "disable"}, {"value": "enable"}],
+        },
         "empty_cert_action": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "accept"},
@@ -1020,61 +1156,65 @@ versioned_schema = {
                 {"value": "accept-unmanageable"},
             ],
         },
-        "log_blocked_traffic": {
-            "v_range": [["v7.6.0", ""]],
-            "type": "string",
-            "options": [{"value": "enable"}, {"value": "disable"}],
-        },
         "svr_pool_multiplex": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
-        "svr_pool_ttl": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-        "svr_pool_server_max_request": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-        "svr_pool_server_max_concurrent_request": {
-            "v_range": [["v7.6.0", ""]],
+        "svr_pool_ttl": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+        "svr_pool_server_max_request": {
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "integer",
         },
-        "comment": {"v_range": [["v7.6.0", ""]], "type": "string"},
+        "svr_pool_server_max_concurrent_request": {
+            "v_range": [["v7.6.0", "v7.6.0"]],
+            "type": "integer",
+        },
+        "comment": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
         "h3_support": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "quic": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "dict",
             "children": {
-                "max_idle_timeout": {"v_range": [["v7.6.0", ""]], "type": "integer"},
+                "max_idle_timeout": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
                 "max_udp_payload_size": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "integer",
                 },
                 "active_connection_id_limit": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "integer",
                 },
-                "ack_delay_exponent": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-                "max_ack_delay": {"v_range": [["v7.6.0", ""]], "type": "integer"},
+                "ack_delay_exponent": {
+                    "v_range": [["v7.6.0", "v7.6.0"]],
+                    "type": "integer",
+                },
+                "max_ack_delay": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
                 "max_datagram_frame_size": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "integer",
                 },
                 "active_migration": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "string",
                     "options": [{"value": "enable"}, {"value": "disable"}],
                 },
                 "grease_quic_bit": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "string",
                     "options": [{"value": "enable"}, {"value": "disable"}],
                 },
             },
         },
         "ssl_mode": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "half"}, {"value": "full"}],
         },
@@ -1083,15 +1223,15 @@ versioned_schema = {
             "elements": "dict",
             "children": {
                 "name": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "string",
                     "required": True,
                 }
             },
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
         },
         "ssl_dh_bits": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "768"},
@@ -1103,7 +1243,7 @@ versioned_schema = {
             ],
         },
         "ssl_algorithm": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "high"},
@@ -1117,12 +1257,12 @@ versioned_schema = {
             "elements": "dict",
             "children": {
                 "priority": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "integer",
                     "required": True,
                 },
                 "cipher": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "string",
                     "options": [
                         {"value": "TLS-AES-128-GCM-SHA256"},
@@ -1199,7 +1339,7 @@ versioned_schema = {
                     ],
                 },
                 "versions": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "list",
                     "options": [
                         {"value": "ssl-3.0"},
@@ -1212,10 +1352,10 @@ versioned_schema = {
                     "elements": "str",
                 },
             },
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
         },
         "ssl_server_algorithm": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "high"},
@@ -1230,12 +1370,12 @@ versioned_schema = {
             "elements": "dict",
             "children": {
                 "priority": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "integer",
                     "required": True,
                 },
                 "cipher": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "string",
                     "options": [
                         {"value": "TLS-AES-128-GCM-SHA256"},
@@ -1312,7 +1452,7 @@ versioned_schema = {
                     ],
                 },
                 "versions": {
-                    "v_range": [["v7.6.0", ""]],
+                    "v_range": [["v7.6.0", "v7.6.0"]],
                     "type": "list",
                     "options": [
                         {"value": "ssl-3.0"},
@@ -1325,15 +1465,15 @@ versioned_schema = {
                     "elements": "str",
                 },
             },
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
         },
         "ssl_pfs": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "require"}, {"value": "deny"}, {"value": "allow"}],
         },
         "ssl_min_version": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "ssl-3.0"},
@@ -1344,7 +1484,7 @@ versioned_schema = {
             ],
         },
         "ssl_max_version": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "ssl-3.0"},
@@ -1355,7 +1495,7 @@ versioned_schema = {
             ],
         },
         "ssl_server_min_version": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "ssl-3.0"},
@@ -1367,7 +1507,7 @@ versioned_schema = {
             ],
         },
         "ssl_server_max_version": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "ssl-3.0"},
@@ -1379,27 +1519,27 @@ versioned_schema = {
             ],
         },
         "ssl_accept_ffdhe_groups": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "ssl_send_empty_frags": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "ssl_client_fallback": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "disable"}, {"value": "enable"}],
         },
         "ssl_client_renegotiation": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "allow"}, {"value": "deny"}, {"value": "secure"}],
         },
         "ssl_client_session_state_type": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "disable"},
@@ -1409,21 +1549,24 @@ versioned_schema = {
             ],
         },
         "ssl_client_session_state_timeout": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "integer",
         },
         "ssl_client_session_state_max": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "integer",
         },
-        "ssl_client_rekey_count": {"v_range": [["v7.6.0", ""]], "type": "integer"},
+        "ssl_client_rekey_count": {
+            "v_range": [["v7.6.0", "v7.6.0"]],
+            "type": "integer",
+        },
         "ssl_server_renegotiation": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "ssl_server_session_state_type": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "disable"},
@@ -1433,25 +1576,25 @@ versioned_schema = {
             ],
         },
         "ssl_server_session_state_timeout": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "integer",
         },
         "ssl_server_session_state_max": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "integer",
         },
         "ssl_http_location_conversion": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "ssl_http_match_host": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "ssl_hpkp": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [
                 {"value": "disable"},
@@ -1459,23 +1602,23 @@ versioned_schema = {
                 {"value": "report-only"},
             ],
         },
-        "ssl_hpkp_primary": {"v_range": [["v7.6.0", ""]], "type": "string"},
-        "ssl_hpkp_backup": {"v_range": [["v7.6.0", ""]], "type": "string"},
-        "ssl_hpkp_age": {"v_range": [["v7.6.0", ""]], "type": "integer"},
-        "ssl_hpkp_report_uri": {"v_range": [["v7.6.0", ""]], "type": "string"},
+        "ssl_hpkp_primary": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+        "ssl_hpkp_backup": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
+        "ssl_hpkp_age": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
+        "ssl_hpkp_report_uri": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "string"},
         "ssl_hpkp_include_subdomains": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "disable"}, {"value": "enable"}],
         },
         "ssl_hsts": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "disable"}, {"value": "enable"}],
         },
-        "ssl_hsts_age": {"v_range": [["v7.6.0", ""]], "type": "integer"},
+        "ssl_hsts_age": {"v_range": [["v7.6.0", "v7.6.0"]], "type": "integer"},
         "ssl_hsts_include_subdomains": {
-            "v_range": [["v7.6.0", ""]],
+            "v_range": [["v7.6.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "disable"}, {"value": "enable"}],
         },
@@ -1514,7 +1657,7 @@ def main():
                 "required"
             ] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -1537,7 +1680,9 @@ def main():
             fos, versioned_schema, "ztna_traffic_forward_proxy"
         )
 
-        is_error, has_changed, result, diff = fortios_ztna(module.params, fos)
+        is_error, has_changed, result, diff = fortios_ztna(
+            module.params, fos, module.check_mode
+        )
 
     else:
         module.fail_json(**FAIL_SOCKET_MSG)

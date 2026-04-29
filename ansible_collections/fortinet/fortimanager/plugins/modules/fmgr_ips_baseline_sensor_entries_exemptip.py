@@ -115,6 +115,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -132,9 +133,9 @@ EXAMPLES = '''
         entries: <your own value>
         state: present # <value in [present, absent]>
         ips_baseline_sensor_entries_exemptip:
-          dst_ip: <string>
-          id: <integer>
-          src_ip: <string>
+          id: 0 # Required variable, integer
+          # dst_ip: <string>
+          # src_ip: <string>
 '''
 
 RETURN = '''

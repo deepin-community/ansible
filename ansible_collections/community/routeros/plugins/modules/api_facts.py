@@ -9,29 +9,27 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: api_facts
 author:
-    - "Egor Zaitsev (@heuels)"
-    - "Nikolay Dachev (@NikolayDachev)"
-    - "Felix Fontein (@felixfontein)"
+  - "Egor Zaitsev (@heuels)"
+  - "Nikolay Dachev (@NikolayDachev)"
+  - "Felix Fontein (@felixfontein)"
 version_added: 2.1.0
 short_description: Collect facts from remote devices running MikroTik RouterOS using the API
 description:
-  - Collects a base set of device facts from a remote device that
-    is running RouterOS.  This module prepends all of the
-    base network fact keys with C(ansible_net_<fact>).  The facts
-    module will always collect a base set of facts from the device
+  - Collects a base set of device facts from a remote device that is running RouterOS. This module prepends all of the base
+    network fact keys with C(ansible_net_<fact>). The facts module will always collect a base set of facts from the device
     and can enable or disable collection of additional facts.
-  - As opposed to the M(community.routeros.facts) module, it uses the
-    RouterOS API, similar to the M(community.routeros.api) module.
+  - As opposed to the M(community.routeros.facts) module, it uses the RouterOS API, similar to the M(community.routeros.api)
+    module.
 extends_documentation_fragment:
   - community.routeros.api
   - community.routeros.attributes
   - community.routeros.attributes.actiongroup_api
   - community.routeros.attributes.facts
   - community.routeros.attributes.facts_module
+  - community.routeros.attributes.idempotent_not_modify_state
 attributes:
   platform:
     support: full
@@ -39,12 +37,10 @@ attributes:
 options:
   gather_subset:
     description:
-      - When supplied, this argument will restrict the facts collected
-        to a given subset.  Possible values for this argument include
-        V(all), V(hardware), V(interfaces), and V(routing).
-      - Can specify a list of values to include a larger subset.
-        Values can also be used with an initial V(!) to specify that a
-        specific subset should not be collected.
+      - When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument
+        include V(all), V(hardware), V(interfaces), and V(routing).
+      - Can specify a list of values to include a larger subset. Values can also be used with an initial V(!) to specify that
+        a specific subset should not be collected.
     required: false
     default:
       - all
@@ -56,9 +52,10 @@ seealso:
   - module: community.routeros.api_find_and_modify
   - module: community.routeros.api_info
   - module: community.routeros.api_modify
-'''
+"""
 
-EXAMPLES = """
+EXAMPLES = r"""
+---
 - name: Collect all facts from the device
   community.routeros.api_facts:
     hostname: 192.168.88.1
@@ -75,7 +72,7 @@ EXAMPLES = """
       - "!hardware"
 """
 
-RETURN = """
+RETURN = r"""
 ansible_facts:
   description: "Dictionary of IP geolocation facts for a host's IP address."
   returned: always
@@ -320,8 +317,10 @@ class Interfaces(FactsBase):
     def populate_addresses(self, data, family):
         for value in data:
             key = value['interface']
-            if family not in self.facts['interfaces'][key]:
-                self.facts['interfaces'][key][family] = []
+            iface = self.facts['interfaces'].setdefault(key, (
+                {"type": "ansible:unknown"} if key.startswith('*') else
+                {"type": "ansible:mismatch"}))
+            iface_addrs = iface.setdefault(family, [])
             addr, subnet = value['address'].split('/')
             subnet = subnet.strip()
             # Try to convert subnet to an integer
@@ -331,7 +330,7 @@ class Interfaces(FactsBase):
                 pass
             ip = dict(address=addr.strip(), subnet=subnet)
             self.add_ip_address(addr.strip(), family)
-            self.facts['interfaces'][key][family].append(ip)
+            iface_addrs.append(ip)
 
     def add_ip_address(self, address, family):
         if family == 'ipv4':
@@ -422,8 +421,6 @@ FACT_SUBSETS = dict(
 
 VALID_SUBSETS = frozenset(FACT_SUBSETS.keys())
 
-warnings = []
-
 
 def main():
     argument_spec = dict(
@@ -488,7 +485,7 @@ def main():
         key = 'ansible_net_%s' % key
         ansible_facts[key] = value
 
-    module.exit_json(ansible_facts=ansible_facts, warnings=warnings)
+    module.exit_json(ansible_facts=ansible_facts)
 
 
 if __name__ == '__main__':

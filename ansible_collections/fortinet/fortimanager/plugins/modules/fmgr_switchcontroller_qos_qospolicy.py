@@ -115,6 +115,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -130,11 +131,11 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_qos_qospolicy:
-          default_cos: <integer>
-          name: <string>
-          queue_policy: <string>
-          trust_dot1p_map: <string>
-          trust_ip_dscp_map: <string>
+          name: "your value" # Required variable, string
+          # default_cos: <integer>
+          # queue_policy: <string>
+          # trust_dot1p_map: <string>
+          # trust_ip_dscp_map: <string>
 '''
 
 RETURN = '''

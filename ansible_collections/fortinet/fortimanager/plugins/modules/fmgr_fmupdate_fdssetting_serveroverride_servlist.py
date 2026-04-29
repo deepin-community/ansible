@@ -116,6 +116,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -130,14 +131,14 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         state: present # <value in [present, absent]>
         fmupdate_fdssetting_serveroverride_servlist:
-          id: <integer>
-          ip: <string>
-          ip6: <string>
-          port: <integer>
-          service_type: # <list or string>
-            - "fds"
-            - "fct"
-            - "fai"
+          id: 0 # Required variable, integer
+          # ip: <string>
+          # ip6: <string>
+          # port: <integer>
+          # service_type: # <list or string>
+          #   - "fds"
+          #   - "fct"
+          #   - "fai"
 '''
 
 RETURN = '''

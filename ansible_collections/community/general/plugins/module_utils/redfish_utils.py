@@ -10,9 +10,7 @@ import json
 import os
 import random
 import string
-import gzip
 import time
-from io import BytesIO
 from ansible.module_utils.urls import open_url
 from ansible.module_utils.common.text.converters import to_native
 from ansible.module_utils.common.text.converters import to_text
@@ -21,8 +19,6 @@ from ansible.module_utils.six import text_type
 from ansible.module_utils.six.moves import http_client
 from ansible.module_utils.six.moves.urllib.error import URLError, HTTPError
 from ansible.module_utils.six.moves.urllib.parse import urlparse
-from ansible.module_utils.ansible_release import __version__ as ansible_version
-from ansible_collections.community.general.plugins.module_utils.version import LooseVersion
 
 GET_HEADERS = {'accept': 'application/json', 'OData-Version': '4.0'}
 POST_HEADERS = {'content-type': 'application/json', 'accept': 'application/json',
@@ -37,6 +33,21 @@ FAIL_MSG = 'Issuing a data modification command without specifying the '\
            'ID of the target %(resource)s resource when there is more '\
            'than one %(resource)s is no longer allowed. Use the `resource_id` '\
            'option to specify the target %(resource)s ID.'
+
+# Use together with the community.general.redfish docs fragment
+REDFISH_COMMON_ARGUMENT_SPEC = {
+    "validate_certs": {
+        "type": "bool",
+        "default": False,
+    },
+    "ca_path": {
+        "type": "path",
+    },
+    "ciphers": {
+        "type": "list",
+        "elements": "str",
+    },
+}
 
 
 class RedfishUtils(object):
@@ -53,8 +64,10 @@ class RedfishUtils(object):
         self.resource_id = resource_id
         self.data_modification = data_modification
         self.strip_etag_quotes = strip_etag_quotes
-        self.ciphers = ciphers
+        self.ciphers = ciphers if ciphers is not None else module.params.get("ciphers")
         self._vendor = None
+        self.validate_certs = module.params.get("validate_certs", False)
+        self.ca_path = module.params.get("ca_path")
 
     def _auth_params(self, headers):
         """
@@ -119,7 +132,7 @@ class RedfishUtils(object):
 
                 # Note: This is also a fallthrough for properties that are
                 # arrays of objects.  Some services erroneously omit properties
-                # within arrays of objects when not configured, and it's
+                # within arrays of objects when not configured, and it is
                 # expecting the client to provide them anyway.
 
                 if req_pyld[prop] != cur_pyld[prop]:
@@ -131,6 +144,17 @@ class RedfishUtils(object):
             resp['changed'] = False
             resp['msg'] = 'Properties in %s are already set' % uri
         return resp
+
+    def _request(self, uri, **kwargs):
+        kwargs.setdefault("validate_certs", self.validate_certs)
+        kwargs.setdefault("follow_redirects", "all")
+        kwargs.setdefault("use_proxy", True)
+        kwargs.setdefault("timeout", self.timeout)
+        kwargs.setdefault("ciphers", self.ciphers)
+        kwargs.setdefault("ca_path", self.ca_path)
+        resp = open_url(uri, **kwargs)
+        headers = {k.lower(): v for (k, v) in resp.info().items()}
+        return resp, headers
 
     # The following functions are to send GET/POST/PATCH/DELETE requests
     def get_request(self, uri, override_headers=None, allow_no_resp=False, timeout=None):
@@ -145,19 +169,17 @@ class RedfishUtils(object):
             # in case the caller will be using sessions later.
             if uri == (self.root_uri + self.service_root):
                 basic_auth = False
-            resp = open_url(uri, method="GET", headers=req_headers,
-                            url_username=username, url_password=password,
-                            force_basic_auth=basic_auth, validate_certs=False,
-                            follow_redirects='all',
-                            use_proxy=True, timeout=timeout, ciphers=self.ciphers)
-            headers = {k.lower(): v for (k, v) in resp.info().items()}
+            resp, headers = self._request(
+                uri,
+                method="GET",
+                headers=req_headers,
+                url_username=username,
+                url_password=password,
+                force_basic_auth=basic_auth,
+                timeout=timeout,
+            )
             try:
-                if headers.get('content-encoding') == 'gzip' and LooseVersion(ansible_version) < LooseVersion('2.14'):
-                    # Older versions of Ansible do not automatically decompress the data
-                    # Starting in 2.14, open_url will decompress the response data by default
-                    data = json.loads(to_native(gzip.open(BytesIO(resp.read()), 'rt', encoding='utf-8').read()))
-                else:
-                    data = json.loads(to_native(resp.read()))
+                data = json.loads(to_native(resp.read()))
             except Exception as e:
                 # No response data; this is okay in certain cases
                 data = None
@@ -194,18 +216,20 @@ class RedfishUtils(object):
                 req_headers['content-type'] = multipart_encoder[1]
             else:
                 data = json.dumps(pyld)
-            resp = open_url(uri, data=data,
-                            headers=req_headers, method="POST",
-                            url_username=username, url_password=password,
-                            force_basic_auth=basic_auth, validate_certs=False,
-                            follow_redirects='all',
-                            use_proxy=True, timeout=self.timeout, ciphers=self.ciphers)
+            resp, headers = self._request(
+                uri,
+                data=data,
+                headers=req_headers,
+                method="POST",
+                url_username=username,
+                url_password=password,
+                force_basic_auth=basic_auth,
+            )
             try:
                 data = json.loads(to_native(resp.read()))
             except Exception as e:
                 # No response data; this is okay in many cases
                 data = None
-            headers = {k.lower(): v for (k, v) in resp.info().items()}
         except HTTPError as e:
             msg, data = self._get_extended_message(e)
             return {'ret': False,
@@ -248,12 +272,15 @@ class RedfishUtils(object):
 
         username, password, basic_auth = self._auth_params(req_headers)
         try:
-            resp = open_url(uri, data=json.dumps(pyld),
-                            headers=req_headers, method="PATCH",
-                            url_username=username, url_password=password,
-                            force_basic_auth=basic_auth, validate_certs=False,
-                            follow_redirects='all',
-                            use_proxy=True, timeout=self.timeout, ciphers=self.ciphers)
+            resp, dummy = self._request(
+                uri,
+                data=json.dumps(pyld),
+                headers=req_headers,
+                method="PATCH",
+                url_username=username,
+                url_password=password,
+                force_basic_auth=basic_auth,
+            )
         except HTTPError as e:
             msg, data = self._get_extended_message(e)
             return {'ret': False, 'changed': False,
@@ -283,12 +310,15 @@ class RedfishUtils(object):
                 req_headers['If-Match'] = etag
         username, password, basic_auth = self._auth_params(req_headers)
         try:
-            resp = open_url(uri, data=json.dumps(pyld),
-                            headers=req_headers, method="PUT",
-                            url_username=username, url_password=password,
-                            force_basic_auth=basic_auth, validate_certs=False,
-                            follow_redirects='all',
-                            use_proxy=True, timeout=self.timeout, ciphers=self.ciphers)
+            resp, dummy = self._request(
+                uri,
+                data=json.dumps(pyld),
+                headers=req_headers,
+                method="PUT",
+                url_username=username,
+                url_password=password,
+                force_basic_auth=basic_auth,
+            )
         except HTTPError as e:
             msg, data = self._get_extended_message(e)
             return {'ret': False,
@@ -309,12 +339,15 @@ class RedfishUtils(object):
         username, password, basic_auth = self._auth_params(req_headers)
         try:
             data = json.dumps(pyld) if pyld else None
-            resp = open_url(uri, data=data,
-                            headers=req_headers, method="DELETE",
-                            url_username=username, url_password=password,
-                            force_basic_auth=basic_auth, validate_certs=False,
-                            follow_redirects='all',
-                            use_proxy=True, timeout=self.timeout, ciphers=self.ciphers)
+            resp, dummy = self._request(
+                uri,
+                data=data,
+                headers=req_headers,
+                method="DELETE",
+                url_username=username,
+                url_password=password,
+                force_basic_auth=basic_auth,
+            )
         except HTTPError as e:
             msg, data = self._get_extended_message(e)
             return {'ret': False,
@@ -408,9 +441,6 @@ class RedfishUtils(object):
             except Exception:
                 pass
         return msg, data
-
-    def _init_session(self):
-        self.module.deprecate("Method _init_session is deprecated and will be removed.", version="11.0.0", collection_name="community.general")
 
     def _get_vendor(self):
         # If we got the vendor info once, don't get it again
@@ -1119,7 +1149,8 @@ class RedfishUtils(object):
         key = "Actions"
         reset_type_values = ['On', 'ForceOff', 'GracefulShutdown',
                              'GracefulRestart', 'ForceRestart', 'Nmi',
-                             'ForceOn', 'PushPowerButton', 'PowerCycle']
+                             'ForceOn', 'PushPowerButton', 'PowerCycle',
+                             'FullPowerCycle']
 
         # command should be PowerOn, PowerForceOff, etc.
         if not command.startswith('Power'):
@@ -1177,7 +1208,7 @@ class RedfishUtils(object):
             return response
 
         # If requested to wait for the service to be available again, block
-        # until it's ready
+        # until it is ready
         if wait:
             elapsed_time = 0
             start_time = time.time()
@@ -1190,7 +1221,7 @@ class RedfishUtils(object):
             while elapsed_time <= wait_timeout:
                 status = self.check_service_availability()
                 if status['available']:
-                    # It's available; we're done
+                    # It is available; we are done
                     break
                 time.sleep(5)
                 elapsed_time = time.time() - start_time
@@ -1813,7 +1844,7 @@ class RedfishUtils(object):
                     operation_results['status'] = data.get('TaskState', data.get('JobState'))
                     operation_results['messages'] = data.get('Messages', [])
                 else:
-                    # Error response body, which is a bit of a misnomer since it's used in successful action responses
+                    # Error response body, which is a bit of a misnomer since it is used in successful action responses
                     operation_results['status'] = 'Completed'
                     if response.status >= 400:
                         operation_results['status'] = 'Exception'
@@ -3616,7 +3647,7 @@ class RedfishUtils(object):
 
     def verify_bios_attributes(self, bios_attributes):
         # This method verifies BIOS attributes against the provided input
-        server_bios = self.get_multi_bios_attributes()
+        server_bios = self.get_bios_attributes(self.systems_uri)
         if server_bios["ret"] is False:
             return server_bios
 
@@ -3625,8 +3656,8 @@ class RedfishUtils(object):
 
         # Verify bios_attributes with BIOS settings available in the server
         for key, value in bios_attributes.items():
-            if key in server_bios["entries"][0][1]:
-                if server_bios["entries"][0][1][key] != value:
+            if key in server_bios["entries"]:
+                if server_bios["entries"][key] != value:
                     bios_dict.update({key: value})
             else:
                 wrong_param.update({key: value})
@@ -3951,3 +3982,38 @@ class RedfishUtils(object):
                 "rsp_uri": rsp_uri
             }
         return res
+
+    def get_accountservice_properties(self):
+        # Find the AccountService resource
+        response = self.get_request(self.root_uri + self.service_root)
+        if response['ret'] is False:
+            return response
+        data = response['data']
+        accountservice_uri = data.get("AccountService", {}).get("@odata.id")
+        if accountservice_uri is None:
+            return {'ret': False, 'msg': "AccountService resource not found"}
+
+        response = self.get_request(self.root_uri + accountservice_uri)
+        if response['ret'] is False:
+            return response
+        return {
+            'ret': True,
+            'entries': response['data']
+        }
+
+    def get_power_restore_policy(self, systems_uri):
+        # Retrieve System resource
+        response = self.get_request(self.root_uri + systems_uri)
+        if response['ret'] is False:
+            return response
+        return {
+            'ret': True,
+            'entries': response['data']['PowerRestorePolicy']
+        }
+
+    def get_multi_power_restore_policy(self):
+        return self.aggregate_systems(self.get_power_restore_policy)
+
+    def set_power_restore_policy(self, policy):
+        body = {'PowerRestorePolicy': policy}
+        return self.patch_request(self.root_uri + self.systems_uri, body, check_pyld=True)

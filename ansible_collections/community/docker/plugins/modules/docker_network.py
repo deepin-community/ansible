@@ -8,13 +8,12 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r"""
 module: docker_network
 short_description: Manage Docker networks
 description:
   - Create/remove Docker networks and connect containers to them.
   - Performs largely the same function as the C(docker network) CLI subcommand.
-
 extends_documentation_fragment:
   - community.docker.docker.api_documentation
   - community.docker.attributes
@@ -25,6 +24,10 @@ attributes:
     support: full
   diff_mode:
     support: full
+  idempotent:
+    support: partial
+    details:
+      - If O(force=true) the module is not idempotent.
 
 options:
   name:
@@ -50,9 +53,9 @@ options:
   connected:
     description:
       - List of container names or container IDs to connect to a network.
-      - Please note that the module only makes sure that these containers are connected to the network,
-        but does not care about connection options. If you rely on specific IP addresses etc., use the
-        M(community.docker.docker_container) module to ensure your containers are correctly connected to this network.
+      - Please note that the module only makes sure that these containers are connected to the network, but does not care
+        about connection options. If you rely on specific IP addresses and so on, use the M(community.docker.docker_container)
+        module to ensure your containers are correctly connected to this network.
     type: list
     elements: str
     default: []
@@ -73,12 +76,9 @@ options:
 
   force:
     description:
-      - With state V(absent) forces disconnecting all containers from the
-        network prior to deleting the network. With state V(present) will
-        disconnect all containers, delete the network and re-create the
-        network.
-      - This option is required if you have changed the IPAM or driver options
-        and want an existing network to be updated to use the new options.
+      - With state V(present) will disconnect all containers for existing networks, delete the network and re-create the network.
+      - This option is required if you have changed the IPAM or driver options and want an existing network to be updated
+        to use the new options.
     type: bool
     default: false
 
@@ -91,10 +91,24 @@ options:
     aliases:
       - incremental
 
+  enable_ipv4:
+    description:
+      - Enable IPv4 networking.
+      - This is enabled by default, but can be explicitly disabled.
+      - Requires Docker API 1.47 or newer.
+    type: bool
+    version_added: 4.5.0
+
   enable_ipv6:
     description:
       - Enable IPv6 networking.
     type: bool
+
+  ingress:
+    description:
+      - Enable Swarm routing-mesh.
+    type: bool
+    version_added: 4.2.0
 
   ipam_driver:
     description:
@@ -108,9 +122,9 @@ options:
 
   ipam_config:
     description:
-      - List of IPAM config blocks. Consult
-        L(Docker docs,https://docs.docker.com/compose/compose-file/compose-file-v2/#ipam) for valid options and values.
-        Note that O(ipam_config[].iprange) is spelled differently here (we use the notation from the Docker SDK for Python).
+      - List of IPAM config blocks. Consult L(Docker docs,https://docs.docker.com/compose/compose-file/compose-file-v2/#ipam)
+        for valid options and values. Note that O(ipam_config[].iprange) is spelled differently here (we use the notation
+        from the Docker SDK for Python).
     type: list
     elements: dict
     suboptions:
@@ -133,15 +147,11 @@ options:
 
   state:
     description:
-      - V(absent) deletes the network. If a network has connected containers, it
-        cannot be deleted. Use the O(force) option to disconnect all containers
-        and delete the network.
-      - V(present) creates the network, if it does not already exist with the
-        specified parameters, and connects the list of containers provided via
-        the connected parameter. Containers not on the list will be disconnected.
-        An empty list will leave no containers connected to the network. Use the
-        O(appends) option to leave existing containers connected. Use the O(force)
-        options to force re-creation of the network.
+      - V(absent) deletes the network. If a network has connected containers, these will be detached from the network.
+      - V(present) creates the network, if it does not already exist with the specified parameters, and connects the list
+        of containers provided by the O(connected) parameter. Containers not on the list will be disconnected. An empty list
+        will leave no containers connected to the network. Use the O(appends) option to leave existing containers connected.
+        Use the O(force) options to force re-creation of the network.
     type: str
     default: present
     choices:
@@ -170,18 +180,19 @@ options:
 
   attachable:
     description:
-      - If enabled, and the network is in the global scope, non-service containers on worker nodes will be able to connect to the network.
+      - If enabled, and the network is in the global scope, non-service containers on worker nodes will be able to connect
+        to the network.
     type: bool
 
 notes:
-  - When network options are changed, the module disconnects all containers from the network, deletes the network, and re-creates the network.
-    It does not try to reconnect containers, except the ones listed in (O(connected), and even for these, it does not consider specific
-    connection options like fixed IP addresses or MAC addresses. If you need more control over how the containers are connected to the
-    network, loop the M(community.docker.docker_container) module to loop over your containers to make sure they are connected properly.
-  - The module does not support Docker Swarm. This means that it will not try to disconnect or reconnect services. If services are connected to the
-    network, deleting the network will fail. When network options are changed, the network has to be deleted and recreated, so this will
-    fail as well.
-
+  - When network options are changed, the module disconnects all containers from the network, deletes the network, and re-creates
+    the network. It does not try to reconnect containers, except the ones listed in (O(connected), and even for these, it
+    does not consider specific connection options like fixed IP addresses or MAC addresses. If you need more control over
+    how the containers are connected to the network, loop the M(community.docker.docker_container) module to loop over your
+    containers to make sure they are connected properly.
+  - The module does not support Docker Swarm. This means that it will not try to disconnect or reconnect services. If services
+    are connected to the network, deleting the network will fail. When network options are changed, the network has to be
+    deleted and recreated, so this will fail as well.
 author:
   - "Ben Keith (@keitwb)"
   - "Chris Houseknecht (@chouseknecht)"
@@ -189,9 +200,10 @@ author:
 
 requirements:
   - "Docker API >= 1.25"
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
+---
 - name: Create a network
   community.docker.docker_network:
     name: network_one
@@ -259,20 +271,20 @@ EXAMPLES = '''
   community.docker.docker_network:
     name: network_one
     state: absent
-    force: true
-'''
+"""
 
-RETURN = '''
+RETURN = r"""
 network:
-    description:
+  description:
     - Network inspection results for the affected network.
-    returned: success
-    type: dict
-    sample: {}
-'''
+  returned: success
+  type: dict
+  sample: {}
+"""
 
 import re
 import traceback
+import time
 
 from ansible.module_utils.common.text.converters import to_native
 
@@ -308,9 +320,11 @@ class TaskParameters(DockerBaseClass):
         self.internal = None
         self.labels = None
         self.debug = None
+        self.enable_ipv4 = None
         self.enable_ipv6 = None
         self.scope = None
         self.attachable = None
+        self.ingress = None
 
         for key, value in client.module.params.items():
             setattr(self, key, value)
@@ -488,6 +502,10 @@ class DockerNetworkManager(object):
                                             parameter=value,
                                             active=net_config.get(key))
 
+        if self.parameters.enable_ipv4 is not None and self.parameters.enable_ipv4 != net.get('EnableIPv4', False):
+            differences.add('enable_ipv4',
+                            parameter=self.parameters.enable_ipv4,
+                            active=net.get('EnableIPv4', False))
         if self.parameters.enable_ipv6 is not None and self.parameters.enable_ipv6 != net.get('EnableIPv6', False):
             differences.add('enable_ipv6',
                             parameter=self.parameters.enable_ipv6,
@@ -507,6 +525,10 @@ class DockerNetworkManager(object):
             differences.add('attachable',
                             parameter=self.parameters.attachable,
                             active=net.get('Attachable'))
+        if self.parameters.ingress is not None and self.parameters.ingress != net.get('Ingress', False):
+            differences.add('ingress',
+                            parameter=self.parameters.ingress,
+                            active=net.get('Ingress'))
         if self.parameters.labels:
             if not net.get('Labels'):
                 differences.add('labels',
@@ -535,14 +557,18 @@ class DockerNetworkManager(object):
                 data['ConfigOnly'] = self.parameters.config_only
             if self.parameters.config_from:
                 data['ConfigFrom'] = {'Network': self.parameters.config_from}
-            if self.parameters.enable_ipv6:
-                data['EnableIPv6'] = True
+            if self.parameters.enable_ipv6 is not None:
+                data['EnableIPv6'] = self.parameters.enable_ipv6
+            if self.parameters.enable_ipv4 is not None:
+                data['EnableIPv4'] = self.parameters.enable_ipv4
             if self.parameters.internal:
                 data['Internal'] = True
             if self.parameters.scope is not None:
                 data['Scope'] = self.parameters.scope
             if self.parameters.attachable is not None:
                 data['Attachable'] = self.parameters.attachable
+            if self.parameters.ingress is not None:
+                data['Ingress'] = self.parameters.ingress
             if self.parameters.labels is not None:
                 data["Labels"] = self.parameters.labels
 
@@ -579,6 +605,9 @@ class DockerNetworkManager(object):
             self.disconnect_all_containers()
             if not self.check_mode:
                 self.client.delete_call('/networks/{0}', self.parameters.name)
+                if self.existing_network.get('Scope', 'local') == 'swarm':
+                    while self.get_existing_network():
+                        time.sleep(0.1)
             self.results['actions'].append("Removed network %s" % (self.parameters.name,))
             self.results['changed'] = True
 
@@ -587,9 +616,21 @@ class DockerNetworkManager(object):
             return False
         return container_name in container_names_in_network(self.existing_network)
 
+    def is_container_exist(self, container_name):
+        try:
+            container = self.client.get_container(container_name)
+            return bool(container)
+
+        except DockerException as e:
+            self.client.fail('An unexpected Docker error occurred: {0}'.format(to_native(e)), exception=traceback.format_exc())
+        except RequestException as e:
+            self.client.fail(
+                'An unexpected requests error occurred when trying to talk to the Docker daemon: {0}'.format(to_native(e)),
+                exception=traceback.format_exc())
+
     def connect_containers(self):
         for name in self.parameters.connected:
-            if not self.is_container_connected(name):
+            if not self.is_container_connected(name) and self.is_container_exist(name):
                 if not self.check_mode:
                     data = {
                         "Container": name,
@@ -620,7 +661,7 @@ class DockerNetworkManager(object):
 
     def disconnect_container(self, container_name):
         if not self.check_mode:
-            data = {"Container": container_name}
+            data = {"Container": container_name, "Force": True}
             self.client.post_json('/networks/{0}/disconnect', self.parameters.name, data=data)
         self.results['actions'].append("Disconnected container %s" % (container_name,))
         self.results['changed'] = True
@@ -678,12 +719,14 @@ def main():
             gateway=dict(type='str'),
             aux_addresses=dict(type='dict'),
         )),
+        enable_ipv4=dict(type='bool'),
         enable_ipv6=dict(type='bool'),
         internal=dict(type='bool'),
         labels=dict(type='dict', default={}),
         debug=dict(type='bool', default=False),
         scope=dict(type='str', choices=['local', 'global', 'swarm']),
         attachable=dict(type='bool'),
+        ingress=dict(type='bool'),
     )
 
     option_minimal_versions = dict(
@@ -691,6 +734,7 @@ def main():
         config_only=dict(docker_api_version='1.30'),
         scope=dict(docker_api_version='1.30'),
         attachable=dict(docker_api_version='1.26'),
+        enable_ipv4=dict(docker_api_version='1.47'),
     )
 
     client = AnsibleDockerClient(
@@ -700,7 +744,6 @@ def main():
         option_minimal_versions=option_minimal_versions,
     )
     sanitize_labels(client.module.params['labels'], 'labels', client)
-
     try:
         cm = DockerNetworkManager(client)
         client.module.exit_json(**cm.results)

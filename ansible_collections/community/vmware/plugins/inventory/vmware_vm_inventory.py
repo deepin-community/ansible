@@ -9,6 +9,10 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
     name: vmware_vm_inventory
+    deprecated:
+      removed_in: 7.0.0
+      why: This module has been moved to the L(new vmware.vmware collection,https://forum.ansible.com/t/5880)
+      alternative: Use P(vmware.vmware.vms#inventory) instead.
     short_description: VMware Guest inventory source
     author:
       - Abhijeet Kasurde (@Akasurde)
@@ -173,6 +177,11 @@ DOCUMENTATION = r'''
           required: false
           env:
             - name: VMWARE_PROXY_PORT
+        enable_backward_compatibility:
+          description:
+          - Flatten the host properties for backward compatibility.
+          type: bool
+          default: true
 '''
 
 EXAMPLES = r'''
@@ -457,7 +466,7 @@ except ImportError:
 
 from ansible.plugins.inventory import BaseInventoryPlugin, Constructable, Cacheable
 from ansible.parsing.yaml.objects import AnsibleVaultEncryptedUnicode
-from ansible_collections.community.vmware.plugins.module_utils.vmware import connect_to_api
+from ansible_collections.community.vmware.plugins.module_utils.clients._vmware import PyvmomiClient
 
 
 class BaseVMwareInventory:
@@ -520,10 +529,15 @@ class BaseVMwareInventory:
         Returns: connection object
 
         """
-        return connect_to_api(module=None, disconnect_atexit=True, return_si=True,
-                              hostname=self.hostname, username=self.username, password=self.password,
-                              port=self.port, validate_certs=self.validate_certs, httpProxyHost=self.proxy_host,
-                              httpProxyPort=self.proxy_port)
+        pyvmomi_client = PyvmomiClient(
+            hostname=self.hostname,
+            username=self.username,
+            password=self.password,
+            port=self.port, validate_certs=self.validate_certs,
+            http_proxy_host=self.proxy_host,
+            http_proxy_port=self.proxy_port)
+
+        return pyvmomi_client.si, pyvmomi_client.content
 
     def check_requirements(self):
         """ Check all requirements for this inventory are satisfied"""
@@ -557,7 +571,7 @@ class BaseVMwareInventory:
             raise AnsibleError("Missing one of the following : hostname, username, password. Please read "
                                "the documentation for more information.")
 
-    def get_managed_objects_properties(self, vim_type, properties=None, resources=None, strict=False):  # noqa  # pylint: disable=too-complex
+    def get_managed_objects_properties(self, vim_type, properties=None, resources=None, strict=False):
         """
         Look up a Managed Object Reference in vCenter / ESXi Environment
         :param vim_type: Type of vim object e.g, for datacenter - vim.Datacenter
@@ -962,7 +976,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 self.inventory.set_variable(host, k, v)
 
         # For backward compatability
-        host_properties = to_flatten_dict(host_properties)
-        for k, v in host_properties.items():
-            k = self._sanitize_group_name(k) if can_sanitize else k
-            self.inventory.set_variable(host, k, v)
+        backward_compatibility = self.get_option("enable_backward_compatibility")
+        if backward_compatibility:
+            host_properties = to_flatten_dict(host_properties)
+            for k, v in host_properties.items():
+                k = self._sanitize_group_name(k) if can_sanitize else k
+                self.inventory.set_variable(host, k, v)

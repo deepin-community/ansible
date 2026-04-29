@@ -26,17 +26,12 @@ variables:
     value: ansible_collections/microsoft/ad
   - name: coverageBranches
     value: main
-  - name: pipelinesCoverage
-    value: coverage-powershell
   - name: entryPoint
-    value: tests/utils/shippable/shippable.sh
+    value: .azure-pipelines/commands/entry-point.sh
   - name: fetchDepth
     value: 0
-
-resources:
-  containers:
-    - container: default
-      image: quay.io/ansible/azure-pipelines-test-container:6.0.0
+  - name: defaultContainer
+    value: quay.io/ansible/azure-pipelines-test-container:6.0.0
 
 pool: Standard
 
@@ -76,6 +71,34 @@ stages:
               test: sanity
             - name: Units
               test: units
+  - stage: Ansible_2_19
+    displayName: Ansible 2.19
+    dependsOn:
+      - Dependencies
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          nameFormat: "{0}"
+          testFormat: "2.19/{0}"
+          targets:
+            - name: Sanity
+              test: sanity
+            - name: Units
+              test: units
+  - stage: Ansible_2_18
+    displayName: Ansible 2.18
+    dependsOn:
+      - Dependencies
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          nameFormat: "{0}"
+          testFormat: "2.18/{0}"
+          targets:
+            - name: Sanity
+              test: sanity
+            - name: Units
+              test: units
             - name: Lint
               test: lint
   - stage: Ansible_2_17
@@ -106,20 +129,6 @@ stages:
               test: sanity
             - name: Units
               test: units
-  - stage: Ansible_2_15
-    displayName: Ansible 2.15
-    dependsOn:
-      - Dependencies
-    jobs:
-      - template: templates/matrix.yml
-        parameters:
-          nameFormat: "{0}"
-          testFormat: "2.15/{0}"
-          targets:
-            - name: Sanity
-              test: sanity
-            - name: Units
-              test: units
   - stage: Windows
     displayName: Windows
     dependsOn:
@@ -140,15 +149,20 @@ stages:
               test: 2022/psrp/https
             - name: Server 2022 SSH Key
               test: 2022/ssh/key
+            - name: Server 2025 PSRP HTTPS
+              test: 2025/psrp/https
+            - name: Server 2025 SSH Key
+              test: 2025/ssh/key
           groups:
             - 1
   - stage: Summary
     condition: succeededOrFailed()
     dependsOn:
       - Ansible_devel
+      - Ansible_2_19
+      - Ansible_2_18
       - Ansible_2_17
       - Ansible_2_16
-      - Ansible_2_15
       - Windows
     jobs:
       - template: templates/coverage.yml

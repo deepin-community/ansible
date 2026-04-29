@@ -5,10 +5,10 @@
 vyos.vyos.vyos_bgp_global
 *************************
 
-**BGP Global Resource Module.**
+**BGP global resource module**
 
 
-Version added: 2.0.0
+Version added: 1.0.0
 
 .. contents::
    :local:
@@ -18,6 +18,8 @@ Version added: 2.0.0
 Synopsis
 --------
 - This module manages BGP global configuration of interfaces on devices running VYOS.
+- Tested against VyOS 1.3.8, 1.4.2, the upcoming 1.5, and the rolling release of spring 2025
+- The provided examples of commands are valid for VyOS 1.4+
 
 
 
@@ -49,83 +51,6 @@ Parameters
                 </td>
             </tr>
                                 <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>aggregate_address</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BGP aggregate network.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>as_set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Generate AS-set path information for this aggregate address.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>prefix</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BGP aggregate network.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>summary_only</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Announce the aggregate summary network only.</div>
-                </td>
-            </tr>
-
-            <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -478,7 +403,8 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Deactivate IPv4 unicast for a peer by default</div>
+                        <div>Deactivate IPv4 unicast for a peer by default
+    Deprecated: Unavailable after 1.4</div>
                 </td>
             </tr>
 
@@ -742,58 +668,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>maximum_paths</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BGP multipaths</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>count</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>No. of paths.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>path</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BGP multipaths</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>neighbor</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -846,128 +720,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>allowas_in</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Number of occurrences of AS number.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>as_override</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>AS for routes sent to this neighbor to be the local AS.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>attribute_unchanged</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BGP attributes are sent unchanged.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>as_path</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>as_path</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>med</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>med</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>next_hop</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>next_hop</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>capability</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1008,20 +760,20 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>orf</b>
+                    <b>extended_nexthop</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
+                        <span style="color: purple">boolean</span>
                     </div>
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>send</li>
-                                    <li>receive</li>
+                                    <li>no</li>
+                                    <li>yes</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Advertise ORF capability to this neighbor.</div>
+                        <div>Advertise extended nexthop capability to this neighbor.</div>
                 </td>
             </tr>
 
@@ -1056,7 +808,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>description text</div>
+                        <div>Description of the neighbor</div>
                 </td>
             </tr>
             <tr>
@@ -1127,65 +879,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>distribute_list</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Access-list to filter route updates to/from this neighbor.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>acl</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Access-list number.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>action</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>export</li>
-                                    <li>import</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Access-list to filter outgoing/incoming route updates to this neighbor</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>ebgp_multihop</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1203,65 +896,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>filter_list</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>As-path-list to filter route updates to/from this neighbor.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>action</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>export</li>
-                                    <li>import</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>filter outgoing/incoming route updates</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>path_list</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>As-path-list to filter</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>local_as</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1272,44 +906,6 @@ Parameters
                 </td>
                 <td>
                         <div>local as number not to be prepended to updates from EBGP peers</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>maximum_prefix</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Maximum number of prefixes to accept from this neighbor nexthop-self Nexthop for routes sent to this neighbor to be the local router.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>nexthop_self</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Nexthop for routes sent to this neighbor to be the local router.</div>
                 </td>
             </tr>
             <tr>
@@ -1431,65 +1027,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>prefix_list</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Prefix-list to filter route updates to/from this neighbor.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>action</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>export</li>
-                                    <li>import</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>filter outgoing/incoming route updates</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>prefix_list</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Prefix-list to filter</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>remote_as</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1500,128 +1037,6 @@ Parameters
                 </td>
                 <td>
                         <div>Neighbor BGP AS number</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>remove_private_as</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Remove private AS numbers from AS path in outbound route updates</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_map</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Route-map to filter route updates to/from this neighbor.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>action</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>export</li>
-                                    <li>import</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>filter outgoing/incoming route updates</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_map</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>route-map to filter</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_reflector_client</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Neighbor as a route reflector client</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_server_client</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Neighbor is route server client</div>
                 </td>
             </tr>
             <tr>
@@ -1650,7 +1065,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>soft_reconfiguration</b>
+                    <b>solo</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
@@ -1663,7 +1078,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Soft reconfiguration for neighbor</div>
+                        <div>Do not send back prefixes learned from the neighbor</div>
                 </td>
             </tr>
             <tr>
@@ -1773,24 +1188,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Ttl security mechanism for this BGP peer</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>unsuppress_map</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Route-map to selectively unsuppress suppressed routes</div>
+                        <div>Number of the maximum number of hops to the BGP peer</div>
                 </td>
             </tr>
             <tr>
@@ -1808,172 +1206,6 @@ Parameters
                 </td>
                 <td>
                         <div>Source IP of routing updates</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>weight</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Default weight for routes from this neighbor</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>network</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BGP network</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>address</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BGP network address</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>backdoor</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Network as a backdoor route</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_map</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Route-map to modify route attributes</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>redistribute</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Redistribute routes from other protocols into BGP</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>metric</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Metric for redistributed routes.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>protocol</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>connected</li>
-                                    <li>kernel</li>
-                                    <li>ospf</li>
-                                    <li>rip</li>
-                                    <li>static</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>types of routes to be redistributed.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_map</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Route map to filter redistributed routes</div>
                 </td>
             </tr>
 
@@ -2150,33 +1382,34 @@ Examples
 
     # After State
     # vyos@vyos:~$ show configuration commands |  match "set protocols bgp"
-    # set protocols bgp 65536 aggregate-address 192.0.2.0/24 'summary-only'
-    # set protocols bgp 65536 aggregate-address 203.0.113.0/24 'as-set'
-    # set protocols bgp 65536 maximum-paths ebgp '20'
-    # set protocols bgp 65536 maximum-paths ibgp '55'
-    # set protocols bgp 65536 neighbor 192.0.2.25 'disable-connected-check'
-    # set protocols bgp 65536 neighbor 192.0.2.25 timers holdtime '30'
-    # set protocols bgp 65536 neighbor 192.0.2.25 timers keepalive '10'
-    # set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged 'as-path'
-    # set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged 'med'
-    # set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged 'next-hop'
-    # set protocols bgp 65536 neighbor 203.0.113.5 ebgp-multihop '2'
-    # set protocols bgp 65536 neighbor 203.0.113.5 remote-as '101'
-    # set protocols bgp 65536 neighbor 203.0.113.5 update-source '192.0.2.25'
-    # set protocols bgp 65536 neighbor 5001::64 distribute-list export '20'
-    # set protocols bgp 65536 neighbor 5001::64 distribute-list import '40'
-    # set protocols bgp 65536 neighbor 5001::64 maximum-prefix '34'
-    # set protocols bgp 65536 network 192.1.13.0/24 'backdoor'
-    # set protocols bgp 65536 parameters bestpath as-path 'confed'
-    # set protocols bgp 65536 parameters bestpath 'compare-routerid'
-    # set protocols bgp 65536 parameters confederation identifier '66'
-    # set protocols bgp 65536 parameters confederation peers '20'
-    # set protocols bgp 65536 parameters confederation peers '55'
-    # set protocols bgp 65536 parameters default 'no-ipv4-unicast'
-    # set protocols bgp 65536 parameters router-id '192.1.2.9'
-    # set protocols bgp 65536 redistribute connected route-map 'map01'
-    # set protocols bgp 65536 redistribute kernel metric '45'
-    # set protocols bgp 65536 timers keepalive '35'
+    # set protocols bgp system-as 65536
+    # set protocols bgp aggregate-address 192.0.2.0/24 'summary-only'
+    # set protocols bgp aggregate-address 203.0.113.0/24 'as-set'
+    # set protocols bgp maximum-paths ebgp '20'
+    # set protocols bgp maximum-paths ibgp '55'
+    # set protocols bgp neighbor 192.0.2.25 'disable-connected-check'
+    # set protocols bgp neighbor 192.0.2.25 timers holdtime '30'
+    # set protocols bgp neighbor 192.0.2.25 timers keepalive '10'
+    # set protocols bgp neighbor 203.0.113.5 attribute-unchanged 'as-path'
+    # set protocols bgp neighbor 203.0.113.5 attribute-unchanged 'med'
+    # set protocols bgp neighbor 203.0.113.5 attribute-unchanged 'next-hop'
+    # set protocols bgp neighbor 203.0.113.5 ebgp-multihop '2'
+    # set protocols bgp neighbor 203.0.113.5 remote-as '101'
+    # set protocols bgp neighbor 203.0.113.5 update-source '192.0.2.25'
+    # set protocols bgp neighbor 5001::64 distribute-list export '20'
+    # set protocols bgp neighbor 5001::64 distribute-list import '40'
+    # set protocols bgp neighbor 5001::64 maximum-prefix '34'
+    # set protocols bgp network 192.1.13.0/24 'backdoor'
+    # set protocols bgp parameters bestpath as-path 'confed'
+    # set protocols bgp parameters bestpath 'compare-routerid'
+    # set protocols bgp parameters confederation identifier '66'
+    # set protocols bgp parameters confederation peers '20'
+    # set protocols bgp parameters confederation peers '55'
+    # set protocols bgp parameters default 'no-ipv4-unicast'
+    # set protocols bgp parameters router-id '192.1.2.9'
+    # set protocols bgp redistribute connected route-map 'map01'
+    # set protocols bgp redistribute kernel metric '45'
+    # set protocols bgp timers keepalive '35'
     # vyos@vyos:~$
     #
     # # Module Execution:
@@ -2282,33 +1515,33 @@ Examples
     #     "before": {},
     #     "changed": true,
     #     "commands": [
-    #         "set protocols bgp 65536 neighbor 192.0.2.25 disable-connected-check",
-    #         "set protocols bgp 65536 neighbor 192.0.2.25 timers holdtime 30",
-    #         "set protocols bgp 65536 neighbor 192.0.2.25 timers keepalive 10",
-    #         "set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged as-path",
-    #         "set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged med",
-    #         "set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged next-hop",
-    #         "set protocols bgp 65536 neighbor 203.0.113.5 ebgp-multihop 2",
-    #         "set protocols bgp 65536 neighbor 203.0.113.5 remote-as 101",
-    #         "set protocols bgp 65536 neighbor 203.0.113.5 update-source 192.0.2.25",
-    #         "set protocols bgp 65536 neighbor 5001::64 maximum-prefix 34",
-    #         "set protocols bgp 65536 neighbor 5001::64 distribute-list export 20",
-    #         "set protocols bgp 65536 neighbor 5001::64 distribute-list import 40",
-    #         "set protocols bgp 65536 redistribute kernel metric 45",
-    #         "set protocols bgp 65536 redistribute connected route-map map01",
-    #         "set protocols bgp 65536 network 192.1.13.0/24 backdoor",
-    #         "set protocols bgp 65536 aggregate-address 203.0.113.0/24 as-set",
-    #         "set protocols bgp 65536 aggregate-address 192.0.2.0/24 summary-only",
-    #         "set protocols bgp 65536 parameters bestpath as-path confed",
-    #         "set protocols bgp 65536 parameters bestpath compare-routerid",
-    #         "set protocols bgp 65536 parameters default no-ipv4-unicast",
-    #         "set protocols bgp 65536 parameters router-id 192.1.2.9",
-    #         "set protocols bgp 65536 parameters confederation peers 20",
-    #         "set protocols bgp 65536 parameters confederation peers 55",
-    #         "set protocols bgp 65536 parameters confederation identifier 66",
-    #         "set protocols bgp 65536 maximum-paths ebgp 20",
-    #         "set protocols bgp 65536 maximum-paths ibgp 55",
-    #         "set protocols bgp 65536 timers keepalive 35"
+    #         "set protocols bgp neighbor 192.0.2.25 disable-connected-check",
+    #         "set protocols bgp neighbor 192.0.2.25 timers holdtime 30",
+    #         "set protocols bgp neighbor 192.0.2.25 timers keepalive 10",
+    #         "set protocols bgp neighbor 203.0.113.5 attribute-unchanged as-path",
+    #         "set protocols bgp neighbor 203.0.113.5 attribute-unchanged med",
+    #         "set protocols bgp neighbor 203.0.113.5 attribute-unchanged next-hop",
+    #         "set protocols bgp neighbor 203.0.113.5 ebgp-multihop 2",
+    #         "set protocols bgp neighbor 203.0.113.5 remote-as 101",
+    #         "set protocols bgp neighbor 203.0.113.5 update-source 192.0.2.25",
+    #         "set protocols bgp neighbor 5001::64 maximum-prefix 34",
+    #         "set protocols bgp neighbor 5001::64 distribute-list export 20",
+    #         "set protocols bgp neighbor 5001::64 distribute-list import 40",
+    #         "set protocols bgp redistribute kernel metric 45",
+    #         "set protocols bgp redistribute connected route-map map01",
+    #         "set protocols bgp network 192.1.13.0/24 backdoor",
+    #         "set protocols bgp aggregate-address 203.0.113.0/24 as-set",
+    #         "set protocols bgp aggregate-address 192.0.2.0/24 summary-only",
+    #         "set protocols bgp parameters bestpath as-path confed",
+    #         "set protocols bgp parameters bestpath compare-routerid",
+    #         "set protocols bgp parameters default no-ipv4-unicast",
+    #         "set protocols bgp parameters router-id 192.1.2.9",
+    #         "set protocols bgp parameters confederation peers 20",
+    #         "set protocols bgp parameters confederation peers 55",
+    #         "set protocols bgp parameters confederation identifier 66",
+    #         "set protocols bgp maximum-paths ebgp 20",
+    #         "set protocols bgp maximum-paths ibgp 55",
+    #         "set protocols bgp timers keepalive 35"
     #     ],
 
     # Using replaced:
@@ -2317,33 +1550,34 @@ Examples
     # Before state:
 
     # vyos@vyos:~$ show configuration commands |  match "set protocols bgp"
-    # set protocols bgp 65536 aggregate-address 192.0.2.0/24 'summary-only'
-    # set protocols bgp 65536 aggregate-address 203.0.113.0/24 'as-set'
-    # set protocols bgp 65536 maximum-paths ebgp '20'
-    # set protocols bgp 65536 maximum-paths ibgp '55'
-    # set protocols bgp 65536 neighbor 192.0.2.25 'disable-connected-check'
-    # set protocols bgp 65536 neighbor 192.0.2.25 timers holdtime '30'
-    # set protocols bgp 65536 neighbor 192.0.2.25 timers keepalive '10'
-    # set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged 'as-path'
-    # set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged 'med'
-    # set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged 'next-hop'
-    # set protocols bgp 65536 neighbor 203.0.113.5 ebgp-multihop '2'
-    # set protocols bgp 65536 neighbor 203.0.113.5 remote-as '101'
-    # set protocols bgp 65536 neighbor 203.0.113.5 update-source '192.0.2.25'
-    # set protocols bgp 65536 neighbor 5001::64 distribute-list export '20'
-    # set protocols bgp 65536 neighbor 5001::64 distribute-list import '40'
-    # set protocols bgp 65536 neighbor 5001::64 maximum-prefix '34'
-    # set protocols bgp 65536 network 192.1.13.0/24 'backdoor'
-    # set protocols bgp 65536 parameters bestpath as-path 'confed'
-    # set protocols bgp 65536 parameters bestpath 'compare-routerid'
-    # set protocols bgp 65536 parameters confederation identifier '66'
-    # set protocols bgp 65536 parameters confederation peers '20'
-    # set protocols bgp 65536 parameters confederation peers '55'
-    # set protocols bgp 65536 parameters default 'no-ipv4-unicast'
-    # set protocols bgp 65536 parameters router-id '192.1.2.9'
-    # set protocols bgp 65536 redistribute connected route-map 'map01'
-    # set protocols bgp 65536 redistribute kernel metric '45'
-    # set protocols bgp 65536 timers keepalive '35'
+    # set protocols bgp system-as 65536
+    # set protocols bgp aggregate-address 192.0.2.0/24 'summary-only'
+    # set protocols bgp aggregate-address 203.0.113.0/24 'as-set'
+    # set protocols bgp maximum-paths ebgp '20'
+    # set protocols bgp maximum-paths ibgp '55'
+    # set protocols bgp neighbor 192.0.2.25 'disable-connected-check'
+    # set protocols bgp neighbor 192.0.2.25 timers holdtime '30'
+    # set protocols bgp neighbor 192.0.2.25 timers keepalive '10'
+    # set protocols bgp neighbor 203.0.113.5 attribute-unchanged 'as-path'
+    # set protocols bgp neighbor 203.0.113.5 attribute-unchanged 'med'
+    # set protocols bgp neighbor 203.0.113.5 attribute-unchanged 'next-hop'
+    # set protocols bgp neighbor 203.0.113.5 ebgp-multihop '2'
+    # set protocols bgp neighbor 203.0.113.5 remote-as '101'
+    # set protocols bgp neighbor 203.0.113.5 update-source '192.0.2.25'
+    # set protocols bgp neighbor 5001::64 distribute-list export '20'
+    # set protocols bgp neighbor 5001::64 distribute-list import '40'
+    # set protocols bgp neighbor 5001::64 maximum-prefix '34'
+    # set protocols bgp network 192.1.13.0/24 'backdoor'
+    # set protocols bgp parameters bestpath as-path 'confed'
+    # set protocols bgp parameters bestpath 'compare-routerid'
+    # set protocols bgp parameters confederation identifier '66'
+    # set protocols bgp parameters confederation peers '20'
+    # set protocols bgp parameters confederation peers '55'
+    # set protocols bgp parameters default 'no-ipv4-unicast'
+    # set protocols bgp parameters router-id '192.1.2.9'
+    # set protocols bgp redistribute connected route-map 'map01'
+    # set protocols bgp redistribute kernel metric '45'
+    # set protocols bgp timers keepalive '35'
     # vyos@vyos:~$
 
     - name: Replace
@@ -2368,11 +1602,12 @@ Examples
     # After state:
 
     # vyos@vyos:~$ show configuration commands |  match "set protocols bgp"
-    # set protocols bgp 65536 neighbor 192.0.2.40 advertisement-interval '72'
-    # set protocols bgp 65536 neighbor 192.0.2.40 capability orf prefix-list 'receive'
-    # set protocols bgp 65536 network 203.0.113.0/24 route-map 'map01'
-    # set protocols bgp 65536 parameters bestpath as-path 'confed'
-    # set protocols bgp 65536 redistribute static route-map 'map01'
+    # set protocols bgp system-as 65536
+    # set protocols bgp neighbor 192.0.2.40 advertisement-interval '72'
+    # set protocols bgp neighbor 192.0.2.40 capability orf prefix-list 'receive'
+    # set protocols bgp network 203.0.113.0/24 route-map 'map01'
+    # set protocols bgp parameters bestpath as-path 'confed'
+    # set protocols bgp redistribute static route-map 'map01'
     # vyos@vyos:~$
     #
     #
@@ -2507,26 +1742,26 @@ Examples
     #     },
     #     "changed": true,
     #     "commands": [
-    #         "delete protocols bgp 65536 timers",
-    #         "delete protocols bgp 65536 maximum-paths ",
-    #         "delete protocols bgp 65536 maximum-paths ",
-    #         "delete protocols bgp 65536 parameters router-id 192.1.2.9",
-    #         "delete protocols bgp 65536 parameters default",
-    #         "delete protocols bgp 65536 parameters confederation",
-    #         "delete protocols bgp 65536 parameters bestpath compare-routerid",
-    #         "delete protocols bgp 65536 aggregate-address",
-    #         "delete protocols bgp 65536 network 192.1.13.0/24",
-    #         "delete protocols bgp 65536 redistribute kernel",
-    #         "delete protocols bgp 65536 redistribute kernel",
-    #         "delete protocols bgp 65536 redistribute connected",
-    #         "delete protocols bgp 65536 redistribute connected",
-    #         "delete protocols bgp 65536 neighbor 5001::64",
-    #         "delete protocols bgp 65536 neighbor 203.0.113.5",
-    #         "delete protocols bgp 65536 neighbor 192.0.2.25",
-    #         "set protocols bgp 65536 neighbor 192.0.2.40 advertisement-interval 72",
-    #         "set protocols bgp 65536 neighbor 192.0.2.40 capability orf prefix-list receive",
-    #         "set protocols bgp 65536 redistribute static route-map map01",
-    #         "set protocols bgp 65536 network 203.0.113.0/24 route-map map01"
+    #         "delete protocols bgp timers",
+    #         "delete protocols bgp maximum-paths ",
+    #         "delete protocols bgp maximum-paths ",
+    #         "delete protocols bgp parameters router-id 192.1.2.9",
+    #         "delete protocols bgp parameters default",
+    #         "delete protocols bgp parameters confederation",
+    #         "delete protocols bgp parameters bestpath compare-routerid",
+    #         "delete protocols bgp aggregate-address",
+    #         "delete protocols bgp network 192.1.13.0/24",
+    #         "delete protocols bgp redistribute kernel",
+    #         "delete protocols bgp redistribute kernel",
+    #         "delete protocols bgp redistribute connected",
+    #         "delete protocols bgp redistribute connected",
+    #         "delete protocols bgp neighbor 5001::64",
+    #         "delete protocols bgp neighbor 203.0.113.5",
+    #         "delete protocols bgp neighbor 192.0.2.25",
+    #         "set protocols bgp neighbor 192.0.2.40 advertisement-interval 72",
+    #         "set protocols bgp neighbor 192.0.2.40 capability orf prefix-list receive",
+    #         "set protocols bgp redistribute static route-map map01",
+    #         "set protocols bgp network 203.0.113.0/24 route-map map01"
     #     ],
 
     # Using deleted:
@@ -2535,11 +1770,12 @@ Examples
     # Before state:
 
     # vyos@vyos:~$ show configuration commands |  match "set protocols bgp"
-    # set protocols bgp 65536 neighbor 192.0.2.40 advertisement-interval '72'
-    # set protocols bgp 65536 neighbor 192.0.2.40 capability orf prefix-list 'receive'
-    # set protocols bgp 65536 network 203.0.113.0/24 route-map 'map01'
-    # set protocols bgp 65536 parameters bestpath as-path 'confed'
-    # set protocols bgp 65536 redistribute static route-map 'map01'
+    # set protocols bgp system-as 65536
+    # set protocols bgp neighbor 192.0.2.40 advertisement-interval '72'
+    # set protocols bgp neighbor 192.0.2.40 capability orf prefix-list 'receive'
+    # set protocols bgp network 203.0.113.0/24 route-map 'map01'
+    # set protocols bgp parameters bestpath as-path 'confed'
+    # set protocols bgp redistribute static route-map 'map01'
     # vyos@vyos:~$
 
     - name: Delete configuration
@@ -2591,10 +1827,10 @@ Examples
     #     },
     #     "changed": true,
     #     "commands": [
-    #         "delete protocols bgp 65536 neighbor 192.0.2.40",
-    #         "delete protocols bgp 65536 redistribute",
-    #         "delete protocols bgp 65536 network",
-    #         "delete protocols bgp 65536 parameters"
+    #         "delete protocols bgp neighbor 192.0.2.40",
+    #         "delete protocols bgp redistribute",
+    #         "delete protocols bgp network",
+    #         "delete protocols bgp parameters"
     #     ],
 
     # Using purged:
@@ -2602,33 +1838,34 @@ Examples
     # Before state:
 
     # vyos@vyos:~$ show configuration commands |  match "set protocols bgp"
-    # set protocols bgp 65536 aggregate-address 192.0.2.0/24 'summary-only'
-    # set protocols bgp 65536 aggregate-address 203.0.113.0/24 'as-set'
-    # set protocols bgp 65536 maximum-paths ebgp '20'
-    # set protocols bgp 65536 maximum-paths ibgp '55'
-    # set protocols bgp 65536 neighbor 192.0.2.25 'disable-connected-check'
-    # set protocols bgp 65536 neighbor 192.0.2.25 timers holdtime '30'
-    # set protocols bgp 65536 neighbor 192.0.2.25 timers keepalive '10'
-    # set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged 'as-path'
-    # set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged 'med'
-    # set protocols bgp 65536 neighbor 203.0.113.5 attribute-unchanged 'next-hop'
-    # set protocols bgp 65536 neighbor 203.0.113.5 ebgp-multihop '2'
-    # set protocols bgp 65536 neighbor 203.0.113.5 remote-as '101'
-    # set protocols bgp 65536 neighbor 203.0.113.5 update-source '192.0.2.25'
-    # set protocols bgp 65536 neighbor 5001::64 distribute-list export '20'
-    # set protocols bgp 65536 neighbor 5001::64 distribute-list import '40'
-    # set protocols bgp 65536 neighbor 5001::64 maximum-prefix '34'
-    # set protocols bgp 65536 network 192.1.13.0/24 'backdoor'
-    # set protocols bgp 65536 parameters bestpath as-path 'confed'
-    # set protocols bgp 65536 parameters bestpath 'compare-routerid'
-    # set protocols bgp 65536 parameters confederation identifier '66'
-    # set protocols bgp 65536 parameters confederation peers '20'
-    # set protocols bgp 65536 parameters confederation peers '55'
-    # set protocols bgp 65536 parameters default 'no-ipv4-unicast'
-    # set protocols bgp 65536 parameters router-id '192.1.2.9'
-    # set protocols bgp 65536 redistribute connected route-map 'map01'
-    # set protocols bgp 65536 redistribute kernel metric '45'
-    # set protocols bgp 65536 timers keepalive '35'
+    # set protocols bgp system-as 65536
+    # set protocols bgp aggregate-address 192.0.2.0/24 'summary-only'
+    # set protocols bgp aggregate-address 203.0.113.0/24 'as-set'
+    # set protocols bgp maximum-paths ebgp '20'
+    # set protocols bgp maximum-paths ibgp '55'
+    # set protocols bgp neighbor 192.0.2.25 'disable-connected-check'
+    # set protocols bgp neighbor 192.0.2.25 timers holdtime '30'
+    # set protocols bgp neighbor 192.0.2.25 timers keepalive '10'
+    # set protocols bgp neighbor 203.0.113.5 attribute-unchanged 'as-path'
+    # set protocols bgp neighbor 203.0.113.5 attribute-unchanged 'med'
+    # set protocols bgp neighbor 203.0.113.5 attribute-unchanged 'next-hop'
+    # set protocols bgp neighbor 203.0.113.5 ebgp-multihop '2'
+    # set protocols bgp neighbor 203.0.113.5 remote-as '101'
+    # set protocols bgp neighbor 203.0.113.5 update-source '192.0.2.25'
+    # set protocols bgp neighbor 5001::64 distribute-list export '20'
+    # set protocols bgp neighbor 5001::64 distribute-list import '40'
+    # set protocols bgp neighbor 5001::64 maximum-prefix '34'
+    # set protocols bgp network 192.1.13.0/24 'backdoor'
+    # set protocols bgp parameters bestpath as-path 'confed'
+    # set protocols bgp parameters bestpath 'compare-routerid'
+    # set protocols bgp parameters confederation identifier '66'
+    # set protocols bgp parameters confederation peers '20'
+    # set protocols bgp parameters confederation peers '55'
+    # set protocols bgp parameters default 'no-ipv4-unicast'
+    # set protocols bgp parameters router-id '192.1.2.9'
+    # set protocols bgp redistribute connected route-map 'map01'
+    # set protocols bgp redistribute kernel metric '45'
+    # set protocols bgp timers keepalive '35'
     # vyos@vyos:~$
 
 
@@ -2754,26 +1991,27 @@ Examples
 
     # Before state:
     # vyos@vyos:~$ show configuration commands |  match "set protocols bgp"
-    # set protocols bgp 65536 neighbor 192.0.2.43 advertisement-interval '72'
-    # set protocols bgp 65536 neighbor 192.0.2.43 capability 'dynamic'
-    # set protocols bgp 65536 neighbor 192.0.2.43 'disable-connected-check'
-    # set protocols bgp 65536 neighbor 192.0.2.43 timers holdtime '30'
-    # set protocols bgp 65536 neighbor 192.0.2.43 timers keepalive '10'
-    # set protocols bgp 65536 neighbor 203.0.113.0 address-family 'ipv6-unicast'
-    # set protocols bgp 65536 neighbor 203.0.113.0 capability orf prefix-list 'receive'
-    # set protocols bgp 65536 network 203.0.113.0/24 route-map 'map01'
-    # set protocols bgp 65536 parameters 'always-compare-med'
-    # set protocols bgp 65536 parameters bestpath as-path 'confed'
-    # set protocols bgp 65536 parameters bestpath 'compare-routerid'
-    # set protocols bgp 65536 parameters dampening half-life '33'
-    # set protocols bgp 65536 parameters dampening max-suppress-time '20'
-    # set protocols bgp 65536 parameters dampening re-use '60'
-    # set protocols bgp 65536 parameters dampening start-suppress-time '5'
-    # set protocols bgp 65536 parameters default 'no-ipv4-unicast'
-    # set protocols bgp 65536 parameters distance global external '66'
-    # set protocols bgp 65536 parameters distance global internal '20'
-    # set protocols bgp 65536 parameters distance global local '10'
-    # set protocols bgp 65536 redistribute static route-map 'map01'
+    # set protocols bgp system-as 65536
+    # set protocols bgp neighbor 192.0.2.43 advertisement-interval '72'
+    # set protocols bgp neighbor 192.0.2.43 capability 'dynamic'
+    # set protocols bgp neighbor 192.0.2.43 'disable-connected-check'
+    # set protocols bgp neighbor 192.0.2.43 timers holdtime '30'
+    # set protocols bgp neighbor 192.0.2.43 timers keepalive '10'
+    # set protocols bgp neighbor 203.0.113.0 address-family 'ipv6-unicast'
+    # set protocols bgp neighbor 203.0.113.0 capability orf prefix-list 'receive'
+    # set protocols bgp network 203.0.113.0/24 route-map 'map01'
+    # set protocols bgp parameters 'always-compare-med'
+    # set protocols bgp parameters bestpath as-path 'confed'
+    # set protocols bgp parameters bestpath 'compare-routerid'
+    # set protocols bgp parameters dampening half-life '33'
+    # set protocols bgp parameters dampening max-suppress-time '20'
+    # set protocols bgp parameters dampening re-use '60'
+    # set protocols bgp parameters dampening start-suppress-time '5'
+    # set protocols bgp parameters default 'no-ipv4-unicast'
+    # set protocols bgp parameters distance global external '66'
+    # set protocols bgp parameters distance global internal '20'
+    # set protocols bgp parameters distance global local '10'
+    # set protocols bgp redistribute static route-map 'map01'
     # vyos@vyos:~$ ^C
     # vyos@vyos:~$
 
@@ -2810,26 +2048,27 @@ Examples
 
     # Before state:
     # vyos@vyos:~$ show configuration commands |  match "set protocols bgp"
-    # set protocols bgp 65536 neighbor 192.0.2.43 advertisement-interval '72'
-    # set protocols bgp 65536 neighbor 192.0.2.43 capability 'dynamic'
-    # set protocols bgp 65536 neighbor 192.0.2.43 'disable-connected-check'
-    # set protocols bgp 65536 neighbor 192.0.2.43 timers holdtime '30'
-    # set protocols bgp 65536 neighbor 192.0.2.43 timers keepalive '10'
-    # set protocols bgp 65536 neighbor 203.0.113.0 address-family 'ipv6-unicast'
-    # set protocols bgp 65536 neighbor 203.0.113.0 capability orf prefix-list 'receive'
-    # set protocols bgp 65536 network 203.0.113.0/24 route-map 'map01'
-    # set protocols bgp 65536 parameters 'always-compare-med'
-    # set protocols bgp 65536 parameters bestpath as-path 'confed'
-    # set protocols bgp 65536 parameters bestpath 'compare-routerid'
-    # set protocols bgp 65536 parameters dampening half-life '33'
-    # set protocols bgp 65536 parameters dampening max-suppress-time '20'
-    # set protocols bgp 65536 parameters dampening re-use '60'
-    # set protocols bgp 65536 parameters dampening start-suppress-time '5'
-    # set protocols bgp 65536 parameters default 'no-ipv4-unicast'
-    # set protocols bgp 65536 parameters distance global external '66'
-    # set protocols bgp 65536 parameters distance global internal '20'
-    # set protocols bgp 65536 parameters distance global local '10'
-    # set protocols bgp 65536 redistribute static route-map 'map01'
+    # set protocols bgp system-as 65536
+    # set protocols bgp neighbor 192.0.2.43 advertisement-interval '72'
+    # set protocols bgp neighbor 192.0.2.43 capability 'dynamic'
+    # set protocols bgp neighbor 192.0.2.43 'disable-connected-check'
+    # set protocols bgp neighbor 192.0.2.43 timers holdtime '30'
+    # set protocols bgp neighbor 192.0.2.43 timers keepalive '10'
+    # set protocols bgp neighbor 203.0.113.0 address-family 'ipv6-unicast'
+    # set protocols bgp neighbor 203.0.113.0 capability orf prefix-list 'receive'
+    # set protocols bgp network 203.0.113.0/24 route-map 'map01'
+    # set protocols bgp parameters 'always-compare-med'
+    # set protocols bgp parameters bestpath as-path 'confed'
+    # set protocols bgp parameters bestpath 'compare-routerid'
+    # set protocols bgp parameters dampening half-life '33'
+    # set protocols bgp parameters dampening max-suppress-time '20'
+    # set protocols bgp parameters dampening re-use '60'
+    # set protocols bgp parameters dampening start-suppress-time '5'
+    # set protocols bgp parameters default 'no-ipv4-unicast'
+    # set protocols bgp parameters distance global external '66'
+    # set protocols bgp parameters distance global internal '20'
+    # set protocols bgp parameters distance global local '10'
+    # set protocols bgp redistribute static route-map 'map01'
     # vyos@vyos:~$ ^C
 
     - name: gather configs
@@ -2903,26 +2142,26 @@ Examples
 
     # parsed.cfg
 
-    # set protocols bgp 65536 neighbor 192.0.2.43 advertisement-interval '72'
-    # set protocols bgp 65536 neighbor 192.0.2.43 capability 'dynamic'
-    # set protocols bgp 65536 neighbor 192.0.2.43 'disable-connected-check'
-    # set protocols bgp 65536 neighbor 192.0.2.43 timers holdtime '30'
-    # set protocols bgp 65536 neighbor 192.0.2.43 timers keepalive '10'
-    # set protocols bgp 65536 neighbor 203.0.113.0 address-family 'ipv6-unicast'
-    # set protocols bgp 65536 neighbor 203.0.113.0 capability orf prefix-list 'receive'
-    # set protocols bgp 65536 network 203.0.113.0/24 route-map 'map01'
-    # set protocols bgp 65536 parameters 'always-compare-med'
-    # set protocols bgp 65536 parameters bestpath as-path 'confed'
-    # set protocols bgp 65536 parameters bestpath 'compare-routerid'
-    # set protocols bgp 65536 parameters dampening half-life '33'
-    # set protocols bgp 65536 parameters dampening max-suppress-time '20'
-    # set protocols bgp 65536 parameters dampening re-use '60'
-    # set protocols bgp 65536 parameters dampening start-suppress-time '5'
-    # set protocols bgp 65536 parameters default 'no-ipv4-unicast'
-    # set protocols bgp 65536 parameters distance global external '66'
-    # set protocols bgp 65536 parameters distance global internal '20'
-    # set protocols bgp 65536 parameters distance global local '10'
-    # set protocols bgp 65536 redistribute static route-map 'map01'
+    # set protocols bgp neighbor 192.0.2.43 advertisement-interval '72'
+    # set protocols bgp neighbor 192.0.2.43 capability 'dynamic'
+    # set protocols bgp neighbor 192.0.2.43 'disable-connected-check'
+    # set protocols bgp neighbor 192.0.2.43 timers holdtime '30'
+    # set protocols bgp neighbor 192.0.2.43 timers keepalive '10'
+    # set protocols bgp neighbor 203.0.113.0 address-family 'ipv6-unicast'
+    # set protocols bgp neighbor 203.0.113.0 capability orf prefix-list 'receive'
+    # set protocols bgp network 203.0.113.0/24 route-map 'map01'
+    # set protocols bgp parameters 'always-compare-med'
+    # set protocols bgp parameters bestpath as-path 'confed'
+    # set protocols bgp parameters bestpath 'compare-routerid'
+    # set protocols bgp parameters dampening half-life '33'
+    # set protocols bgp parameters dampening max-suppress-time '20'
+    # set protocols bgp parameters dampening re-use '60'
+    # set protocols bgp parameters dampening start-suppress-time '5'
+    # set protocols bgp parameters default 'no-ipv4-unicast'
+    # set protocols bgp parameters distance global external '66'
+    # set protocols bgp parameters distance global internal '20'
+    # set protocols bgp parameters distance global local '10'
+    # set protocols bgp redistribute static route-map 'map01'
 
     - name: parse configs
       vyos.vyos.vyos_bgp_global:
@@ -3041,28 +2280,145 @@ Examples
 
     # Module Execution:
     # "rendered": [
-    #         "set protocols bgp 65536 neighbor 192.0.2.43 disable-connected-check",
-    #         "set protocols bgp 65536 neighbor 192.0.2.43 advertisement-interval 72",
-    #         "set protocols bgp 65536 neighbor 192.0.2.43 capability dynamic",
-    #         "set protocols bgp 65536 neighbor 192.0.2.43 timers holdtime 30",
-    #         "set protocols bgp 65536 neighbor 192.0.2.43 timers keepalive 10",
-    #         "set protocols bgp 65536 neighbor 203.0.113.0 capability orf prefix-list receive",
-    #         "set protocols bgp 65536 redistribute static route-map map01",
-    #         "set protocols bgp 65536 network 203.0.113.0/24 route-map map01",
-    #         "set protocols bgp 65536 parameters always-compare-med",
-    #         "set protocols bgp 65536 parameters dampening half-life 33",
-    #         "set protocols bgp 65536 parameters dampening max-suppress-time 20",
-    #         "set protocols bgp 65536 parameters dampening re-use 60",
-    #         "set protocols bgp 65536 parameters dampening start-suppress-time 5",
-    #         "set protocols bgp 65536 parameters distance global internal 20",
-    #         "set protocols bgp 65536 parameters distance global local 10",
-    #         "set protocols bgp 65536 parameters distance global external 66",
-    #         "set protocols bgp 65536 parameters bestpath as-path confed",
-    #         "set protocols bgp 65536 parameters bestpath compare-routerid",
-    #         "set protocols bgp 65536 parameters default no-ipv4-unicast"
+    #         "set protocols bgp neighbor 192.0.2.43 disable-connected-check",
+    #         "set protocols bgp neighbor 192.0.2.43 advertisement-interval 72",
+    #         "set protocols bgp neighbor 192.0.2.43 capability dynamic",
+    #         "set protocols bgp neighbor 192.0.2.43 timers holdtime 30",
+    #         "set protocols bgp neighbor 192.0.2.43 timers keepalive 10",
+    #         "set protocols bgp neighbor 203.0.113.0 capability orf prefix-list receive",
+    #         "set protocols bgp redistribute static route-map map01",
+    #         "set protocols bgp network 203.0.113.0/24 route-map map01",
+    #         "set protocols bgp parameters always-compare-med",
+    #         "set protocols bgp parameters dampening half-life 33",
+    #         "set protocols bgp parameters dampening max-suppress-time 20",
+    #         "set protocols bgp parameters dampening re-use 60",
+    #         "set protocols bgp parameters dampening start-suppress-time 5",
+    #         "set protocols bgp parameters distance global internal 20",
+    #         "set protocols bgp parameters distance global local 10",
+    #         "set protocols bgp parameters distance global external 66",
+    #         "set protocols bgp parameters bestpath as-path confed",
+    #         "set protocols bgp parameters bestpath compare-routerid",
+    #         "set protocols bgp parameters default no-ipv4-unicast"
     #     ]
 
 
+
+Return Values
+-------------
+Common return values are documented `here <https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html#common-return-values>`_, the following are the fields unique to this module:
+
+.. raw:: html
+
+    <table border=0 cellpadding=0 class="documentation-table">
+        <tr>
+            <th colspan="1">Key</th>
+            <th>Returned</th>
+            <th width="100%">Description</th>
+        </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>after</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when changed</td>
+                <td>
+                            <div>The resulting configuration after module execution.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>before</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
+                <td>
+                            <div>The configuration prior to the module execution.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>commands</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
+                <td>
+                            <div>The set of commands pushed to the remote device.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;set protocols bgp redistribute static route-map map01&#x27;, &#x27;set protocols bgp network 203.0.113.0/24 route-map map01&#x27;, &#x27;set protocols bgp parameters always-compare-med&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;set protocols bgp redistribute static route-map map01&#x27;, &#x27;set protocols bgp network 203.0.113.0/24 route-map map01&#x27;, &#x27;set protocols bgp parameters always-compare-med&#x27;]</div>
+                </td>
+            </tr>
+    </table>
+    <br/><br/>
 
 
 Status

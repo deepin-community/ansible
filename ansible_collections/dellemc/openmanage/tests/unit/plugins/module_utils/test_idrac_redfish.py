@@ -2,8 +2,8 @@
 
 #
 # Dell OpenManage Ansible Modules
-# Version 8.3.0
-# Copyright (C) 2023 Dell Inc.
+# Version 9.12.3
+# Copyright (C) 2023-2025 Dell Inc.
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 # All rights reserved. Dell, EMC, and other trademarks are trademarks of Dell Inc. or its subsidiaries.
@@ -18,7 +18,7 @@ import pytest
 from ansible.module_utils.urls import ConnectionError, SSLValidationError
 from ansible.module_utils.six.moves.urllib.error import URLError, HTTPError
 from ansible_collections.dellemc.openmanage.plugins.module_utils.idrac_redfish import iDRACRedfishAPI, OpenURLResponse
-from mock import MagicMock
+from unittest.mock import MagicMock
 import json
 import os
 
@@ -29,6 +29,24 @@ INVOKE_REQUEST = 'idrac_redfish.iDRACRedfishAPI.invoke_request'
 JOB_COMPLETE = 'idrac_redfish.iDRACRedfishAPI.wait_for_job_complete'
 API_TASK = '/api/tasks'
 SLEEP_TIME = 'idrac_redfish.time.sleep'
+MANAGER_URI = "/redfish/v1/Managers/iDRAC.Embedded.1"
+GET_IDRAC_MANAGER_ATTRIBUTES_9_10 = "/redfish/v1/Managers/iDRAC.Embedded.1/Oem/Dell/DellAttributes/iDRAC.Embedded.1"
+RESP = {
+    "Model": "17G",
+    "FirmwareVersion": "1.20.30"
+}
+RESP_10 = {
+    "Attributes":
+    {
+        "Info.1.HWModel": "iDRAC 10"
+    }
+}
+RESP_MANAGER_8 = {
+    "Model": "13G xxx",
+    "FirmwareVersion": "x.x.x"
+}
+SESSION_ID_10 = "/redfish/v1/SessionService/Sessions/{Id}"
+SESSION_10 = "/redfish/v1/SessionService/Sessions"
 
 
 class TestIdracRedfishRest(object):
@@ -115,6 +133,34 @@ class TestIdracRedfishRest(object):
         with pytest.raises(HTTPError):
             with iDRACRedfishAPI(module_params, req_session) as obj:
                 obj.invoke_request(TEST_PATH, "GET")
+
+    def test_get_idrac_local_account_attr(self, idrac_redfish_object):
+        idrac_attrs = {
+            "SystemConfiguration": {
+                "Components": [
+                    {
+                        "FQDD": "iDRAC.Embedded.1",
+                        "Attributes": [
+                            {
+                                "Name": "Users.1",
+                                "Value": 1
+                            },
+                            {
+                                "Name": "Users.2",
+                                "Value": 2
+                            },
+                            {
+                                "Name": "System1",
+                                "Value": "system_data"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+        result = idrac_redfish_object.get_idrac_local_account_attr(
+            idrac_attribues=idrac_attrs, fqdd="iDRAC.Embedded.1")
+        assert result == {'Users.1': 1, 'Users.2': 2}
 
     @pytest.mark.parametrize("query_params", [
         {"inp": {"$filter": "UserName eq 'admin'"},
@@ -343,3 +389,38 @@ class TestIdracRedfishRest(object):
                      return_value=mock_response)
         result = idrac_redfish_object._get_omam_ca_env()
         assert result is None
+
+    def test_find_ip_address_ipv4(self, idrac_redfish_object):
+        result = idrac_redfish_object.find_ip_address(sharename="\\\\100.100.100.100\\cifsshare")
+        assert result == "100.100.100.100"
+
+    def test_find_ip_address_ipv6(self, idrac_redfish_object):
+        result = idrac_redfish_object.find_ip_address(sharename="\\\\2001:db8:85a3:0:0:8a2e:370:7334\\cifsshare")
+        assert result == "2001:db8:85a3:0:0:8a2e:370:7334"
+
+    def test_get_job_uri_idrac_10(self, idrac_redfish_object):
+        idrac_redfish_object.validate_idrac10_and_above = \
+            MagicMock(return_value=True)
+        result = idrac_redfish_object.get_job_uri()
+        assert result == "/redfish/v1/Managers/iDRAC.Embedded.1/Oem/Dell/Jobs/{job_id}"
+
+    def test_get_job_uri_not_idrac_10(self, idrac_redfish_object):
+        idrac_redfish_object.validate_idrac10_and_above = \
+            MagicMock(return_value=False)
+        result = idrac_redfish_object.get_job_uri()
+        assert result == "/redfish/v1/Managers/iDRAC.Embedded.1/Jobs/{job_id}"
+
+    def mock_get_dynamic_idrac_invoke_request(self, *args):
+        obj = MagicMock()
+        obj.status_code = 200
+        if MANAGER_URI in args:
+            obj.json_data = RESP
+        else:
+            obj.json_data = RESP_10
+        return obj
+
+    def test_get_server_generation(self, idrac_redfish_object, mocker):
+        mocker.patch(MODULE_UTIL_PATH + INVOKE_REQUEST,
+                     self.mock_get_dynamic_idrac_invoke_request)
+        result = idrac_redfish_object.get_server_generation
+        assert result == (17, '1.20.30', 'iDRAC 10')

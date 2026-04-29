@@ -134,6 +134,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -149,16 +150,15 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         spamfilter_iptrust:
-          comment: <string>
-          entries:
-            -
-              addr_type: <value in [ipv4, ipv6]>
-              id: <integer>
-              ip4_subnet: <string>
-              ip6_subnet: <string>
-              status: <value in [disable, enable]>
-          id: <integer>
-          name: <string>
+          id: 0 # Required variable, integer
+          # comment: <string>
+          # entries:
+          #   - addr_type: <value in [ipv4, ipv6]>
+          #     id: <integer>
+          #     ip4_subnet: <string>
+          #     ip6_subnet: <string>
+          #     status: <value in [disable, enable]>
+          # name: <string>
 '''
 
 RETURN = '''

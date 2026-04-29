@@ -122,6 +122,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -138,11 +139,11 @@ EXAMPLES = '''
         template: <your own value>
         state: present # <value in [present, absent]>
         fmg_fabric_authorization_template_platforms:
-          count: <integer>
-          extension_type: <value in [wan-extension, lan-extension]>
-          fortilink: <string>
-          prefix: <string>
-          type: <value in [ap, extender, switch]>
+          # count: <integer>
+          # extension_type: <value in [wan-extension, lan-extension]>
+          # fortilink: <string>
+          # prefix: <string>
+          # type: <value in [ap, extender, switch]>
 '''
 
 RETURN = '''

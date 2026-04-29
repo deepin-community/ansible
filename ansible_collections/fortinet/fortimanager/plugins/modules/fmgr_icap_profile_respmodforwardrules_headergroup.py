@@ -123,6 +123,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -140,10 +141,10 @@ EXAMPLES = '''
         respmod_forward_rules: <your own value>
         state: present # <value in [present, absent]>
         icap_profile_respmodforwardrules_headergroup:
-          case_sensitivity: <value in [disable, enable]>
-          header: <string>
-          header_name: <string>
-          id: <integer>
+          id: 0 # Required variable, integer
+          # case_sensitivity: <value in [disable, enable]>
+          # header: <string>
+          # header_name: <string>
 '''
 
 RETURN = '''

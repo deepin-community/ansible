@@ -122,6 +122,7 @@ options:
                     - 'accept'
                     - 'deny'
                     - 'redirect'
+                    - 'isolate'
             application_list:
                 description:
                     - Name of an existing Application list. Source application.list.name.
@@ -403,6 +404,10 @@ options:
                 description:
                     - Name of an existing VoIP (ips) profile. Source voip.profile.name.
                 type: str
+            isolator_server:
+                description:
+                    - Isolator server name. Source web-proxy.isolator-server.name.
+                type: str
             label:
                 description:
                     - VDOM-specific GUI visible label.
@@ -601,6 +606,17 @@ options:
                 choices:
                     - 'enable'
                     - 'disable'
+            url_risk:
+                description:
+                    - URL risk level name.
+                type: list
+                elements: dict
+                suboptions:
+                    name:
+                        description:
+                            - Risk level name. Source webfilter.ftgd-risk-level.name.
+                        required: true
+                        type: str
             users:
                 description:
                     - Names of user objects.
@@ -676,15 +692,22 @@ options:
                             - EMS Tag name. Source firewall.address.name firewall.addrgrp.name.
                         required: true
                         type: str
+            ztna_ems_tag_negate:
+                description:
+                    - When enabled, ZTNA EMS tags match against any tag EXCEPT the specified ZTNA EMS tags.
+                type: str
+                choices:
+                    - 'enable'
+                    - 'disable'
             ztna_proxy:
                 description:
-                    - IPv4 ZTNA traffic forward proxy.
+                    - ZTNA proxies.
                 type: list
                 elements: dict
                 suboptions:
                     name:
                         description:
-                            - ZTNA Traffic Forward Proxy name. Source ztna.traffic-forward-proxy.name.
+                            - ZTNA proxy name. Source ztna.traffic-forward-proxy.name ztna.web-proxy.name ztna.web-portal.name.
                         required: true
                         type: str
             ztna_tags_match_logic:
@@ -777,16 +800,17 @@ EXAMPLES = """
           internet_service6_negate: "enable"
           ips_sensor: "<your_own_value> (source ips.sensor.name)"
           ips_voip_filter: "<your_own_value> (source voip.profile.name)"
+          isolator_server: "<your_own_value> (source web-proxy.isolator-server.name)"
           label: "<your_own_value>"
           log_http_transaction: "enable"
           logtraffic: "all"
           logtraffic_start: "enable"
           mms_profile: "<your_own_value> (source firewall.mms-profile.name)"
-          name: "default_name_65"
+          name: "default_name_66"
           policyid: "<you_own_value>"
           poolname:
               -
-                  name: "default_name_68 (source firewall.ippool.name)"
+                  name: "default_name_69 (source firewall.ippool.name)"
           profile_group: "<your_own_value> (source firewall.profile-group.name)"
           profile_protocol_options: "<your_own_value> (source firewall.profile-protocol-options.name)"
           profile_type: "single"
@@ -798,29 +822,32 @@ EXAMPLES = """
           sctp_filter_profile: "<your_own_value> (source sctp-filter.profile.name)"
           service:
               -
-                  name: "default_name_79 (source firewall.service.custom.name firewall.service.group.name)"
+                  name: "default_name_80 (source firewall.service.custom.name firewall.service.group.name)"
           service_negate: "enable"
           session_ttl: "0"
           spamfilter_profile: "<your_own_value> (source spamfilter.profile.name)"
           srcaddr:
               -
-                  name: "default_name_84 (source firewall.address.name firewall.addrgrp.name firewall.proxy-address.name firewall.proxy-addrgrp.name system
+                  name: "default_name_85 (source firewall.address.name firewall.addrgrp.name firewall.proxy-address.name firewall.proxy-addrgrp.name system
                     .external-resource.name)"
           srcaddr_negate: "enable"
           srcaddr6:
               -
-                  name: "default_name_87 (source firewall.address6.name firewall.addrgrp6.name system.external-resource.name)"
+                  name: "default_name_88 (source firewall.address6.name firewall.addrgrp6.name system.external-resource.name)"
           srcintf:
               -
-                  name: "default_name_89 (source system.interface.name system.zone.name system.sdwan.zone.name)"
+                  name: "default_name_90 (source system.interface.name system.zone.name system.sdwan.zone.name)"
           ssh_filter_profile: "<your_own_value> (source ssh-filter.profile.name)"
           ssh_policy_redirect: "enable"
           ssl_ssh_profile: "<your_own_value> (source firewall.ssl-ssh-profile.name)"
           status: "enable"
           transparent: "enable"
+          url_risk:
+              -
+                  name: "default_name_97 (source webfilter.ftgd-risk-level.name)"
           users:
               -
-                  name: "default_name_96 (source user.local.name user.certificate.name)"
+                  name: "default_name_99 (source user.local.name user.certificate.name)"
           utm_status: "enable"
           uuid: "<your_own_value>"
           videofilter_profile: "<your_own_value> (source videofilter.profile.name)"
@@ -834,10 +861,11 @@ EXAMPLES = """
           webproxy_profile: "<your_own_value> (source web-proxy.profile.name)"
           ztna_ems_tag:
               -
-                  name: "default_name_109 (source firewall.address.name firewall.addrgrp.name)"
+                  name: "default_name_112 (source firewall.address.name firewall.addrgrp.name)"
+          ztna_ems_tag_negate: "enable"
           ztna_proxy:
               -
-                  name: "default_name_111 (source ztna.traffic-forward-proxy.name)"
+                  name: "default_name_115 (source ztna.traffic-forward-proxy.name ztna.web-proxy.name ztna.web-portal.name)"
           ztna_tags_match_logic: "or"
 """
 
@@ -927,6 +955,9 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_firewall_proxy_policy_data(json):
@@ -973,6 +1004,7 @@ def filter_firewall_proxy_policy_data(json):
         "internet_service6_negate",
         "ips_sensor",
         "ips_voip_filter",
+        "isolator_server",
         "label",
         "log_http_transaction",
         "logtraffic",
@@ -1003,6 +1035,7 @@ def filter_firewall_proxy_policy_data(json):
         "ssl_ssh_profile",
         "status",
         "transparent",
+        "url_risk",
         "users",
         "utm_status",
         "uuid",
@@ -1016,6 +1049,7 @@ def filter_firewall_proxy_policy_data(json):
         "webproxy_forward_server",
         "webproxy_profile",
         "ztna_ems_tag",
+        "ztna_ems_tag_negate",
         "ztna_proxy",
         "ztna_tags_match_logic",
     ]
@@ -1031,24 +1065,25 @@ def filter_firewall_proxy_policy_data(json):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def firewall_proxy_policy(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     firewall_proxy_policy_data = data["firewall_proxy_policy"]
 
     filtered_data = filter_firewall_proxy_policy_data(firewall_proxy_policy_data)
@@ -1060,40 +1095,56 @@ def firewall_proxy_policy(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("firewall", "proxy-policy", filtered_data, vdom=vdom)
         current_data = fos.get("firewall", "proxy-policy", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -1119,8 +1170,9 @@ def firewall_proxy_policy(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["firewall_proxy_policy"] = converted_data
+    data_copy["firewall_proxy_policy"] = filtered_data
     fos.do_member_operation(
         "firewall",
         "proxy-policy",
@@ -1151,6 +1203,7 @@ def is_successful_status(resp):
 
 
 def fortios_firewall(data, fos, check_mode):
+
     if data["firewall_proxy_policy"]:
         resp = firewall_proxy_policy(data, fos, check_mode)
     else:
@@ -1305,6 +1358,18 @@ versioned_schema = {
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
+        "url_risk": {
+            "type": "list",
+            "elements": "dict",
+            "children": {
+                "name": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "required": True,
+                }
+            },
+            "v_range": [["v7.6.1", ""]],
+        },
         "internet_service": {
             "v_range": [["v6.0.0", ""]],
             "type": "string",
@@ -1443,6 +1508,11 @@ versioned_schema = {
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
+        "ztna_ems_tag_negate": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "enable"}, {"value": "disable"}],
+        },
         "service_negate": {
             "v_range": [["v6.0.0", ""]],
             "type": "string",
@@ -1451,7 +1521,12 @@ versioned_schema = {
         "action": {
             "v_range": [["v6.0.0", ""]],
             "type": "string",
-            "options": [{"value": "accept"}, {"value": "deny"}, {"value": "redirect"}],
+            "options": [
+                {"value": "accept"},
+                {"value": "deny"},
+                {"value": "redirect"},
+                {"value": "isolate", "v_range": [["v7.6.1", ""]]},
+            ],
         },
         "status": {
             "v_range": [["v6.0.0", ""]],
@@ -1524,6 +1599,7 @@ versioned_schema = {
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "webproxy_forward_server": {"v_range": [["v6.0.0", ""]], "type": "string"},
+        "isolator_server": {"v_range": [["v7.6.1", ""]], "type": "string"},
         "webproxy_profile": {"v_range": [["v6.0.0", ""]], "type": "string"},
         "transparent": {
             "v_range": [["v6.0.0", ""]],
@@ -1580,7 +1656,6 @@ versioned_schema = {
         "ips_voip_filter": {"v_range": [["v7.4.0", ""]], "type": "string"},
         "sctp_filter_profile": {"v_range": [["v7.0.1", ""]], "type": "string"},
         "icap_profile": {"v_range": [["v6.0.0", ""]], "type": "string"},
-        "cifs_profile": {"v_range": [["v6.2.0", ""]], "type": "string"},
         "videofilter_profile": {"v_range": [["v7.0.0", ""]], "type": "string"},
         "waf_profile": {"v_range": [["v6.0.0", ""]], "type": "string"},
         "ssh_filter_profile": {"v_range": [["v6.0.0", ""]], "type": "string"},
@@ -1609,6 +1684,7 @@ versioned_schema = {
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
+        "cifs_profile": {"v_range": [["v6.2.0", "v7.6.0"]], "type": "string"},
         "diameter_filter_profile": {
             "v_range": [["v7.4.2", "v7.4.3"]],
             "type": "string",

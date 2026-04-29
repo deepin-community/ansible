@@ -133,6 +133,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -147,15 +148,15 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         state: present # <value in [present, absent]>
         system_sniffer:
-          host: <string>
-          id: <integer>
-          interface: <string>
-          ipv6: <value in [disable, enable]>
-          max_packet_count: <integer>
-          non_ip: <value in [disable, enable]>
-          port: <string>
-          protocol: <string>
-          vlan: <string>
+          id: 0 # Required variable, integer
+          # host: <string>
+          # interface: <string>
+          # ipv6: <value in [disable, enable]>
+          # max_packet_count: <integer>
+          # non_ip: <value in [disable, enable]>
+          # port: <string>
+          # protocol: <string>
+          # vlan: <string>
 '''
 
 RETURN = '''

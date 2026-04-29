@@ -51,6 +51,8 @@ class ActionModule(ActionNetworkModule):
                 display.warning("'provider' is unnecessary when using 'network_cli' and will be ignored")
         elif self._play_context.connection == 'local':
             provider = load_provider(f5_provider_spec, self._task.args)
+            # provider = load_provider(f5_provider_spec, self._task.args, module=self._task)
+
             transport = provider['transport'] or transport
 
             display.vvvv('connection transport is %s' % transport, self._play_context.remote_addr)
@@ -92,6 +94,13 @@ class ActionModule(ActionNetworkModule):
                 display.vvvv('wrong context, sending exit to device', self._play_context.remote_addr)
                 conn.send_command('exit')
                 out = conn.get_prompt()
+
+            if self._play_context.connection == 'network_cli':
+                p = load_provider(f5_provider_spec, self._task.args)
+                p['server'] = task_vars['ansible_host']
+                p['user'] = task_vars['ansible_user']
+                p['password'] = task_vars['ansible_password']
+                task_vars['provider'] = p
 
         result = super(ActionModule, self).run(task_vars=task_vars)
         return result

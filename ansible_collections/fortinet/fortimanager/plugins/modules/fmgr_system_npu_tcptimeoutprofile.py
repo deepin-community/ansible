@@ -123,6 +123,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -138,13 +139,13 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         system_npu_tcptimeoutprofile:
-          close_wait: <integer>
-          fin_wait: <integer>
-          id: <integer>
-          syn_sent: <integer>
-          syn_wait: <integer>
-          tcp_idle: <integer>
-          time_wait: <integer>
+          id: 0 # Required variable, integer
+          # close_wait: <integer>
+          # fin_wait: <integer>
+          # syn_sent: <integer>
+          # syn_wait: <integer>
+          # tcp_idle: <integer>
+          # time_wait: <integer>
 '''
 
 RETURN = '''

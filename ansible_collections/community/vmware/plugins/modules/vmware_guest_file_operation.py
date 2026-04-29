@@ -234,7 +234,8 @@ from ansible.module_utils import urls
 from ansible.module_utils._text import to_bytes, to_native
 from ansible_collections.community.vmware.plugins.module_utils.vmware import (
     PyVmomi, find_cluster_by_name, find_datacenter_by_name,
-    find_vm_by_id, vmware_argument_spec)
+    find_vm_by_id)
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 
 
 class VmwareGuestFileManager(PyVmomi):
@@ -357,6 +358,7 @@ class VmwareGuestFileManager(PyVmomi):
         vm_username = self.module.params['vm_username']
         vm_password = self.module.params['vm_password']
         hostname = self.module.params['hostname']
+        port = self.module.params['port']
         dest = self.module.params["fetch"]['dest']
         src = self.module.params['fetch']['src']
         creds = vim.vm.guest.NamePasswordAuthentication(username=vm_username, password=vm_password)
@@ -366,7 +368,7 @@ class VmwareGuestFileManager(PyVmomi):
             fileTransferInfo = file_manager.InitiateFileTransferFromGuest(vm=self.vm, auth=creds,
                                                                           guestFilePath=src)
             url = fileTransferInfo.url
-            url = url.replace("*", hostname)
+            url = url.replace("*", hostname).replace("443", port)
             resp, info = urls.fetch_url(self.module, url, method="GET", timeout=self.timeout)
             if info.get('status') != 200 or not resp:
                 self.module.fail_json(msg="Failed to fetch file : %s" % info.get('msg', ''), body=info.get('body', ''))
@@ -400,6 +402,7 @@ class VmwareGuestFileManager(PyVmomi):
         vm_username = self.module.params['vm_username']
         vm_password = self.module.params['vm_password']
         hostname = self.module.params['hostname']
+        port = self.module.params['port']
         overwrite = self.module.params["copy"]["overwrite"]
         dest = self.module.params["copy"]['dest']
         src = self.module.params['copy']['src']
@@ -424,7 +427,7 @@ class VmwareGuestFileManager(PyVmomi):
             url = file_manager.InitiateFileTransferToGuest(vm=self.vm, auth=creds, guestFilePath=dest,
                                                            fileAttributes=file_attributes, overwrite=overwrite,
                                                            fileSize=file_size)
-            url = url.replace("*", hostname)
+            url = url.replace("*", hostname).replace("443", port)
             resp, info = urls.fetch_url(self.module, url, data=data, method="PUT", timeout=self.timeout)
 
             status_code = info["status"]
@@ -453,7 +456,7 @@ class VmwareGuestFileManager(PyVmomi):
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(dict(
         datacenter=dict(type='str'),
         cluster=dict(type='str'),

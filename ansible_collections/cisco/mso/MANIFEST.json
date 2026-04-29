@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "cisco",
   "name": "mso",
-  "version": "2.9.0",
+  "version": "2.11.0",
   "authors": [
    "Dag Wieers (@dagwieers)",
    "Nirav Katarmal (@nkatarmal-crest)",
@@ -36,7 +36,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "0e4ba41264207aae48d779fd9e89c0cd64dd76dd5ea4e04ff5d31b43404b4cb5",
+  "chksum_sha256": "8d3cec3299a7ebe8a7de0f85129105726e9963e71c4aaf42336f2ecb8e77e43b",
   "format": 1
  },
  "format": 1

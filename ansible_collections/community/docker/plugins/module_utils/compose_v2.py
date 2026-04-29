@@ -57,6 +57,8 @@ DOCKER_STATUS_DONE = frozenset((
     'Recreated',
     # Extras for pull events
     'Pulled',
+    # Extras for built events
+    'Built',
 ))
 DOCKER_STATUS_WORKING = frozenset((
     'Creating',
@@ -75,6 +77,10 @@ DOCKER_STATUS_WORKING = frozenset((
 DOCKER_STATUS_PULL = frozenset((
     'Pulled',
     'Pulling',
+))
+DOCKER_STATUS_BUILD = frozenset((
+    'Built',
+    'Building',
 ))
 DOCKER_STATUS_ERROR = frozenset((
     'Error',
@@ -426,13 +432,17 @@ def parse_json_events(stderr, warn_function=None):
                 # {"dry-run":true,"id":" ","text":"build service app"}
                 resource_id = "S" + text[len("build s"):]
                 text = "Building"
-            if resource_id == "==>" and text and text.startswith("==> writing image "):
+            if isinstance(resource_id, str) and resource_id.endswith("==>") and text and text.startswith("==> writing image "):
                 # Example:
                 # {"dry-run":true,"id":"==>","text":"==> writing image dryRun-7d1043473d55bfa90e8530d35801d4e381bc69f0"}
+                # {"dry-run":true,"id":"ansible-docker-test-dc713f1f-container ==>","text":"==> writing image dryRun-5d9204268db1a73d57bbd24a25afbeacebe2bc02"}
+                # (The longer form happens since Docker Compose 2.39.0)
                 continue
-            if resource_id == "==> ==>" and text and text.startswith("naming to "):
+            if isinstance(resource_id, str) and resource_id.endswith("==> ==>") and text and text.startswith("naming to "):
                 # Example:
                 # {"dry-run":true,"id":"==> ==>","text":"naming to display-app"}
+                # {"dry-run":true,"id":"ansible-docker-test-dc713f1f-container ==> ==>","text":"naming to ansible-docker-test-dc713f1f-image"}
+                # (The longer form happens since Docker Compose 2.39.0)
                 continue
             if isinstance(resource_id, str) and ' ' in resource_id:
                 resource_type_str, resource_id = resource_id.split(' ', 1)
@@ -542,10 +552,12 @@ def parse_events(stderr, dry_run=False, warn_function=None, nonzero_rc=False):
     return events
 
 
-def has_changes(events, ignore_service_pull_events=False):
+def has_changes(events, ignore_service_pull_events=False, ignore_build_events=False):
     for event in events:
         if event.status in DOCKER_STATUS_WORKING:
             if ignore_service_pull_events and event.status in DOCKER_STATUS_PULL:
+                continue
+            if ignore_build_events and event.status in DOCKER_STATUS_BUILD:
                 continue
             return True
         if event.resource_type == ResourceType.IMAGE_LAYER and event.status in DOCKER_PULL_PROGRESS_WORKING:
@@ -693,16 +705,7 @@ class BaseComposeManager(DockerBaseClass):
         self.env_files = parameters['env_files']
         self.profiles = parameters['profiles']
 
-        compose = self.client.get_client_plugin_info('compose')
-        if compose is None:
-            self.fail('Docker CLI {0} does not have the compose plugin installed'.format(self.client.get_cli()))
-        if compose['Version'] == 'dev':
-            self.fail(
-                'Docker CLI {0} has a compose plugin installed, but it reports version "dev".'
-                ' Please use a version of the plugin that returns a proper version.'
-                .format(self.client.get_cli())
-            )
-        compose_version = compose['Version'].lstrip('v')
+        compose_version = self.get_compose_version()
         self.compose_version = LooseVersion(compose_version)
         if self.compose_version < LooseVersion(min_version):
             self.fail('Docker CLI {cli} has the compose plugin with version {version}; need version {min_version} or later'.format(
@@ -727,6 +730,33 @@ class BaseComposeManager(DockerBaseClass):
         # Support for JSON output was added in Compose 2.29.0 (https://github.com/docker/compose/releases/tag/v2.29.0);
         # more precisely in https://github.com/docker/compose/pull/11478
         self.use_json_events = self.compose_version >= LooseVersion('2.29.0')
+
+    def get_compose_version(self):
+        return self.get_compose_version_from_cli() or self.get_compose_version_from_api()
+
+    def get_compose_version_from_cli(self):
+        rc, version_info, stderr = self.client.call_cli('compose', 'version', '--format', 'json')
+        if rc:
+            return None
+        try:
+            version = json.loads(version_info)['version']
+            if version == 'dev':
+                return None
+            return version.lstrip('v')
+        except Exception:
+            return None
+
+    def get_compose_version_from_api(self):
+        compose = self.client.get_client_plugin_info('compose')
+        if compose is None:
+            self.fail('Docker CLI {0} does not have the compose plugin installed'.format(self.client.get_cli()))
+        if compose['Version'] == 'dev':
+            self.fail(
+                'Docker CLI {0} has a compose plugin installed, but it reports version "dev".'
+                ' Please use a version of the plugin that returns a proper version.'
+                .format(self.client.get_cli())
+            )
+        return compose['Version'].lstrip('v')
 
     def fail(self, msg, **kwargs):
         self.cleanup()
@@ -792,6 +822,11 @@ class BaseComposeManager(DockerBaseClass):
         rc, images, stderr = self.client.call_cli_json(*args, **kwargs)
         if self.use_json_events and rc != 0:
             self._handle_failed_cli_call(args, rc, images, stderr)
+        if isinstance(images, dict):
+            # Handle breaking change in Docker Compose 2.37.0; see
+            # https://github.com/ansible-collections/community.docker/issues/1082
+            # and https://github.com/docker/compose/issues/12916 for details
+            images = list(images.values())
         return images
 
     def parse_events(self, stderr, dry_run=False, nonzero_rc=False):
@@ -802,8 +837,20 @@ class BaseComposeManager(DockerBaseClass):
     def emit_warnings(self, events):
         emit_warnings(events, warn_function=self.client.warn)
 
-    def update_result(self, result, events, stdout, stderr, ignore_service_pull_events=False):
-        result['changed'] = result.get('changed', False) or has_changes(events, ignore_service_pull_events=ignore_service_pull_events)
+    def update_result(
+        self,
+        result,
+        events,
+        stdout,
+        stderr,
+        ignore_service_pull_events=False,
+        ignore_build_events=False,
+    ):
+        result['changed'] = result.get('changed', False) or has_changes(
+            events,
+            ignore_service_pull_events=ignore_service_pull_events,
+            ignore_build_events=ignore_build_events,
+        )
         result['actions'] = result.get('actions', []) + extract_actions(events)
         result['stdout'] = combine_text_output(result.get('stdout'), to_native(stdout))
         result['stderr'] = combine_text_output(result.get('stderr'), to_native(stderr))
@@ -821,7 +868,7 @@ class BaseComposeManager(DockerBaseClass):
 
     def cleanup_result(self, result):
         if not result.get('failed'):
-            # Only return stdout and stderr if it's not empty
+            # Only return stdout and stderr if it is not empty
             for res in ('stdout', 'stderr'):
                 if result.get(res) == '':
                     result.pop(res)
@@ -831,5 +878,5 @@ class BaseComposeManager(DockerBaseClass):
             try:
                 shutil.rmtree(dir, True)
             except Exception:
-                # shouldn't happen, but simply ignore to be on the safe side
+                # should not happen, but simply ignore to be on the safe side
                 pass

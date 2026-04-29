@@ -125,6 +125,10 @@ options:
                 choices:
                     - 'enable'
                     - 'disable'
+            filter:
+                description:
+                    - Match criteria filter.
+                type: str
             fqdn:
                 description:
                     - Fully qualified domain name.
@@ -193,6 +197,14 @@ options:
                 type: str
                 choices:
                     - 'nsx'
+            sdn_addr_type:
+                description:
+                    - Type of addresses to collect.
+                type: str
+                choices:
+                    - 'private'
+                    - 'public'
+                    - 'all'
             sdn_tag:
                 description:
                     - SDN Tag.
@@ -302,6 +314,7 @@ EXAMPLES = """
           end_mac: "<your_own_value>"
           epg_name: "<your_own_value>"
           fabric_object: "enable"
+          filter: "<your_own_value>"
           fqdn: "<your_own_value>"
           host: "myhostname"
           host_type: "any"
@@ -314,25 +327,26 @@ EXAMPLES = """
           macaddr:
               -
                   macaddr: "<your_own_value>"
-          name: "default_name_21"
+          name: "default_name_22"
           obj_id: "<your_own_value>"
           route_tag: "0"
           sdn: "nsx"
+          sdn_addr_type: "private"
           sdn_tag: "<your_own_value>"
           start_ip: "<your_own_value>"
           start_mac: "<your_own_value>"
           subnet_segment:
               -
-                  name: "default_name_29"
+                  name: "default_name_31"
                   type: "any"
                   value: "<your_own_value>"
           tagging:
               -
                   category: "<your_own_value> (source system.object-tagging.category)"
-                  name: "default_name_34"
+                  name: "default_name_36"
                   tags:
                       -
-                          name: "default_name_36 (source system.object-tagging.tags.name)"
+                          name: "default_name_38 (source system.object-tagging.tags.name)"
           template: "<your_own_value> (source firewall.address6-template.name)"
           tenant: "<your_own_value>"
           type: "ipprefix"
@@ -426,6 +440,9 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_firewall_address6_data(json):
@@ -438,6 +455,7 @@ def filter_firewall_address6_data(json):
         "end_mac",
         "epg_name",
         "fabric_object",
+        "filter",
         "fqdn",
         "host",
         "host_type",
@@ -448,6 +466,7 @@ def filter_firewall_address6_data(json):
         "obj_id",
         "route_tag",
         "sdn",
+        "sdn_addr_type",
         "sdn_tag",
         "start_ip",
         "start_mac",
@@ -471,24 +490,25 @@ def filter_firewall_address6_data(json):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def firewall_address6(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     firewall_address6_data = data["firewall_address6"]
 
     filtered_data = filter_firewall_address6_data(firewall_address6_data)
@@ -500,40 +520,56 @@ def firewall_address6(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("firewall", "address6", filtered_data, vdom=vdom)
         current_data = fos.get("firewall", "address6", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -559,8 +595,9 @@ def firewall_address6(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["firewall_address6"] = converted_data
+    data_copy["firewall_address6"] = filtered_data
     fos.do_member_operation(
         "firewall",
         "address6",
@@ -591,6 +628,7 @@ def is_successful_status(resp):
 
 
 def fortios_firewall(data, fos, check_mode):
+
     if data["firewall_address6"]:
         resp = firewall_address6(data, fos, check_mode)
     else:
@@ -723,6 +761,12 @@ versioned_schema = {
         "tenant": {"v_range": [["v7.2.1", ""]], "type": "string"},
         "epg_name": {"v_range": [["v7.2.1", ""]], "type": "string"},
         "sdn_tag": {"v_range": [["v7.2.1", ""]], "type": "string"},
+        "filter": {"v_range": [["v7.6.1", ""]], "type": "string"},
+        "sdn_addr_type": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "private"}, {"value": "public"}, {"value": "all"}],
+        },
         "fabric_object": {
             "v_range": [["v6.4.4", ""]],
             "type": "string",

@@ -759,6 +759,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -775,125 +776,124 @@ EXAMPLES = '''
         managed_switch: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_managedswitch_ports:
-          allowed_vlans: <list or string>
-          allowed_vlans_all: <value in [disable, enable]>
-          arp_inspection_trust: <value in [untrusted, trusted]>
-          bundle: <value in [disable, enable]>
-          description: <string>
-          dhcp_snoop_option82_trust: <value in [disable, enable]>
-          dhcp_snooping: <value in [trusted, untrusted]>
-          discard_mode: <value in [none, all-untagged, all-tagged]>
-          edge_port: <value in [disable, enable]>
-          igmp_snooping: <value in [disable, enable]>
-          igmps_flood_reports: <value in [disable, enable]>
-          igmps_flood_traffic: <value in [disable, enable]>
-          lacp_speed: <value in [slow, fast]>
-          learning_limit: <integer>
-          lldp_profile: <string>
-          lldp_status: <value in [disable, rx-only, tx-only, ...]>
-          loop_guard: <value in [disabled, enabled]>
-          loop_guard_timeout: <integer>
-          max_bundle: <integer>
-          mclag: <value in [disable, enable]>
-          member_withdrawal_behavior: <value in [forward, block]>
-          members: <list or string>
-          min_bundle: <integer>
-          mode: <value in [static, lacp-passive, lacp-active]>
-          poe_pre_standard_detection: <value in [disable, enable]>
-          poe_status: <value in [disable, enable]>
-          port_name: <string>
-          port_owner: <string>
-          port_security_policy: <string>
-          port_selection_criteria: <value in [src-mac, dst-mac, src-dst-mac, ...]>
-          qos_policy: <string>
-          sample_direction: <value in [rx, tx, both]>
-          sflow_counter_interval: <integer>
-          sflow_sample_rate: <integer>
-          sflow_sampler: <value in [disabled, enabled]>
-          stp_bpdu_guard: <value in [disabled, enabled]>
-          stp_bpdu_guard_timeout: <integer>
-          stp_root_guard: <value in [disabled, enabled]>
-          stp_state: <value in [disabled, enabled]>
-          type: <value in [physical, trunk]>
-          untagged_vlans: <list or string>
-          vlan: <string>
-          export_to_pool_flag: <integer>
-          mac_addr: <string>
-          packet_sample_rate: <integer>
-          packet_sampler: <value in [disabled, enabled]>
-          sticky_mac: <value in [disable, enable]>
-          storm_control_policy: <string>
-          dot1x_enable: <value in [disable, enable]>
-          max_miss_heartbeats: <integer>
-          access_mode: <value in [normal, nac, dynamic, ...]>
-          ip_source_guard: <value in [disable, enable]>
-          mclag_icl_port: <integer>
-          p2p_port: <integer>
-          aggregator_mode: <value in [bandwidth, count]>
-          rpvst_port: <value in [disabled, enabled]>
-          flow_control: <value in [disable, tx, rx, ...]>
-          media_type: <string>
-          pause_meter: <integer>
-          pause_meter_resume: <value in [25%, 50%, 75%]>
-          trunk_member: <integer>
-          fec_capable: <integer>
-          fec_state: <value in [disabled, cl74, cl91, ...]>
-          matched_dpp_intf_tags: <string>
-          matched_dpp_policy: <string>
-          port_policy: <string>
-          status: <value in [down, up]>
-          dsl_profile: <string>
-          flap_duration: <integer>
-          flap_rate: <integer>
-          flap_timeout: <integer>
-          flapguard: <value in [disable, enable]>
-          interface_tags: <list or string>
-          poe_max_power: <string>
-          poe_standard: <string>
-          igmp_snooping_flood_reports: <value in [disable, enable]>
-          mcast_snooping_flood_traffic: <value in [disable, enable]>
-          link_status: <value in [down, up]>
-          poe_mode_bt_cabable: <integer>
-          poe_port_mode: <value in [ieee802-3af, ieee802-3at, ieee802-3bt]>
-          poe_port_power: <value in [normal, perpetual, perpetual-fast]>
-          poe_port_priority: <value in [critical-priority, high-priority, low-priority, ...]>
-          acl_group: <list or string>
-          dhcp_snoop_option82_override:
-            -
-              circuit_id: <string>
-              remote_id: <string>
-              vlan_name: <string>
-          fortiswitch_acls: <list or integer>
-          isl_peer_device_sn: <string>
-          authenticated_port: <integer>
-          encrypted_port: <integer>
-          ptp_status: <value in [disable, enable]>
-          restricted_auth_port: <integer>
-          allow_arp_monitor: <value in [disable, enable]>
-          export_to: <list or string>
-          export_to_pool: <list or string>
-          fallback_port: <string>
-          fgt_peer_device_name: <string>
-          fgt_peer_port_name: <string>
-          fiber_port: <integer>
-          flags: <integer>
-          fortilink_port: <integer>
-          isl_local_trunk_name: <string>
-          isl_peer_device_name: <string>
-          isl_peer_port_name: <string>
-          poe_capable: <integer>
-          port_number: <integer>
-          port_prefix_type: <integer>
-          ptp_policy: <list or string>
-          speed: <value in [auto, 10full, 10half, ...]>
-          speed_mask: <integer>
-          stacking_port: <integer>
-          switch_id: <string>
-          virtual_port: <integer>
-          export_tags: <list or string>
-          log_mac_event: <value in [disable, enable]>
-          pd_capable: <integer>
-          qnq: <list or string>
+          port_name: "your value" # Required variable, string
+          # allowed_vlans: <list or string>
+          # allowed_vlans_all: <value in [disable, enable]>
+          # arp_inspection_trust: <value in [untrusted, trusted]>
+          # bundle: <value in [disable, enable]>
+          # description: <string>
+          # dhcp_snoop_option82_trust: <value in [disable, enable]>
+          # dhcp_snooping: <value in [trusted, untrusted]>
+          # discard_mode: <value in [none, all-untagged, all-tagged]>
+          # edge_port: <value in [disable, enable]>
+          # igmp_snooping: <value in [disable, enable]>
+          # igmps_flood_reports: <value in [disable, enable]>
+          # igmps_flood_traffic: <value in [disable, enable]>
+          # lacp_speed: <value in [slow, fast]>
+          # learning_limit: <integer>
+          # lldp_profile: <string>
+          # lldp_status: <value in [disable, rx-only, tx-only, ...]>
+          # loop_guard: <value in [disabled, enabled]>
+          # loop_guard_timeout: <integer>
+          # max_bundle: <integer>
+          # mclag: <value in [disable, enable]>
+          # member_withdrawal_behavior: <value in [forward, block]>
+          # members: <list or string>
+          # min_bundle: <integer>
+          # mode: <value in [static, lacp-passive, lacp-active]>
+          # poe_pre_standard_detection: <value in [disable, enable]>
+          # poe_status: <value in [disable, enable]>
+          # port_owner: <string>
+          # port_security_policy: <string>
+          # port_selection_criteria: <value in [src-mac, dst-mac, src-dst-mac, ...]>
+          # qos_policy: <string>
+          # sample_direction: <value in [rx, tx, both]>
+          # sflow_counter_interval: <integer>
+          # sflow_sample_rate: <integer>
+          # sflow_sampler: <value in [disabled, enabled]>
+          # stp_bpdu_guard: <value in [disabled, enabled]>
+          # stp_bpdu_guard_timeout: <integer>
+          # stp_root_guard: <value in [disabled, enabled]>
+          # stp_state: <value in [disabled, enabled]>
+          # type: <value in [physical, trunk]>
+          # untagged_vlans: <list or string>
+          # vlan: <string>
+          # export_to_pool_flag: <integer>
+          # mac_addr: <string>
+          # packet_sample_rate: <integer>
+          # packet_sampler: <value in [disabled, enabled]>
+          # sticky_mac: <value in [disable, enable]>
+          # storm_control_policy: <string>
+          # dot1x_enable: <value in [disable, enable]>
+          # max_miss_heartbeats: <integer>
+          # access_mode: <value in [normal, nac, dynamic, ...]>
+          # ip_source_guard: <value in [disable, enable]>
+          # mclag_icl_port: <integer>
+          # p2p_port: <integer>
+          # aggregator_mode: <value in [bandwidth, count]>
+          # rpvst_port: <value in [disabled, enabled]>
+          # flow_control: <value in [disable, tx, rx, ...]>
+          # media_type: <string>
+          # pause_meter: <integer>
+          # pause_meter_resume: <value in [25%, 50%, 75%]>
+          # trunk_member: <integer>
+          # fec_capable: <integer>
+          # fec_state: <value in [disabled, cl74, cl91, ...]>
+          # matched_dpp_intf_tags: <string>
+          # matched_dpp_policy: <string>
+          # port_policy: <string>
+          # status: <value in [down, up]>
+          # dsl_profile: <string>
+          # flap_duration: <integer>
+          # flap_rate: <integer>
+          # flap_timeout: <integer>
+          # flapguard: <value in [disable, enable]>
+          # interface_tags: <list or string>
+          # poe_max_power: <string>
+          # poe_standard: <string>
+          # igmp_snooping_flood_reports: <value in [disable, enable]>
+          # mcast_snooping_flood_traffic: <value in [disable, enable]>
+          # link_status: <value in [down, up]>
+          # poe_mode_bt_cabable: <integer>
+          # poe_port_mode: <value in [ieee802-3af, ieee802-3at, ieee802-3bt]>
+          # poe_port_power: <value in [normal, perpetual, perpetual-fast]>
+          # poe_port_priority: <value in [critical-priority, high-priority, low-priority, ...]>
+          # acl_group: <list or string>
+          # dhcp_snoop_option82_override:
+          #   - circuit_id: <string>
+          #     remote_id: <string>
+          #     vlan_name: <string>
+          # fortiswitch_acls: <list or integer>
+          # isl_peer_device_sn: <string>
+          # authenticated_port: <integer>
+          # encrypted_port: <integer>
+          # ptp_status: <value in [disable, enable]>
+          # restricted_auth_port: <integer>
+          # allow_arp_monitor: <value in [disable, enable]>
+          # export_to: <list or string>
+          # export_to_pool: <list or string>
+          # fallback_port: <string>
+          # fgt_peer_device_name: <string>
+          # fgt_peer_port_name: <string>
+          # fiber_port: <integer>
+          # flags: <integer>
+          # fortilink_port: <integer>
+          # isl_local_trunk_name: <string>
+          # isl_peer_device_name: <string>
+          # isl_peer_port_name: <string>
+          # poe_capable: <integer>
+          # port_number: <integer>
+          # port_prefix_type: <integer>
+          # ptp_policy: <list or string>
+          # speed: <value in [auto, 10full, 10half, ...]>
+          # speed_mask: <integer>
+          # stacking_port: <integer>
+          # switch_id: <string>
+          # virtual_port: <integer>
+          # export_tags: <list or string>
+          # log_mac_event: <value in [disable, enable]>
+          # pd_capable: <integer>
+          # qnq: <list or string>
 '''
 
 RETURN = '''
@@ -965,7 +965,7 @@ def main():
                 'dhcp-snooping': {'choices': ['trusted', 'untrusted'], 'type': 'str'},
                 'discard-mode': {'choices': ['none', 'all-untagged', 'all-tagged'], 'type': 'str'},
                 'edge-port': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'igmp-snooping': {'choices': ['disable', 'enable'], 'type': 'str'},
+                'igmp-snooping': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'igmps-flood-reports': {'choices': ['disable', 'enable'], 'type': 'str'},
                 'igmps-flood-traffic': {'choices': ['disable', 'enable'], 'type': 'str'},
                 'lacp-speed': {'choices': ['slow', 'fast'], 'type': 'str'},
@@ -998,12 +998,12 @@ def main():
                 'type': {'choices': ['physical', 'trunk'], 'type': 'str'},
                 'untagged-vlans': {'type': 'raw'},
                 'vlan': {'type': 'str'},
-                'export-to-pool-flag': {'v_range': [['6.2.1', '6.2.3'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'mac-addr': {'v_range': [['6.2.1', '6.2.1'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
+                'export-to-pool-flag': {'v_range': [['6.2.1', '6.2.3'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'mac-addr': {'v_range': [['6.2.1', '6.2.1'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
                 'packet-sample-rate': {'v_range': [['6.2.0', '']], 'type': 'int'},
                 'packet-sampler': {'v_range': [['6.2.0', '']], 'choices': ['disabled', 'enabled'], 'type': 'str'},
                 'sticky-mac': {'v_range': [['6.2.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'storm-control-policy': {'v_range': [['6.2.0', '6.2.3'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
+                'storm-control-policy': {'v_range': [['6.2.0', '6.2.3'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
                 'dot1x-enable': {'v_range': [['6.2.0', '6.2.13']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'max-miss-heartbeats': {'v_range': [['6.2.0', '6.2.13']], 'type': 'int'},
                 'access-mode': {'v_range': [['6.4.0', '']], 'choices': ['normal', 'nac', 'dynamic', 'static'], 'type': 'str'},
@@ -1060,23 +1060,23 @@ def main():
                 'ptp-status': {'v_range': [['7.4.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'restricted-auth-port': {'v_range': [['7.4.1', '']], 'type': 'int'},
                 'allow-arp-monitor': {'v_range': [['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'export-to': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'export-to-pool': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
+                'export-to': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'export-to-pool': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
                 'fallback-port': {'v_range': [['7.4.3', '']], 'type': 'str'},
-                'fgt-peer-device-name': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'fgt-peer-port-name': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'fiber-port': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'flags': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'fortilink-port': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'isl-local-trunk-name': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'isl-peer-device-name': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'isl-peer-port-name': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'poe-capable': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'port-number': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'port-prefix-type': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'ptp-policy': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
+                'fgt-peer-device-name': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'fgt-peer-port-name': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'fiber-port': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'flags': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'fortilink-port': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'isl-local-trunk-name': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'isl-peer-device-name': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'isl-peer-port-name': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'poe-capable': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'port-number': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'port-prefix-type': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'ptp-policy': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
                 'speed': {
-                    'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']],
+                    'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']],
                     'choices': [
                         'auto', '10full', '10half', '100full', '100half', '1000full', '10000full', '1000auto', '40000full', '1000fiber', '10000',
                         '40000', 'auto-module', '100FX-half', '100FX-full', '100000full', '2500full', '25000full', '50000full', '40000auto', '10000cr',
@@ -1085,11 +1085,11 @@ def main():
                     ],
                     'type': 'str'
                 },
-                'speed-mask': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'stacking-port': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'switch-id': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'virtual-port': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'int'},
-                'export-tags': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
+                'speed-mask': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'stacking-port': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'switch-id': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'virtual-port': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'int'},
+                'export-tags': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
                 'log-mac-event': {'v_range': [['7.6.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'pd-capable': {'v_range': [['7.4.4', '']], 'type': 'int'},
                 'qnq': {'v_range': [['7.6.0', '']], 'type': 'raw'}

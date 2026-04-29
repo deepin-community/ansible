@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -118,10 +119,15 @@ options:
                     - 'no-confirmation-query'
                     - 'config-error-log-nonempty'
                     - 'csf-tree-not-supported'
+                    - 'firmware-changed'
                     - 'node-failed'
             ha_reboot_controller:
                 description:
                     - Serial number of the FortiGate unit that will control the reboot process for the federated upgrade of the HA cluster.
+                type: str
+            initial_version:
+                description:
+                    - Firmware version when the upgrade was set up.
                 type: str
             known_ha_members:
                 description:
@@ -150,6 +156,10 @@ options:
             setup_time:
                 description:
                     - 'Upgrade preparation start time in UTC (hh:mm yyyy/mm/dd UTC).'
+                type: str
+            starter_admin:
+                description:
+                    - Admin that started the upgrade.
                 type: str
             status:
                 description:
@@ -185,6 +195,10 @@ options:
                 description:
                     - Fortinet OS image versions to upgrade through in major-minor-patch format, such as 7-0-4.
                 type: str
+            vdom:
+                description:
+                    - Limit upgrade to this virtual domain (VDOM). Source system.vdom.name.
+                type: str
 """
 
 EXAMPLES = """
@@ -197,6 +211,7 @@ EXAMPLES = """
           device_type: "fortigate"
           failure_reason: "none"
           ha_reboot_controller: "<your_own_value>"
+          initial_version: "<your_own_value>"
           known_ha_members:
               -
                   serial: "<your_own_value>"
@@ -204,10 +219,12 @@ EXAMPLES = """
           next_path_index: "0"
           serial: "<your_own_value>"
           setup_time: "<your_own_value>"
+          starter_admin: "<your_own_value>"
           status: "disabled"
           time: "<your_own_value>"
           timing: "immediate"
           upgrade_path: "<your_own_value>"
+          vdom: "<your_own_value> (source system.vdom.name)"
 """
 
 RETURN = """
@@ -287,6 +304,18 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_system_device_upgrade_data(json):
@@ -294,15 +323,18 @@ def filter_system_device_upgrade_data(json):
         "device_type",
         "failure_reason",
         "ha_reboot_controller",
+        "initial_version",
         "known_ha_members",
         "maximum_minutes",
         "next_path_index",
         "serial",
         "setup_time",
+        "starter_admin",
         "status",
         "time",
         "timing",
         "upgrade_path",
+        "vdom",
     ]
 
     json = remove_invalid_fields(json)
@@ -316,32 +348,114 @@ def filter_system_device_upgrade_data(json):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def system_device_upgrade(data, fos, check_mode=False):
 
-def system_device_upgrade(data, fos):
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     system_device_upgrade_data = data["system_device_upgrade"]
 
     filtered_data = filter_system_device_upgrade_data(system_device_upgrade_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("system", "device-upgrade", filtered_data, vdom=vdom)
+        current_data = fos.get("system", "device-upgrade", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["system_device_upgrade"] = converted_data
+    data_copy["system_device_upgrade"] = filtered_data
     fos.do_member_operation(
         "system",
         "device-upgrade",
@@ -371,12 +485,14 @@ def is_successful_status(resp):
     )
 
 
-def fortios_system(data, fos):
+def fortios_system(data, fos, check_mode):
+
     if data["system_device_upgrade"]:
-        resp = system_device_upgrade(data, fos)
+        resp = system_device_upgrade(data, fos, check_mode)
     else:
         fos._module.fail_json(msg="missing task body: %s" % ("system_device_upgrade"))
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -390,26 +506,7 @@ versioned_schema = {
     "type": "list",
     "elements": "dict",
     "children": {
-        "serial": {"v_range": [["v7.2.4", ""]], "type": "string", "required": True},
-        "timing": {
-            "v_range": [["v7.2.4", ""]],
-            "type": "string",
-            "options": [{"value": "immediate"}, {"value": "scheduled"}],
-        },
-        "maximum_minutes": {"v_range": [["v7.4.0", ""]], "type": "integer"},
-        "time": {"v_range": [["v7.2.4", ""]], "type": "string"},
-        "setup_time": {"v_range": [["v7.2.4", ""]], "type": "string"},
-        "upgrade_path": {"v_range": [["v7.2.4", ""]], "type": "string"},
-        "device_type": {
-            "v_range": [["v7.2.4", ""]],
-            "type": "string",
-            "options": [
-                {"value": "fortigate", "v_range": [["v7.4.2", ""]]},
-                {"value": "fortiswitch"},
-                {"value": "fortiap"},
-                {"value": "fortiextender"},
-            ],
-        },
+        "vdom": {"v_range": [["v7.6.1", ""]], "type": "string"},
         "status": {
             "v_range": [["v7.2.4", ""]],
             "type": "string",
@@ -449,6 +546,7 @@ versioned_schema = {
                 {"value": "no-confirmation-query"},
                 {"value": "config-error-log-nonempty"},
                 {"value": "csf-tree-not-supported", "v_range": [["v7.4.1", ""]]},
+                {"value": "firmware-changed", "v_range": [["v7.6.1", ""]]},
                 {"value": "node-failed"},
             ],
         },
@@ -465,6 +563,28 @@ versioned_schema = {
                 }
             },
             "v_range": [["v7.4.2", ""]],
+        },
+        "initial_version": {"v_range": [["v7.6.1", ""]], "type": "string"},
+        "starter_admin": {"v_range": [["v7.6.1", ""]], "type": "string"},
+        "serial": {"v_range": [["v7.2.4", ""]], "type": "string", "required": True},
+        "timing": {
+            "v_range": [["v7.2.4", ""]],
+            "type": "string",
+            "options": [{"value": "immediate"}, {"value": "scheduled"}],
+        },
+        "maximum_minutes": {"v_range": [["v7.4.0", ""]], "type": "integer"},
+        "time": {"v_range": [["v7.2.4", ""]], "type": "string"},
+        "setup_time": {"v_range": [["v7.2.4", ""]], "type": "string"},
+        "upgrade_path": {"v_range": [["v7.2.4", ""]], "type": "string"},
+        "device_type": {
+            "v_range": [["v7.2.4", ""]],
+            "type": "string",
+            "options": [
+                {"value": "fortigate", "v_range": [["v7.4.2", ""]]},
+                {"value": "fortiswitch"},
+                {"value": "fortiap"},
+                {"value": "fortiextender"},
+            ],
         },
     },
     "v_range": [["v7.2.4", ""]],
@@ -501,7 +621,7 @@ def main():
                 "required"
             ] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -524,7 +644,9 @@ def main():
             fos, versioned_schema, "system_device_upgrade"
         )
 
-        is_error, has_changed, result, diff = fortios_system(module.params, fos)
+        is_error, has_changed, result, diff = fortios_system(
+            module.params, fos, module.check_mode
+        )
 
     else:
         module.fail_json(**FAIL_SOCKET_MSG)

@@ -85,12 +85,21 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            update_server_location:
+                aliases: ['update-server-location']
+                type: str
+                description: Update server location.
+                choices:
+                    - 'global'
+                    - 'usa'
+                    - 'eu'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -104,7 +113,8 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         fmupdate_publicnetwork:
-          status: <value in [disable, enable]>
+          # status: <value in [disable, enable]>
+          # update_server_location: <value in [global, usa, eu]>
 '''
 
 RETURN = '''
@@ -162,7 +172,10 @@ def main():
         'fmupdate_publicnetwork': {
             'type': 'dict',
             'v_range': [['6.0.0', '']],
-            'options': {'status': {'choices': ['disable', 'enable'], 'type': 'str'}}
+            'options': {
+                'status': {'choices': ['disable', 'enable'], 'type': 'str'},
+                'update-server-location': {'v_range': [['7.6.2', '']], 'choices': ['global', 'usa', 'eu'], 'type': 'str'}
+            }
         }
     }
 

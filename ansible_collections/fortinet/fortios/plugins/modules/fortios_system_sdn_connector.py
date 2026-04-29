@@ -249,6 +249,7 @@ options:
                     - 'osaka'
                     - 'toronto'
                     - 'sao-paulo'
+                    - 'madrid'
                     - 'us-south'
                     - 'us-east'
                     - 'germany'
@@ -282,6 +283,10 @@ options:
                 description:
                     - Azure Stack login endpoint.
                 type: str
+            message_server_port:
+                description:
+                    - HTTP port number of the SAP message server.
+                type: int
             name:
                 description:
                     - SDN connector name.
@@ -304,6 +309,10 @@ options:
                                     - IP configuration name.
                                 required: true
                                 type: str
+                            private_ip:
+                                description:
+                                    - Private IP address.
+                                type: str
                             public_ip:
                                 description:
                                     - Public IP name.
@@ -316,6 +325,10 @@ options:
                         description:
                             - Network interface name.
                         required: true
+                        type: str
+                    peer_nic:
+                        description:
+                            - Peer network interface name.
                         type: str
             oci_cert:
                 description:
@@ -588,15 +601,18 @@ EXAMPLES = """
           ibm_region_gen2: "us-south"
           key_passwd: "<your_own_value>"
           login_endpoint: "<your_own_value>"
-          name: "default_name_36"
+          message_server_port: "0"
+          name: "default_name_37"
           nic:
               -
                   ip:
                       -
-                          name: "default_name_39"
+                          name: "default_name_40"
+                          private_ip: "<your_own_value>"
                           public_ip: "<your_own_value>"
                           resource_group: "<your_own_value>"
-                  name: "default_name_42"
+                  name: "default_name_44"
+                  peer_nic: "<your_own_value>"
           oci_cert: "<your_own_value> (source certificate.local.name)"
           oci_fingerprint: "<your_own_value>"
           oci_region: "phoenix"
@@ -612,14 +628,14 @@ EXAMPLES = """
           resource_url: "<your_own_value>"
           route:
               -
-                  name: "default_name_56"
+                  name: "default_name_59"
           route_table:
               -
-                  name: "default_name_58"
+                  name: "default_name_61"
                   resource_group: "<your_own_value>"
                   route:
                       -
-                          name: "default_name_61"
+                          name: "default_name_64"
                           next_hop: "<your_own_value>"
                   subscription_id: "<your_own_value>"
           secret_key: "<your_own_value>"
@@ -733,6 +749,9 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_system_sdn_connector_data(json):
@@ -759,6 +778,7 @@ def filter_system_sdn_connector_data(json):
         "ibm_region_gen2",
         "key_passwd",
         "login_endpoint",
+        "message_server_port",
         "name",
         "nic",
         "oci_cert",
@@ -808,24 +828,25 @@ def filter_system_sdn_connector_data(json):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def system_sdn_connector(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     system_sdn_connector_data = data["system_sdn_connector"]
 
     filtered_data = filter_system_sdn_connector_data(system_sdn_connector_data)
@@ -837,40 +858,56 @@ def system_sdn_connector(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("system", "sdn-connector", filtered_data, vdom=vdom)
         current_data = fos.get("system", "sdn-connector", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -896,8 +933,9 @@ def system_sdn_connector(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["system_sdn_connector"] = converted_data
+    data_copy["system_sdn_connector"] = filtered_data
     fos.do_member_operation(
         "system",
         "sdn-connector",
@@ -928,6 +966,7 @@ def is_successful_status(resp):
 
 
 def fortios_system(data, fos, check_mode):
+
     if data["system_sdn_connector"]:
         resp = system_sdn_connector(data, fos, check_mode)
     else:
@@ -1001,6 +1040,7 @@ versioned_schema = {
             "v_range": [["v6.4.4", ""]],
         },
         "server_port": {"v_range": [["v6.0.0", ""]], "type": "integer"},
+        "message_server_port": {"v_range": [["v7.6.1", ""]], "type": "integer"},
         "username": {"v_range": [["v6.0.0", ""]], "type": "string"},
         "password": {"v_range": [["v6.0.0", ""]], "type": "string"},
         "vcenter_server": {"v_range": [["v6.4.0", ""]], "type": "string"},
@@ -1070,6 +1110,7 @@ versioned_schema = {
                     "type": "string",
                     "required": True,
                 },
+                "peer_nic": {"v_range": [["v7.6.1", ""]], "type": "string"},
                 "ip": {
                     "type": "list",
                     "elements": "dict",
@@ -1079,6 +1120,7 @@ versioned_schema = {
                             "type": "string",
                             "required": True,
                         },
+                        "private_ip": {"v_range": [["v7.6.1", ""]], "type": "string"},
                         "public_ip": {"v_range": [["v6.0.0", ""]], "type": "string"},
                         "resource_group": {
                             "v_range": [["v6.2.0", ""]],
@@ -1216,7 +1258,6 @@ versioned_schema = {
         "server_cert": {"v_range": [["v7.2.4", ""]], "type": "string"},
         "server_ca_cert": {"v_range": [["v7.2.4", ""]], "type": "string"},
         "api_key": {"v_range": [["v6.4.0", ""]], "type": "string"},
-        "compute_generation": {"v_range": [["v6.4.0", ""]], "type": "integer"},
         "ibm_region": {
             "v_range": [["v6.4.0", "v6.4.0"], ["v6.4.4", ""]],
             "type": "string",
@@ -1230,6 +1271,7 @@ versioned_schema = {
                 {"value": "osaka", "v_range": [["v7.0.4", ""]]},
                 {"value": "toronto", "v_range": [["v7.0.4", ""]]},
                 {"value": "sao-paulo", "v_range": [["v7.0.4", ""]]},
+                {"value": "madrid", "v_range": [["v7.6.1", ""]]},
                 {
                     "value": "us-south",
                     "v_range": [["v6.4.0", "v6.4.0"], ["v6.4.4", "v7.0.3"]],
@@ -1257,6 +1299,7 @@ versioned_schema = {
             ],
         },
         "update_interval": {"v_range": [["v6.0.0", ""]], "type": "integer"},
+        "compute_generation": {"v_range": [["v6.4.0", "v7.6.0"]], "type": "integer"},
         "compartment_id": {"v_range": [["v6.0.0", "v7.2.4"]], "type": "string"},
         "oci_region": {
             "v_range": [["v6.0.0", "v7.2.4"]],

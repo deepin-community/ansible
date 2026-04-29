@@ -124,6 +124,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -140,12 +141,12 @@ EXAMPLES = '''
         icon: <your own value>
         state: present # <value in [present, absent]>
         hotspot20_icon_iconlist:
-          file: <string>
-          height: <integer>
-          lang: <string>
-          name: <string>
-          type: <value in [bmp, gif, jpeg, ...]>
-          width: <integer>
+          name: "your value" # Required variable, string
+          # file: <string>
+          # height: <integer>
+          # lang: <string>
+          # type: <value in [bmp, gif, jpeg, ...]>
+          # width: <integer>
 '''
 
 RETURN = '''

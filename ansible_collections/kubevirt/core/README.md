@@ -8,7 +8,7 @@ This repository hosts the `kubevirt.core` Ansible Collection, which provides vir
 <!--start requires_ansible -->
 ## Ansible and Python version compatibility
 
-This collection has been tested against Ansible versions **>=2.15,<=2.17** and Python versions **>=3.9,<=3.12**.
+This collection has been tested against Ansible versions **>=2.16,<=2.19** and Python versions **>=3.10,<=3.13**.
 
 See the [Ansible core support matrix](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix) for supported combinations.
 <!--end requires_ansible -->
@@ -20,6 +20,7 @@ See the [Ansible core support matrix](https://docs.ansible.com/ansible/latest/re
 * `kubevirt`: Inventory source for KubeVirt VirtualMachines
 * `kubevirt_vm`: Create or delete KubeVirt VirtualMachines
 * `kubevirt_vm_info`: Describe KubeVirt VirtualMachines
+* `kubevirt_vmi_info`: Describe KubeVirt VirtualMachineInstances
 
 ## Using this collection
 
@@ -45,7 +46,7 @@ ansible-galaxy collection install kubevirt-kubevirt.core-*.tar.gz
 <!--start collection_dependencies -->
 #### Ansible collections
 
-* [kubernetes.core](https://galaxy.ansible.com/ui/repo/published/kubernetes/core)>=3.1.0,<6.0.0
+* [kubernetes.core](https://galaxy.ansible.com/ui/repo/published/kubernetes/core)>=5.2.0,<7.0.0
 
 To install all the dependencies:
 ```bash

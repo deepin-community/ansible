@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "cisco",
   "name": "ios",
-  "version": "9.0.3",
+  "version": "11.0.0",
   "authors": [
    "Ansible Network Community (ansible-network)"
   ],
@@ -17,7 +17,7 @@
   "license": [],
   "license_file": "LICENSE",
   "dependencies": {
-   "ansible.netcommon": ">=6.1.0"
+   "ansible.netcommon": ">=8.1.0"
   },
   "repository": "https://github.com/ansible-collections/cisco.ios",
   "documentation": null,
@@ -28,7 +28,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "cfd575220fff3b796e4ac20441309635b3052c757c6c3a28921fb11fcfd413a7",
+  "chksum_sha256": "c931d01cfad2f5b3fca10495f1c4bed3a98a8d0b2fc259548ce96666cc79c379",
   "format": 1
  },
  "format": 1

@@ -117,6 +117,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -132,10 +133,10 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         system_npu_dswdtsprofile:
-          action: <value in [wait, drop, drop_tmr_0, ...]>
-          min_limit: <integer>
-          profile_id: <integer>
-          step: <integer>
+          # action: <value in [wait, drop, drop_tmr_0, ...]>
+          # min_limit: <integer>
+          # profile_id: <integer>
+          # step: <integer>
 '''
 
 RETURN = '''

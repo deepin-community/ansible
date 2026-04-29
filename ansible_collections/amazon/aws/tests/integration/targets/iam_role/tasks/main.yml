@@ -27,8 +27,6 @@
       region: "{{ aws_region }}"
     amazon.aws.iam_role:
       assume_role_policy_document: '{{ lookup("file", "deny-assume.json") }}'
-  collections:
-    - community.general
   block:
     - ansible.builtin.set_fact:
         assume_deny_policy: '{{ lookup("file", "deny-assume.json") | from_json }}'
@@ -72,7 +70,7 @@
         path: "{{ test_path }}"
         delete_instance_profile: true
       ignore_errors: true
-    - name: iam_role_info after Role deletion
+    - name: Iam_role_info after Role deletion
       amazon.aws.iam_role_info:
         name: "{{ test_role }}"
       ignore_errors: true

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Copyright: (c) 2022, Dell Technologies
-# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """ Ansible module for managing MDM Cluster on PowerFlex"""
 
@@ -809,10 +809,12 @@ class PowerFlexMdmCluster(object):
                 mdm_details = self. \
                     is_mdm_name_id_exists(mdm_id=node['mdm_id'],
                                           cluster_details=cluster_details)
-                if mdm_details is None:
+
+                if mdm_details is not None and mdm_details.get('id'):
+                    remove_tb.append(mdm_details.get('id'))
+                else:
                     err_msg = self.not_exist_msg.format(name_or_id)
                     self.module.fail_json(msg=err_msg)
-                remove_tb.append(mdm_details['id'])
 
             elif node['mdm_type'] == 'TieBreaker' and \
                     node['mdm_name'] is not None:

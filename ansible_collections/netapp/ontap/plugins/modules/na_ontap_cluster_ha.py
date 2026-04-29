@@ -8,7 +8,7 @@ __metaclass__ = type
 
 
 DOCUMENTATION = '''
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - "Enable or disable HA on a cluster"
 extends_documentation_fragment:
@@ -26,12 +26,12 @@ version_added: 2.6.0
 '''
 
 EXAMPLES = """
-    - name: "Enable HA status for cluster"
-      netapp.ontap.na_ontap_cluster_ha:
-        state: present
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Enable HA status for cluster
+  netapp.ontap.na_ontap_cluster_ha:
+    state: present
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """

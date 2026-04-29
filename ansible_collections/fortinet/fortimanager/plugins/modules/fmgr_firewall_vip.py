@@ -360,6 +360,13 @@ options:
                                 choices:
                                     - 'ping'
                                     - 'http'
+                            verify_cert:
+                                aliases: ['verify-cert']
+                                type: str
+                                description: Verify cert.
+                                choices:
+                                    - 'disable'
+                                    - 'enable'
                     server_type:
                         aliases: ['server-type']
                         type: str
@@ -833,6 +840,28 @@ options:
                         choices:
                             - 'disable'
                             - 'enable'
+                    client_cert:
+                        aliases: ['client-cert']
+                        type: str
+                        description: Enable/disable requesting client certificate.
+                        choices:
+                            - 'disable'
+                            - 'enable'
+                    empty_cert_action:
+                        aliases: ['empty-cert-action']
+                        type: str
+                        description: Action for an empty client certificate.
+                        choices:
+                            - 'accept'
+                            - 'block'
+                            - 'accept-unmanageable'
+                    user_agent_detect:
+                        aliases: ['user-agent-detect']
+                        type: str
+                        description: Enable/disable detecting device type by HTTP user-agent if no client certificate is provided.
+                        choices:
+                            - 'disable'
+                            - 'enable'
             extaddr:
                 type: raw
                 description: (list or str) External FQDN address name.
@@ -1048,6 +1077,13 @@ options:
                         aliases: ['translate-host']
                         type: str
                         description: Enable/disable translation of hostname/IP from virtual server to real server.
+                        choices:
+                            - 'disable'
+                            - 'enable'
+                    verify_cert:
+                        aliases: ['verify-cert']
+                        type: str
+                        description: Enable/disable certificate verification of the real server.
                         choices:
                             - 'disable'
                             - 'enable'
@@ -1672,11 +1708,34 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            client_cert:
+                aliases: ['client-cert']
+                type: str
+                description: Enable/disable requesting client certificate.
+                choices:
+                    - 'disable'
+                    - 'enable'
+            empty_cert_action:
+                aliases: ['empty-cert-action']
+                type: str
+                description: Action for an empty client certificate.
+                choices:
+                    - 'accept'
+                    - 'block'
+                    - 'accept-unmanageable'
+            user_agent_detect:
+                aliases: ['user-agent-detect']
+                type: str
+                description: Enable/disable detecting device type by HTTP user-agent if no client certificate is provided.
+                choices:
+                    - 'disable'
+                    - 'enable'
 '''
 
 EXAMPLES = '''
 - name: Demo of cloning objects in FortiManager
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -1714,6 +1773,7 @@ EXAMPLES = '''
 
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -1871,7 +1931,8 @@ def main():
                                 'id': {'v_range': [['6.4.0', '']], 'type': 'int'},
                                 'type': {'v_range': [['6.4.0', '']], 'choices': ['ip', 'address'], 'type': 'str'},
                                 'translate-host': {'v_range': [['7.2.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                                'health-check-proto': {'v_range': [['7.2.3', '']], 'choices': ['ping', 'http'], 'type': 'str'}
+                                'health-check-proto': {'v_range': [['7.2.3', '']], 'choices': ['ping', 'http'], 'type': 'str'},
+                                'verify-cert': {'v_range': [['7.4.7', '7.4.7'], ['7.6.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
                             },
                             'elements': 'dict'
                         },
@@ -1978,7 +2039,10 @@ def main():
                         'gslb-domain-name': {'v_range': [['7.4.2', '']], 'type': 'str'},
                         'gslb-hostname': {'v_range': [['7.4.2', '']], 'type': 'str'},
                         'one-click-gslb-server': {'v_range': [['7.4.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                        'src-vip-filter': {'v_range': [['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                        'src-vip-filter': {'v_range': [['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'client-cert': {'v_range': [['7.6.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'empty-cert-action': {'v_range': [['7.6.2', '']], 'choices': ['accept', 'block', 'accept-unmanageable'], 'type': 'str'},
+                        'user-agent-detect': {'v_range': [['7.6.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
                     },
                     'elements': 'dict'
                 },
@@ -2022,13 +2086,14 @@ def main():
                         'max-connections': {'type': 'int'},
                         'monitor': {'type': 'raw'},
                         'port': {'type': 'int'},
-                        'seq': {'type': 'int'},
+                        'seq': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
                         'status': {'choices': ['active', 'standby', 'disable'], 'type': 'str'},
                         'weight': {'type': 'int'},
                         'address': {'v_range': [['6.4.0', '']], 'type': 'str'},
                         'id': {'v_range': [['6.4.0', '']], 'type': 'int'},
                         'type': {'v_range': [['6.4.0', '']], 'choices': ['ip', 'address'], 'type': 'str'},
-                        'translate-host': {'v_range': [['7.2.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                        'translate-host': {'v_range': [['7.2.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'verify-cert': {'v_range': [['7.6.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
                     },
                     'elements': 'dict'
                 },
@@ -2072,7 +2137,7 @@ def main():
                             ],
                             'type': 'str'
                         },
-                        'id': {'type': 'int'},
+                        'id': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
                         'versions': {'type': 'list', 'choices': ['ssl-3.0', 'tls-1.0', 'tls-1.1', 'tls-1.2', 'tls-1.3'], 'elements': 'str'},
                         'priority': {'v_range': [['6.4.0', '']], 'type': 'int'}
                     },
@@ -2188,7 +2253,10 @@ def main():
                     'elements': 'dict'
                 },
                 'one-click-gslb-server': {'v_range': [['7.4.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'src-vip-filter': {'v_range': [['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'src-vip-filter': {'v_range': [['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'client-cert': {'v_range': [['7.6.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'empty-cert-action': {'v_range': [['7.6.2', '']], 'choices': ['accept', 'block', 'accept-unmanageable'], 'type': 'str'},
+                'user-agent-detect': {'v_range': [['7.6.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }
         }
     }

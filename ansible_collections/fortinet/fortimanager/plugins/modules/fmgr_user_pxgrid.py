@@ -110,12 +110,17 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            secondary_server:
+                aliases: ['secondary-server']
+                type: str
+                description: Secondary server.
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -131,11 +136,12 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         user_pxgrid:
-          ca_cert: <string>
-          client_cert: <string>
-          name: <string>
-          server: <string>
-          status: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # ca_cert: <string>
+          # client_cert: <string>
+          # server: <string>
+          # status: <value in [disable, enable]>
+          # secondary_server: <string>
 '''
 
 RETURN = '''
@@ -200,7 +206,8 @@ def main():
                 'client-cert': {'type': 'str'},
                 'name': {'required': True, 'type': 'str'},
                 'server': {'type': 'str'},
-                'status': {'choices': ['disable', 'enable'], 'type': 'str'}
+                'status': {'choices': ['disable', 'enable'], 'type': 'str'},
+                'secondary-server': {'v_range': [['7.4.7', '7.4.7'], ['7.6.3', '']], 'type': 'str'}
             }
         }
     }

@@ -2,9 +2,6 @@
 # to be run on the host.
 ansible: script-not-executable [usr/lib/python3/dist-packages/ansible_collections/*]
 
-# These scripts that are not executed on the local host.
-ansible: shell-script-fails-syntax-check [usr/lib/python3/dist-packages/ansible_collections/*.bsx]
-
 # Each collection contains docs next to the code, it wouldn't be sane to copy
 # the docs to a different location.
 ansible: package-contains-documentation-outside-usr-share-doc [usr/lib/python3/dist-packages/ansible_collections/*]
@@ -19,10 +16,6 @@ ansible: extra-license-file [usr/lib/python3/dist-packages/ansible_collections/*
 # lintian warns about this and refers to dpkg-maintscript-helper(1), where
 # exactly this method is documented.
 ansible: maintainer-script-should-not-use-dpkg-maintscript-helper "dpkg-maintscript-helper" *
-
-# Practically all those interpreters are run on remote nodes (e.g. groovy,
-# powershell, etc.). This generates more noise than is helpful.
-ansible: unusual-interpreter * [usr/lib/python3/dist-packages/ansible_collections/*]
 
 # Just noise.
 ansible: repeated-path-segment * [*]

@@ -432,6 +432,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -445,61 +446,60 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         fmupdate_webspam_fgdsetting:
-          as_cache: <integer>
-          as_log: <value in [disable, nospam, all]>
-          as_preload: <value in [disable, enable]>
-          av_cache: <integer>
-          av_log: <value in [disable, novirus, all]>
-          av_preload: <value in [disable, enable]>
-          av2_cache: <integer>
-          av2_log: <value in [disable, noav2, all]>
-          av2_preload: <value in [disable, enable]>
-          eventlog_query: <value in [disable, enable]>
-          fgd_pull_interval: <integer>
-          fq_cache: <integer>
-          fq_log: <value in [disable, nofilequery, all]>
-          fq_preload: <value in [disable, enable]>
-          linkd_log: <value in [emergency, alert, critical, ...]>
-          max_client_worker: <integer>
-          max_log_quota: <integer>
-          max_unrated_site: <integer>
-          restrict_as1_dbver: <string>
-          restrict_as2_dbver: <string>
-          restrict_as4_dbver: <string>
-          restrict_av_dbver: <string>
-          restrict_av2_dbver: <string>
-          restrict_fq_dbver: <string>
-          restrict_wf_dbver: <string>
-          server_override:
-            servlist:
-              -
-                id: <integer>
-                ip: <string>
-                ip6: <string>
-                port: <integer>
-                service_type: # <list or string>
-                  - "fgd"
-                  - "fgc"
-                  - "fsa"
-                  - "fgfq"
-                  - "geoip"
-                  - "iot-collect"
-            status: <value in [disable, enable]>
-          stat_log_interval: <integer>
-          stat_sync_interval: <integer>
-          update_interval: <integer>
-          update_log: <value in [disable, enable]>
-          wf_cache: <integer>
-          wf_dn_cache_expire_time: <integer>
-          wf_dn_cache_max_number: <integer>
-          wf_log: <value in [disable, nourl, all]>
-          wf_preload: <value in [disable, enable]>
-          iot_cache: <integer>
-          iot_log: <value in [disable, nofilequery, all, ...]>
-          iot_preload: <value in [disable, enable]>
-          restrict_iots_dbver: <string>
-          stat_log: <value in [emergency, alert, critical, ...]>
-          iotv_preload: <value in [disable, enable]>
+          # as_cache: <integer>
+          # as_log: <value in [disable, nospam, all]>
+          # as_preload: <value in [disable, enable]>
+          # av_cache: <integer>
+          # av_log: <value in [disable, novirus, all]>
+          # av_preload: <value in [disable, enable]>
+          # av2_cache: <integer>
+          # av2_log: <value in [disable, noav2, all]>
+          # av2_preload: <value in [disable, enable]>
+          # eventlog_query: <value in [disable, enable]>
+          # fgd_pull_interval: <integer>
+          # fq_cache: <integer>
+          # fq_log: <value in [disable, nofilequery, all]>
+          # fq_preload: <value in [disable, enable]>
+          # linkd_log: <value in [emergency, alert, critical, ...]>
+          # max_client_worker: <integer>
+          # max_log_quota: <integer>
+          # max_unrated_site: <integer>
+          # restrict_as1_dbver: <string>
+          # restrict_as2_dbver: <string>
+          # restrict_as4_dbver: <string>
+          # restrict_av_dbver: <string>
+          # restrict_av2_dbver: <string>
+          # restrict_fq_dbver: <string>
+          # restrict_wf_dbver: <string>
+          # server_override:
+          #   servlist:
+          #     - id: <integer>
+          #       ip: <string>
+          #       ip6: <string>
+          #       port: <integer>
+          #       service_type: # <list or string>
+          #         - "fgd"
+          #         - "fgc"
+          #         - "fsa"
+          #         - "fgfq"
+          #         - "geoip"
+          #         - "iot-collect"
+          #   status: <value in [disable, enable]>
+          # stat_log_interval: <integer>
+          # stat_sync_interval: <integer>
+          # update_interval: <integer>
+          # update_log: <value in [disable, enable]>
+          # wf_cache: <integer>
+          # wf_dn_cache_expire_time: <integer>
+          # wf_dn_cache_max_number: <integer>
+          # wf_log: <value in [disable, nourl, all]>
+          # wf_preload: <value in [disable, enable]>
+          # iot_cache: <integer>
+          # iot_log: <value in [disable, nofilequery, all, ...]>
+          # iot_preload: <value in [disable, enable]>
+          # restrict_iots_dbver: <string>
+          # stat_log: <value in [emergency, alert, critical, ...]>
+          # iotv_preload: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -556,69 +556,79 @@ def main():
     module_arg_spec = {
         'fmupdate_webspam_fgdsetting': {
             'type': 'dict',
-            'v_range': [['6.0.0', '']],
+            'v_range': [['6.0.0', '7.6.2']],
             'options': {
-                'as-cache': {'type': 'int'},
-                'as-log': {'choices': ['disable', 'nospam', 'all'], 'type': 'str'},
-                'as-preload': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'av-cache': {'type': 'int'},
-                'av-log': {'choices': ['disable', 'novirus', 'all'], 'type': 'str'},
-                'av-preload': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'av2-cache': {'type': 'int'},
-                'av2-log': {'choices': ['disable', 'noav2', 'all'], 'type': 'str'},
-                'av2-preload': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'eventlog-query': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'fgd-pull-interval': {'type': 'int'},
-                'fq-cache': {'type': 'int'},
-                'fq-log': {'choices': ['disable', 'nofilequery', 'all'], 'type': 'str'},
-                'fq-preload': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'linkd-log': {'choices': ['emergency', 'alert', 'critical', 'error', 'warn', 'notice', 'info', 'debug', 'disable'], 'type': 'str'},
-                'max-client-worker': {'type': 'int'},
-                'max-log-quota': {'type': 'int'},
-                'max-unrated-site': {'type': 'int'},
-                'restrict-as1-dbver': {'type': 'str'},
-                'restrict-as2-dbver': {'type': 'str'},
-                'restrict-as4-dbver': {'type': 'str'},
-                'restrict-av-dbver': {'type': 'str'},
-                'restrict-av2-dbver': {'type': 'str'},
-                'restrict-fq-dbver': {'type': 'str'},
-                'restrict-wf-dbver': {'type': 'str'},
-                'server-override': {
-                    'type': 'dict',
-                    'options': {
-                        'servlist': {
-                            'type': 'list',
-                            'options': {
-                                'id': {'type': 'int'},
-                                'ip': {'type': 'str'},
-                                'ip6': {'type': 'str'},
-                                'port': {'type': 'int'},
-                                'service-type': {'type': 'raw', 'choices': ['fgd', 'fgc', 'fsa', 'fgfq', 'geoip', 'iot-collect']}
-                            },
-                            'elements': 'dict'
-                        },
-                        'status': {'choices': ['disable', 'enable'], 'type': 'str'}
-                    }
-                },
-                'stat-log-interval': {'type': 'int'},
-                'stat-sync-interval': {'type': 'int'},
-                'update-interval': {'type': 'int'},
-                'update-log': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'wf-cache': {'type': 'int'},
-                'wf-dn-cache-expire-time': {'type': 'int'},
-                'wf-dn-cache-max-number': {'type': 'int'},
-                'wf-log': {'choices': ['disable', 'nourl', 'all'], 'type': 'str'},
-                'wf-preload': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'iot-cache': {'v_range': [['6.4.6', '6.4.15'], ['7.0.1', '']], 'type': 'int'},
-                'iot-log': {'v_range': [['6.4.6', '6.4.15'], ['7.0.1', '']], 'choices': ['disable', 'nofilequery', 'all', 'noiot'], 'type': 'str'},
-                'iot-preload': {'v_range': [['6.4.6', '6.4.15'], ['7.0.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'restrict-iots-dbver': {'v_range': [['6.4.6', '6.4.15'], ['7.0.1', '']], 'type': 'str'},
-                'stat-log': {
-                    'v_range': [['7.0.10', '7.0.13'], ['7.2.5', '7.2.8'], ['7.4.2', '']],
+                'as-cache': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'as-log': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'nospam', 'all'], 'type': 'str'},
+                'as-preload': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'av-cache': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'av-log': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'novirus', 'all'], 'type': 'str'},
+                'av-preload': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'av2-cache': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'av2-log': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'noav2', 'all'], 'type': 'str'},
+                'av2-preload': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'eventlog-query': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'fgd-pull-interval': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'fq-cache': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'fq-log': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'nofilequery', 'all'], 'type': 'str'},
+                'fq-preload': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'linkd-log': {
+                    'v_range': [['6.0.0', '7.6.2']],
                     'choices': ['emergency', 'alert', 'critical', 'error', 'warn', 'notice', 'info', 'debug', 'disable'],
                     'type': 'str'
                 },
-                'iotv-preload': {'v_range': [['7.2.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'max-client-worker': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'max-log-quota': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'max-unrated-site': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'restrict-as1-dbver': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'restrict-as2-dbver': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'restrict-as4-dbver': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'restrict-av-dbver': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'restrict-av2-dbver': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'restrict-fq-dbver': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'restrict-wf-dbver': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'server-override': {
+                    'v_range': [['6.0.0', '7.6.2']],
+                    'type': 'dict',
+                    'options': {
+                        'servlist': {
+                            'v_range': [['6.0.0', '7.6.2']],
+                            'type': 'list',
+                            'options': {
+                                'id': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                                'ip': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                                'ip6': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                                'port': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                                'service-type': {
+                                    'v_range': [['6.0.0', '7.6.2']],
+                                    'type': 'raw',
+                                    'choices': ['fgd', 'fgc', 'fsa', 'fgfq', 'geoip', 'iot-collect']
+                                }
+                            },
+                            'elements': 'dict'
+                        },
+                        'status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                    }
+                },
+                'stat-log-interval': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'stat-sync-interval': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'update-interval': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'update-log': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'wf-cache': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'wf-dn-cache-expire-time': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'wf-dn-cache-max-number': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'wf-log': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'nourl', 'all'], 'type': 'str'},
+                'wf-preload': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'iot-cache': {'v_range': [['6.4.6', '6.4.15'], ['7.0.1', '7.6.2']], 'type': 'int'},
+                'iot-log': {'v_range': [['6.4.6', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['disable', 'nofilequery', 'all', 'noiot'], 'type': 'str'},
+                'iot-preload': {'v_range': [['6.4.6', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'restrict-iots-dbver': {'v_range': [['6.4.6', '6.4.15'], ['7.0.1', '7.6.2']], 'type': 'str'},
+                'stat-log': {
+                    'v_range': [['7.0.10', '7.0.13'], ['7.2.5', '7.2.9'], ['7.4.2', '7.6.2']],
+                    'choices': ['emergency', 'alert', 'critical', 'error', 'warn', 'notice', 'info', 'debug', 'disable'],
+                    'type': 'str'
+                },
+                'iotv-preload': {'v_range': [['7.2.2', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }
         }
     }

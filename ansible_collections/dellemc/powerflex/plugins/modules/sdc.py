@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Copyright: (c) 2021, Dell Technologies
-# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """ Ansible module for managing SDCs on Dell Technologies (Dell) PowerFlex"""
 
@@ -296,7 +296,7 @@ class PowerFlexSdc(object):
             LOG.error(errormsg)
             self.module.fail_json(msg=errormsg)
 
-    def validate_parameters(self, sdc_name=None, sdc_id=None, sdc_ip=None):
+    def validate_parameters(self):
         """Validate the input parameters"""
 
         sdc_identifiers = ['sdc_name', 'sdc_id', 'sdc_ip']
@@ -336,7 +336,7 @@ class PowerFlexSdc(object):
             LOG.error(error_msg)
             self.module.fail_json(msg=error_msg)
 
-        if sdc_new_name and len(sdc_new_name.strip()) == 0:
+        if sdc_new_name is not None and len(sdc_new_name.strip()) == 0:
             self.module.fail_json(msg="Provide valid SDC name to rename to.")
 
     def perform_modify(self, sdc_details, sdc_new_name, performance_profile):
@@ -367,7 +367,7 @@ class PowerFlexSdc(object):
             sdc_details={}
         )
 
-        self.validate_parameters(sdc_name, sdc_id, sdc_ip)
+        self.validate_parameters()
         sdc_details = self.get_sdc(sdc_name=sdc_name, sdc_id=sdc_id,
                                    sdc_ip=sdc_ip)
         id_ip_name = sdc_name or sdc_ip or sdc_id

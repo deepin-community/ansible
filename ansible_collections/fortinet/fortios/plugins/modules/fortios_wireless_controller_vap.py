@@ -241,6 +241,14 @@ options:
                 description:
                     - Time interval for client to voluntarily leave AP before forcing a disassociation due to low RSSI (0 to 2000).
                 type: int
+            called_station_id_type:
+                description:
+                    - The format type of RADIUS attribute Called-Station-Id .
+                type: str
+                choices:
+                    - 'mac'
+                    - 'ip'
+                    - 'apname'
             captive_portal:
                 description:
                     - Enable/disable captive portal.
@@ -375,6 +383,13 @@ options:
                 description:
                     - URL of external authentication logout server.
                 type: str
+            external_pre_auth:
+                description:
+                    - Enable/disable pre-authentication with external APs not managed by the FortiGate .
+                type: str
+                choices:
+                    - 'enable'
+                    - 'disable'
             external_web:
                 description:
                     - URL of external authentication web server.
@@ -900,6 +915,13 @@ options:
                     - 'auth-mac'
                     - 'external-auth'
                     - 'external-macauth'
+            pre_auth:
+                description:
+                    - Enable/disable pre-authentication, where supported by clients .
+                type: str
+                choices:
+                    - 'enable'
+                    - 'disable'
             primary_wag_profile:
                 description:
                     - Primary wireless access gateway profile name. Source wireless-controller.wag-profile.name.
@@ -975,7 +997,7 @@ options:
                 suboptions:
                     name:
                         description:
-                            - User group name.
+                            - User group name. Source user.group.name.
                         required: true
                         type: str
             radius_mac_mpsk_auth:
@@ -1566,6 +1588,7 @@ EXAMPLES = """
           bstm_disassociation_imminent: "enable"
           bstm_load_balancing_disassoc_timer: "10"
           bstm_rssi_disassoc_timer: "200"
+          called_station_id_type: "mac"
           captive_portal: "enable"
           captive_portal_ac_name: "<your_own_value>"
           captive_portal_auth_timeout: "0"
@@ -1589,6 +1612,7 @@ EXAMPLES = """
           encrypt: "TKIP"
           external_fast_roaming: "enable"
           external_logout: "<your_own_value>"
+          external_pre_auth: "enable"
           external_web: "<your_own_value>"
           external_web_format: "auto-detect"
           fast_bss_transition: "disable"
@@ -1627,7 +1651,7 @@ EXAMPLES = """
           mac_filter: "enable"
           mac_filter_list:
               -
-                  id: "87"
+                  id: "89"
                   mac: "<your_own_value>"
                   mac_filter_policy: "allow"
           mac_filter_policy_other: "allow"
@@ -1648,7 +1672,7 @@ EXAMPLES = """
                   key_name: "<your_own_value>"
                   mpsk_schedules:
                       -
-                          name: "default_name_106 (source firewall.schedule.group.name firewall.schedule.recurring.name firewall.schedule.onetime.name)"
+                          name: "default_name_108 (source firewall.schedule.group.name firewall.schedule.recurring.name firewall.schedule.onetime.name)"
                   passphrase: "<your_own_value>"
           mpsk_profile: "<your_own_value> (source wireless-controller.mpsk-profile.name)"
           mu_mimo: "enable"
@@ -1656,7 +1680,7 @@ EXAMPLES = """
           multicast_rate: "0"
           nac: "enable"
           nac_profile: "<your_own_value> (source wireless-controller.nac-profile.name)"
-          name: "default_name_114"
+          name: "default_name_116"
           nas_filter_rule: "enable"
           neighbor_report_dual_band: "disable"
           okc: "disable"
@@ -1678,6 +1702,7 @@ EXAMPLES = """
               auth_login_page: "<your_own_value>"
               auth_reject_page: "<your_own_value>"
           portal_type: "auth"
+          pre_auth: "enable"
           primary_wag_profile: "<your_own_value> (source wireless-controller.wag-profile.name)"
           probe_resp_suppression: "enable"
           probe_resp_threshold: "<your_own_value>"
@@ -1693,7 +1718,7 @@ EXAMPLES = """
           radius_mac_auth_server: "<your_own_value> (source user.radius.name)"
           radius_mac_auth_usergroups:
               -
-                  name: "default_name_150"
+                  name: "default_name_153 (source user.group.name)"
           radius_mac_mpsk_auth: "enable"
           radius_mac_mpsk_timeout: "86400"
           radius_server: "<your_own_value> (source user.radius.name)"
@@ -1720,7 +1745,7 @@ EXAMPLES = """
           scan_botnet_connections: "disable"
           schedule:
               -
-                  name: "default_name_176 (source firewall.schedule.group.name firewall.schedule.recurring.name firewall.schedule.onetime.name)"
+                  name: "default_name_179 (source firewall.schedule.group.name firewall.schedule.recurring.name firewall.schedule.onetime.name)"
           secondary_wag_profile: "<your_own_value> (source wireless-controller.wag-profile.name)"
           security: "open"
           security_exempt_list: "<your_own_value> (source user.security-exempt-list.name)"
@@ -1728,7 +1753,7 @@ EXAMPLES = """
           security_redirect_url: "<your_own_value>"
           selected_usergroups:
               -
-                  name: "default_name_183 (source user.group.name)"
+                  name: "default_name_186 (source user.group.name)"
           set_80211k: "disable"
           set_80211v: "disable"
           split_tunneling: "enable"
@@ -1743,7 +1768,7 @@ EXAMPLES = """
           tunnel_fallback_interval: "7200"
           usergroup:
               -
-                  name: "default_name_197 (source user.group.name)"
+                  name: "default_name_200 (source user.group.name)"
           utm_log: "enable"
           utm_profile: "<your_own_value> (source wireless-controller.utm-profile.name)"
           utm_status: "enable"
@@ -1751,11 +1776,11 @@ EXAMPLES = """
           vlan_auto: "enable"
           vlan_name:
               -
-                  name: "default_name_204"
+                  name: "default_name_207"
                   vlan_id: "<your_own_value>"
           vlan_pool:
               -
-                  id: "207"
+                  id: "210"
                   wtp_group: "<your_own_value> (source wireless-controller.wtp-group.name)"
           vlan_pooling: "wtp-group"
           vlanid: "0"
@@ -1849,6 +1874,9 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_wireless_controller_vap_data(json):
@@ -1877,6 +1905,7 @@ def filter_wireless_controller_vap_data(json):
         "bstm_disassociation_imminent",
         "bstm_load_balancing_disassoc_timer",
         "bstm_rssi_disassoc_timer",
+        "called_station_id_type",
         "captive_portal",
         "captive_portal_ac_name",
         "captive_portal_auth_timeout",
@@ -1900,6 +1929,7 @@ def filter_wireless_controller_vap_data(json):
         "encrypt",
         "external_fast_roaming",
         "external_logout",
+        "external_pre_auth",
         "external_web",
         "external_web_format",
         "fast_bss_transition",
@@ -1973,6 +2003,7 @@ def filter_wireless_controller_vap_data(json):
         "portal_message_override_group",
         "portal_message_overrides",
         "portal_type",
+        "pre_auth",
         "primary_wag_profile",
         "probe_resp_suppression",
         "probe_resp_threshold",
@@ -2059,8 +2090,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -2102,16 +2132,18 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def valid_attr_to_invalid_attr(data):
@@ -2141,11 +2173,10 @@ def valid_attr_to_invalid_attrs(data):
 
 
 def wireless_controller_vap(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     wireless_controller_vap_data = data["wireless_controller_vap"]
 
     filtered_data = filter_wireless_controller_vap_data(wireless_controller_vap_data)
@@ -2158,40 +2189,56 @@ def wireless_controller_vap(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("wireless-controller", "vap", filtered_data, vdom=vdom)
         current_data = fos.get("wireless-controller", "vap", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -2217,8 +2264,9 @@ def wireless_controller_vap(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["wireless_controller_vap"] = converted_data
+    data_copy["wireless_controller_vap"] = filtered_data
     fos.do_member_operation(
         "wireless-controller",
         "vap",
@@ -2249,6 +2297,7 @@ def is_successful_status(resp):
 
 
 def fortios_wireless_controller(data, fos, check_mode):
+
     if data["wireless_controller_vap"]:
         resp = wireless_controller_vap(data, fos, check_mode)
     else:
@@ -2269,13 +2318,13 @@ versioned_schema = {
     "elements": "dict",
     "children": {
         "name": {"v_range": [["v6.0.0", ""]], "type": "string", "required": True},
-        "fast_roaming": {
-            "v_range": [["v6.0.0", ""]],
+        "pre_auth": {
+            "v_range": [["v7.6.1", ""]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
-        "external_fast_roaming": {
-            "v_range": [["v6.0.0", ""]],
+        "external_pre_auth": {
+            "v_range": [["v7.6.1", ""]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
@@ -2494,6 +2543,11 @@ versioned_schema = {
             "v_range": [["v7.0.0", ""]],
             "type": "string",
             "options": [{"value": "uppercase"}, {"value": "lowercase"}],
+        },
+        "called_station_id_type": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "mac"}, {"value": "ip"}, {"value": "apname"}],
         },
         "mac_auth_bypass": {
             "v_range": [["v6.0.0", ""]],
@@ -3183,6 +3237,16 @@ versioned_schema = {
             "v_range": [["v7.2.1", ""]],
             "type": "string",
             "options": [{"value": "direct"}, {"value": "indirect"}],
+        },
+        "fast_roaming": {
+            "v_range": [["v6.0.0", "v7.6.0"]],
+            "type": "string",
+            "options": [{"value": "enable"}, {"value": "disable"}],
+        },
+        "external_fast_roaming": {
+            "v_range": [["v6.0.0", "v7.6.0"]],
+            "type": "string",
+            "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "voice_enterprise": {
             "v_range": [["v6.0.0", "v7.4.1"]],

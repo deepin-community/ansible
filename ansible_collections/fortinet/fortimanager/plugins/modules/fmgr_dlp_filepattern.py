@@ -171,6 +171,9 @@ options:
                             - 'lzip'
                             - 'wasm'
                             - 'sylk'
+                            - 'shellscript'
+                            - 'dll'
+                            - 'jnlp'
                     filter_type:
                         aliases: ['filter-type']
                         type: str
@@ -194,6 +197,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -209,14 +213,13 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         dlp_filepattern:
-          comment: <string>
-          entries:
-            -
-              file_type: <value in [unknown, ignored, exe, ...]>
-              filter_type: <value in [pattern, type]>
-              pattern: <string>
-          id: <integer>
-          name: <string>
+          id: 0 # Required variable, integer
+          # comment: <string>
+          # entries:
+          #   - file_type: <value in [unknown, ignored, exe, ...]>
+          #     filter_type: <value in [pattern, type]>
+          #     pattern: <string>
+          # name: <string>
 '''
 
 RETURN = '''
@@ -287,7 +290,7 @@ def main():
                                 'zip', 'cab', 'bzip2', 'bzip', 'activemime', 'mime', 'hlp', 'arj', 'base64', 'binhex', 'uue', 'fsg', 'aspack', 'msc',
                                 'petite', 'jpeg', 'gif', 'tiff', 'png', 'bmp', 'msi', 'mpeg', 'mov', 'mp3', 'wma', 'wav', 'pdf', 'avi', 'rm', 'torrent',
                                 'hibun', '7z', 'xz', 'msofficex', 'mach-o', 'dmg', '.net', 'xar', 'chm', 'iso', 'crx', 'sis', 'prc', 'class', 'jad',
-                                'cod', 'flac', 'registry', 'hwp', 'rpm', 'c/cpp', 'pfile', 'lzip', 'wasm', 'sylk'
+                                'cod', 'flac', 'registry', 'hwp', 'rpm', 'c/cpp', 'pfile', 'lzip', 'wasm', 'sylk', 'shellscript', 'dll', 'jnlp'
                             ],
                             'type': 'str'
                         },

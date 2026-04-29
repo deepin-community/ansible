@@ -4,6 +4,257 @@ amazon.aws Release Notes
 
 .. contents:: Topics
 
+v10.1.1
+=======
+
+Release Summary
+---------------
+
+This release includes a bugfix and a documentation update.
+
+Bugfixes
+--------
+
+- ec2_instance - corrected typo for InsufficientInstanceCapacity. Fix now will retry Ec2 creation when InsufficientInstanceCapacity error occurs (https://github.com/ansible-collections/amazon.aws/issues/1038).
+
+v10.1.0
+=======
+
+Release Summary
+---------------
+
+This minor release adds support for ``Route53`` as a hostname.
+
+Minor Changes
+-------------
+
+- inventory/aws_ec2 - Adding support for ``Route53`` as hostname (https://github.com/ansible-collections/amazon.aws/pull/2580).
+
+v10.0.0
+=======
+
+Release Summary
+---------------
+
+This major release introduces new support with the ``aws_ssm`` connection plugin, which has been promoted from ``community.aws``, several bugfixes, minor changes and deprecated features.
+Additionally, this release increases the minimum required versions of ``boto3`` and ``botocore`` to 1.34.0 to align with updated AWS SDK support and support for ansible-core < 2.17 has been dropped.
+Due to the AWS SDKs announcing the end of support for Python less than 3.8 (https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/), support for Python less than 3.8 by this collection was deprecated in 9.0.0 release and is removed in this 10.0.0 release.
+
+Major Changes
+-------------
+
+- amazon.aws collection - The amazon.aws collection has dropped support for ``botocore<1.34.0`` and ``boto3<1.34.0``. Most modules will continue to work with older versions of the AWS SDK, however compatibility with older versions of the SDK is not guaranteed and will not be tested. When using older versions of the SDK a warning will be emitted by Ansible (https://github.com/ansible-collections/amazon.aws/pull/2426).
+- amazon.aws collection - due to the AWS SDKs announcing the end of support for Python less than 3.8 (https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/), support for Python less than 3.8 by this collection was deprecated in release 6.0.0 and removed in release 10.0.0. (https://github.com/ansible-collections/amazon.aws/pull/2426).
+- connection/aws_ssm - The module has been migrated from the ``community.aws`` collection. Playbooks using the Fully Qualified Collection Name for this module should be updated to use ``amazon.aws.aws_ssm``.
+
+Minor Changes
+-------------
+
+- module_utils.s3 - added "501" to the list of error codes thrown by S3 replacements (https://github.com/ansible-collections/amazon.aws/issues/2447).
+- module_utils/s3 - add initial ErrorHandler for S3 modules (https://github.com/ansible-collections/amazon.aws/pull/2060).
+- s3_bucket - migrated to use updated error handlers for better handling of non-AWS errors (https://github.com/ansible-collections/amazon.aws/pull/2478).
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- amazon.aws collection - Support for ansible-core < 2.17 has been dropped (https://github.com/ansible-collections/amazon.aws/pull/2601).
+- amazon.aws collection - Support for the ``EC2_ACCESS_KEY`` environment variable was deprecated in release ``6.0.0`` and has now been removed.  Please use the ``access_key`` parameter or ``AWS_ACCESS_KEY_ID`` environment variable instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- amazon.aws collection - Support for the ``EC2_REGION`` environment variable was deprecated in release ``6.0.0`` and has now been removed.  Please use the ``region`` parameter or ``AWS_REGION`` environment variable instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- amazon.aws collection - Support for the ``EC2_SECRET_KEY`` environment variable was deprecated in release ``6.0.0`` and has now been removed.  Please use the ``secret_key`` parameter or ``AWS_SECRET_ACCESS_KEY`` environment variable instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- amazon.aws collection - Support for the ``EC2_SECURITY_TOKEN`` and ``AWS_SECURITY_TOKEN`` environment variables were deprecated in release ``6.0.0`` and have now been removed.  Please use the ``session_token`` parameter or ``AWS_SESSION_TOKEN`` environment variable instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- amazon.aws collection - Support for the ``EC2_URL`` and ``S3_URL`` environment variables were deprecated in release ``6.0.0`` and have now been removed.  Please use the ``endpoint_url`` parameter or ``AWS_URL`` environment variable instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- amazon.aws collection - The ``access_token``, ``aws_security_token`` and ``security_token`` aliases for the ``session_token`` parameter were deprecated in release ``6.0.0`` and have now been removed.  Please use the ``session_token`` name instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- amazon.aws collection - The ``boto_profile`` alias for the ``profile`` parameter was deprecated in release ``6.0.0`` and has now been removed.  Please use the ``profile`` name instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- amazon.aws collection - The ``ec2_access_key`` alias for the ``access_key`` parameter was deprecated in release ``6.0.0`` and has now been removed.  Please use the ``access_key`` name instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- amazon.aws collection - The ``ec2_region`` alias for the ``region`` parameter was deprecated in release ``6.0.0`` and has now been removed.  Please use the ``region`` name instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- amazon.aws collection - The ``ec2_secret_key`` alias for the ``secret_key`` parameter was deprecated in release ``6.0.0`` and has now been removed.  Please use the ``secret_key`` name instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- amazon.aws collection - The ``endpoint``, ``ec2_url`` and ``s3_url`` aliases for the ``endpoint_url`` parameter were deprecated in release ``6.0.0`` and have now been removed.  Please use the ``region`` name instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- docs_fragments - The previously deprecated ``amazon.aws.aws_credentials`` docs fragment has been removed please use ``amazon.aws.common.plugins`` instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- docs_fragments - The previously deprecated ``amazon.aws.aws_region`` docs fragment has been removed please use ``amazon.aws.region.plugins`` instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- docs_fragments - The previously deprecated ``amazon.aws.aws`` docs fragment has been removed please use ``amazon.aws.common.modules`` instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- docs_fragments - The previously deprecated ``amazon.aws.ec2`` docs fragment has been removed please use ``amazon.aws.region.modules`` instead (https://github.com/ansible-collections/amazon.aws/pull/2527).
+- ec2_vpc_peering_info - the `result` key has been removed from the return value. `vpc_peering_connections` should be used instead (https://github.com/ansible-collections/amazon.aws/pull/2618).
+- module_utils.botocore - drop deprecated ``boto3`` parameter for ``get_aws_region()`` and ``get_aws_connection_info()``, this parameter has had no effect since release 4.0.0 (https://github.com/ansible-collections/amazon.aws/pull/2443).
+- module_utils.ec2 - drop deprecated ``boto3`` parameter for ``get_ec2_security_group_ids_from_names()`` and ``get_aws_connection_info()``, this parameter has had no effect since release 4.0.0 (https://github.com/ansible-collections/amazon.aws/pull/2603).
+- rds_param_group - the redirect has been removed and playbooks should be updated to use rds_instance_param_group (https://github.com/ansible-collections/amazon.aws/pull/2618).
+
+Bugfixes
+--------
+
+- s3_bucket - bucket ACLs now consistently returned (https://github.com/ansible-collections/amazon.aws/pull/2478).
+- s3_bucket - fixed idempotency when setting bucket ACLs (https://github.com/ansible-collections/amazon.aws/pull/2478).
+
+v9.5.0
+======
+
+Release Summary
+---------------
+
+This minor release includes several bugfixes and new features for the ``route53_info`` and ``iam_user_info`` modules.
+
+Minor Changes
+-------------
+
+- Bump version of ansible-lint to 25.1.2 (https://github.com/ansible-collections/amazon.aws/pull/2590).
+- iam_user_info - Add tags to ListUsers or GetGroup results (https://github.com/ansible-collections/amazon.aws/pull/2567).
+- iam_user_info - Return empty user list when invalid group name is provided instead of python error (https://github.com/ansible-collections/amazon.aws/pull/2567).
+- module_utils/modules.py - call to ``deprecate()`` without specifying ``collection_name``, ``version`` or ``date`` arguments raises a sanity errors (https://github.com/ansible-collections/amazon.aws/pull/2607).
+
+Bugfixes
+--------
+
+- iam_user_info - Actually call GetUser when only user name is supplied instead of listing and filtering from all users (https://github.com/ansible-collections/amazon.aws/pull/2567).
+- iam_user_info - Actually filter users by path prefix when one is provided (https://github.com/ansible-collections/amazon.aws/pull/2567).
+- route53_info - removes jijna delimiters from example using when (https://github.com/ansible-collections/amazon.aws/issues/2594).
+
+v9.4.0
+======
+
+Release Summary
+---------------
+
+This minor release includes bug fixes and minor changes to validate the collection against the future ``ansible-core 2.19`` version.
+
+Minor Changes
+-------------
+
+- inventory/aws_ec2 - Update templating mechanism to support ansible-core 2.19 changes (https://github.com/ansible-collections/amazon.aws/pull/2552).
+
+Bugfixes
+--------
+
+- lookup/aws_account_attribute - plugin should return a list when ``wantlist=True`` (https://github.com/ansible-collections/amazon.aws/pull/2552).
+
+v9.3.0
+======
+
+Release Summary
+---------------
+
+This minor release includes two new modules (``ec2_dedicated_host`` and ``ec2_dedicated_host_info``) and a new feature for the ``s3_object`` module that now supports passing metadata in ``create`` mode.
+
+Minor Changes
+-------------
+
+- s3_object - support passing metadata in ``create`` mode (https://github.com/ansible-collections/amazon.aws/pull/2529).
+
+New Modules
+-----------
+
+- ec2_dedicated_host - Create, update or delete (release) EC2 dedicated host
+- ec2_dedicated_host_info - Gather information about EC2 Dedicated Hosts in AWS
+
+v9.2.0
+======
+
+Release Summary
+---------------
+
+This release includes a new module ``route53_key_signing_key``, bug fixes, minor changes, and linting corrections across multiple modules.
+
+Minor Changes
+-------------
+
+- autoscaling_group - avoid assignment to unused variable in except block (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- ec2_ami - avoid redefining ``delete_snapshot`` inside ``DeregisterImage.do`` (https://github.com/ansible-collections/amazon.aws/pull/2444).
+- ec2_transit_gateway - avoid assignment to unused ``retry_decorator`` variable (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- ec2_vpc_egress_igw - avoid assignment to unused ``vpc_id`` variable (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- ec2_vpc_nacl - avoid assignment to unused ``result`` variable (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- ec2_vpc_vpn - minor linting fixups (https://github.com/ansible-collections/amazon.aws/pull/2444).
+- iam_password_policy - avoid assignment to unused variable in except block (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- iam_role - avoid assignment to unused variable in except block (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- inventory/aws_ec2 - Support jinja2 expression in ``hostnames`` variable(https://github.com/ansible-collections/amazon.aws/issues/2402).
+- kms_key - avoid assignment to unused variable in except block (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- lambda - avoid assignment to unused ``architecture`` variable (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- lambda - avoid assignment to unused ``required_by`` variable (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- module_utils._s3 - explicitly cast super to the parent type (https://github.com/ansible-collections/amazon.aws/pull/2497).
+- module_utils.botocore - avoid assigning unused parts of exc_info return (https://github.com/ansible-collections/amazon.aws/pull/2497).
+- module_utils.exceptions - avoid assigning unused parts of exc_info return (https://github.com/ansible-collections/amazon.aws/pull/2497).
+- module_utils.iam - avoid assignment to unused ``result`` variable (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- module_utils.s3 - avoid assignment to unused ``endpoint`` variable (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- plugin_utils/inventory - Add ``filters`` to list of templatable inventory options (https://github.com/ansible-collections/amazon.aws/pull/2379)
+- route53 - Add support for type ``SSHFP`` records (https://github.com/ansible-collections/amazon.aws/pull/2430).
+- route53_zone - Add support for enabling DNSSEC signing in a specific hosted zone (https://github.com/ansible-collections/amazon.aws/issues/1976).
+- route53_zone - avoid assignmenta to unused ``current_vpc_ids`` and ``current_vpc_regions`` variables (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- s3_bucket - avoid assignment to unused variable in except block (https://github.com/ansible-collections/amazon.aws/pull/2464).
+- s3_bucket - avoid redefining ``id`` inside ``handle_bucket_inventory`` and ``delete_bucket_inventory`` (https://github.com/ansible-collections/amazon.aws/pull/2444).
+- s3_object - avoid redefining ``key_check`` inside ``_head_object`` (https://github.com/ansible-collections/amazon.aws/pull/2444).
+- s3_object - simplify ``path_check`` logic (https://github.com/ansible-collections/amazon.aws/pull/2444).
+- s3_object - use the ``copy`` rather than ``copy_object`` method when performing an S3 to S3 copy (https://github.com/ansible-collections/amazon.aws/issues/2117).
+- s3_object_info - add support to list objects under a specific prefix (https://github.com/ansible-collections/amazon.aws/issues/2477).
+- s3_object_info - avoid assignment to unused variable in except block (https://github.com/ansible-collections/amazon.aws/pull/2464).
+
+Bugfixes
+--------
+
+- ec2_instance - Fix issue where EC2 instance module failed to apply security groups when both ``network`` and ``vpc_subnet_id`` were specified, caused by passing ``None`` to discover_security_groups() (https://github.com/ansible-collections/amazon.aws/pull/2488).
+- ec2_vpc_nacl_info - Fix failure when listing NetworkACLs and no ACLs are found (https://github.com/ansible-collections/amazon.aws/issues/2425).
+- iam_access_key - add missing requirements checks (https://github.com/ansible-collections/amazon.aws/pull/2465).
+- module_utils.botocore - fixed type aliasing (https://github.com/ansible-collections/amazon.aws/pull/2497).
+- plugin_utils.botocore - fixed type aliasing (https://github.com/ansible-collections/amazon.aws/pull/2497).
+- s3_bucket - Do not use default region as location constraint when creating bucket on ceph cluster (https://github.com/ansible-collections/amazon.aws/issues/2420).
+
+New Modules
+-----------
+
+- route53_key_signing_key - Manages a key-signing key (KSK)
+
+v9.1.1
+======
+
+Release Summary
+---------------
+
+This release includes bug fixes for the cloudformation, ec2_security_group, lambda, rds_cluster, and ec2_vpc_net modules as well as one for the ec2 module_util.
+
+Bugfixes
+--------
+
+- cloudformation - Fix bug where termination protection is not updated when create_changeset=true is used for stack updates (https://github.com/ansible-collections/amazon.aws/pull/2391).
+- ec2_security_group - Fix the diff mode issue when creating a security group containing a rule with a managed prefix list (https://github.com/ansible-collections/amazon.aws/issues/2373).
+- ec2_vpc_net - handle ipv6_cidr ``false`` and no Ipv6CidrBlockAssociationSet in vpc (https://github.com/ansible-collections/amazon.aws/pull/2374).
+- lambda - Remove non UTF-8 data (contents of Lambda ZIP file) from the module output to avoid Ansible error (https://github.com/ansible-collections/amazon.aws/issues/2386).
+- module_utils/ec2 - catch error code ``InvalidElasticIpID.NotFound`` on function ``create_nat_gateway()``, sometimes the ``allocate_address`` API calls will return the ID for a new elastic IP resource before it can be consistently referenced (https://github.com/ansible-collections/amazon.aws/issues/1872).
+- rds_cluster - Fix issue occurring when updating RDS cluster domain (https://github.com/ansible-collections/amazon.aws/issues/2390).
+
+v9.1.0
+======
+
+Release Summary
+---------------
+
+This release brings several bugfixes, minor changes, a new ``rds_instance_param_group_info`` module, and some deprecations for the ``autoscaling_group`` module.
+
+Minor Changes
+-------------
+
+- autoscaling_group - adds ``group_name`` as an alias for the ``name`` parameter (https://github.com/ansible-collections/amazon.aws/pull/2396).
+- autoscaling_group_info - adds ``group_name`` as an alias for the ``name`` parameter (https://github.com/ansible-collections/amazon.aws/pull/2396).
+- autoscaling_instance_refresh - adds ``group_name`` as an alias for the ``name`` parameter (https://github.com/ansible-collections/amazon.aws/pull/2396).
+- autoscaling_instance_refresh_info - adds ``group_name`` as an alias for the ``name`` parameter (https://github.com/ansible-collections/amazon.aws/pull/2396).
+- ec2_instance - Fix the issue when trying to run instances using launch template in an AWS environment where no default subnet is defined(https://github.com/ansible-collections/amazon.aws/issues/2321).
+- ec2_metadata_facts - add ``ansible_ec2_instance_tags`` to return values (https://github.com/ansible-collections/amazon.aws/pull/2398).
+- ec2_transit_gateway - handle empty description while deleting transit gateway (https://github.com/ansible-collections/community.aws/pull/2086).
+
+Deprecated Features
+-------------------
+
+- autoscaling_group - the ``decrement_desired_capacity`` parameter has been deprecated and will be removed in release 14.0.0 of this collection. Management of instances attached an autoscaling group can be performed using the  ``amazon.aws.autoscaling_instance`` module (https://github.com/ansible-collections/amazon.aws/pull/2396).
+- autoscaling_group - the ``replace_batch_size``, ``lc_check`` and ``lt_check`` parameters have been deprecated and will be removed in release 14.0.0 of this collection. Rolling replacement of instances in an autoscaling group can be performed using the  ``amazon.aws.autoscaling_instance_refresh`` module (https://github.com/ansible-collections/amazon.aws/pull/2396).
+- autoscaling_group - the functionality provided through the ``detach_instances`` parameter has been deprecated and will be removed in release 14.0.0 of this collection. Management of instances attached an autoscaling group can be performed using the  ``amazon.aws.autoscaling_instance`` module (https://github.com/ansible-collections/amazon.aws/pull/2396).
+- autoscaling_group - the functionality provided through the ``replace_all_instances`` parameter has been deprecated and will be removed in release 14.0.0 of this collection. Rolling replacement of instances in an autoscaling group can be performed using the  ``amazon.aws.autoscaling_instance_refresh`` module (https://github.com/ansible-collections/amazon.aws/pull/2396).
+- autoscaling_group - the functionality provided through the ``replace_instances`` parameter has been deprecated and will be removed in release 14.0.0 of this collection. Management of instances attached an autoscaling group can be performed using the  ``amazon.aws.autoscaling_instance`` module (https://github.com/ansible-collections/amazon.aws/pull/2396).
+
+Bugfixes
+--------
+
+- elbv2 - Fix load balancer listener comparison when DefaultActions contain any action other than forward (https://github.com/ansible-collections/amazon.aws/issues/2377).
+
+New Modules
+-----------
+
+- rds_instance_param_group_info - Describes the RDS parameter group.
+
 v9.0.0
 ======
 
@@ -139,6 +390,40 @@ New Modules
 - ec2_launch_template_info - Gather information about launch templates and versions
 - ec2_vpc_egress_igw_info - Gather information about AWS VPC Egress Only Internet gateway
 
+v8.2.3
+======
+
+Release Summary
+---------------
+
+This release includes bugfixes for the  ``ec2_instance`` and ``s3_bucket`` modules.
+
+Bugfixes
+--------
+
+- ec2_instance - Fix issue where EC2 instance module failed to apply security groups when both ``network`` and ``vpc_subnet_id`` were specified, caused by passing ``None`` to discover_security_groups() (https://github.com/ansible-collections/amazon.aws/pull/2488).
+- s3_bucket - Do not use default region as location constraint when creating bucket on ceph cluster (https://github.com/ansible-collections/amazon.aws/issues/2420).
+
+v8.2.2
+======
+
+Release Summary
+---------------
+
+This release includes bugfixes for the aws_ec2 inventory plugin and the cloudformation, ec2_security_group, ec2_vol, ec2_vpc_net, lambda, rds_cluster, and s3_bucket modules.
+
+Bugfixes
+--------
+
+- aws_ec2 - fix SSM inventory collection for multiple (>40) hosts  (https://github.com/ansible-collections/amazon.aws/pull/2227).
+- cloudformation - Fix bug where termination protection is not updated when create_changeset=true is used for stack updates (https://github.com/ansible-collections/amazon.aws/pull/2391).
+- ec2_security_group - Fix the diff mode issue when creating a security group containing a rule with a managed prefix list (https://github.com/ansible-collections/amazon.aws/issues/2373).
+- ec2_vol - output volume informations when volume exists in check mode (https://github.com/ansible-collections/amazon.aws/pull/2133).
+- ec2_vpc_net - handle ipv6_cidr ``false`` and no Ipv6CidrBlockAssociationSet in vpc (https://github.com/ansible-collections/amazon.aws/pull/2374).
+- lambda - Remove non UTF-8 data (contents of Lambda ZIP file) from the module output to avoid Ansible error (https://github.com/ansible-collections/amazon.aws/issues/2386).
+- rds_cluster - Fix issue occurring when updating RDS cluster domain (https://github.com/ansible-collections/amazon.aws/issues/2390).
+- s3_bucket - Fixes Python 3.7 compilation issue due to addition of typing information (https://github.com/ansible-collections/amazon.aws/issues/2287).
+
 v8.2.1
 ======
 
@@ -164,7 +449,7 @@ The amazon.aws 8.2.0 release includes a number of bugfixes, some new features an
 Minor Changes
 -------------
 
-- cloudwatch_metric_alarm - add  support for ``evaluate_low_sample_count_percentile``` parameter.
+- cloudwatch_metric_alarm - add  support for ``evaluate_low_sample_count_percentile`` parameter.
 - cloudwatch_metric_alarm - support DatapointsToAlarm config (https://github.com/ansible-collections/amazon.aws/pull/2196).
 - ec2_ami - Add support for uefi-preferred boot mode (https://github.com/ansible-collections/amazon.aws/pull/2253).
 - ec2_instance - Add support for ``network_interfaces`` and ``network_interfaces_ids`` options replacing deprecated option ``network`` (https://github.com/ansible-collections/amazon.aws/pull/2123).
@@ -1475,7 +1760,7 @@ Bugfixes
 
 - ec2_group - fix uncaught exception when running with ``--diff`` and ``--check`` to create a new security group (https://github.com/ansible-collections/amazon.aws/issues/440).
 - ec2_instance - Add a condition to handle default ```instance_type``` value for fix breaking on instance creation with launch template (https://github.com/ansible-collections/amazon.aws/pull/587).
-- ec2_instance - raise an error when missing permission to stop instance when ``state`` is set to ``rebooted``` (https://github.com/ansible-collections/amazon.aws/pull/671).
+- ec2_instance - raise an error when missing permission to stop instance when ``state`` is set to ``rebooted`` (https://github.com/ansible-collections/amazon.aws/pull/671).
 - ec2_vpc_igw - use gateway_id rather than filters to paginate if possible to fix 'NoneType' object is not subscriptable error (https://github.com/ansible-collections/amazon.aws/pull/766).
 - ec2_vpc_net - fix a bug where CIDR configuration would be updated in check mode (https://github.com/ansible/ansible/issues/62678).
 - ec2_vpc_net - fix a bug where the module would get stuck if DNS options were updated in check mode (https://github.com/ansible/ansible/issues/62677).

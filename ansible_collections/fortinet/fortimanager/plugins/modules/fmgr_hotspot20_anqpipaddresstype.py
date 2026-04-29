@@ -120,6 +120,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -135,9 +136,9 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         hotspot20_anqpipaddresstype:
-          ipv4_address_type: <value in [not-available, not-known, public, ...]>
-          ipv6_address_type: <value in [not-available, available, not-known]>
-          name: <string>
+          name: "your value" # Required variable, string
+          # ipv4_address_type: <value in [not-available, not-known, public, ...]>
+          # ipv6_address_type: <value in [not-available, available, not-known]>
 '''
 
 RETURN = '''

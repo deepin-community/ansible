@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2019-2024, NetApp, Inc
+# (c) 2019-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 '''
@@ -11,7 +11,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = '''
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Run CLI commands on ONTAP through REST api/private/cli/.
   - This module can run as admin or vsdamin and requires HTTP application to be enabled.
@@ -24,12 +24,13 @@ version_added: 2.9.0
 options:
   command:
     description:
-      - a string command.
+      - A CLI command.
     required: true
     type: str
   verb:
     description:
-      - a string indicating which api call to run
+      - Define which action to perform with the provided command.
+      - Values are mapped to show, create, modify, delete.
       - OPTIONS is useful to know which verbs are supported by the REST API
     choices: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS']
     required: true
@@ -45,32 +46,80 @@ options:
 '''
 
 EXAMPLES = """
-    - name: run ontap rest cli command
-      netapp.ontap.na_ontap_rest_cli:
-        hostname: "{{ hostname }}"
-        username: "{{ admin username }}"
-        password: "{{ admin password }}"
-        command: 'version'
-        verb: 'GET'
+- name: Run ONTAP REST CLI command
+  netapp.ontap.na_ontap_rest_cli:
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    command: version
+    verb: GET
 
-    - name: run ontap rest cli command
-      netapp.ontap.na_ontap_rest_cli:
-        hostname: "{{ hostname }}"
-        username: "{{ admin username }}"
-        password: "{{ admin password }}"
-        command: 'security/login/motd'
-        verb: 'PATCH'
-        params: {'vserver': 'ansibleSVM'}
-        body: {'message': 'test'}
+# The fields key allows returning a subset of parameters for a given object
+- name: Run volume show command with a filter to only return volumes matching the provided vserver and policy values.
+  netapp.ontap.na_ontap_rest_cli:
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    command: volume
+    verb: GET
+    params:
+      vserver: vs0
+      policy: default
+      fields: vserver,volume,policy
+  register: vs0_volumes
 
-    - name: set option
-      netapp.ontap.na_ontap_rest_cli:
-        command: options
-        verb: PATCH
-        params:
-          option_name: lldp.enable
-        body:
-          option_value: "on"
+- name: Run security login motd modify command
+  netapp.ontap.na_ontap_rest_cli:
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    command: security/login/motd
+    verb: PATCH
+    params:
+      vserver: ansibleSVM
+    body:
+      message: test
+
+- name: Set option
+  netapp.ontap.na_ontap_rest_cli:
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    command: options
+    verb: PATCH
+    params:
+      option_name: lldp.enable
+    body:
+      option_value: "on"
+
+- name: Run security certificate delete command
+  netapp.ontap.na_ontap_rest_cli:
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    command: security/certificate
+    verb: DELETE
+    body:
+      vserver: vs1
+      common-name: cluster01
+      ca: cluster01
+      type: server
+      serial: 17EBE9D26GGE91B9
+
+- name: Run volume create command
+  netapp.ontap.na_ontap_rest_cli:
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    command: volume
+    verb: POST
+    body:
+      vserver: vs1
+      volume: my_test_volume
+      size: 10g
+      aggregate: aggr1_node1
+      policy: default
+      type: RW
 """
 
 RETURN = """
@@ -120,6 +169,8 @@ class NetAppONTAPCommandREST():
             message, error = self.rest_api.post(api, self.body, self.params)
         elif self.verb == 'GET':
             message, error = self.rest_api.get(api, self.params)
+            if message is not None and isinstance(message, dict) and '_links' in message:
+                self.get_all_records(message)
         elif self.verb == 'PATCH':
             message, error = self.rest_api.patch(api, self.body, self.params)
         elif self.verb == 'DELETE':
@@ -132,6 +183,39 @@ class NetAppONTAPCommandREST():
 
         if error:
             self.module.fail_json(msg='Error: %s' % error)
+        return message
+
+    def get_next_records(self, api):
+        """
+            Gather next set of ONTAP information for the specified api
+            Input for REST APIs call : (api, data)
+            return gather_info
+        """
+
+        gather_info, error = self.rest_api.get(api)
+
+        if error:
+            self.module.fail_json(msg=error)
+
+        return gather_info
+
+    def get_all_records(self, message):
+        """ Iteratively get all records """
+
+        # If the response contains a next link, we need to gather all records
+        while message.get('_links', {}).get('next'):
+            next_api = message['_links']['next']['href']
+            gathered_info = self.get_next_records(next_api.replace('/api', ''))
+
+            # Update the message with the gathered info
+            message['_links'] = gathered_info.get('_links', {})
+            message['records'].extend(gathered_info['records'])
+
+        # metrocluster doesn't have a records field, so we need to skip this
+        if message.get('records') is not None:
+            # Getting total number of records
+            message['num_records'] = len(message['records'])
+
         return message
 
     def apply(self):

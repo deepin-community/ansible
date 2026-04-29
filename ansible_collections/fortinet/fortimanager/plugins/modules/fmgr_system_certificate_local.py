@@ -111,6 +111,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -125,12 +126,12 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         state: present # <value in [present, absent]>
         system_certificate_local:
-          certificate: <list or string>
-          comment: <string>
-          csr: <list or string>
-          name: <string>
-          password: <list or string>
-          private_key: <list or string>
+          name: "your value" # Required variable, string
+          # certificate: <list or string>
+          # comment: <string>
+          # csr: <list or string>
+          # password: <list or string>
+          # private_key: <list or string>
 '''
 
 RETURN = '''

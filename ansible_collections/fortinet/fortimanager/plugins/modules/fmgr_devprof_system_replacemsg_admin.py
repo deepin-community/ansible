@@ -112,6 +112,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -127,10 +128,10 @@ EXAMPLES = '''
         adom: <your own value>
         devprof: <your own value>
         devprof_system_replacemsg_admin:
-          buffer: <string>
-          format: <value in [none, text, html, ...]>
-          header: <value in [none, http, 8bit]>
-          msg_type: <string>
+          # buffer: <string>
+          # format: <value in [none, text, html, ...]>
+          # header: <value in [none, http, 8bit]>
+          # msg_type: <string>
 '''
 
 RETURN = '''

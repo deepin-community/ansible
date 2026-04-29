@@ -28,12 +28,10 @@ options:
       the excluding values will be ignored.
     type: list
     elements: str
-  db:
+  login_db:
     description:
     - Name of database to connect.
     type: str
-    aliases:
-    - login_db
   session_role:
     description:
     - Switch to session_role after connecting. The specified session_role must
@@ -94,7 +92,7 @@ EXAMPLES = r'''
   become: true
   become_user: pgsql
   community.postgresql.postgresql_info:
-    db: postgres
+    login_db: postgres
     filter:
     - tablesp*
     - repl_sl*
@@ -230,6 +228,7 @@ class PgClusterInfo(object):
         self.module = module
         self.db_obj = db_conn_obj
         self.cursor = db_conn_obj.connect()
+        self.default_db = self.__get_current_db()
         self.pg_info = {
             "version": {},
             "in_recovery": None,
@@ -575,7 +574,7 @@ class PgClusterInfo(object):
 
         repl_dict = {}
         for i in res:
-            repl_dict[i["pid"]] = dict(
+            repl_dict[str(i["pid"])] = dict(
                 usename=i["rolname"],
                 app_name=i["application_name"] if i["application_name"] else '',
                 client_addr=i["client_addr"],
@@ -700,6 +699,8 @@ class PgClusterInfo(object):
                 db_dict[datname]['subscriptions'] = subscr_info.get(datname, {})
 
         self.pg_info["databases"] = db_dict
+        # Reconnect to the default DB after gathering info in other DBs
+        self.cursor = self.db_obj.reconnect(self.default_db)
 
     def __get_pretty_val(self, setting):
         """Get setting's value represented by SHOW command."""
@@ -717,6 +718,13 @@ class PgClusterInfo(object):
             self.cursor.close()
         return False
 
+    def __get_current_db(self):
+        """Get current DB"""
+        # The context is to get the user's default database.
+        # Should be executed right after logging in
+        # https://github.com/ansible-collections/community.postgresql/issues/794
+        return self.__exec_sql('SELECT current_database() AS db')[0]['db']
+
 # ===========================================
 # Module execution.
 #
@@ -725,7 +733,7 @@ class PgClusterInfo(object):
 def main():
     argument_spec = postgres_common_argument_spec()
     argument_spec.update(
-        db=dict(type='str', aliases=['login_db']),
+        login_db=dict(type='str'),
         filter=dict(type='list', elements='str'),
         session_role=dict(type='str'),
         trust_input=dict(type='bool', default=True),

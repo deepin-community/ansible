@@ -141,6 +141,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -157,24 +158,23 @@ EXAMPLES = '''
         pkg_path: <your own value>
         state: present # <value in [present, absent]>
         pm_devprof_pkg:
-          description: <string>
-          enabled_options:
-            - "none"
-            - "dns"
-            - "ntp"
-            - "email"
-            - "admin"
-            - "snmp"
-            - "repmsg"
-            - "ftgd"
-            - "log"
-          name: <string>
-          oid: <integer>
-          scope_member:
-            -
-              name: <string>
-              vdom: <string>
-          type: <value in [devprof]>
+          name: "your value" # Required variable, string
+          # description: <string>
+          # enabled_options:
+          #   - "none"
+          #   - "dns"
+          #   - "ntp"
+          #   - "email"
+          #   - "admin"
+          #   - "snmp"
+          #   - "repmsg"
+          #   - "ftgd"
+          #   - "log"
+          # oid: <integer>
+          # scope_member:
+          #   - name: <string>
+          #     vdom: <string>
+          # type: <value in [devprof]>
 '''
 
 RETURN = '''

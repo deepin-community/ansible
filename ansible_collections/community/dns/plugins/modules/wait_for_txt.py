@@ -6,118 +6,118 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import absolute_import, division, print_function
+
+
 __metaclass__ = type
 
 
-DOCUMENTATION = r'''
----
+DOCUMENTATION = r"""
 module: wait_for_txt
 short_description: Wait for TXT entries to be available on all authoritative nameservers
 version_added: 0.1.0
 description:
-    - Wait for TXT entries with specific values to show up on B(all) authoritative nameservers for the DNS name.
+  - Wait for TXT entries with specific values to show up on B(all) authoritative nameservers for the DNS name.
 extends_documentation_fragment:
-    - community.dns.attributes
+  - community.dns.attributes
+  - community.dns.attributes.idempotent_not_modify_state
 attributes:
-    check_mode:
-        support: full
-        details:
-            - This action does not modify state.
-        version_added: 2.4.0
-    diff_mode:
-        support: N/A
-        details:
-            - This action does not modify state.
+  check_mode:
+    support: full
+    details:
+      - This action does not modify state.
+    version_added: 2.4.0
+  diff_mode:
+    support: N/A
+    details:
+      - This action does not modify state.
 author:
-    - Felix Fontein (@felixfontein)
+  - Felix Fontein (@felixfontein)
 options:
-    records:
+  records:
+    description:
+      - A list of DNS names with TXT entries to look out for.
+    required: true
+    type: list
+    elements: dict
+    suboptions:
+      name:
         description:
-            - A list of DNS names with TXT entries to look out for.
+          - A DNS name, like V(www.example.com).
+        type: str
         required: true
-        type: list
-        elements: dict
-        suboptions:
-            name:
-                description:
-                    - A DNS name, like V(www.example.com).
-                type: str
-                required: true
-            values:
-                description:
-                    - The TXT values to look for.
-                type: list
-                elements: str
-                required: true
-            mode:
-                description:
-                    - Comparison modes for the values in O(records[].values).
-                    - If V(subset), O(records[].values) should be a (not necessarily proper) subset of the TXT values set for
-                      the DNS name.
-                    - If V(superset), O(records[].values) should be a (not necessarily proper) superset of the TXT values set
-                      for the DNS name.
-                      This includes the case that no TXT entries are set.
-                    - If V(superset_not_empty), O(records[].values) should be a (not necessarily proper) superset of the TXT
-                      values set for the DNS name, assuming at least one TXT record is present.
-                    - If V(equals), O(records[].values) should be the same set of strings as the TXT values for the DNS name
-                      (up to order).
-                    - If V(equals_ordered), O(records[].values) should be the same ordered list of strings as the TXT values
-                      for the DNS name.
-                type: str
-                default: subset
-                choices:
-                    - subset
-                    - superset
-                    - superset_not_empty
-                    - equals
-                    - equals_ordered
-    query_retry:
+      values:
         description:
-            - Number of retries for DNS query timeouts.
-        type: int
-        default: 3
-    query_timeout:
-        description:
-            - Timeout per DNS query in seconds.
-        type: float
-        default: 10
-    timeout:
-        description:
-            - Global timeout for waiting for all records in seconds.
-            - If not set, will wait indefinitely.
-        type: float
-    max_sleep:
-        description:
-            - Maximal amount of seconds to sleep between two rounds of probing the TXT records.
-        type: float
-        default: 10
-    always_ask_default_resolver:
-        description:
-            - When set to V(true) (default), will use the default resolver to find the authoritative nameservers
-              of a subzone. See O(server) for how to configure the default resolver.
-            - When set to V(false), will use the authoritative nameservers of the parent zone to find the
-              authoritative nameservers of a subzone. This only makes sense when the nameservers were recently
-              changed and have not yet propagated.
-        type: bool
-        default: true
-    servfail_retries:
-        description:
-            - How often to retry on SERVFAIL errors.
-        type: int
-        default: 0
-        version_added: 2.6.0
-    server:
-        description:
-            - The DNS server(s) to use to look up the result. Must be a list of one or more IP addresses.
-            - By default, the system's standard resolver is used.
+          - The TXT values to look for.
         type: list
         elements: str
-        version_added: 2.7.0
+        required: true
+      mode:
+        description:
+          - Comparison modes for the values in O(records[].values).
+          - If V(subset), O(records[].values) should be a (not necessarily proper) subset of the TXT values set for the DNS
+            name.
+          - If V(superset), O(records[].values) should be a (not necessarily proper) superset of the TXT values set for the
+            DNS name. This includes the case that no TXT entries are set.
+          - If V(superset_not_empty), O(records[].values) should be a (not necessarily proper) superset of the TXT values
+            set for the DNS name, assuming at least one TXT record is present.
+          - If V(equals), O(records[].values) should be the same set of strings as the TXT values for the DNS name (up to
+            order).
+          - If V(equals_ordered), O(records[].values) should be the same ordered list of strings as the TXT values for the
+            DNS name.
+        type: str
+        default: subset
+        choices:
+          - subset
+          - superset
+          - superset_not_empty
+          - equals
+          - equals_ordered
+  query_retry:
+    description:
+      - Number of retries for DNS query timeouts.
+    type: int
+    default: 3
+  query_timeout:
+    description:
+      - Timeout per DNS query in seconds.
+    type: float
+    default: 10
+  timeout:
+    description:
+      - Global timeout for waiting for all records in seconds.
+      - If not set, will wait indefinitely.
+    type: float
+  max_sleep:
+    description:
+      - Maximal amount of seconds to sleep between two rounds of probing the TXT records.
+    type: float
+    default: 10
+  always_ask_default_resolver:
+    description:
+      - When set to V(true) (default), will use the default resolver to find the authoritative nameservers of a subzone. See
+        O(server) for how to configure the default resolver.
+      - When set to V(false), will use the authoritative nameservers of the parent zone to find the authoritative nameservers
+        of a subzone. This only makes sense when the nameservers were recently changed and have not yet propagated.
+    type: bool
+    default: true
+  servfail_retries:
+    description:
+      - How often to retry on SERVFAIL errors.
+    type: int
+    default: 0
+    version_added: 2.6.0
+  server:
+    description:
+      - The DNS server(s) to use to look up the result. Must be a list of one or more IP addresses.
+      - By default, the system's standard resolver is used.
+    type: list
+    elements: str
+    version_added: 2.7.0
 requirements:
-    - dnspython >= 1.15.0 (maybe older versions also work)
-'''
+  - dnspython >= 1.15.0 (maybe older versions also work)
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 - name: Wait for a TXT entry to appear
   community.dns.wait_for_txt:
     records:
@@ -131,82 +131,82 @@ EXAMPLES = r'''
       - name: www.example.com
         values: "v=spf1 a mx -all"
         mode: subset
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 records:
-    description:
-        - Results on the TXT records queried.
-        - The entries are in a 1:1 correspondence to the entries of the O(records) parameter,
-          in exactly the same order.
-    returned: always
-    type: list
-    elements: dict
-    contains:
-        name:
-            description:
-                - The DNS name this check is for.
-            returned: always
-            type: str
-            sample: example.com
-        done:
-            description:
-                - Whether the check completed.
-            returned: always
-            type: bool
-            sample: false
-        values:
-            description:
-                - For every authoritative nameserver for the DNS name, lists the TXT records retrieved during the last lookup made.
-                - Once the check completed for all TXT records retrieved, the TXT records for this DNS name are no longer checked.
-                - If these are multiple TXT entries for a nameserver, the order is as it was received from that nameserver. This
-                  might not be the same order provided in the check.
-            returned: lookup was done at least once
-            type: dict
-            elements: list
-            sample:
-                ns1.example.com:
-                    - TXT value 1
-                    - TXT value 2
-                ns2.example.com:
-                    - TXT value 2
-        check_count:
-            description:
-                - How often the TXT records for this DNS name were checked.
-            returned: always
-            type: int
-            sample: 3
-    sample:
-        - name: example.com
-          done: true
-          values: [a, b, c]
-          check_count: 1
-        - name: foo.example.org
-          done: false
-          check_count: 0
+  description:
+    - Results on the TXT records queried.
+    - The entries are in a 1:1 correspondence to the entries of the O(records) parameter, in exactly the same order.
+  returned: always
+  type: list
+  elements: dict
+  contains:
+    name:
+      description:
+        - The DNS name this check is for.
+      returned: always
+      type: str
+      sample: example.com
+    done:
+      description:
+        - Whether the check completed.
+      returned: always
+      type: bool
+      sample: false
+    values:
+      description:
+        - For every authoritative nameserver for the DNS name, lists the TXT records retrieved during the last lookup made.
+        - Once the check completed for all TXT records retrieved, the TXT records for this DNS name are no longer checked.
+        - If these are multiple TXT entries for a nameserver, the order is as it was received from that nameserver. This might
+          not be the same order provided in the check.
+      returned: lookup was done at least once
+      type: dict
+      elements: list
+      sample:
+        ns1.example.com:
+          - TXT value 1
+          - TXT value 2
+        ns2.example.com:
+          - TXT value 2
+    check_count:
+      description:
+        - How often the TXT records for this DNS name were checked.
+      returned: always
+      type: int
+      sample: 3
+  sample:
+    - name: example.com
+      done: true
+      values: [a, b, c]
+      check_count: 1
+    - name: foo.example.org
+      done: false
+      check_count: 0
 completed:
-    description:
-        - How many of the checks were completed.
-    returned: always
-    type: int
-    sample: 3
-'''
+  description:
+    - How many of the checks were completed.
+  returned: always
+  type: int
+  sample: 3
+"""
 
 import time
+
 
 try:
     from time import monotonic
 except ImportError:
-    from time import clock as monotonic
+    from time import clock as monotonic  # type: ignore
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.text.converters import to_text
-
 from ansible_collections.community.dns.plugins.module_utils.resolver import (
     ResolveDirectlyFromNameServers,
     assert_requirements_present,
     guarded_run,
 )
+
 
 try:
     import dns.rdatatype
@@ -222,8 +222,8 @@ def lookup(resolver, name):
         if txt is not None:
             for data in txt:
                 line = []
-                for str in data.strings:
-                    line.append(to_text(str))
+                for txtstring in data.strings:
+                    line.append(to_text(txtstring))
                 res.append(u''.join(line))
         result[key] = res
         txts[key] = []
@@ -246,7 +246,7 @@ def validate_check(record_values, expected_values, comparison_mode):
     if comparison_mode == 'equals_ordered':
         return record_values == expected_values
 
-    raise Exception('Internal error!')
+    raise AssertionError('Internal error!')  # pragma: no cover
 
 
 class Waiter(object):
@@ -265,22 +265,22 @@ class Waiter(object):
         self.max_sleep = self.module.params['max_sleep']
 
         self.results = [None] * len(self.records)
-        for index in range(len(self.records)):
+        for index, record in enumerate(self.records):
             self.results[index] = {
-                'name': self.records[index]['name'],
+                'name': record['name'],
                 'done': False,
                 'check_count': 0,
             }
         self.finished_checks = 0
 
     def _run(self):
-        self.start_time = monotonic()
+        start_time = monotonic()
 
         step = 0
         while True:
             has_timeout = False
             if self.timeout is not None:
-                expired = monotonic() - self.start_time
+                expired = monotonic() - start_time
                 has_timeout = expired > self.timeout
 
             done = True
@@ -312,17 +312,17 @@ class Waiter(object):
             wait = min(2 + step * 0.5, self.max_sleep)
             if self.timeout is not None:
                 # Make sure we do not exceed the timeout by much by waiting
-                expired = monotonic() - self.start_time
+                expired = monotonic() - start_time
                 wait = max(min(wait, self.timeout - expired + 0.1), 0.1)
 
             time.sleep(wait)
             step += 1
 
     def _generate_additional_results(self):
-        return dict(
-            records=self.results,
-            completed=self.finished_checks,
-        )
+        return {
+            'records': self.results,
+            'completed': self.finished_checks,
+        }
 
     def run(self):
         guarded_run(self._run, self.module, generate_additional_results=self._generate_additional_results)
@@ -330,20 +330,20 @@ class Waiter(object):
 
 def main():
     module = AnsibleModule(
-        argument_spec=dict(
-            records=dict(required=True, type='list', elements='dict', options=dict(
-                name=dict(required=True, type='str'),
-                values=dict(required=True, type='list', elements='str'),
-                mode=dict(type='str', default='subset', choices=['subset', 'superset', 'superset_not_empty', 'equals', 'equals_ordered']),
-            )),
-            query_retry=dict(type='int', default=3),
-            query_timeout=dict(type='float', default=10),
-            timeout=dict(type='float'),
-            max_sleep=dict(type='float', default=10),
-            always_ask_default_resolver=dict(type='bool', default=True),
-            servfail_retries=dict(type='int', default=0),
-            server=dict(type='list', elements='str'),
-        ),
+        argument_spec={
+            'records': {'required': True, 'type': 'list', 'elements': 'dict', 'options': {
+                'name': {'required': True, 'type': 'str'},
+                'values': {'required': True, 'type': 'list', 'elements': 'str'},
+                'mode': {'type': 'str', 'default': 'subset', 'choices': ['subset', 'superset', 'superset_not_empty', 'equals', 'equals_ordered']},
+            }},
+            'query_retry': {'type': 'int', 'default': 3},
+            'query_timeout': {'type': 'float', 'default': 10},
+            'timeout': {'type': 'float'},
+            'max_sleep': {'type': 'float', 'default': 10},
+            'always_ask_default_resolver': {'type': 'bool', 'default': True},
+            'servfail_retries': {'type': 'int', 'default': 0},
+            'server': {'type': 'list', 'elements': 'str'},
+        },
         supports_check_mode=True,
     )
     assert_requirements_present(module)

@@ -69,15 +69,15 @@
   when: icinga_servicegroups is defined
   tags: servicegroup
 
-- name: Icinga service configuration
-  ansible.builtin.include_tasks: icinga_service.yml
-  when: icinga_services is defined
-  tags: service
-
 - name: Icinga serviceset configuration
   ansible.builtin.include_tasks: icinga_serviceset.yml
   when: icinga_servicesets is defined
   tags: serviceset
+
+- name: Icinga service configuration
+  ansible.builtin.include_tasks: icinga_service.yml
+  when: icinga_services is defined
+  tags: service
 
 - name: Icinga notification template configuration
   ansible.builtin.include_tasks: icinga_notification_template.yml
@@ -93,3 +93,13 @@
   ansible.builtin.include_tasks: icinga_scheduled_downtime.yml
   when: icinga_scheduled_downtimes is defined
   tags: downtime
+
+- name: Icinga dependency template configuration
+  ansible.builtin.include_tasks: icinga_dependency_template.yml
+  when: icinga_dependency_templates is defined
+  tags: dependency_template
+
+- name: Icinga dependency apply configuration
+  ansible.builtin.include_tasks: icinga_dependency_apply.yml
+  when: icinga_dependency_applies is defined
+  tags: dependency_apply

@@ -201,59 +201,59 @@ notes:
 EXAMPLES = '''
 - name: Create mdisk group
   ibm.storage_virtualize.ibm_svc_mdiskgrp:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     name: pool1
     provisioningpolicy: pp0
-    replicationpoollinkuid: 000000000000000
-    replication_partner_clusterid: 000000000032432342
+    replicationpoollinkuid: '000000000000000'
+    replication_partner_clusterid: '000000000032432342'
     etfcmoverallocationmax: 120
     state: present
-    datareduction: no
+    datareduction: 'no'
     easytier: auto
-    encrypt: no
+    encrypt: 'no'
     ext: 1024
 - name: Create childpool with ownershipgroup
   ibm.storage_virtualize.ibm_svc_mdiskgrp:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     name: childpool0
     ownershipgroup: owner0
     parentmdiskgrp: pool1
     state: present
-    datareduction: no
+    datareduction: 'no'
     easytier: auto
-    encrypt: no
+    encrypt: 'no'
     ext: 1024
 - name: Create a safeguarded backup location
   ibm.storage_virtualize.ibm_svc_mdiskgrp:
-    clustername: "{{clustername}}"
-    token: "{{results.token}}"
-    log_path: "{{log_path}}"
+    clustername: "{{ clustername }}"
+    token: "{{ results.token }}"
+    log_path: "{{ log_path }}"
     parentmdiskgrp: Pool1
     name: Pool1child1
     datareduction: 'yes'
-    safeguarded: True
+    safeguarded: 'True'
     ext: 1024
-    noquota: True
+    noquota: 'True'
     state: present
 - name: Delete mdisk group
   ibm.storage_virtualize.ibm_svc_mdiskgrp:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     name: pool1
     state: absent
 - name: Delete a safeguarded backup location
   ibm.storage_virtualize.ibm_svc_mdiskgrp:
-    clustername: "{{clustername}}"
-    token: "{{results.token}}"
-    log_path: "{{log_path}}"
+    clustername: "{{ clustername }}"
+    token: "{{ results.token }}"
+    log_path: "{{ log_path }}"
     parentmdiskgrp: Pool1
     name: Pool1child1
     state: absent
@@ -376,8 +376,11 @@ class IBMSVCmdiskgrp(object):
                 )
 
         elif self.state == 'absent':
-            invalids = ('warning', 'ownershipgroup', 'noownershipgroup', 'vdiskprotectionenabled', 'etfcmoverallocationmax', 'old_name')
-            invalid_exists = ', '.join((var for var in invalids if getattr(self, var) not in {'', None}))
+            invalids = ('datareduction', 'easytier', 'encrypt', 'ext', 'parentmdiskgrp',
+                        'safeguarded', 'noquota', 'unit', 'provisioningpolicy', 'noprovisioningpolicy',
+                        'replicationpoollinkuid', 'resetreplicationpoollinkuid', 'replication_partner_clusterid', 'size', 'warning',
+                        'ownershipgroup', 'noownershipgroup', 'vdiskprotectionenabled', 'etfcmoverallocationmax', 'old_name')
+            invalid_exists = ', '.join((var for var in invalids if getattr(self, var) not in {'', None, 'no', 'off'}))
 
             if invalid_exists:
                 self.module.fail_json(
@@ -571,26 +574,27 @@ class IBMSVCmdiskgrp(object):
 
         self.changed = True
 
-    # TBD: Implement a more generic way to check for properties to modify.
     def mdiskgrp_probe(self, data):
         props = {}
 
-        if self.noprovisioningpolicy and data.get('provisioning_policy_name', ''):
-            props['noprovisioningpolicy'] = self.noprovisioningpolicy
-        if self.provisioningpolicy and self.provisioningpolicy != data.get('provisioning_policy_name', ''):
-            props['provisioningpolicy'] = self.provisioningpolicy
-        if self.noownershipgroup and data.get('owner_name', ''):
-            props['noownershipgroup'] = self.noownershipgroup
-        if self.ownershipgroup and self.ownershipgroup != data.get('owner_name', ''):
-            props['ownershipgroup'] = self.ownershipgroup
-        if self.vdiskprotectionenabled and self.vdiskprotectionenabled != data.get('vdisk_protectionenabled', ''):
-            props['vdiskprotectionenabled'] = self.vdiskprotectionenabled
-        if self.warning and self.warning != data.get('warning', ''):
-            props['warning'] = str(self.warning) + "%"
-        if self.replicationpoollinkuid and self.replicationpoollinkuid != data.get('replication_pool_link_uid', ''):
-            props['replicationpoollinkuid'] = self.replicationpoollinkuid
+        field_mappings = (
+            ('noprovisioningpolicy', not bool(data.get('provisioning_policy_name', ''))),
+            ('provisioningpolicy', data.get('provisioning_policy_name', '')),
+            ('noownershipgroup', not bool(data.get('owner_name', ''))),
+            ('ownershipgroup', data.get('owner_name', '')),
+            ('vdiskprotectionenabled', data.get('vdisk_protection_enabled', '')),
+            ('replicationpoollinkuid', data.get('replication_pool_link_uid', '')),
+        )
+
+        for field, existing_value in field_mappings:
+            new_value = getattr(self, field, None)
+            if new_value is not None and new_value != existing_value:
+                props[field] = getattr(self, field, None)
+
         if self.resetreplicationpoollinkuid:
             props['resetreplicationpoollinkuid'] = self.resetreplicationpoollinkuid
+        if self.warning and self.warning != data.get('warning', ''):
+            props['warning'] = str(self.warning) + "%"
         if self.etfcmoverallocationmax:
             if "%" not in self.etfcmoverallocationmax and self.etfcmoverallocationmax != "off":
                 self.etfcmoverallocationmax += "%"

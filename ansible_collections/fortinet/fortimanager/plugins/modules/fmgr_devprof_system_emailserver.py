@@ -155,12 +155,17 @@ options:
                     - 'auto'
                     - 'sdwan'
                     - 'specify'
+            vrf_select:
+                aliases: ['vrf-select']
+                type: int
+                description: VRF ID used for connection to server.
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -176,20 +181,21 @@ EXAMPLES = '''
         adom: <your own value>
         devprof: <your own value>
         devprof_system_emailserver:
-          authenticate: <value in [disable, enable]>
-          password: <list or string>
-          port: <integer>
-          reply_to: <string>
-          security: <value in [none, starttls, smtps]>
-          server: <string>
-          source_ip: <string>
-          source_ip6: <string>
-          ssl_min_proto_version: <value in [default, TLSv1, TLSv1-1, ...]>
-          type: <value in [custom]>
-          username: <string>
-          validate_server: <value in [disable, enable]>
-          interface: <string>
-          interface_select_method: <value in [auto, sdwan, specify]>
+          # authenticate: <value in [disable, enable]>
+          # password: <list or string>
+          # port: <integer>
+          # reply_to: <string>
+          # security: <value in [none, starttls, smtps]>
+          # server: <string>
+          # source_ip: <string>
+          # source_ip6: <string>
+          # ssl_min_proto_version: <value in [default, TLSv1, TLSv1-1, ...]>
+          # type: <value in [custom]>
+          # username: <string>
+          # validate_server: <value in [disable, enable]>
+          # interface: <string>
+          # interface_select_method: <value in [auto, sdwan, specify]>
+          # vrf_select: <integer>
 '''
 
 RETURN = '''
@@ -267,7 +273,8 @@ def main():
                 'username': {'v_range': [['6.0.0', '6.2.5'], ['6.2.7', '6.4.1'], ['6.4.3', '']], 'type': 'str'},
                 'validate-server': {'v_range': [['6.0.0', '6.2.5'], ['6.2.7', '6.4.1'], ['6.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'interface': {'v_range': [['7.0.0', '']], 'type': 'str'},
-                'interface-select-method': {'v_range': [['7.0.0', '']], 'choices': ['auto', 'sdwan', 'specify'], 'type': 'str'}
+                'interface-select-method': {'v_range': [['7.0.0', '']], 'choices': ['auto', 'sdwan', 'specify'], 'type': 'str'},
+                'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'}
             }
         }
     }

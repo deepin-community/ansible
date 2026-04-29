@@ -132,6 +132,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -147,18 +148,16 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         hotspot20_qosmap:
-          dscp_except:
-            -
-              dscp: <integer>
-              index: <integer>
-              up: <integer>
-          dscp_range:
-            -
-              high: <integer>
-              index: <integer>
-              low: <integer>
-              up: <integer>
-          name: <string>
+          name: "your value" # Required variable, string
+          # dscp_except:
+          #   - dscp: <integer>
+          #     index: <integer>
+          #     up: <integer>
+          # dscp_range:
+          #   - high: <integer>
+          #     index: <integer>
+          #     low: <integer>
+          #     up: <integer>
 '''
 
 RETURN = '''

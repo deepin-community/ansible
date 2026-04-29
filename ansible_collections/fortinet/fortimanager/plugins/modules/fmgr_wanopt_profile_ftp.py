@@ -148,6 +148,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -163,15 +164,15 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         wanopt_profile_ftp:
-          byte_caching: <value in [disable, enable]>
-          log_traffic: <value in [disable, enable]>
-          port: <list or integer>
-          prefer_chunking: <value in [dynamic, fix]>
-          secure_tunnel: <value in [disable, enable]>
-          status: <value in [disable, enable]>
-          tunnel_sharing: <value in [private, shared, express-shared]>
-          protocol_opt: <value in [protocol, tcp]>
-          ssl: <value in [disable, enable]>
+          # byte_caching: <value in [disable, enable]>
+          # log_traffic: <value in [disable, enable]>
+          # port: <list or integer>
+          # prefer_chunking: <value in [dynamic, fix]>
+          # secure_tunnel: <value in [disable, enable]>
+          # status: <value in [disable, enable]>
+          # tunnel_sharing: <value in [private, shared, express-shared]>
+          # protocol_opt: <value in [protocol, tcp]>
+          # ssl: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -235,7 +236,7 @@ def main():
             'options': {
                 'byte-caching': {'choices': ['disable', 'enable'], 'type': 'str'},
                 'log-traffic': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'port': {'type': 'raw'},
+                'port': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
                 'prefer-chunking': {'choices': ['dynamic', 'fix'], 'type': 'str'},
                 'secure-tunnel': {'choices': ['disable', 'enable'], 'type': 'str'},
                 'status': {'choices': ['disable', 'enable'], 'type': 'str'},

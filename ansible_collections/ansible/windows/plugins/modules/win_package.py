@@ -39,6 +39,26 @@ options:
       or uninstalling a package.
     - This is only used for the C(msi), C(msp), and C(registry) providers.
     type: path
+  checksum:
+    description:
+      - If a I(checksum) is passed to this parameter, the digest of the
+        package will be calculated before executing it to verify that the
+        path or downloaded file has the expected contents.
+    type: str
+    version_added: 2.8.0
+  checksum_algorithm:
+    description:
+      - Specifies the hashing algorithm used when calculating the checksum of
+        the path provided.
+    type: str
+    choices:
+      - md5
+      - sha1
+      - sha256
+      - sha384
+      - sha512
+    default: sha1
+    version_added: 2.8.0
   creates_path:
     description:
     - Will check the existence of the path specified and use the result to
@@ -92,8 +112,8 @@ options:
       idempotency checks, otherwise the file will only be downloaded if the
       package has not been installed based on the C(product_id) checks.
     - If C(state=present) then this value MUST be set.
-    - If C(state=absent) then this value does not need to be set if
-      C(product_id) is.
+    - If C(state=absent) and C(product_id) is set then this value is not required.
+    - Module can not derive product id if C(state=absent) and path is a URL.
     type: str
   product_id:
     description:
@@ -108,7 +128,7 @@ options:
       package found under the C(Get-AppxPackage) cmdlet.
     - For registry (exe) packages, this is the registry key name under the
       registry paths specified in I(provider).
-    - This value is ignored if C(path) is set to a local accesible file path
+    - This value is ignored if C(path) is set to a local accessible file path
       and the package is not an C(exe).
     - This SHOULD be set when the package is an C(exe), or the path is a url
       or a network share and credential delegation is not being used. The
@@ -152,7 +172,7 @@ options:
     - The module uses I(product_id) to determine whether the package is
       installed or not.
     - For all providers but C(auto), the I(path) can be used for idempotency
-      checks if it is locally accesible filesystem path.
+      checks if it is locally accessible filesystem path.
     type: str
     choices: [ absent, present ]
     default: present
@@ -340,6 +360,12 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
+checksum:
+  description: <algorithm> checksum of the package
+  returned: checksum_algorithm is set, package exists, and not check mode
+  type: str
+  version_added: 2.8.0
+  sample: 6E642BB8DD5C2E027BF21DD923337CBB4214F827
 log:
   description: The contents of the MSI or MSP log.
   returned: installation/uninstallation failure for MSI or MSP packages

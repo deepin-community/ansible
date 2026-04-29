@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2022-2024, NetApp, Inc
+# (c) 2022-2025, NetApp, Inc
 # GNU General Public License v3.0+  (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -12,7 +12,7 @@ short_description: NetApp ONTAP file security permissions ACL
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: 22.0.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Add, delete, or modify a file_security_permissions ACL on NetApp ONTAP.
   - Note that ACLs are mached based on ('user', 'access', 'access_control', 'apply_to').
@@ -202,49 +202,49 @@ notes:
 '''
 
 EXAMPLES = """
-  - name: Add ACL for file or directory security permissions.
-    netapp.ontap.na_ontap_file_security_permissions_acl:
-      vserver: "{{ vserver_name }}"
-      access_control: file_directory
-      path: "{{ file_mount_path }}"
-      validate_changes: warn
-      access: access_allow
-      # Note, without quotes, use a single backslash in AD user names
-      # with quotes, it needs to be escaped as a double backslash
-      # user: "ANSIBLE_CIFS\\user1"
-      # we can't show an example with a single backslash as this is a python file, but it works in YAML.
-      acl_user: "user1"
-      apply_to:
-        this_folder: true
-      advanced_rights:
-        append_data: true
-        delete: false
+- name: Add ACL for file or directory security permissions.
+  netapp.ontap.na_ontap_file_security_permissions_acl:
+    vserver: "{{ vserver_name }}"
+    access_control: file_directory
+    path: "{{ file_mount_path }}"
+    validate_changes: warn
+    access: access_allow
+    # Note, without quotes, use a single backslash in AD user names
+    # with quotes, it needs to be escaped as a double backslash
+    # user: "ANSIBLE_CIFS\\user1"
+    # we can't show an example with a single backslash as this is a python file, but it works in YAML.
+    acl_user: "user1"
+    apply_to:
+      this_folder: true
+    advanced_rights:
+      append_data: true
+      delete: false
 
-  - name: Modify ACL for file or directory security permissions.
-    netapp.ontap.na_ontap_file_security_permissions_acl:
-      vserver: "{{ vserver_name }}"
-      access_control: file_directory
-      path: "{{ file_mount_path }}"
-      validate_changes: warn
-      access: access_allow
-      acl_user: "user1"
-      apply_to:
-        this_folder: true
-      advanced_rights:
-        append_data: false
-        delete: true
+- name: Modify ACL for file or directory security permissions.
+  netapp.ontap.na_ontap_file_security_permissions_acl:
+    vserver: "{{ vserver_name }}"
+    access_control: file_directory
+    path: "{{ file_mount_path }}"
+    validate_changes: warn
+    access: access_allow
+    acl_user: "user1"
+    apply_to:
+      this_folder: true
+    advanced_rights:
+      append_data: false
+      delete: true
 
-  - name: Delete ACL for file or directory security permissions.
-    netapp.ontap.na_ontap_file_security_permissions_acl:
-      vserver: "{{ vserver_name }}"
-      access_control: file_directory
-      path: "{{ file_mount_path }}"
-      validate_changes: warn
-      access: access_allow
-      acl_user: "user1"
-      apply_to:
-        this_folder: true
-      state: absent
+- name: Delete ACL for file or directory security permissions.
+  netapp.ontap.na_ontap_file_security_permissions_acl:
+    vserver: "{{ vserver_name }}"
+    access_control: file_directory
+    path: "{{ file_mount_path }}"
+    validate_changes: warn
+    access: access_allow
+    acl_user: "user1"
+    apply_to:
+      this_folder: true
+    state: absent
 """
 
 RETURN = """

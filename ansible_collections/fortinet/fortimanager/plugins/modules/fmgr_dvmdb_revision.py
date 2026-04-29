@@ -114,6 +114,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -129,12 +130,12 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         dvmdb_revision:
-          created_by: <string>
-          created_time: <integer>
-          desc: <string>
-          locked: <integer>
-          name: <string>
-          version: <integer>
+          name: "your value" # Required variable, string
+          # created_by: <string>
+          # created_time: <integer>
+          # desc: <string>
+          # locked: <integer>
+          # version: <integer>
 '''
 
 RETURN = '''

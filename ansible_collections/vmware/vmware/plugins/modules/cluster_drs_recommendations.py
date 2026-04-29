@@ -42,7 +42,7 @@ options:
         aliases: [ datacenter_name ]
 
 extends_documentation_fragment:
-    - vmware.vmware.vmware.documentation
+    - vmware.vmware.base_options
 '''
 
 EXAMPLES = r'''
@@ -57,6 +57,14 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
+cluster:
+    description:
+        - Information about the target cluster
+    returned: On success
+    type: dict
+    sample:
+        moid: cluster-79828,
+        name: test-cluster
 applied_recommendations:
     description:
         - List of dictionaries describing the applied recommendations
@@ -95,22 +103,24 @@ except ImportError:
 
 from itertools import zip_longest
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware import (
-    PyVmomi,
-    vmware_argument_spec
+from ansible_collections.vmware.vmware.plugins.module_utils._module_pyvmomi_base import (
+    ModulePyvmomiBase
 )
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_tasks import (
+from ansible_collections.vmware.vmware.plugins.module_utils.argument_spec import (
+    base_argument_spec
+)
+from ansible_collections.vmware.vmware.plugins.module_utils._vsphere_tasks import (
     TaskError,
     RunningTaskMonitor
 )
 from ansible.module_utils._text import to_native
 
 
-class VMwareCluster(PyVmomi):
+class VMwareCluster(ModulePyvmomiBase):
     def __init__(self, module):
         super(VMwareCluster, self).__init__(module)
-        datacenter = self.get_datacenter_by_name(self.params.get('datacenter'), fail_on_missing=True)
-        self.cluster = self.get_cluster_by_name(self.params.get('cluster'), fail_on_missing=True, datacenter=datacenter)
+        datacenter = self.get_datacenter_by_name_or_moid(self.params.get('datacenter'), fail_on_missing=True)
+        self.cluster = self.get_cluster_by_name_or_moid(self.params.get('cluster'), fail_on_missing=True, datacenter=datacenter)
 
     def get_recommendations(self):
         """
@@ -177,7 +187,7 @@ class VMwareCluster(PyVmomi):
 def main():
     module = AnsibleModule(
         argument_spec={
-            **vmware_argument_spec(), **dict(
+            **base_argument_spec(), **dict(
                 cluster=dict(type='str', required=True, aliases=['cluster_name']),
                 datacenter=dict(type='str', required=True, aliases=['datacenter_name']),
             )
@@ -187,10 +197,17 @@ def main():
 
     result = dict(
         changed=False,
-        applied_recommendations=[]
+        applied_recommendations=[],
+        cluster=dict(
+            name="",
+            moid=""
+        )
     )
 
     cluster_drs = VMwareCluster(module)
+    result['cluster']['name'] = cluster_drs.cluster.name
+    result['cluster']['moid'] = cluster_drs.cluster._GetMoId()
+
     recommendations = cluster_drs.get_recommendations()
     if recommendations:
         result['changed'] = True

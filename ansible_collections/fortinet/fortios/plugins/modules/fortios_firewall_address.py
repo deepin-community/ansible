@@ -267,6 +267,17 @@ options:
                 description:
                     - SDN Tag.
                 type: str
+            sso_attribute_value:
+                description:
+                    - Name(s) of the RADIUS user groups that this address includes.
+                type: list
+                elements: dict
+                suboptions:
+                    name:
+                        description:
+                            - RADIUS user group name.
+                        required: true
+                        type: str
             start_ip:
                 description:
                     - First IP address (inclusive) in the range for the address.
@@ -283,12 +294,14 @@ options:
                     - 'sdn'
                     - 'clearpass-spt'
                     - 'fsso'
+                    - 'rsso'
                     - 'ems-tag'
                     - 'fortivoice-tag'
                     - 'fortinac-tag'
                     - 'fortipolicy-tag'
                     - 'swc-tag'
                     - 'device-identification'
+                    - 'external-resource'
             subnet:
                 description:
                     - IP address and subnet mask of address.
@@ -421,6 +434,9 @@ EXAMPLES = """
           sdn: "<your_own_value> (source system.sdn-connector.name)"
           sdn_addr_type: "private"
           sdn_tag: "<your_own_value>"
+          sso_attribute_value:
+              -
+                  name: "default_name_40"
           start_ip: "<your_own_value>"
           start_mac: "<your_own_value>"
           sub_type: "sdn"
@@ -432,10 +448,10 @@ EXAMPLES = """
           tagging:
               -
                   category: "<your_own_value> (source system.object-tagging.category)"
-                  name: "default_name_49"
+                  name: "default_name_51"
                   tags:
                       -
-                          name: "default_name_51 (source system.object-tagging.tags.name)"
+                          name: "default_name_53 (source system.object-tagging.tags.name)"
           tenant: "<your_own_value>"
           type: "ipmask"
           uuid: "<your_own_value>"
@@ -530,6 +546,9 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_firewall_address_data(json):
@@ -565,6 +584,7 @@ def filter_firewall_address_data(json):
         "sdn",
         "sdn_addr_type",
         "sdn_tag",
+        "sso_attribute_value",
         "start_ip",
         "start_mac",
         "sub_type",
@@ -593,24 +613,25 @@ def filter_firewall_address_data(json):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def firewall_address(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     firewall_address_data = data["firewall_address"]
 
     filtered_data = filter_firewall_address_data(firewall_address_data)
@@ -622,40 +643,56 @@ def firewall_address(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("firewall", "address", filtered_data, vdom=vdom)
         current_data = fos.get("firewall", "address", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -681,8 +718,9 @@ def firewall_address(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["firewall_address"] = converted_data
+    data_copy["firewall_address"] = filtered_data
     fos.do_member_operation(
         "firewall",
         "address",
@@ -711,6 +749,7 @@ def is_successful_status(resp):
 
 
 def fortios_firewall(data, fos, check_mode):
+
     if data["firewall_address"]:
         resp = firewall_address(data, fos, check_mode)
     else:
@@ -757,12 +796,14 @@ versioned_schema = {
                 {"value": "sdn"},
                 {"value": "clearpass-spt"},
                 {"value": "fsso"},
+                {"value": "rsso", "v_range": [["v7.6.1", ""]]},
                 {"value": "ems-tag", "v_range": [["v6.4.0", ""]]},
                 {"value": "fortivoice-tag", "v_range": [["v7.0.4", ""]]},
                 {"value": "fortinac-tag", "v_range": [["v7.0.4", ""]]},
                 {"value": "fortipolicy-tag", "v_range": [["v7.2.4", ""]]},
                 {"value": "swc-tag", "v_range": [["v7.0.1", ""]]},
                 {"value": "device-identification", "v_range": [["v7.4.0", ""]]},
+                {"value": "external-resource", "v_range": [["v7.6.1", ""]]},
             ],
         },
         "clearpass_spt": {
@@ -808,6 +849,18 @@ versioned_schema = {
                 }
             },
             "v_range": [["v6.2.0", ""]],
+        },
+        "sso_attribute_value": {
+            "type": "list",
+            "elements": "dict",
+            "children": {
+                "name": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "required": True,
+                }
+            },
+            "v_range": [["v7.6.1", ""]],
         },
         "interface": {"v_range": [["v6.2.0", ""]], "type": "string"},
         "tenant": {"v_range": [["v6.0.0", ""]], "type": "string"},

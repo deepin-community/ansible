@@ -120,12 +120,34 @@ options:
                 type: str
                 description: CASB access rule activity name.
                 required: true
+            attribute_filter:
+                aliases: ['attribute-filter']
+                type: list
+                elements: dict
+                description: Attribute filter.
+                suboptions:
+                    action:
+                        type: str
+                        description: CASB access rule tenant control action.
+                        choices:
+                            - 'block'
+                            - 'monitor'
+                            - 'bypass'
+                    attribute_match:
+                        aliases: ['attribute-match']
+                        type: list
+                        elements: str
+                        description: CASB access rule tenant match.
+                    id:
+                        type: int
+                        description: CASB tenant control ID.
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -143,14 +165,18 @@ EXAMPLES = '''
         saas_application: <your own value>
         state: present # <value in [present, absent]>
         casb_profile_saasapplication_accessrule:
-          action: <value in [block, bypass, monitor]>
-          bypass:
-            - "av"
-            - "dlp"
-            - "web-filter"
-            - "file-filter"
-            - "video-filter"
-          name: <string>
+          name: "your value" # Required variable, string
+          # action: <value in [block, bypass, monitor]>
+          # bypass:
+          #   - "av"
+          #   - "dlp"
+          #   - "web-filter"
+          #   - "file-filter"
+          #   - "video-filter"
+          # attribute_filter:
+          #   - action: <value in [block, monitor, bypass]>
+          #     attribute_match: <list or string>
+          #     id: <integer>
 '''
 
 RETURN = '''
@@ -221,7 +247,17 @@ def main():
                     'choices': ['av', 'dlp', 'web-filter', 'file-filter', 'video-filter'],
                     'elements': 'str'
                 },
-                'name': {'v_range': [['7.4.1', '']], 'required': True, 'type': 'str'}
+                'name': {'v_range': [['7.4.1', '']], 'required': True, 'type': 'str'},
+                'attribute-filter': {
+                    'v_range': [['7.6.2', '']],
+                    'type': 'list',
+                    'options': {
+                        'action': {'v_range': [['7.6.2', '']], 'choices': ['block', 'monitor', 'bypass'], 'type': 'str'},
+                        'attribute-match': {'v_range': [['7.6.2', '']], 'type': 'list', 'elements': 'str'},
+                        'id': {'v_range': [['7.6.2', '']], 'type': 'int'}
+                    },
+                    'elements': 'dict'
+                }
             }
         }
     }

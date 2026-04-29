@@ -111,6 +111,12 @@ images:
             type: str
             returned: always
             sample: Standard_LRS
+        os_disk_encryption_set:
+            description:
+                - Specifies the disk encryption set resource id for the managed disk.
+            type: str
+            returned: always
+            sample: /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Compute/diskEncryptionSets/xx
         os_type:
             description:
                 - Type of OS for image.
@@ -226,10 +232,6 @@ class AzureRMImageInfo(AzureRMModuleBase):
 
     def exec_module(self, **kwargs):
 
-        is_old_facts = self.module._name == 'azure_rm_image_facts'
-        if is_old_facts:
-            self.module.deprecate("The 'azure_rm_image_facts' module has been renamed to 'azure_rm_image_info'", version=(2.9, ))
-
         for key in self.module_arg_spec:
             setattr(self, key, kwargs[key])
 
@@ -311,6 +313,7 @@ class AzureRMImageInfo(AzureRMModuleBase):
             'os_state': d['storage_profile']['os_disk']['os_state'],
             'os_disk_caching': d['storage_profile']['os_disk']['caching'],
             'os_storage_account_type': d['storage_profile']['os_disk']['storage_account_type'],
+            'os_disk_encryption_set': d['storage_profile']['os_disk'].get('disk_encryption_set'),
             'os_disk': d['storage_profile']['os_disk']['managed_disk']['id'] if 'managed_disk' in d['storage_profile']['os_disk'].keys() else None,
             'os_blob_uri': d['storage_profile']['os_disk']['blob_uri'] if 'blob_uri' in d['storage_profile']['os_disk'].keys() else None,
             'provisioning_state': d['provisioning_state'],

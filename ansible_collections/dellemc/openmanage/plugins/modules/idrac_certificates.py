@@ -3,8 +3,8 @@
 
 #
 # Dell OpenManage Ansible Modules
-# Version 9.3.0
-# Copyright (C) 2022-2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Version 9.10.0
+# Copyright (C) 2022-2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
@@ -111,7 +111,7 @@ options:
       - Maximum wait time for iDRAC to start after the reset, in seconds.
       - This is applicable when I(command) is C(import) or C(reset) and I(reset) is C(true).
     type: int
-    default: 300
+    default: 600
 requirements:
   - "python >= 3.9.6"
 author:
@@ -245,6 +245,7 @@ error_info:
 '''
 
 import json
+import time
 import base64
 import os
 from datetime import datetime
@@ -275,6 +276,8 @@ UPLOAD_SSL = f"{IDRAC_CARD_SERVICE_ACTION_URI}/DelliDRACCardService.UploadSSLKey
 EXPORT_SSL = f"{IDRAC_CARD_SERVICE_ACTION_URI}/DelliDRACCardService.ExportSSLCertificate"
 RESET_SSL = f"{IDRAC_CARD_SERVICE_ACTION_URI}/DelliDRACCardService.SSLResetCfg"
 IDRAC_RESET = "/redfish/v1/Managers/{res_id}/Actions/Manager.Reset"
+GET_LAST_GENERATED_CSR = "/redfish/v1/CertificateService/Actions/Oem/DellCertificateService.GetLastGeneratedCSR"
+CERT_STATUS = "/redfish/v1/Managers/iDRAC.Embedded.1/Oem/Dell/DellAttributes/iDRAC.Embedded.1?$select=Security.1.ConfigCertStatus"
 
 idrac_service_actions = {
     "#DelliDRACCardService.DeleteCertificate": f"{IDRAC_CARD_SERVICE_ACTION_URI}/DelliDRACCardService.DeleteCertificate",
@@ -402,6 +405,7 @@ payload_map = {"Server": get_ssl_payload,
 
 
 def get_res_id(idrac, cert_type):
+    resp = None
     cert_map = {"Server": MANAGER_ID}
     try:
         resp = idrac.invoke_request(cert_map.get(cert_type, MANAGERS_URI), "GET")
@@ -414,7 +418,7 @@ def get_res_id(idrac, cert_type):
 
 
 def get_idrac_service(idrac, res_id):
-    srvc = IDRAC_SERVICE.format(res_id=res_id)
+    resp = None
     resp = idrac.invoke_request(f"{MANAGERS_URI}/{res_id}", 'GET')
     srvc_data = resp.json_data
     dell_srvc = srvc_data['Links']['Oem']['Dell']['DelliDRACCardService']
@@ -423,6 +427,7 @@ def get_idrac_service(idrac, res_id):
 
 
 def get_actions_map(idrac, idrac_service_uri):
+    resp = None
     actions = idrac_service_actions
     try:
         resp = idrac.invoke_request(idrac_service_uri, 'GET')
@@ -513,7 +518,37 @@ def get_export_data(idrac, cert_type, res_id):
     return cert_data.get("CertificateFile")
 
 
+def check_csr_generated(idrac):
+    resp = None
+    generated = False
+    #  Wating max 120(24*5) seconds for CSR to be generated
+    count = 24
+    while not generated and count > 0:
+        resp = idrac.invoke_request(CERT_STATUS, "GET")
+        generated = True if resp.json_data.get("Attributes").get("Security.1.ConfigCertStatus") == 2 else False
+        time.sleep(5)
+        count -= 1
+    return generated
+
+
+def perform_operation_and_download_csr(idrac, cert_url, method, cert_payload, module):
+    resp = None
+    try:
+        resp = idrac.invoke_request(cert_url, method, data=cert_payload, api_timeout=60)
+    except HTTPError as err:
+        json_err = json.load(err)
+        msg_id = json_err.get("error").get("@Message.ExtendedInfo")[0].get("MessageId")
+        if err.code == 503 and msg_id in ['IDRAC.2.9.SYS537', 'IDRAC.2.8.SYS537']:
+            body = {'CertificateCollection': rfish_cert_coll['Server']}
+            if check_csr_generated(idrac):
+                resp = idrac.invoke_request(GET_LAST_GENERATED_CSR, "POST", data=body)
+        else:
+            module.exit_json(failed=True, error_info=json_err, msg=str(err))
+    return resp
+
+
 def exit_certificates(module, idrac, cert_url, cert_payload, method, cert_type, res_id):
+    resp = None
     cmd = module.params.get('command')
     changed = changed_map.get(cmd)
     reset = changed_map.get(cmd) and module.params.get('reset')
@@ -531,7 +566,7 @@ def exit_certificates(module, idrac, cert_url, cert_payload, method, cert_type, 
     if module.params.get('command') == 'reset' and cert_type == "Server":
         resp = idrac.invoke_request(cert_url, method, data=cert_payload, dump=False)
     else:
-        resp = idrac.invoke_request(cert_url, method, data=cert_payload)
+        resp = perform_operation_and_download_csr(idrac, cert_url, method, cert_payload, module)
     cert_data = resp.json_data
     cert_output = format_output(module, cert_data)
     result.update(cert_output)
@@ -565,7 +600,7 @@ def main():
         }},
         "resource_id": {"type": 'str'},
         "reset": {"type": 'bool', "default": True},
-        "wait": {"type": 'int', "default": 300}
+        "wait": {"type": 'int', "default": 600}
     }
 
     module = IdracAnsibleModule(

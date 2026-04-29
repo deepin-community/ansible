@@ -57,7 +57,8 @@ options:
         elements: str
 
 extends_documentation_fragment:
-    - vmware.vmware.vmware.vcenter_documentation
+    - vmware.vmware.base_options
+    - vmware.vmware.additional_rest_options
 '''
 
 EXAMPLES = r'''
@@ -86,9 +87,9 @@ EXAMPLES = r'''
     cluster_name: my_cluster
     schema: vsphere
     properties:
-        - name
-        - configuration.dasConfig.enabled
-        - summary.totalCpu
+      - name
+      - configuration.dasConfig.enabled
+      - summary.totalCpu
   register: _out
 '''
 
@@ -155,20 +156,25 @@ try:
 except ImportError:
     pass
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware import PyVmomi, vmware_argument_spec
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_rest_client import VmwareRestClient
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_facts import (
+from ansible_collections.vmware.vmware.plugins.module_utils._module_pyvmomi_base import (
+    ModulePyvmomiBase
+)
+from ansible_collections.vmware.vmware.plugins.module_utils.argument_spec import (
+    rest_compatible_argument_spec
+)
+from ansible_collections.vmware.vmware.plugins.module_utils._module_rest_base import ModuleRestBase
+from ansible_collections.vmware.vmware.plugins.module_utils._facts import (
     ClusterFacts,
     vmware_obj_to_json
 )
 
 
-class ClusterInfo(PyVmomi):
+class ClusterInfo(ModulePyvmomiBase):
     def __init__(self, module):
         super(ClusterInfo, self).__init__(module)
         self.rest_client = None
         if module.params['gather_tags']:
-            self.rest_client = VmwareRestClient(module)
+            self.rest_client = ModuleRestBase(module)
 
     def get_clusters(self):
         """
@@ -177,19 +183,19 @@ class ClusterInfo(PyVmomi):
         """
         datacenter, search_folder = None, None
         if self.params.get('datacenter'):
-            datacenter = self.get_datacenter_by_name(self.params.get('datacenter'), fail_on_missing=False)
+            datacenter = self.get_datacenter_by_name_or_moid(self.params.get('datacenter'), fail_on_missing=False)
             search_folder = datacenter.hostFolder
 
         if self.params.get('cluster'):
-            _cluster = self.get_cluster_by_name(self.params.get('cluster'), fail_on_missing=False, datacenter=datacenter)
+            _cluster = self.get_cluster_by_name_or_moid(self.params.get('cluster'), fail_on_missing=False, datacenter=datacenter)
             return [_cluster] if _cluster else []
         else:
-            _clusters = self.list_all_objs_by_type(
+            _clusters = self.get_all_objs_by_type(
                 [vim.ClusterComputeResource],
                 folder=search_folder,
                 recurse=False
             )
-            return _clusters.keys()
+            return _clusters
 
     def gather_info_for_clusters(self):
         """
@@ -230,7 +236,7 @@ class ClusterInfo(PyVmomi):
 def main():
     module = AnsibleModule(
         argument_spec={
-            **vmware_argument_spec(), **dict(
+            **rest_compatible_argument_spec(), **dict(
                 cluster=dict(type='str', aliases=['cluster_name', 'name']),
                 datacenter=dict(type='str', aliases=['datacenter_name']),
                 gather_tags=dict(type='bool', default=False),

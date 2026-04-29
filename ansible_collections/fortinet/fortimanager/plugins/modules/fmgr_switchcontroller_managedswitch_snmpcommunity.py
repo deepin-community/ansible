@@ -187,6 +187,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -203,29 +204,28 @@ EXAMPLES = '''
         managed_switch: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_managedswitch_snmpcommunity:
-          events:
-            - "cpu-high"
-            - "mem-low"
-            - "log-full"
-            - "intf-ip"
-            - "ent-conf-change"
-          hosts:
-            -
-              id: <integer>
-              ip: <string>
-          id: <integer>
-          name: <string>
-          query_v1_port: <integer>
-          query_v1_status: <value in [disable, enable]>
-          query_v2c_port: <integer>
-          query_v2c_status: <value in [disable, enable]>
-          status: <value in [disable, enable]>
-          trap_v1_lport: <integer>
-          trap_v1_rport: <integer>
-          trap_v1_status: <value in [disable, enable]>
-          trap_v2c_lport: <integer>
-          trap_v2c_rport: <integer>
-          trap_v2c_status: <value in [disable, enable]>
+          id: 0 # Required variable, integer
+          # events:
+          #   - "cpu-high"
+          #   - "mem-low"
+          #   - "log-full"
+          #   - "intf-ip"
+          #   - "ent-conf-change"
+          # hosts:
+          #   - id: <integer>
+          #     ip: <string>
+          # name: <string>
+          # query_v1_port: <integer>
+          # query_v1_status: <value in [disable, enable]>
+          # query_v2c_port: <integer>
+          # query_v2c_status: <value in [disable, enable]>
+          # status: <value in [disable, enable]>
+          # trap_v1_lport: <integer>
+          # trap_v1_rport: <integer>
+          # trap_v1_status: <value in [disable, enable]>
+          # trap_v2c_lport: <integer>
+          # trap_v2c_rport: <integer>
+          # trap_v2c_status: <value in [disable, enable]>
 '''
 
 RETURN = '''

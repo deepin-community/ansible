@@ -6,6 +6,13 @@
     state: present
     expected_return_code: 0,1603
 
+- name: check mode ignore non-existent files
+  win_package:
+    path: '{{ test_path }}\noexist.msi'
+    state: present
+  register: check_mode_no_exist
+  check_mode: yes
+
 - name: install local msi (check mode)
   win_package:
     path: '{{ test_path }}\good.msi'
@@ -21,6 +28,7 @@
 - name: assert install local msi (check mode)
   assert:
     that:
+    - check_mode_no_exist is changed
     - install_local_msi_check is changed
     - install_local_msi_check.reboot_required == False
     - install_local_msi_actual_check.exists == False
@@ -28,6 +36,8 @@
 - name: install local msi with log
   win_package:
     path: '{{ test_path }}\good.msi'
+    checksum: '6736380C8C81D6BF1CC9BB6F59A6FC4713AD276EEFF434FC6B35E443CAFBAE55'
+    checksum_algorithm: sha256
     state: present
     log_path: '{{ test_path }}\msi.log'
   register: install_local_msi
@@ -40,6 +50,7 @@
 - name: assert install local msi
   assert:
     that:
+    - install_local_msi.checksum == '6736380C8C81D6BF1CC9BB6F59A6FC4713AD276EEFF434FC6B35E443CAFBAE55'
     - install_local_msi is changed
     - install_local_msi.reboot_required == False
     - install_local_msi.rc == 0

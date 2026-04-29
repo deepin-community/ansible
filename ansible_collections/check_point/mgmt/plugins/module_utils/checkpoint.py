@@ -564,7 +564,10 @@ def api_command(module, command):
 
         handle_publish(module, connection, version)
     else:
-        discard_and_fail(module, code, response, connection, version)
+        if command.startswith("show"):
+            module.fail_json(msg=parse_fail_message(code, response))
+        else:
+            discard_and_fail(module, code, response, connection, version)
 
     return result
 
@@ -1011,7 +1014,7 @@ def get_number_and_section_from_position(
     show_rulebase_command = get_relevant_show_rulebase_command(api_call_object)
     if "position" in payload:
         section_name = None
-        if type(payload["position"]) is not dict:
+        if not isinstance(payload["position"], dict):
             position = payload["position"]
             if position == "top":
                 position = 1
@@ -1405,11 +1408,15 @@ def api_call_for_rule(module, api_call_object):
 
 # check if call is in plural form
 def call_is_plural(api_call_object, payload):
-    if payload.get("name") is not None or payload.get("rule-number") is not None and \
-            ("nat" in api_call_object or "mobile-access" in api_call_object):
+    if (
+        (payload.get("name") is not None or payload.get("rule-number") is not None)
+        and ("nat" in api_call_object or "mobile-access" in api_call_object)
+    ):
         return False
-    if payload.get("layer") is None and \
-            ("access" in api_call_object or "threat" in api_call_object or "https" in api_call_object):
+    if ((payload.get("layer") is None and ("access" in api_call_object or "threat"
+                                           in api_call_object or "https" in api_call_object))
+        or
+            (payload.get("package") is not None and "nat" in api_call_object)):
         return True
     return False
 

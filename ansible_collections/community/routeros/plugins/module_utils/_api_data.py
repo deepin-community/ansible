@@ -226,6 +226,25 @@ def join_path(path):
 # 3. All bold attributes go into the `primary_keys` list -- this is not always true!
 
 PATHS = {
+    ('interface', '6to4'): APIData(
+        unversioned=VersionedAPIData(
+            fully_understood=True,
+            primary_keys=('name', ),
+            fields={
+                'clamp-tcp-mss': KeyInfo(default=True),
+                'comment': KeyInfo(can_disable=True, remove_value=''),
+                'disabled': KeyInfo(default=False),
+                'dont-fragment': KeyInfo(default=False),
+                'dscp': KeyInfo(default='inherit'),
+                'ipsec-secret': KeyInfo(can_disable=True),
+                'keepalive': KeyInfo(default='10s,10', can_disable=True),
+                'local-address': KeyInfo(default='0.0.0.0'),
+                'mtu': KeyInfo(default='auto'),
+                'name': KeyInfo(),
+                'remote-address': KeyInfo(required=True),
+            }
+        ),
+    ),
     ('interface', 'bonding'): APIData(
         unversioned=VersionedAPIData(
             fully_understood=True,
@@ -262,6 +281,7 @@ PATHS = {
             versioned_fields=[
                 ([('7.0', '<')], 'ingress-filtering', KeyInfo(default=False)),
                 ([('7.0', '>=')], 'ingress-filtering', KeyInfo(default=True)),
+                ([('7.13', '>=')], 'port-cost-mode', KeyInfo(default='long')),
                 ([('7.16', '>=')], 'forward-reserved-addresses', KeyInfo(default=False)),
                 ([('7.16', '>=')], 'max-learned-entries', KeyInfo(default='auto')),
             ],
@@ -421,8 +441,8 @@ PATHS = {
             fully_understood=True,
             fields={
                 'comment': KeyInfo(can_disable=True, remove_value=''),
-                'exclude': KeyInfo(),
-                'include': KeyInfo(),
+                'exclude': KeyInfo(default=''),
+                'include': KeyInfo(default=''),
                 'name': KeyInfo(),
             },
         ),
@@ -632,13 +652,22 @@ PATHS = {
     ),
     ('ip', 'ipsec', 'mode-config'): APIData(
         unversioned=VersionedAPIData(
-            unknown_mechanism=True,
-            # primary_keys=('default', ),
+            fully_understood=True,
+            primary_keys=('name', ),
+            versioned_fields=[
+                ([('6.43', '>=')], 'responder', KeyInfo(default=False)),
+                ([('6.44', '>=')], 'address', KeyInfo(can_disable=True, remove_value='0.0.0.0')),
+            ],
             fields={
-                'default': KeyInfo(),
+                'address-pool': KeyInfo(can_disable=True, remove_value='none'),
+                'address-prefix-length': KeyInfo(),
+                'comment': KeyInfo(can_disable=True, remove_value=''),
                 'name': KeyInfo(),
-                'responder': KeyInfo(),
-                'use-responder-dns': KeyInfo(),
+                'split-dns': KeyInfo(can_disable=True, remove_value=''),
+                'split-include': KeyInfo(can_disable=True, remove_value=''),
+                'src-address-list': KeyInfo(can_disable=True, remove_value=''),
+                'static-dns': KeyInfo(can_disable=True, remove_value=''),
+                'system-dns': KeyInfo(default=False),
             },
         ),
     ),
@@ -891,6 +920,20 @@ PATHS = {
                     'do-select-prfx': KeyInfo(can_disable=True),
                     'do-take': KeyInfo(can_disable=True),
                     'do-where': KeyInfo(can_disable=True),
+                },
+            )),
+        ],
+    ),
+    ('routing', 'filter', 'community-list'): APIData(
+        versioned=[
+            ('7', '>=', VersionedAPIData(
+                fully_understood=True,
+                fields={
+                    'list': KeyInfo(required=True),
+                    'comment': KeyInfo(can_disable=True, remove_value=''),
+                    'disabled': KeyInfo(can_disable=True),
+                    'communities': KeyInfo(can_disable=True),
+                    'regexp': KeyInfo(can_disable=True),
                 },
             )),
         ],
@@ -1510,13 +1553,19 @@ PATHS = {
             fully_understood=True,
             versioned_fields=[
                 ([('7.16', '>=')], 'multipath-hash-policy', KeyInfo(default='l3')),
+                ([('7.17', '>=')], 'disable-link-local-address', KeyInfo(default=False)),
+                ([('7.17', '>=')], 'stale-neighbor-timeout', KeyInfo(default=60)),
+                ([('7.18', '>=')], 'allow-fast-path', KeyInfo(default=True)),
+                ([('7.18', '<')], 'max-neighbor-entries', KeyInfo(default=8192)),
+                ([('7.18', '>=')], 'min-neighbor-entries', KeyInfo()),
+                ([('7.18', '>=')], 'soft-max-neighbor-entries', KeyInfo()),
+                ([('7.18', '>=')], 'max-neighbor-entries', KeyInfo()),
             ],
             fields={
                 'accept-redirects': KeyInfo(default='yes-if-forwarding-disabled'),
                 'accept-router-advertisements': KeyInfo(default='yes-if-forwarding-disabled'),
                 'disable-ipv6': KeyInfo(default=False),
                 'forward': KeyInfo(default=True),
-                'max-neighbor-entries': KeyInfo(default=8192),
             },
         ),
     ),
@@ -1615,23 +1664,46 @@ PATHS = {
         ),
     ),
     ('interface', 'ovpn-server', 'server'): APIData(
-        unversioned=VersionedAPIData(
-            single_value=True,
-            fully_understood=True,
-            fields={
-                'auth': KeyInfo(),
-                'cipher': KeyInfo(),
-                'default-profile': KeyInfo(default='default'),
-                'enabled': KeyInfo(default=False),
-                'keepalive-timeout': KeyInfo(default=60),
-                'mac-address': KeyInfo(),
-                'max-mtu': KeyInfo(default=1500),
-                'mode': KeyInfo(default='ip'),
-                'netmask': KeyInfo(default=24),
-                'port': KeyInfo(default=1194),
-                'require-client-certificate': KeyInfo(default=False),
-            },
-        ),
+        versioned=[
+            ('7.17', '>=', VersionedAPIData(
+                fully_understood=True,
+                fields={
+                    'auth': KeyInfo(),
+                    'cipher': KeyInfo(),
+                    'default-profile': KeyInfo(default='default'),
+                    'enabled': KeyInfo(default=False),
+                    'keepalive-timeout': KeyInfo(default=60),
+                    'mac-address': KeyInfo(),
+                    'max-mtu': KeyInfo(default=1500),
+                    'mode': KeyInfo(default='ip'),
+                    'name': KeyInfo(default=''),
+                    'netmask': KeyInfo(default=24),
+                    'port': KeyInfo(default=1194),
+                    'protocol': KeyInfo(default='tcp'),
+                    'require-client-certificate': KeyInfo(default=False),
+                    'vrf': KeyInfo(default='main'),
+                },
+            )),
+            ('7.17', '<', VersionedAPIData(
+                single_value=True,
+                fully_understood=True,
+                fields={
+                    'auth': KeyInfo(),
+                    'cipher': KeyInfo(),
+                    'default-profile': KeyInfo(default='default'),
+                    'enabled': KeyInfo(default=False),
+                    'keepalive-timeout': KeyInfo(default=60),
+                    'mac-address': KeyInfo(),
+                    'max-mtu': KeyInfo(default=1500),
+                    'mode': KeyInfo(default='ip'),
+                    'name': KeyInfo(default=''),
+                    'netmask': KeyInfo(default=24),
+                    'port': KeyInfo(default=1194),
+                    'protocol': KeyInfo(default='tcp'),
+                    'require-client-certificate': KeyInfo(default=False),
+                },
+            ))
+        ]
     ),
     ('interface', 'pppoe-server', 'server'): APIData(
         unversioned=VersionedAPIData(
@@ -2004,7 +2076,6 @@ PATHS = {
         versioned=[
             ('7.13', '>=', VersionedAPIData(
                 fully_understood=True,
-                primary_keys=('action', ),
                 fields={
                     'action': KeyInfo(default='none'),
                     'address-ranges': KeyInfo(can_disable=True),
@@ -2409,7 +2480,8 @@ PATHS = {
             },
             versioned_fields=[
                 ([('7.15', '>=')], 'name', KeyInfo()),
-                ([('7.15', '>=')], 'is-responder', KeyInfo()),
+                ([('7.15', '>='), ('7.17', '<')], 'is-responder', KeyInfo()),
+                ([('7.17', '>=')], 'responder', KeyInfo()),
             ],
         ),
     ),
@@ -2531,6 +2603,30 @@ PATHS = {
             },
         ),
     ),
+    ('interface', 'wireless', 'access-list'): APIData(
+        unversioned=VersionedAPIData(
+            fully_understood=True,
+            fields={
+                'allow-signal-out-of-range': KeyInfo(default='10s'),
+                'ap-tx-limit': KeyInfo(default=0),
+                'authentication': KeyInfo(default=True),
+                'client-tx-limit': KeyInfo(default=0),
+                'comment': KeyInfo(can_disable=True, remove_value=''),
+                'disabled': KeyInfo(default=False),
+                'forwarding': KeyInfo(default=True),
+                'interface': KeyInfo(default='any'),
+                'mac-address': KeyInfo(default='00:00:00:00:00:00'),
+                'management-protection-key': KeyInfo(default=''),
+                'private-algo': KeyInfo(default='none'),
+                'private-key': KeyInfo(default=''),
+                'private-pre-shared-key': KeyInfo(default=''),
+                'signal-range': KeyInfo(default='-120..120'),
+                'time': KeyInfo(),
+                'vlan-id': KeyInfo(default=1),
+                'vlan-mode': KeyInfo(default='default'),
+            },
+        ),
+    ),
     ('interface', 'wireless', 'cap'): APIData(
         unversioned=VersionedAPIData(
             single_value=True,
@@ -2546,6 +2642,41 @@ PATHS = {
                 'interfaces': KeyInfo(default=''),
                 'lock-to-caps-man': KeyInfo(default=False),
                 'static-virtual': KeyInfo(default=False),
+            },
+        ),
+    ),
+    ('interface', 'wireless', 'connect-list'): APIData(
+        unversioned=VersionedAPIData(
+            fully_understood=True,
+            fields={
+                '3gpp': KeyInfo(default=''),
+                'allow-signal-out-of-range': KeyInfo(default='10s'),
+                'area-prefix': KeyInfo(default=''),
+                'comment': KeyInfo(can_disable=True, remove_value=''),
+                'connect': KeyInfo(default=True),
+                'disabled': KeyInfo(default=False),
+                'interface': KeyInfo(required=True),
+                'interworking': KeyInfo(default='any'),
+                'iw-asra': KeyInfo(default='any'),
+                'iw-authentication-types': KeyInfo(),
+                'iw-connection-capabilities': KeyInfo(),
+                'iw-esr': KeyInfo(default='any'),
+                'iw-hessid': KeyInfo(default='00:00:00:00:00:00'),
+                'iw-hotspot20': KeyInfo(default='any'),
+                'iw-hotspot20-dgaf': KeyInfo(default='any'),
+                'iw-internet': KeyInfo(default='any'),
+                'iw-ipv4-availability': KeyInfo(default='any'),
+                'iw-ipv6-availability': KeyInfo(default='any'),
+                'iw-network-type': KeyInfo(default='wildcard'),
+                'iw-realms': KeyInfo(),
+                'iw-roaming-ois': KeyInfo(default=''),
+                'iw-uesa': KeyInfo(default='any'),
+                'iw-venue': KeyInfo(default='any'),
+                'mac-address': KeyInfo(default='00:00:00:00:00:00'),
+                'security-profile': KeyInfo(default='none'),
+                'signal-range': KeyInfo(default='-120..120'),
+                'ssid': KeyInfo(default=''),
+                'wireless-protocol': KeyInfo(default='any'),
             },
         ),
     ),
@@ -2686,8 +2817,11 @@ PATHS = {
         unversioned=VersionedAPIData(
             single_value=True,
             fully_understood=True,
+            versioned_fields=[
+                ([('7.17', '<')], 'ddns-enabled', KeyInfo(default=False)),
+                ([('7.17', '>=')], 'ddns-enabled', KeyInfo(default='auto')),
+            ],
             fields={
-                'ddns-enabled': KeyInfo(default=False),
                 'ddns-update-interval': KeyInfo(default='none'),
                 'update-time': KeyInfo(default=True),
             },
@@ -2873,6 +3007,7 @@ PATHS = {
                 ([('7.8', '>=')], 'doh-max-concurrent-queries', KeyInfo(default=50)),
                 ([('7.8', '>=')], 'doh-max-server-connections', KeyInfo(default=5)),
                 ([('7.8', '>=')], 'doh-timeout', KeyInfo(default='5s')),
+                ([('7.16', '>=')], 'mdns-repeat-ifaces', KeyInfo()),
             ],
             fields={
                 'allow-remote-requests': KeyInfo(),
@@ -2901,6 +3036,22 @@ PATHS = {
                     'name-count': KeyInfo(read_only=True),
                     'ssl-verify': KeyInfo(default=True),
                     'url': KeyInfo(default=''),
+                },
+            )),
+        ],
+    ),
+    ('ip', 'dns', 'forwarders'): APIData(
+        versioned=[
+            ('7.17', '>=', VersionedAPIData(
+                fully_understood=True,
+                required_one_of=[['dns-servers', 'doh-servers']],
+                fields={
+                    'comment': KeyInfo(can_disable=True, remove_value=''),
+                    'disabled': KeyInfo(default=False),
+                    'dns-servers': KeyInfo(default=''),
+                    'doh-servers': KeyInfo(default=''),
+                    'name': KeyInfo(required=True),
+                    'verify-doh-cert': KeyInfo(default=True),
                 },
             )),
         ],
@@ -3023,6 +3174,10 @@ PATHS = {
         unversioned=VersionedAPIData(
             fully_understood=True,
             stratify_keys=('chain', ),
+            versioned_fields=[
+                ([('7.19', '<')], 'passthrough', KeyInfo(can_disable=True)),
+                ([('7.19', '>=')], 'passthrough', KeyInfo(default=True)),
+            ],
             fields={
                 'action': KeyInfo(),
                 'address-list': KeyInfo(can_disable=True),
@@ -3074,7 +3229,6 @@ PATHS = {
                 'p2p': KeyInfo(can_disable=True),
                 'packet-mark': KeyInfo(can_disable=True),
                 'packet-size': KeyInfo(can_disable=True),
-                'passthrough': KeyInfo(can_disable=True),
                 'per-connection-classifier': KeyInfo(can_disable=True),
                 'port': KeyInfo(can_disable=True),
                 'priority': KeyInfo(can_disable=True),
@@ -3471,6 +3625,14 @@ PATHS = {
                 'request': KeyInfo(),
                 'use-peer-dns': KeyInfo(default=True),
             },
+            versioned_fields=[
+                # Mikrotik does not provide exact version in official changelogs.
+                # The 7.15 version is the earliest, found option in router config backups:
+                ([('7.15', '>=')], 'script', KeyInfo(default='')),
+                ([('7.15', '>=')], 'custom-duid', KeyInfo(default='')),
+                ([('7.15', '>=')], 'use-interface-duid', KeyInfo(default=False)),
+                ([('7.15', '>=')], 'validate-server-duid', KeyInfo(default=True)),
+            ],
         ),
     ),
     ('ipv6', 'dhcp-server'): APIData(
@@ -4004,6 +4166,9 @@ PATHS = {
                 'src-address': KeyInfo(default='0.0.0.0'),
                 'timeout': KeyInfo(default='300ms'),
             },
+            versioned_fields=[
+                ([('7.15', '>=')], 'require-message-auth', KeyInfo(default='yes-for-request-resp')),
+            ],
         ),
     ),
     ('radius', 'incoming'): APIData(
@@ -4053,6 +4218,28 @@ PATHS = {
                 'upstream': KeyInfo(default=False),
             },
         ),
+    ),
+    ('routing', 'bfd', 'configuration'): APIData(
+        versioned=[
+            ('7.11', '>=', VersionedAPIData(
+                fully_understood=True,
+                fields={
+                    'address-list': KeyInfo(),
+                    'addresses': KeyInfo(),
+                    'comment': KeyInfo(can_disable=True, remove_value=''),
+                    'copy-from': KeyInfo(),
+                    'disabled': KeyInfo(default=False),
+                    'forbid-bfd': KeyInfo(),
+                    'interfaces': KeyInfo(),
+                    'min-echo-rx': KeyInfo(),
+                    'min-rx': KeyInfo(),
+                    'min-tx': KeyInfo(),
+                    'multiplier': KeyInfo(),
+                    'place-before': KeyInfo(),
+                    'vrf': KeyInfo(),
+                },
+            ))
+        ],
     ),
     ('routing', 'bfd', 'interface'): APIData(
         unversioned=VersionedAPIData(
@@ -4234,6 +4421,9 @@ PATHS = {
         unversioned=VersionedAPIData(
             single_value=True,
             fully_understood=True,
+            versioned_fields=[
+                ([('7.14', '>=')], 'show-at-cli-login', KeyInfo(default=False)),
+            ],
             fields={
                 'note': KeyInfo(default=''),
                 'show-at-login': KeyInfo(default=True),
@@ -4770,6 +4960,18 @@ PATHS = {
             },
         ),
     ),
+    ('interface', 'ethernet', 'switch', 'port-isolation'): APIData(
+        versioned=[
+            ('6.43', '>=', VersionedAPIData(
+                primary_keys=('name', ),
+                fully_understood=True,
+                fields={
+                    'forwarding-override': KeyInfo(),
+                    'name': KeyInfo(),
+                },
+            )),
+        ],
+    ),
     ('ip', 'dhcp-client', 'option'): APIData(
         unversioned=VersionedAPIData(
             fixed_entries=True,
@@ -4860,10 +5062,13 @@ PATHS = {
     ('routing', 'bgp', 'connection'): APIData(
         unversioned=VersionedAPIData(
             fully_understood=True,
+            versioned_fields=[
+                ([('7.19', '<')], 'address-families', KeyInfo()),
+                ([('7.19', '>=')], 'afi', KeyInfo()),
+            ],
             fields={
                 'as': KeyInfo(),
                 'add-path-out': KeyInfo(),
-                'address-families': KeyInfo(),
                 'cisco-vpls-nlri-len-fmt': KeyInfo(),
                 'cluster-id': KeyInfo(),
                 'comment': KeyInfo(),
@@ -5042,6 +5247,11 @@ PATHS = {
         unversioned=VersionedAPIData(
             fully_understood=True,
             primary_keys=('name',),
+            versioned_fields=[
+                ([('7.18', '>=')], 'remote-log-format', KeyInfo(default='default')),
+                ([('7.18', '>=')], 'remote-protocol', KeyInfo(default='udp')),
+                ([('7.18', '>=')], 'cef-event-delimiter', KeyInfo(default='\r\n')),
+            ],
             fields={
                 'bsd-syslog': KeyInfo(default=False),
                 'comment': KeyInfo(can_disable=True, remove_value=''),
@@ -5144,7 +5354,7 @@ PATHS = {
                 'protocol': KeyInfo(default='all'),
                 'src-address': KeyInfo(),
                 'src-port': KeyInfo(default='any'),
-                # The template field can't really be changed once the item is
+                # The template field ca not really be changed once the item is
                 # created. This config captures the behavior best as it can
                 # i.e. template=yes is shown, template=no is hidden.
                 'template': KeyInfo(can_disable=True, remove_value=False),

@@ -241,6 +241,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -256,49 +257,47 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         sshfilter_profile:
-          block:
-            - "x11"
-            - "shell"
-            - "exec"
-            - "port-forward"
-            - "tun-forward"
-            - "sftp"
-            - "unknown"
-            - "scp"
-          default_command_log: <value in [disable, enable]>
-          log:
-            - "x11"
-            - "shell"
-            - "exec"
-            - "port-forward"
-            - "tun-forward"
-            - "sftp"
-            - "unknown"
-            - "scp"
-          name: <string>
-          shell_commands:
-            -
-              action: <value in [block, allow]>
-              alert: <value in [disable, enable]>
-              id: <integer>
-              log: <value in [disable, enable]>
-              pattern: <string>
-              severity: <value in [low, medium, high, ...]>
-              type: <value in [regex, simple]>
-          file_filter:
-            entries:
-              -
-                action: <value in [log, block]>
-                comment: <string>
-                direction: <value in [any, incoming, outgoing]>
-                file_type: <list or string>
-                filter: <string>
-                password_protected: <value in [any, yes]>
-                protocol:
-                  - "ssh"
-            log: <value in [disable, enable]>
-            scan_archive_contents: <value in [disable, enable]>
-            status: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # block:
+          #   - "x11"
+          #   - "shell"
+          #   - "exec"
+          #   - "port-forward"
+          #   - "tun-forward"
+          #   - "sftp"
+          #   - "unknown"
+          #   - "scp"
+          # default_command_log: <value in [disable, enable]>
+          # log:
+          #   - "x11"
+          #   - "shell"
+          #   - "exec"
+          #   - "port-forward"
+          #   - "tun-forward"
+          #   - "sftp"
+          #   - "unknown"
+          #   - "scp"
+          # shell_commands:
+          #   - action: <value in [block, allow]>
+          #     alert: <value in [disable, enable]>
+          #     id: <integer>
+          #     log: <value in [disable, enable]>
+          #     pattern: <string>
+          #     severity: <value in [low, medium, high, ...]>
+          #     type: <value in [regex, simple]>
+          # file_filter:
+          #   entries:
+          #     - action: <value in [log, block]>
+          #       comment: <string>
+          #       direction: <value in [any, incoming, outgoing]>
+          #       file_type: <list or string>
+          #       filter: <string>
+          #       password_protected: <value in [any, yes]>
+          #       protocol:
+          #         - "ssh"
+          #   log: <value in [disable, enable]>
+          #   scan_archive_contents: <value in [disable, enable]>
+          #   status: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -377,26 +376,30 @@ def main():
                     'elements': 'dict'
                 },
                 'file-filter': {
-                    'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']],
+                    'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
                     'type': 'dict',
                     'options': {
                         'entries': {
-                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']],
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
                             'type': 'list',
                             'options': {
-                                'action': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['log', 'block'], 'type': 'str'},
-                                'comment': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'str'},
-                                'direction': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['any', 'incoming', 'outgoing'], 'type': 'str'},
-                                'file-type': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'raw'},
-                                'filter': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'str'},
-                                'password-protected': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['any', 'yes'], 'type': 'str'},
-                                'protocol': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'type': 'list', 'choices': ['ssh'], 'elements': 'str'}
+                                'action': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['log', 'block'], 'type': 'str'},
+                                'comment': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'str'},
+                                'direction': {
+                                    'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                                    'choices': ['any', 'incoming', 'outgoing'],
+                                    'type': 'str'
+                                },
+                                'file-type': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'raw'},
+                                'filter': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'str'},
+                                'password-protected': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['any', 'yes'], 'type': 'str'},
+                                'protocol': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'type': 'list', 'choices': ['ssh'], 'elements': 'str'}
                             },
                             'elements': 'dict'
                         },
-                        'log': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                        'scan-archive-contents': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                        'status': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                        'log': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'scan-archive-contents': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'status': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'}
                     }
                 }
             }

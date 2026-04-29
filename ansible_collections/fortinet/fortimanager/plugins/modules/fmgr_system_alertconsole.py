@@ -124,6 +124,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -137,16 +138,16 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_alertconsole:
-          period: <value in [1, 2, 3, ...]>
-          severity_level:
-            - "debug"
-            - "information"
-            - "notify"
-            - "warning"
-            - "error"
-            - "critical"
-            - "alert"
-            - "emergency"
+          # period: <value in [1, 2, 3, ...]>
+          # severity_level:
+          #   - "debug"
+          #   - "information"
+          #   - "notify"
+          #   - "warning"
+          #   - "error"
+          #   - "critical"
+          #   - "alert"
+          #   - "emergency"
 '''
 
 RETURN = '''

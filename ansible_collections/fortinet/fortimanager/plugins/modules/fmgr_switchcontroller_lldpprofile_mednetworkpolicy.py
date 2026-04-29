@@ -131,6 +131,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -147,13 +148,13 @@ EXAMPLES = '''
         lldp_profile: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_lldpprofile_mednetworkpolicy:
-          dscp: <integer>
-          name: <string>
-          priority: <integer>
-          status: <value in [disable, enable]>
-          vlan: <integer>
-          vlan_intf: <string>
-          assign_vlan: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # dscp: <integer>
+          # priority: <integer>
+          # status: <value in [disable, enable]>
+          # vlan: <integer>
+          # vlan_intf: <string>
+          # assign_vlan: <value in [disable, enable]>
 '''
 
 RETURN = '''

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2021-2023, NetApp, Inc
+# (c) 2021-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -17,7 +17,7 @@ short_description: Enables or disables NetApp ONTAP storage auto giveback for a 
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: '21.3.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Enable or disable storage auto giveback
 options:
@@ -41,28 +41,26 @@ options:
 """
 
 EXAMPLES = """
-    - name: Enable storage auto giveback
-      na_ontap_storage_auto_giveback:
-        name: node1
-        auto_giveback_enabled: true
-        auto_giveback_after_panic_enabled: true
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+- name: Enable storage auto giveback
+  netapp.ontap.na_ontap_storage_auto_giveback:
+    name: node1
+    auto_giveback_enabled: true
+    auto_giveback_after_panic_enabled: true
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Disable storage auto giveback
-      na_ontap_storage_auto_giveback:
-        name: node1
-        auto_giveback_enabled: false
-        auto_giveback_after_panic_enabled: false
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-
+- name: Disable storage auto giveback
+  netapp.ontap.na_ontap_storage_auto_giveback:
+    name: node1
+    auto_giveback_enabled: false
+    auto_giveback_after_panic_enabled: false
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """
-
 """
 
 import traceback

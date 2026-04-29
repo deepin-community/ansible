@@ -78,6 +78,7 @@ API_APPS_ENDPOINTS = dict(
         "sites": {},
         "site_groups": {},
         "virtual_chassis": {},
+        "mac_addresses": {},
     },
     extras={
         "config_contexts": {},
@@ -226,6 +227,7 @@ QUERY_TYPES = dict(
     webhook="name",
     wireless_lan="ssid",
     wireless_lan_group="slug",
+    mac_address="mac_address",
 )
 
 # Specifies keys within data that need to be converted to ID and the endpoint to be used when queried
@@ -275,6 +277,7 @@ CONVERT_TO_ID = {
     "ipsec_profile": "ipsec_profiles",
     "location": "locations",
     "lag": "interfaces",
+    "primary_mac_address": "mac_addresses",
     "manufacturer": "manufacturers",
     "master": "devices",
     "module": "modules",
@@ -434,6 +437,7 @@ ENDPOINT_NAME_MAPPING = {
     "wireless_lans": "wireless_lan",
     "wireless_lan_groups": "wireless_lan_group",
     "wireless_links": "wireless_link",
+    "mac_addresses": "mac_address",
 }
 
 ALLOWED_QUERY_PARAMS = {
@@ -516,6 +520,7 @@ ALLOWED_QUERY_PARAMS = {
     ),
     "lag": set(["name"]),
     "location": set(["name", "slug", "site"]),
+    "mac_address": set(["mac_address"]),
     "module": set(["device", "module_bay", "module_type"]),
     "module_bay": set(["device", "name"]),
     "module_type": set(["model"]),
@@ -718,6 +723,7 @@ NETBOX_ARG_SPEC = dict(
     query_params=dict(required=False, type="list", elements="str"),
     validate_certs=dict(type="raw", default=True),
     cert=dict(type="raw", required=False),
+    headers=dict(type="dict", required=False),
 )
 
 
@@ -746,10 +752,11 @@ class NetboxModule(object):
         token = self.module.params["netbox_token"]
         ssl_verify = self.module.params["validate_certs"]
         cert = self.module.params["cert"]
+        headers = self.module.params["headers"]
 
         # Attempt to initiate connection to NetBox
         if nb_client is None:
-            self.nb = self._connect_netbox_api(url, token, ssl_verify, cert)
+            self.nb = self._connect_netbox_api(url, token, ssl_verify, cert, headers)
         else:
             self.nb = nb_client
             try:
@@ -799,10 +806,14 @@ class NetboxModule(object):
 
         return False
 
-    def _connect_netbox_api(self, url, token, ssl_verify, cert):
+    def _connect_netbox_api(self, url, token, ssl_verify, cert, headers=None):
         try:
             session = requests.Session()
             session.verify = ssl_verify
+            if isinstance(headers, str):
+                headers = json.load(headers)
+            if isinstance(headers, dict):
+                session.headers.update(headers)
             if cert:
                 session.cert = tuple(i for i in cert)
             nb = pynetbox.api(url, token=token)
@@ -1414,7 +1425,7 @@ class NetboxModule(object):
 
         # We need to assign the correct type for the assigned object so the user doesn't have to worry about this.
         # We determine it by whether or not they pass in a device or virtual_machine
-        if data.get("assigned_object"):
+        if data.get("assigned_object") and isinstance(data["assigned_object"], dict):
             if data["assigned_object"].get("device"):
                 data["assigned_object_type"] = "dcim.interface"
             if data["assigned_object"].get("virtual_machine"):

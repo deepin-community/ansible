@@ -12,8 +12,8 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        python_version: ["3.11"]
-        ansible_version: ["stable-2.15", "stable-2.16", "devel"]
+        python_version: ["3.12"]
+        ansible_version: ["v2.19.0b7", "stable-2.18", "stable-2.17"]
     steps:
       - name: Perform testing
         uses: ansible-community/ansible-test-gh-action@release/v1
@@ -29,8 +29,8 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        python_version: ["3.11"]
-        ansible_version: ["stable-2.15", "stable-2.16", "devel"]
+        python_version: ["3.12"]
+        ansible_version: ["v2.19.0b7", "stable-2.18", "stable-2.17"]
     steps:
       - name: Perform testing
         uses: ansible-community/ansible-test-gh-action@release/v1
@@ -45,9 +45,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        grafana_version: ["8.5.27", "9.5.19", "10.4.3"]
-        ansible_version: ["stable-2.15", "stable-2.16", "devel"]
-        python_version: ["3.11"]
+        grafana_version: ["12.0.2", "11.6.3", "10.4.19"]
+        ansible_version: ["v2.19.0b7", "stable-2.18", "stable-2.17"]
+        python_version: ["3.12"]
     services:
       grafana:
         image: grafana/grafana:${{ matrix.grafana_version }}
@@ -67,9 +67,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        grafana_version: ["8.5.27", "9.5.19", "10.4.3"]
-        ansible_version: ["stable-2.15", "stable-2.16", "devel"]
-        python_version: ["3.11"]
+        grafana_version: ["12.0.2", "11.6.3", "10.4.19"]
+        ansible_version: ["v2.19.0b7", "stable-2.18", "stable-2.17"]
+        python_version: ["3.12"]
     services:
       grafana:
         image: grafana/grafana:${{ matrix.grafana_version }}

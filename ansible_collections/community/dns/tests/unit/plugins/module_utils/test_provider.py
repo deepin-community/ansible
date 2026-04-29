@@ -6,14 +6,12 @@
 # Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 import pytest
-
-from ansible_collections.community.dns.plugins.module_utils.provider import (
-    ensure_type,
-)
+from ansible_collections.community.dns.plugins.module_utils.provider import ensure_type
 
 
 CHECK_TYPE_DATA = [
@@ -28,6 +26,6 @@ CHECK_TYPE_DATA = [
 ]
 
 
-@pytest.mark.parametrize("input, type_name, output", CHECK_TYPE_DATA)
-def test_is_ascii_label(input, type_name, output):
-    assert ensure_type(input, type_name) == output
+@pytest.mark.parametrize("input_string, type_name, output", CHECK_TYPE_DATA)
+def test_is_ascii_label(input_string, type_name, output):
+    assert ensure_type(input_string, type_name) == output

@@ -267,6 +267,74 @@ def ndo_remote_user_spec():
     )
 
 
+def ndo_bfd_multi_hop_settings_spec():
+    return dict(
+        type="dict",
+        options=dict(
+            state=dict(type="str", choices=["enabled", "disabled"]),
+            admin_state=dict(type="str", choices=["enabled", "disabled"]),
+            detection_multiplier=dict(type="int"),
+            min_receive_interval=dict(type="int"),  # msec
+            min_transmit_interval=dict(type="int"),  # msec
+        ),
+    )
+
+
+def ndo_template_object_spec(aliases=None):
+    return dict(
+        type="dict",
+        options=dict(
+            name=dict(type="str", aliases=aliases) if aliases else dict(type="str"),
+            template=dict(type="str"),
+            template_id=dict(type="str"),
+        ),
+        required_by={
+            "template": "name",
+            "template_id": "name",
+        },
+        mutually_exclusive=[
+            ["template", "template_id"],
+        ],
+    )
+
+
+def ndo_l3out_port_channel_spec(micro_bfd=True):
+    portchannel_spec = dict(
+        type="dict",
+        options=dict(
+            uuid=dict(type="str"),
+            reference=dict(
+                type="dict",
+                aliases=["ref"],
+                options=dict(
+                    name=dict(type="str", required=True),
+                    template=dict(type="str"),
+                    template_id=dict(type="str"),
+                ),
+                required_one_of=[
+                    ["template", "template_id"],
+                ],
+                mutually_exclusive=[
+                    ("template", "template_id"),
+                ],
+            ),
+        ),
+        required_one_of=[
+            ["reference", "uuid"],
+        ],
+        mutually_exclusive=[
+            ("reference", "uuid"),
+        ],
+    )
+
+    if micro_bfd:
+        portchannel_spec["options"]["micro_bfd_enabled"] = dict(type="bool")
+        portchannel_spec["options"]["micro_bfd_address"] = dict(type="str")
+        portchannel_spec["options"]["micro_bfd_start_timer"] = dict(type="int")
+
+    return portchannel_spec
+
+
 # Copied from ansible's module uri.py (url): https://github.com/ansible/ansible/blob/cdf62edc65f564fff6b7e575e084026fa7faa409/lib/ansible/modules/uri.py
 def write_file(module, url, dest, content, resp, tmpsrc=None):
     # create a tempfile with some test content
@@ -316,6 +384,40 @@ def write_file(module, url, dest, content, resp, tmpsrc=None):
             module.fail_json(msg="failed to copy {0} to {1}: {2}".format(tmpsrc, dest, to_native(e)))
 
     os.remove(tmpsrc)
+
+
+def format_interface_descriptions(mso, interface_descriptions, node=None):
+    if interface_descriptions:
+
+        def format_range_interfaces(format_dict):
+            ids = format_dict.get("interfaceID")
+            if re.fullmatch(r"((\d+/)+\d+$)", ids):
+                yield format_dict
+            elif re.fullmatch(r"((\d+/)+\d+-\d+$)", ids):
+                slots = ids.rsplit("/", 1)[0]
+                range_start, range_stop = ids.rsplit("/", 1)[1].split("-")
+                if int(range_stop) > int(range_start):
+                    for x in range(int(range_start), int(range_stop) + 1):
+                        copy_format_dict = deepcopy(format_dict)
+                        copy_format_dict.update(interfaceID="{0}/{1}".format(slots, x))
+                        yield copy_format_dict
+                else:
+                    mso.fail_json(msg="Range start is greater than or equal to range stop for range of IDs '{0}'".format(ids))
+            else:
+                mso.fail_json(msg="Incorrect interface ID or range of IDs. Got '{0}'".format(ids))
+
+        return [
+            item
+            for interface_description in interface_descriptions
+            for item in format_range_interfaces(
+                {
+                    "nodeID": node if node is not None else interface_description.get("node"),
+                    "interfaceID": interface_description.get("interface_id", interface_description.get("interfaceID")),
+                    "description": interface_description.get("description"),
+                }
+            )
+        ]
+    return []
 
 
 class MSOModule(object):
@@ -615,7 +717,7 @@ class MSOModule(object):
             self.fail_json(msg="Backup file upload failed due to: {0}".format(info))
         return {}
 
-    def request(self, path, method=None, data=None, qs=None, api_version="v1"):
+    def request(self, path, method=None, data=None, qs=None, api_version="v1", ignore_errors=None):
         """Generic HTTP method for MSO requests."""
         self.path = path
 
@@ -733,6 +835,11 @@ class MSOModule(object):
                         payload = body
                     else:
                         payload = json.loads(body)
+
+                    if ignore_errors:
+                        for error in ignore_errors:
+                            if error in payload.get("message", ""):
+                                return error
                 except Exception as e:
                     self.error = dict(code=-1, message="Unable to parse output as JSON, see 'raw' output. %s" % e)
                     self.result["raw"] = body
@@ -749,12 +856,38 @@ class MSOModule(object):
                 self.fail_json(msg=msg)
             return {}
 
+    def l3out_interface_request(self, mso_l3out_template, ops, ignore_errors, state, remove_operation):
+        """
+        Wrapper function to handle the L3Out interface requests and node error responses.
+        L3Out node configuration requires an interface to be present for that node.
+        When the response fails with an error that indicates the node configuration is invalid, this function will retry
+        the request including the removal node configuration.
+        The function will retry only once to avoid potential infinite loops.
+        :param mso_l3out_template: MSOTemplate instance for the L3Out template
+        :param ops: List of operations to send to the API
+        :param ignore_errors: List of error strings to ignore
+        :param state: Desired state of the L3Out interface (present, absent)
+        :param remove_operation: Operation to remove the node configuration if the interface is absent
+        :return: Response from the MSO request
+        """
+
+        if state == "absent":
+            # When the last interface from a node is deleted the node configuration must also be removed
+            response = self.request(mso_l3out_template.template_path, method="PATCH", data=ops, ignore_errors=ignore_errors)
+            # When the response matches an error string from the ignore errors we need to remove the node configuration
+            if response in ignore_errors:
+                ops.append(remove_operation)
+            else:
+                return response
+
+        return self.request(mso_l3out_template.template_path, method="PATCH", data=ops)
+
     def query_objs(self, path, key=None, api_version="v1", **kwargs):
         """Query the MSO REST API for objects in a path"""
         found = []
         objs = self.request(path, api_version=api_version, method="GET")
 
-        if objs == {} or objs == []:
+        if not objs:
             return found
 
         if key is None:
@@ -956,8 +1089,14 @@ class MSOModule(object):
 
         ids = []
         if self.platform == "nd":
-            remote_users = self.nd_request("/nexus/infra/api/aaa/v4/remoteusers", method="GET")
-            local_users = self.nd_request("/nexus/infra/api/aaa/v4/localusers", method="GET")
+            remote_users = self.nd_request("/nexus/infra/api/aaa/v4/remoteusers", method="GET", ignore_not_found_error=True)
+            local_users = self.nd_request("/nexus/infra/api/aaa/v4/localusers", method="GET", ignore_not_found_error=True)
+
+            # To handle the issue in ND 4.0 related to querying local and remote users, new API endpoints have been introduced.
+            # These endpoints should be removed once the official ND API endpoints become operational.
+            if remote_users == {} and local_users == {}:
+                remote_users = self.nd_request("/api/config/class/remoteusers", method="GET")
+                local_users = self.nd_request("/api/config/class/localusers", method="GET")
 
         for user in users:
             user_dict = dict()
@@ -983,17 +1122,36 @@ class MSOModule(object):
             ids.append(id)
         return ids
 
-    def get_user_from_list_of_users(self, user_name, list_of_users, login_domain=""):
-        """Get user from list of users"""
-        for user in list_of_users.get("items"):
-            if user.get("spec").get("loginID") == user_name and (login_domain == "" or user.get("spec").get("loginDomain") == login_domain):
-                return user.get("spec")
+    def get_user_from_list_of_users(self, user_name, users, login_domain=""):
+        """Get user from the ND users API response object"""
+        if isinstance(users, dict):
+            for user in users.get("items"):
+                if (
+                    user.get("spec")
+                    and user.get("spec").get("loginID") == user_name
+                    and ((login_domain == "" and user.get("spec").get("loginDomain") is None) or user.get("spec").get("loginDomain") == login_domain)
+                ):
+                    return user.get("spec")
+        else:
+            # Handling a list of user objects is a temporary workaround that should be removed.
+            # Once the ND official local and remote user API endpoints are operational.
+            for user in users:
+                if (user.get("loginid") == user_name or user.get("loginID") == user_name) and (
+                    (login_domain == "" and user.get("logindomain") is None) or user.get("logindomain") == login_domain
+                ):
+                    return user
         return None
 
     def lookup_remote_users(self, remote_users, ignore_not_found_error=False):
         ids = []
         if self.platform == "nd":
-            remote_users_data = self.nd_request("/nexus/infra/api/aaa/v4/remoteusers", method="GET")
+            remote_users_data = self.nd_request("/nexus/infra/api/aaa/v4/remoteusers", method="GET", ignore_not_found_error=True)
+
+            # To handle the issue in ND 4.0 related to querying local and remote users, new API endpoints have been introduced.
+            # These endpoints should be removed once the official ND API endpoints become operational.
+            if remote_users_data == {}:
+                remote_users_data = self.nd_request("/api/config/class/remoteusers", method="GET")
+
         for remote_user in remote_users:
             user_dict = dict()
             if self.platform == "nd":
@@ -1223,6 +1381,8 @@ class MSOModule(object):
             for key in self.existing:
                 # Remove References
                 if key.endswith("Ref"):
+                    if key in required:
+                        continue
                     del self.proposed[key]
                     del self.sent[key]
                     continue
@@ -1401,6 +1561,13 @@ class MSOModule(object):
         schema_obj = self.query_obj(schema_path, displayName=schema)
         if not schema_obj:
             self.module.fail_json(msg="Schema '{0}' is not a valid schema name.".format(schema))
+        return schema_id, schema_path, schema_obj
+
+    def query_schema_by_id(self, schema_id):
+        schema_path = "schemas/{0}".format(schema_id)
+        schema_obj = self.query_obj(schema_path)
+        if not schema_obj:
+            self.module.fail_json(msg="Schema '{0}' is not a valid schema ID.".format(schema_id))
         return schema_id, schema_path, schema_obj
 
     def query_service_node_types(self):
@@ -1594,13 +1761,48 @@ class MSOModule(object):
                     if ignore_not_found_error:
                         return {}
                     self.fail_json(msg="ND Error: Unknown error no error code in decoded payload".format(**payload), data=data, info=info, payload=payload)
-            else:
+            elif not ignore_not_found_error:
                 self.result["raw"] = info.get("raw")
                 # Connection error
                 msg = "Connection failed for {0}. {1}".format(info.get("url"), info.get("msg"))
                 self.error = msg
                 self.fail_json(msg=msg)
             return {}
+
+    def verify_time_format(self, date_time):
+        if date_time != "now" or date_time != "infinite":
+            try:
+                formatted_date_time = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
+                return str(formatted_date_time)
+            except ValueError:
+                return self.fail_json(msg="ERROR: The time must be in 'YYYY-MM-DD HH:MM:SS' format.")
+
+    def get_site_interface_details(self, site_id=None, uuid=None, node=None, port=None, port_channel_uuid=None):
+        if node and port:
+            path = "/sitephysifsummary/site/{0}?node={1}".format(site_id, node)
+        elif uuid:
+            path = "/sitephysifsummary/site/{0}?uuid={1}".format(site_id, uuid)
+        elif port_channel_uuid:
+            path = "/pcsummary/site/{0}?uuid={1}".format(site_id, port_channel_uuid)
+
+        site_data = self.request(path, method="GET")
+
+        if uuid:
+            if site_data.get("spec", {}).get("monitoringTemplateInterfaces"):
+                return site_data.get("spec", {}).get("monitoringTemplateInterfaces", [])[0]
+            else:
+                self.fail_json(msg="The site port interface not found. Site ID: {0} and UUID: {1}".format(site_id, uuid))
+        elif node and port:
+            for interface in site_data.get("spec", {}).get("interfaces", []):
+                # To ensure consistency between the API response data and the input data by converting the node to a string
+                if interface.get("port") == port and str(interface.get("node")) == str(node):
+                    return interface
+            self.fail_json(msg="The site port interface not found. Site ID: {0}, Node: {1} and Path: {2}".format(site_id, node, port))
+        elif port_channel_uuid:
+            if site_data.get("spec", {}).get("pcs"):
+                return site_data.get("spec", {}).get("pcs")[0]
+            self.fail_json(msg="The site port channel interface not found. Site ID: {0} and UUID: {1}".format(site_id, port_channel_uuid))
+        return {}
 
 
 def service_node_ref_str_to_dict(serviceNodeRefStr):
@@ -1692,3 +1894,31 @@ def listener_rules_spec():
         ),
         target_ip_type=dict(type="str", choices=["unspecified", "primary", "secondary"]),
     )
+
+
+def epg_object_reference_spec(aliases=None):
+    epg_reference_spec = dict(
+        type="dict",
+        options=dict(
+            name=dict(type="str", required=True),
+            template=dict(type="str"),
+            template_id=dict(type="str"),
+            schema=dict(type="str"),
+            schema_id=dict(type="str"),
+            anp=dict(type="str"),
+            anp_uuid=dict(type="str"),
+        ),
+        required_one_of=[
+            ["template", "template_id"],
+            ["schema", "schema_id"],
+            ["anp", "anp_uuid"],
+        ],
+        mutually_exclusive=[
+            ("schema", "schema_id"),
+            ("template", "template_id"),
+            ("anp", "anp_uuid"),
+        ],
+    )
+    if aliases:
+        epg_reference_spec["aliases"] = aliases
+    return epg_reference_spec

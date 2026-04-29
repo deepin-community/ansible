@@ -124,11 +124,33 @@ options:
             server:
                 type: str
                 description: Server name/IP.
+            ca_cert:
+                aliases: ['ca-cert']
+                type: str
+                description: Ca cert.
+            client_cert:
+                aliases: ['client-cert']
+                type: str
+                description: Client cert.
+            message_authenticator:
+                aliases: ['message-authenticator']
+                type: str
+                description: Message authenticator.
+                choices:
+                    - 'optional'
+                    - 'require'
+            protocol:
+                type: str
+                description: Protocol.
+                choices:
+                    - 'udp'
+                    - 'tls'
 '''
 
 EXAMPLES = '''
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -225,7 +247,11 @@ def main():
                 'secondary-secret': {'no_log': True, 'type': 'raw'},
                 'secondary-server': {'type': 'str'},
                 'secret': {'no_log': True, 'type': 'raw'},
-                'server': {'type': 'str'}
+                'server': {'type': 'str'},
+                'ca-cert': {'v_range': [['7.4.6', '7.4.7'], ['7.6.2', '']], 'type': 'str'},
+                'client-cert': {'v_range': [['7.4.6', '7.4.7'], ['7.6.2', '']], 'type': 'str'},
+                'message-authenticator': {'v_range': [['7.4.6', '7.4.7'], ['7.6.2', '']], 'choices': ['optional', 'require'], 'type': 'str'},
+                'protocol': {'v_range': [['7.4.6', '7.4.7'], ['7.6.2', '']], 'choices': ['udp', 'tls'], 'type': 'str'}
             }
         }
     }

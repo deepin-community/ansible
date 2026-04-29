@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -38,7 +38,6 @@ argument_spec.update(dict(
     multicastRouting=dict(type="str"),
     name=dict(type="str"),
     ospfSettings=dict(type="dict"),
-    ospfV3=dict(type="dict"),
     subnet=dict(type="str"),
     vlanId=dict(type="int"),
     serial=dict(type="str"),
@@ -64,7 +63,6 @@ class DevicesSwitchRoutingInterfaces(object):
             multicastRouting=params.get("multicastRouting"),
             name=params.get("name"),
             ospfSettings=params.get("ospfSettings"),
-            ospfV3=params.get("ospfV3"),
             subnet=params.get("subnet"),
             vlanId=params.get("vlanId"),
             serial=params.get("serial"),
@@ -73,6 +71,8 @@ class DevicesSwitchRoutingInterfaces(object):
 
     def get_all_params(self, name=None, id=None):
         new_object_params = {}
+        if self.new_object.get('protocol') is not None or self.new_object.get('protocol') is not None:
+            new_object_params['protocol'] = self.new_object.get('protocol')
         if self.new_object.get('serial') is not None or self.new_object.get('serial') is not None:
             new_object_params['serial'] = self.new_object.get('serial')
         return new_object_params
@@ -106,9 +106,6 @@ class DevicesSwitchRoutingInterfaces(object):
         if self.new_object.get('ospfSettings') is not None or self.new_object.get('ospf_settings') is not None:
             new_object_params['ospfSettings'] = self.new_object.get('ospfSettings') or \
                 self.new_object.get('ospf_settings')
-        if self.new_object.get('ospfV3') is not None or self.new_object.get('ospf_v3') is not None:
-            new_object_params['ospfV3'] = self.new_object.get('ospfV3') or \
-                self.new_object.get('ospf_v3')
         if self.new_object.get('subnet') is not None or self.new_object.get('subnet') is not None:
             new_object_params['subnet'] = self.new_object.get('subnet') or \
                 self.new_object.get('subnet')
@@ -150,9 +147,6 @@ class DevicesSwitchRoutingInterfaces(object):
         if self.new_object.get('ospfSettings') is not None or self.new_object.get('ospf_settings') is not None:
             new_object_params['ospfSettings'] = self.new_object.get('ospfSettings') or \
                 self.new_object.get('ospf_settings')
-        if self.new_object.get('ospfV3') is not None or self.new_object.get('ospf_v3') is not None:
-            new_object_params['ospfV3'] = self.new_object.get('ospfV3') or \
-                self.new_object.get('ospf_v3')
         if self.new_object.get('subnet') is not None or self.new_object.get('subnet') is not None:
             new_object_params['subnet'] = self.new_object.get('subnet') or \
                 self.new_object.get('subnet')
@@ -242,7 +236,6 @@ class DevicesSwitchRoutingInterfaces(object):
             ("multicastRouting", "multicastRouting"),
             ("name", "name"),
             ("ospfSettings", "ospfSettings"),
-            ("ospfV3", "ospfV3"),
             ("subnet", "subnet"),
             ("vlanId", "vlanId"),
             ("serial", "serial"),
@@ -250,8 +243,8 @@ class DevicesSwitchRoutingInterfaces(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (DNAC) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def create(self):

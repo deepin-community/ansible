@@ -4,6 +4,59 @@ Check_Point.Mgmt Release Notes
 
 .. contents:: Topics
 
+v6.4.1
+======
+
+Release Summary
+---------------
+
+This is release 6.4.1 of "check_point.mgmt", released on 2025-06-01.
+
+Bugfixes
+--------
+
+- Added required management version to the documentation for all collection modules.
+- module_utils/checkpoint – Prevent redundant logout call when there is no authentication header 'X-chkp-sid'.
+
+v6.4.0
+======
+
+Release Summary
+---------------
+
+This is release 6.4.0 of "check_point.mgmt", released on 2025-02-20.
+
+Minor Changes
+-------------
+
+- added missing parameters such as 'filter', 'domains_to_process' and 'async_response' to the relevant resources modules.
+
+New Modules
+-----------
+
+- check_point.mgmt.cp_mgmt_user_template - Manages user-template objects on Checkpoint over Web Services API
+- check_point.mgmt.cp_mgmt_user_template_facts - Get user-template objects facts on Checkpoint over Web Services API
+
+v6.3.0
+======
+
+Release Summary
+---------------
+
+This is release 6.3.0 of ``check_point.mgmt``, released on 2025-01-23.
+
+Minor Changes
+-------------
+
+- check_point.mgmt.cp_mgmt_lsm_cluster - support additional parameters (dynamic-objects, tags and topology)
+- check_point.mgmt.cp_mgmt_lsm_gateway - support additional parameters (device_id, dynamic-objects, tags and topology)
+
+New Modules
+-----------
+
+- check_point.mgmt.cp_mgmt_user - Manages user objects on Checkpoint over Web Services API
+- check_point.mgmt.cp_mgmt_user_facts - Get user objects facts on Checkpoint over Web Services API
+
 v6.2.1
 ======
 

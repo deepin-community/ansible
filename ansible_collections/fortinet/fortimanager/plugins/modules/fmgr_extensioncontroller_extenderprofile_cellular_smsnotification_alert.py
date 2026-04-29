@@ -120,6 +120,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -135,13 +136,13 @@ EXAMPLES = '''
         adom: <your own value>
         extender_profile: <your own value>
         extensioncontroller_extenderprofile_cellular_smsnotification_alert:
-          data_exhausted: <string>
-          fgt_backup_mode_switch: <string>
-          low_signal_strength: <string>
-          mode_switch: <string>
-          os_image_fallback: <string>
-          session_disconnect: <string>
-          system_reboot: <string>
+          # data_exhausted: <string>
+          # fgt_backup_mode_switch: <string>
+          # low_signal_strength: <string>
+          # mode_switch: <string>
+          # os_image_fallback: <string>
+          # session_disconnect: <string>
+          # system_reboot: <string>
 '''
 
 RETURN = '''

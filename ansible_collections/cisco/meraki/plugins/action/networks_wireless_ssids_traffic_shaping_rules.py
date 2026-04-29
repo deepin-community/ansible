@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -70,12 +70,14 @@ class NetworksWirelessSsidsTrafficShapingRules(object):
     def update_all_params(self):
         new_object_params = {}
         if self.new_object.get('defaultRulesEnabled') is not None or self.new_object.get('default_rules_enabled') is not None:
-            new_object_params['defaultRulesEnabled'] = self.new_object.get('defaultRulesEnabled')
+            new_object_params['defaultRulesEnabled'] = self.new_object.get(
+                'defaultRulesEnabled')
         if self.new_object.get('rules') is not None or self.new_object.get('rules') is not None:
             new_object_params['rules'] = self.new_object.get('rules') or \
                 self.new_object.get('rules')
         if self.new_object.get('trafficShapingEnabled') is not None or self.new_object.get('traffic_shaping_enabled') is not None:
-            new_object_params['trafficShapingEnabled'] = self.new_object.get('trafficShapingEnabled')
+            new_object_params['trafficShapingEnabled'] = self.new_object.get(
+                'trafficShapingEnabled')
         if self.new_object.get('networkId') is not None or self.new_object.get('network_id') is not None:
             new_object_params['networkId'] = self.new_object.get('networkId') or \
                 self.new_object.get('network_id')
@@ -113,7 +115,8 @@ class NetworksWirelessSsidsTrafficShapingRules(object):
         prev_obj = None
         id_exists = False
         name_exists = False
-        o_id = self.new_object.get("networkId") or self.new_object.get("network_id")
+        o_id = self.new_object.get(
+            "networkId") or self.new_object.get("network_id")
         name = self.new_object.get("name")
         if o_id:
             prev_obj = self.get_object_by_name(o_id)
@@ -143,8 +146,8 @@ class NetworksWirelessSsidsTrafficShapingRules(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):

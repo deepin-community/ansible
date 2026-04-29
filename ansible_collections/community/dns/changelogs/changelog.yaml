@@ -964,3 +964,155 @@ releases:
           name: reverse_lookup
           namespace: null
     release_date: '2024-12-02'
+  3.1.1:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+      release_summary: Maintenance release with updated documentation and PSL.
+    fragments:
+      - 3.1.1.yml
+      - update-psl.yml
+    release_date: '2024-12-30'
+  3.1.2:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+      release_summary: Regular maintenance release with updated PSL.
+    fragments:
+      - 3.1.2.yml
+      - update-psl.yml
+    release_date: '2025-01-27'
+  3.2.0:
+    changes:
+      bugfixes:
+        - Fix various issues and potential bugs pointed out by linters (https://github.com/ansible-collections/community.dns/pull/242,
+          https://github.com/ansible-collections/community.dns/pull/243).
+        - Update Public Suffix List.
+      minor_changes:
+        - all filter, inventory, and lookup plugins, and plugin utils - add type hints
+          to all Python 3 only code (https://github.com/ansible-collections/community.dns/pull/239).
+        - get_public_suffix, get_registrable_domain, remove_public_suffix, and remove_registrable_domain
+          filter plugin - validate parameters, and correctly handle byte strings when
+          passed for input (https://github.com/ansible-collections/community.dns/pull/239).
+      release_summary: Feature/maintenance release with updated PSL.
+    fragments:
+      - 242-linting.yml
+      - 3.2.0.yml
+      - py3-typing.yml
+      - update-psl.yml
+    release_date: '2025-02-16'
+  3.2.1:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+      release_summary: Maintenance release with updated PSL.
+    fragments:
+      - 3.2.1.yml
+      - update-psl.yml
+    release_date: '2025-02-24'
+  3.2.2:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+      release_summary: Regular maintenance release with updated PSL.
+    fragments:
+      - 3.2.2.yml
+      - update-psl.yml
+    release_date: '2025-03-24'
+  3.2.3:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+      release_summary: Maintenance release with updated PSL.
+    fragments:
+      - 3.2.3.yml
+      - update-psl.yml
+    release_date: '2025-04-21'
+  3.2.4:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+      release_summary: Regular maintenance release with updated PSL.
+    fragments:
+      - 3.2.4.yml
+      - update-psl.yml
+    release_date: '2025-05-19'
+  3.2.5:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+        - lookup and lookup_as_dict lookup plugins - removed type ``ALL``, which never
+          worked (https://github.com/ansible-collections/community.dns/issues/264,
+          https://github.com/ansible-collections/community.dns/pull/265).
+      release_summary: Regular maintenance release with bugfixes and updated PSL.
+    fragments:
+      - 265-lookup-all.yml
+      - 3.2.5.yml
+      - update-psl.yml
+    release_date: '2025-06-15'
+  3.2.6:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+        - hetzner_dns_records inventory plugin - avoid using deprecated option when
+          templating options (https://github.com/ansible-collections/community.dns/pull/266).
+        - hosttech_dns_records inventory plugin - avoid using deprecated option when
+          templating options (https://github.com/ansible-collections/community.dns/pull/266).
+      release_summary: Regular bugfix and maintenance release with updated PSL.
+    fragments:
+      - 266-disable_lookups.yml
+      - 3.2.6.yml
+      - update-psl.yml
+    release_date: '2025-07-13'
+  3.2.7:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+      release_summary: Maintenance release with updated PSL.
+    fragments:
+      - 3.2.7.yml
+      - update-psl.yml
+    release_date: '2025-07-27'
+  3.3.0:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+      release_summary: Feature release with support for AdGuard Home.
+    fragments:
+      - 3.3.0.yml
+      - update-psl.yml
+    modules:
+      - description: Add, update or delete DNS rewrite rules from AdGuardHome.
+        name: adguardhome_rewrite
+        namespace: ''
+      - description: Retrieve DNS rewrite rules from AdGuardHome.
+        name: adguardhome_rewrite_info
+        namespace: ''
+    release_date: '2025-08-10'
+  3.3.1:
+    changes:
+      bugfixes:
+        - Avoid deprecated functionality in ansible-core 2.20 (https://github.com/ansible-collections/community.dns/pull/280).
+        - Update Public Suffix List.
+        - nameserver_record_info - removed type ``ALL``, which never worked (https://github.com/ansible-collections/community.dns/issues/278,
+          https://github.com/ansible-collections/community.dns/pull/279).
+      release_summary: Bugfix and maintenance release with updated PSL.
+    fragments:
+      - 279-nameserver_record_info-all.yml
+      - 280-deprecations.yml
+      - 3.3.1.yml
+      - update-psl.yml
+    release_date: '2025-08-18'
+  3.3.2:
+    changes:
+      bugfixes:
+        - Update Public Suffix List.
+        - various DNS lookup plugins and modules - improve handling of invalid nameserver
+          IPs/names (https://github.com/ansible-collections/community.dns/issues/282,
+          https://github.com/ansible-collections/community.dns/pull/284).
+      release_summary: Bugfix and maintenance release with updated PSL.
+    fragments:
+      - 284-invalid-nameserver.yml
+      - 3.3.2.yml
+      - update-psl.yml
+    release_date: '2025-08-31'

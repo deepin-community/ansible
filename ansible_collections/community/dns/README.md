@@ -6,8 +6,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Community DNS Collection
 [![Documentation](https://img.shields.io/badge/docs-brightgreen.svg)](https://docs.ansible.com/ansible/devel/collections/community/dns/)
-[![CI](https://github.com/ansible-collections/community.dns/workflows/CI/badge.svg?event=push)](https://github.com/ansible-collections/community.dns/actions)
-[![Public Suffix List up-to-date](https://github.com/ansible-collections/community.dns/workflows/Check%20for%20Public%20Suffix%20List%20updates/badge.svg?branch=main)](https://github.com/ansible-collections/community.dns/actions?query=workflow%3A%22Check+for+Public+Suffix+List+updates%22+branch%3Amain)
+[![CI](https://github.com/ansible-collections/community.dns/actions/workflows/nox.yml/badge.svg?branch=main)](https://github.com/ansible-collections/community.dns/actions)
+[![Public Suffix List up-to-date](https://github.com/ansible-collections/community.dns/actions/workflows/check-psl.yml/badge.svg?branch=main)](https://github.com/ansible-collections/community.dns/actions/workflows/check-psl.yml)
 [![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/community.dns)](https://codecov.io/gh/ansible-collections/community.dns)
 [![REUSE status](https://api.reuse.software/badge/github.com/ansible-collections/community.dns)](https://api.reuse.software/info/github.com/ansible-collections/community.dns)
 
@@ -35,7 +35,7 @@ For more information about communication, see the [Ansible communication guide](
 
 ## Tested with Ansible
 
-Tested with the current ansible-core 2.14, ansible-core 2.15, ansible-core 2.16, ansible-core 2.17, and ansible-core 2.18 releases and the current development version of ansible-core. Ansible versions before 2.9.10 are not supported.
+Tested with the current ansible-core 2.14, ansible-core 2.15, ansible-core 2.16, ansible-core 2.17, ansible-core 2.18, and ansible-core 2.19 releases and the current development version of ansible-core. Ansible versions before 2.9.10 are not supported.
 
 ## External requirements
 
@@ -72,6 +72,7 @@ If you use the Ansible package and do not update collections independently, use 
 - Lookup plugins:
   - `lookup`: look up DNS records and return them as a list of strings.
   - `lookup_as_dict`: look up DNS records and return them as a list of dictionaries.
+  - `reverse_lookup`: reverse-look up IP addresses.
 - Inventory plugins:
   - `hetzner_dns_records`: create inventory from Hetzner DNS records.
   - `hosttech_dns_records`: create inventory from HostTech DNS records.
@@ -80,6 +81,7 @@ If you use the Ansible package and do not update collections independently, use 
   - `get_registrable_domain`: given a domain name, returns the *registrable domain name* (also called *registered domain name*). For example, `"www.ansible.com" | community.dns.get_registrable_domain == "ansible.com"` and `"some.random.prefixes.ansible.co.uk" | community.dns.get_registrable_domain == "ansible.co.uk"`.
   - `remove_public_suffix`: given a domain name, returns the part before the public suffix. For example, `"www.ansible.com" | community.dns.remove_public_suffix == "www.ansible"` and `"some.random.prefixes.ansible.co.uk" | community.dns.remove_public_suffix == "some.random.prefixes.ansible"`.
   - `remove_registrable_domain`: given a domain name, returns the part before the DNS zone. For example, `"www.ansible.com" | community.dns.remove_registrable_domain == "www"` and `"some.random.prefixes.ansible.co.uk" | community.dns.remove_registrable_domain == "some.random.prefixes"`.
+  - `reverse_pointer`: convert an IP address into a DNS name for reverse lookup.
   - `quote_txt`: quotes a string for use as a TXT record entry. For example, `"this is a test" | community.dns.quote_txt == '"this is a test"'`.
   - `unquote_txt`: unquotes a TXT record entry. For example, `'"foo" "bar"' | community.dns.unquote_txt == "foobar"`.
 
@@ -125,6 +127,7 @@ We currently are not planning any deprecations or new major releases like 2.0.0 
 - [Ansible Collection overview](https://github.com/ansible-collections/overview)
 - [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
 - [Ansible Developer guide](https://docs.ansible.com/ansible/latest/dev_guide/index.html)
+- [Antsibull-nox documentation](https://ansible.readthedocs.io/projects/antsibull-nox/)
 - [Ansible Collections Checklist](https://github.com/ansible-collections/overview/blob/master/collection_requirements.rst)
 - [Ansible Community code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
 - [The Bullhorn (the Ansible Contributor newsletter)](https://us19.campaign-archive.com/home/?u=56d874e027110e35dea0e03c1&id=d6635f5420)
@@ -138,4 +141,4 @@ See [LICENSES/GPL-3.0-or-later.txt](https://github.com/ansible-collections/commu
 
 The only content of this collection that is not GPL v3.0+ licensed is `plugins/public_suffix_list.dat`, which is subject to the terms of the Mozilla Public License, v. 2.0. See [LICENSES/MPL-2.0.txt](https://github.com/ansible-collections/community.dns/blob/main/LICENSES/MPL-2.0.txt) for the full text.
 
-All files have a machine readable `SDPX-License-Identifier:` comment denoting its respective license(s) or an equivalent entry in an accompanying `.license` file. Only changelog fragments (which will not be part of a release) are covered by a blanket statement in `.reuse/dep5`. This conforms to the [REUSE specification](https://reuse.software/spec/).
+All files have a machine readable `SDPX-License-Identifier:` comment denoting its respective license(s) or an equivalent entry in an accompanying `.license` file. Only changelog fragments (which will not be part of a release) are covered by a blanket statement in `REUSE.toml`. This conforms to the [REUSE specification](https://reuse.software/spec/).

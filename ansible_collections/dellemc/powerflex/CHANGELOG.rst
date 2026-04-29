@@ -4,15 +4,49 @@ Dellemc.PowerFlex Change Logs
 
 .. contents:: Topics
 
+v2.6.1
+======
+
+Release Summary
+---------------
+
+This release brings several bug fixes and minor changes to the PowerFlex Ansible Modules.
+
+Minor Changes
+-------------
+
+- Added none check for mdm cluster id in mdm_cluster module.
+- Updated minimum SDK version to 2.6.1.
+
+Bugfixes
+--------
+
+- snapshot_policy - Renamed snapshotAccessMode and secureSnapshots to snapshot_access_mode and secure_snapshots respectively.
+
+v2.6.0
+======
+
+Minor Changes
+-------------
+
+- Added Ansible role to support installation and uninstallation of SDT.
+- Info module is enhanced to support the listing of SDTs and NVMe hosts.
+
+New Modules
+-----------
+
+- dellemc.powerflex.nvme_host - Manage NVMe Hosts on Dell PowerFlex
+- dellemc.powerflex.sdt - Manage SDTs on Dell PowerFlex
+
 v2.5.0
 ======
 
 Minor Changes
 -------------
 
+- Added support for PowerFlex Onyx version(4.6.x).
 - Fixed the roles to support attaching the MDM cluster to the gateway.
 - The storage pool module has been enhanced to support more features.
-- Added support for PowerFlex Onyx version(4.6.x).
 
 v2.4.0
 ======

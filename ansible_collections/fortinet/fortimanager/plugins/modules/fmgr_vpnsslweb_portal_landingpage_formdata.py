@@ -106,6 +106,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -122,8 +123,8 @@ EXAMPLES = '''
         portal: <your own value>
         state: present # <value in [present, absent]>
         vpnsslweb_portal_landingpage_formdata:
-          name: <string>
-          value: <string>
+          name: "your value" # Required variable, string
+          # value: <string>
 '''
 
 RETURN = '''

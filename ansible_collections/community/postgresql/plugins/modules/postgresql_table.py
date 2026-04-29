@@ -13,7 +13,7 @@ DOCUMENTATION = r'''
 module: postgresql_table
 short_description: Create, drop, or modify a PostgreSQL table
 description:
-- Allows to create, drop, rename, truncate a table, or change some table attributes.
+- Allows to create, drop, truncate a table, or change some table attributes.
 options:
   table:
     description:
@@ -59,6 +59,8 @@ options:
     elements: str
   rename:
     description:
+    - DEPRECATED (see the L(discussion,https://github.com/ansible-collections/community.postgresql/issues/820)). This option will be removed in version 5.0.0.
+      To rename a table, use the M(community.postgresql.postgresql_query) module.
     - New table name. Mutually exclusive with I(tablespace), I(owner),
       I(unlogged), I(like), I(including), I(columns), I(truncate), and I(storage_params).
     type: str
@@ -74,13 +76,14 @@ options:
       Mutually exclusive with I(rename) and I(truncate).
     type: list
     elements: str
-  db:
+  login_db:
     description:
     - Name of database to connect and where the table will be created.
+    - The V(db) alias is deprecated and will be removed in version 5.0.0.
     type: str
     default: ''
     aliases:
-    - login_db
+    - db
   session_role:
     description:
     - Switch to session_role after connecting.
@@ -107,6 +110,8 @@ notes:
   named postgres.
 - PostgreSQL allows to create columnless table, so columns param is optional.
 - Unlogged tables are available from PostgreSQL server version 9.1.
+- If the table already exists and columns are specified they will be ignored.
+  Columns can not be altered on an existing table.
 
 attributes:
   check_mode:
@@ -141,14 +146,14 @@ extends_documentation_fragment:
 EXAMPLES = r'''
 - name: Create tbl2 in the acme database with the DDL like tbl1 with testuser as an owner
   community.postgresql.postgresql_table:
-    db: acme
+    login_db: acme
     name: tbl2
     like: tbl1
     owner: testuser
 
 - name: Create tbl2 in the acme database and tablespace ssd with the DDL like tbl1 including comments and indexes
   community.postgresql.postgresql_table:
-    db: acme
+    login_db: acme
     table: tbl2
     like: tbl1
     including: comments, indexes
@@ -171,16 +176,6 @@ EXAMPLES = r'''
     name: acme.useless_data
     columns: waste_id int
     unlogged: true
-
-- name: Rename table foo to bar
-  community.postgresql.postgresql_table:
-    table: foo
-    rename: bar
-
-- name: Rename table foo from schema acme to bar
-  community.postgresql.postgresql_table:
-    name: acme.foo
-    rename: bar
 
 - name: Set owner to someuser
   community.postgresql.postgresql_table:
@@ -300,7 +295,7 @@ class Table(object):
         query = ("SELECT t.tableowner, t.tablespace, c.reloptions "
                  "FROM pg_tables AS t "
                  "INNER JOIN pg_class AS c ON  c.relname = t.tablename "
-                 "INNER JOIN pg_namespace AS n ON c.relnamespace = n.oid "
+                 "INNER JOIN pg_namespace AS n ON t.schemaname = n.nspname AND c.relnamespace = n.oid "
                  "WHERE t.tablename = %(tblname)s "
                  "AND n.nspname = %(schema)s")
         res = exec_sql(self, query, query_params={'tblname': tblname, 'schema': schema},
@@ -476,13 +471,20 @@ def main():
     argument_spec.update(
         table=dict(type='str', required=True, aliases=['name']),
         state=dict(type='str', default='present', choices=['absent', 'present']),
-        db=dict(type='str', default='', aliases=['login_db']),
+        login_db=dict(type='str', default='', aliases=['db'], deprecated_aliases=[
+            {
+                'name': 'db',
+                'version': '5.0.0',
+                'collection_name': 'community.postgresql',
+            }],
+        ),
         tablespace=dict(type='str'),
         owner=dict(type='str'),
         unlogged=dict(type='bool', default=False),
         like=dict(type='str'),
         including=dict(type='str'),
-        rename=dict(type='str'),
+        rename=dict(type='str', removed_in_version='5.0.0',
+                    removed_from_collection='community.postgresql'),
         truncate=dict(type='bool', default=False),
         columns=dict(type='list', elements='str'),
         storage_params=dict(type='list', elements='str'),

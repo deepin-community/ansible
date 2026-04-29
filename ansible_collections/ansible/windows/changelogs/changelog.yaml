@@ -769,3 +769,230 @@ releases:
     - release_summary-2.5.0.yml
     - win_powershell-fix.yml
     release_date: '2024-08-30'
+  2.6.0:
+    changes:
+      bugfixes:
+      - ansible.windows.win_powershell - Add extra checks to avoid ``GetType`` error
+        when converting the output object - ttps://github.com/ansible-collections/ansible.windows/issues/708
+      - win_powershell - Ensure ``$Ansible.Result = @()`` as an empty array is returned
+        as an empty list and not null - https://github.com/ansible-collections/ansible.windows/issues/686
+      - win_updates - Only set the Access control sections on the temporary directory
+        created by the module. This avoids the error when the ``SeSecurityPrivilege``
+        privilege isn't present.
+      minor_changes:
+      - Added support for Windows Server 2025
+      - setup - Added ``ansible_os_install_date`` as the OS installation date in the
+        ISO 8601 format ``yyyy-MM-ddTHH:mm:ssZ``. This date is represented in the
+        UTC timezone - https://github.com/ansible-collections/ansible.windows/issues/663
+      release_summary: Release summary for v2.6.0. Includes various modules promoted
+        from ``community.windows``.
+    fragments:
+    - release-summary.yml
+    - setup-install-date.yml
+    - win-2025.yml
+    - win_powershell-result-array.yml
+    - win_powershell-type.yml
+    - win_updates-acl.yml
+    modules:
+    - description: Get information on certificates from a Windows Certificate Store
+      name: win_certificate_info
+      namespace: ''
+    - description: Manage Windows Server DHCP Leases
+      name: win_dhcp_lease
+      namespace: ''
+    - description: Manage Windows Server DNS records
+      name: win_dns_record
+      namespace: ''
+    - description: Manage Windows Server DNS Zones
+      name: win_dns_zone
+      namespace: ''
+    - description: Manage Windows event logs
+      name: win_eventlog
+      namespace: ''
+    - description: Enable or disable the Windows Firewall
+      name: win_firewall
+      namespace: ''
+    - description: Manages hosts file entries on Windows.
+      name: win_hosts
+      namespace: ''
+    - description: Install and uninstalls Windows hotfixes
+      name: win_hotfix
+      namespace: ''
+    - description: Set the region and format settings
+      name: win_region
+      namespace: ''
+    - description: Sets Windows machine timezone
+      name: win_timezone
+      namespace: ''
+    release_date: '2024-12-11'
+  2.7.0:
+    changes:
+      bugfixes:
+      - win_group_membership - Fix bug when input ``members`` contained duplicate
+        members that were not already present in the group - https://github.com/ansible-collections/ansible.windows/issues/736
+      minor_changes:
+      - win_get_url - if checksum is passed and destination file exists with different
+        checksum file is always downloaded (https://github.com/ansible-collections/ansible.windows/issues/717)
+      - win_get_url - if checksum is passed and destination file exists with identical
+        checksum no download is done unless force=yes (https://github.com/ansible-collections/ansible.windows/issues/717)
+      - win_group - Added ``--diff`` output support.
+      - win_group - Added ``members`` option to set the group membership. This is
+        designed to replace the functionality of the ``win_group_membership`` module.
+      - win_group - Added ``sid`` return value representing the security identifier
+        of the group when ``state=present``.
+      - win_group - Migrate to newer Ansible.Basic fragment for better input validation
+        and testing support.
+      release_summary: Release summary for v2.7.0
+    fragments:
+    - 717-win_get_url-checksum.yml
+    - release-summary.yml
+    - win_group-basic.yml
+    - win_group-diff.yml
+    - win_group-sid.yml
+    - win_group_membership-unique.yml
+    modules:
+    - description: Used to make changes to the system wide Audit Policy
+      name: win_audit_policy_system
+      namespace: ''
+    - description: Adds an audit rule to files, folders, or registry keys
+      name: win_audit_rule
+      namespace: ''
+    - description: Adds or Sets auto logon registry keys.
+      name: win_auto_logon
+      namespace: ''
+    - description: Set windows description, owner and organization
+      name: win_computer_description
+      namespace: ''
+    - description: Manages Windows Credentials in the Credential Manager
+      name: win_credential
+      namespace: ''
+    - description: Gather information about Windows features
+      name: win_feature_info
+      namespace: ''
+    - description: Alters the compression of files and directories on NTFS partitions.
+      name: win_file_compression
+      namespace: ''
+    - description: Manages proxy settings for WinHTTP
+      name: win_http_proxy
+      namespace: ''
+    - description: Manages proxy settings for WinINet and Internet Explorer
+      name: win_inet_proxy
+      namespace: ''
+    - description: Recopilates the facts of the listening ports of the machine
+      name: win_listen_ports_facts
+      namespace: ''
+    - description: Map network drives for users
+      name: win_mapped_drive
+      namespace: ''
+    - description: Provides Windows product and license information
+      name: win_product_facts
+      namespace: ''
+    - description: Add or remove a static route
+      name: win_route
+      namespace: ''
+    - description: Manages the Windows user profiles.
+      name: win_user_profile
+      namespace: ''
+    release_date: '2025-01-22'
+  2.8.0:
+    changes:
+      bugfixes:
+      - setup - Add better detection for VMWare base virtualization platforms - https://github.com/ansible-collections/ansible.windows/issues/753
+      - win_package - Support check mode with local file path sources
+      minor_changes:
+      - setup - Remove dependency on shared function loaded by Ansible
+      - win_get_url - Added ``checksum`` and ``checksum_algorithm`` to verify the
+        package before installation. Also returns ``checksum`` if ``checksum_algorithm``
+        is provided - https://github.com/ansible-collections/ansible.windows/issues/596
+      release_summary: Release summary for v2.8.0
+    fragments:
+    - release-summary.yml
+    - setup-json.yml
+    - setup-vmware.yml
+    - win_package-checksum.yml
+    - win_package-local-file-check.yml
+    release_date: '2025-03-14'
+  3.0.0:
+    changes:
+      bugfixes:
+      - win_find - allow users case sensitive match the filename (https://github.com/ansible-collections/ansible.windows/issues/473).
+      - win_powershell - Handle failure on output conversion when the output object
+        uses a custom adapter set that fails to enumerate the method members. This
+        is seen when using the output from ``Get-WmiObject`` - https://github.com/ansible-collections/ansible.windows/issues/767
+      - win_regedit - Handle decimal values with no decimal values which may be the
+        result of a Jinja2 template
+      - win_template - Added support for Ansible 2.19 and the introduction of the
+        data tagging feature.
+      minor_changes:
+      - Set minimum supported Ansible version to 2.16 to align with the versions still
+        supported by Ansible.
+      - win_template - Added ``comment_start_string`` and ``comment_end_string`` as
+        options to align with the builtin ``template`` module.
+      release_summary: Major release of the ansible.windows collection. This release
+        includes fixes for Ansible 2.19 and removes some deprecated modules.
+      removed_features:
+      - win_domain - Removed deprecated module, use ``microsoft.ad.domain`` instead
+      - win_domain_controller - Removed deprecated module, use ``microsoft.ad.domain_controller``
+        instead
+      - win_domain_membership - Removed deprecated module, use ``microsoft.ad.membership``
+        instead
+      - win_feature - Removed deprecated return value ``restart_needed`` in ``feature_result``,
+        use ``reboot_required`` instead
+      - win_updates - Removed deprecated return value ``filtered_reason``, use ``filtered_reasons``
+        instead
+    fragments:
+    - ansible-ver.yml
+    - powershell-wmi-result.yml
+    - release-summary.yml
+    - removal.yml
+    - win_find_case_sensitive.yml
+    - win_regedit-decimal.yml
+    - win_template.yml
+    release_date: '2025-04-28'
+  3.1.0:
+    changes:
+      bugfixes:
+      - win_package - fail to remove package when no product id is provided with path
+        as an URL (https://github.com/ansible-collections/ansible.windows/issues/667).
+      minor_changes:
+      - setup - add "CloudStack KVM Hypervisor" for Windows VM in virtual facts (https://github.com/ansible-collections/ansible.windows/pull/785).
+      - setup - added ``ansible_product_uuid`` to align with Python facts - https://github.com/ansible-collections/ansible.windows/issues/789
+      - win_dns_client - add support for suffixsearchlist (https://github.com/ansible-collections/ansible.windows/issues/656).
+      - win_powershell - Add support for running scripts on a Windows host with an
+        active Windows Application Control policy in place. Scripts that are unsigned
+        will be run in Constrained Language Mode while scripts that are signed and
+        trusted by the remote host's WDAC policy will be run in Full Language Mode.
+      - win_powershell - Added the ``path`` and ``remote_src`` options which can be
+        used to specify a local or remote PowerShell script to run.
+      - win_shell - Add support for running scripts on a Windows host with an active
+        Windows Application Control policy in place. Scripts will always run in Contrained
+        Language Mode as they are executed in memory, use the ``ansible.windows.win_powershell``
+        module to run signed scripts in Full Language Mode on a WDAC enabled host.
+      release_summary: Release summary for v3.1.0
+    fragments:
+    - 785-cloudstack_kvm_to_virtual.yml
+    - release-summary.yml
+    - setup-product_uuid.yml
+    - wdac.yml
+    - win_dns_client.yml
+    - win_package.yml
+    - win_powershell-path.yml
+    release_date: '2025-05-27'
+  3.2.0:
+    changes:
+      bugfixes:
+      - win_copy - report correct information about symlinks in action plugin.
+      - win_service - Fix crash when attempting to create a service with the ``--check``
+        flag.
+      minor_changes:
+      - win_find - add support for 'any' to find both directories and files (https://github.com/ansible-collections/ansible.windows/issues/797).
+      - win_template - Preserve user-supplied value for ``ansible_managed`` when set
+        on Ansible Core 2.19+.
+      release_summary: Release summary for v3.2.0
+    fragments:
+    - copy_fix.yml
+    - release-summary.yml
+    - win_find.yml
+    - win_service_check_flag.yml
+    - win_template_preserve_ansible_managed.yml
+    release_date: '2025-07-22'

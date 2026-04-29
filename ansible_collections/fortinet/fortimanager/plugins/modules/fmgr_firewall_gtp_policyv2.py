@@ -171,6 +171,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -187,35 +188,35 @@ EXAMPLES = '''
         gtp: <your own value>
         state: present # <value in [present, absent]>
         firewall_gtp_policyv2:
-          action: <value in [deny, allow]>
-          apn_sel_mode:
-            - "ms"
-            - "net"
-            - "vrf"
-          apnmember: <list or string>
-          id: <integer>
-          imsi_prefix: <string>
-          max_apn_restriction: <value in [all, public-1, public-2, ...]>
-          mei: <string>
-          messages:
-            - "create-ses-req"
-            - "create-ses-res"
-            - "modify-bearer-req"
-            - "modify-bearer-res"
-          msisdn_prefix: <string>
-          rat_type:
-            - "any"
-            - "utran"
-            - "geran"
-            - "wlan"
-            - "gan"
-            - "hspa"
-            - "eutran"
-            - "virtual"
-            - "nbiot"
-            - "ltem"
-            - "nr"
-          uli: <list or string>
+          id: 0 # Required variable, integer
+          # action: <value in [deny, allow]>
+          # apn_sel_mode:
+          #   - "ms"
+          #   - "net"
+          #   - "vrf"
+          # apnmember: <list or string>
+          # imsi_prefix: <string>
+          # max_apn_restriction: <value in [all, public-1, public-2, ...]>
+          # mei: <string>
+          # messages:
+          #   - "create-ses-req"
+          #   - "create-ses-res"
+          #   - "modify-bearer-req"
+          #   - "modify-bearer-res"
+          # msisdn_prefix: <string>
+          # rat_type:
+          #   - "any"
+          #   - "utran"
+          #   - "geran"
+          #   - "wlan"
+          #   - "gan"
+          #   - "hspa"
+          #   - "eutran"
+          #   - "virtual"
+          #   - "nbiot"
+          #   - "ltem"
+          #   - "nr"
+          # uli: <list or string>
 '''
 
 RETURN = '''

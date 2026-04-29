@@ -15,7 +15,7 @@ description:
 extends_documentation_fragment:
   - netapp.ontap.netapp.na_ontap_rest
 version_added: '22.6.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 options:
   state:
     description:
@@ -86,36 +86,29 @@ notes:
 '''
 
 EXAMPLES = '''
-
-    - name: Enable kerberos interface.
-      netapp.ontap.na_ontap_kerberos_interface:
-        interface_name: lif_svm1_284
-        vserver: ansibleSVM
-        enabled: true
-        service_principal_name: nfs/lif_svm1_284@RELAM2
-        admin_username: "{{ admin_user }}"
-        admin_password: "{{ admin_pass }}"
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        https: "{{ https }}"
-        validate_certs: "{{ certs }}"
+- name: Enable kerberos interface.
+  netapp.ontap.na_ontap_kerberos_interface:
+    interface_name: lif_svm1_284
+    vserver: ansibleSVM
+    enabled: true
+    service_principal_name: nfs/lif_svm1_284@RELAM2
+    admin_username: "{{ admin_user }}"
+    admin_password: "{{ admin_pass }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
 
-    - name: Disable kerberos interface.
-      netapp.ontap.na_ontap_kerberos_interface:
-        interface_name: lif_svm1_284
-        vserver: ansibleSVM
-        enabled: false
-        service_principal_name: nfs/lif_svm1_284@RELAM2
-        admin_username: "{{ admin_user }}"
-        admin_password: "{{ admin_pass }}"
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        https: "{{ https }}"
-        validate_certs: "{{ certs }}"
-
+- name: Disable kerberos interface.
+  netapp.ontap.na_ontap_kerberos_interface:
+    interface_name: lif_svm1_284
+    vserver: ansibleSVM
+    enabled: false
+    admin_username: "{{ admin_user }}"
+    admin_password: "{{ admin_pass }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 '''
 
 RETURN = '''

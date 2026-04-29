@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "community",
   "name": "vmware",
-  "version": "5.2.0",
+  "version": "5.7.2",
   "authors": [
    "Ansible (https://github.com/ansible)"
   ],
@@ -19,7 +19,7 @@
   ],
   "license_file": null,
   "dependencies": {
-   "vmware.vmware": ">=1.5.0,<2.0.0"
+   "vmware.vmware": ">=1.10.0,<3.0.0"
   },
   "repository": "https://github.com/ansible-collections/community.vmware.git",
   "documentation": null,
@@ -30,7 +30,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "98fd32b9f9ad066196c5e85b2ffcb211ee51a3b27c9c2fdec43851bd57d227d0",
+  "chksum_sha256": "4a28fd1cfef1b9f86bc87c5f80c687f260ed399ec53c0fe74c83551ad6ecb2ef",
   "format": 1
  },
  "format": 1

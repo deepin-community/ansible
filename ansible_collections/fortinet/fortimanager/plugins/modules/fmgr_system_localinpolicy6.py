@@ -129,6 +129,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -143,13 +144,13 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         state: present # <value in [present, absent]>
         system_localinpolicy6:
-          action: <value in [drop, reject, accept]>
-          dport: <integer>
-          dst: <string>
-          id: <integer>
-          intf: <string>
-          protocol: <value in [tcp, udp, tcp_udp]>
-          src: <string>
+          id: 0 # Required variable, integer
+          # action: <value in [drop, reject, accept]>
+          # dport: <integer>
+          # dst: <string>
+          # intf: <string>
+          # protocol: <value in [tcp, udp, tcp_udp]>
+          # src: <string>
 '''
 
 RETURN = '''

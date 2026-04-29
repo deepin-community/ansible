@@ -32,11 +32,13 @@
 #    https://docs.ansible.com/ansible/latest/community/collection_contributors/collection_requirements.html.
 
 name: CI
+
 on:
   # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
   push:
     branches:
       - main
+      - 'stable-*'
   pull_request:
   # Run CI once per day (at 06:00 UTC)
   # This ensures that even if there haven't been commits that we are still
@@ -51,6 +53,9 @@ concurrency:
       github.event.pull_request.number || github.sha
     }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
 
@@ -75,9 +80,10 @@ jobs:
           # Add new versions announced in
           # https://github.com/ansible-collections/news-for-maintainers in a timely manner,
           # consider dropping testing against EOL versions and versions you don't support.
-          - stable-2.15
           - stable-2.16
           - stable-2.17
+          - stable-2.18
+          - stable-2.19
     # Ansible-test on various stable branches does not yet work well with cgroups v2.
     # Since ubuntu-latest now uses Ubuntu 22.04, we need to fall back to the ubuntu-20.04
     # image for these stable branches. The list of branches where this is necessary will

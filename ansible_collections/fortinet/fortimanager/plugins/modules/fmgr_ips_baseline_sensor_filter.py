@@ -187,6 +187,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -203,24 +204,24 @@ EXAMPLES = '''
         sensor: <your own value>
         state: present # <value in [present, absent]>
         ips_baseline_sensor_filter:
-          action: <value in [pass, block, default, ...]>
-          application: <list or string>
-          application_real: <string>
-          location: <list or string>
-          location_real: <string>
-          log: <value in [disable, enable, default]>
-          log_packet: <value in [disable, enable, default]>
-          name: <string>
-          os: <list or string>
-          os_real: <string>
-          protocol: <list or string>
-          protocol_real: <string>
-          quarantine: <value in [none, attacker, both, ...]>
-          quarantine_expiry: <integer>
-          quarantine_log: <value in [disable, enable]>
-          severity: <list or string>
-          severity_real: <string>
-          status: <value in [disable, enable, default]>
+          name: "your value" # Required variable, string
+          # action: <value in [pass, block, default, ...]>
+          # application: <list or string>
+          # application_real: <string>
+          # location: <list or string>
+          # location_real: <string>
+          # log: <value in [disable, enable, default]>
+          # log_packet: <value in [disable, enable, default]>
+          # os: <list or string>
+          # os_real: <string>
+          # protocol: <list or string>
+          # protocol_real: <string>
+          # quarantine: <value in [none, attacker, both, ...]>
+          # quarantine_expiry: <integer>
+          # quarantine_log: <value in [disable, enable]>
+          # severity: <list or string>
+          # severity_real: <string>
+          # status: <value in [disable, enable, default]>
 '''
 
 RETURN = '''

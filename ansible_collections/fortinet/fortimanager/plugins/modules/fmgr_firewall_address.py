@@ -301,6 +301,9 @@ options:
                             - 'fortinac-tag'
                             - 'fortipolicy-tag'
                             - 'device-identification'
+                            - 'rsso'
+                            - 'external-resource'
+                            - 'obsolete'
                     global_object:
                         aliases: ['global-object']
                         type: int
@@ -374,6 +377,10 @@ options:
                         aliases: ['sw-version']
                         type: str
                         description: Dynamic address matching software version.
+                    sso_attribute_value:
+                        aliases: ['sso-attribute-value']
+                        type: raw
+                        description: (list) Name
             end_ip:
                 aliases: ['end-ip']
                 type: str
@@ -563,6 +570,9 @@ options:
                     - 'fortinac-tag'
                     - 'fortipolicy-tag'
                     - 'device-identification'
+                    - 'rsso'
+                    - 'external-resource'
+                    - 'obsolete'
             global_object:
                 aliases: ['global-object']
                 type: int
@@ -628,11 +638,16 @@ options:
                 aliases: ['sw-version']
                 type: str
                 description: Dynamic address matching software version.
+            sso_attribute_value:
+                aliases: ['sso-attribute-value']
+                type: raw
+                description: (list) Name
 '''
 
 EXAMPLES = '''
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -669,6 +684,7 @@ EXAMPLES = '''
 
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -703,6 +719,7 @@ EXAMPLES = '''
 
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -854,7 +871,7 @@ def main():
                             'v_range': [['6.2.2', '']],
                             'choices': [
                                 'sdn', 'clearpass-spt', 'fsso', 'ems-tag', 'swc-tag', 'fortivoice-tag', 'fortinac-tag', 'fortipolicy-tag',
-                                'device-identification'
+                                'device-identification', 'rsso', 'external-resource', 'obsolete'
                             ],
                             'type': 'str'
                         },
@@ -873,7 +890,8 @@ def main():
                         'hw-vendor': {'v_range': [['7.4.0', '']], 'type': 'str'},
                         'os': {'v_range': [['7.4.0', '']], 'type': 'str'},
                         'route-tag': {'v_range': [['7.4.0', '']], 'type': 'int'},
-                        'sw-version': {'v_range': [['7.4.0', '']], 'type': 'str'}
+                        'sw-version': {'v_range': [['7.4.0', '']], 'type': 'str'},
+                        'sso-attribute-value': {'v_range': [['7.6.2', '']], 'type': 'raw'}
                     },
                     'elements': 'dict'
                 },
@@ -913,7 +931,7 @@ def main():
                     'type': 'str'
                 },
                 'uuid': {'type': 'str'},
-                'visibility': {'choices': ['disable', 'enable'], 'type': 'str'},
+                'visibility': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'wildcard': {'type': 'str'},
                 'wildcard-fqdn': {'type': 'str'},
                 'end-mac': {'v_range': [['6.2.0', '']], 'type': 'str'},
@@ -938,7 +956,7 @@ def main():
                     'v_range': [['6.2.2', '']],
                     'choices': [
                         'sdn', 'clearpass-spt', 'fsso', 'ems-tag', 'swc-tag', 'fortivoice-tag', 'fortinac-tag', 'fortipolicy-tag',
-                        'device-identification'
+                        'device-identification', 'rsso', 'external-resource', 'obsolete'
                     ],
                     'type': 'str'
                 },
@@ -955,7 +973,8 @@ def main():
                 'hw-vendor': {'v_range': [['7.4.0', '']], 'type': 'str'},
                 'os': {'v_range': [['7.4.0', '']], 'type': 'str'},
                 'route-tag': {'v_range': [['7.4.0', '']], 'type': 'int'},
-                'sw-version': {'v_range': [['7.4.0', '']], 'type': 'str'}
+                'sw-version': {'v_range': [['7.4.0', '']], 'type': 'str'},
+                'sso-attribute-value': {'v_range': [['7.6.2', '']], 'type': 'raw'}
             }
         }
     }

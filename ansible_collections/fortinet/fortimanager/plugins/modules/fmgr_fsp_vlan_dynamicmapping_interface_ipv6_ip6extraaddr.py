@@ -106,6 +106,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -123,7 +124,7 @@ EXAMPLES = '''
         dynamic_mapping: <your own value>
         state: present # <value in [present, absent]>
         fsp_vlan_dynamicmapping_interface_ipv6_ip6extraaddr:
-          prefix: <string>
+          # prefix: <string>
 '''
 
 RETURN = '''

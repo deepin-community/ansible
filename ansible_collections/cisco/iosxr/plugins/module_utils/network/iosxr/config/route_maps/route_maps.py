@@ -55,6 +55,7 @@ class Route_maps(ResourceModule):
             "unsuppress_route",
             "remove",
             "set.administrative_distance",
+            "set.local_preference",
             "set.aigp_metric",
             "set.attribute_set",
             "set.c_multicast_routing",
@@ -77,6 +78,8 @@ class Route_maps(ResourceModule):
             "set.lsm_root",
             "set.metric_type",
             "set.mpls",
+            "set.med",
+            "set.extcommunity",
             "set.next_hop",
             "set.origin",
             "set.ospf_metric",
@@ -122,7 +125,6 @@ class Route_maps(ResourceModule):
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
-
         for k, want in iteritems(wantd):
             if self.state == "purged":  # for purged state
                 if haved.pop(k, {}):

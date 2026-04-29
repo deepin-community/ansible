@@ -165,7 +165,7 @@ datastore:
 '''
 
 try:
-    from pyVmomi import vim, VmomiSupport
+    from pyVmomi import vim, VmomiJSONEncoder
 except ImportError:
     pass
 
@@ -174,10 +174,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.community.vmware.plugins.module_utils.vmware import (
     PyVmomi, find_hostsystem_by_name,
     find_vm_by_id, find_datastore_by_name,
-    find_resource_pool_by_name,
+    find_resource_pool_by_cluster,
     find_datacenter_by_name,
     find_cluster_by_name, get_all_objs,
-    vmware_argument_spec, wait_for_task, TaskError)
+    wait_for_task, TaskError)
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 
 
 class VmotionManager(PyVmomi):
@@ -391,8 +392,8 @@ class VmotionManager(PyVmomi):
         dest_resourcepool = self.params.get('destination_resourcepool', None)
         self.resourcepool_object = None
         if dest_resourcepool:
-            self.resourcepool_object = find_resource_pool_by_name(content=self.content,
-                                                                  resource_pool_name=dest_resourcepool)
+            self.resourcepool_object = find_resource_pool_by_cluster(content=self.content,
+                                                                     resource_pool_name=dest_resourcepool)
             if self.resourcepool_object is None:
                 self.module.fail_json(msg="Unable to find destination resource pool object for %s" % dest_resourcepool)
         elif not dest_resourcepool and self.host_object:
@@ -510,7 +511,7 @@ class VmotionManager(PyVmomi):
                     vms.append(temp_vm_object.obj)
                     break
         elif self.moid:
-            vm_obj = VmomiSupport.templateOf('VirtualMachine')(self.moid, self.si._stub)
+            vm_obj = VmomiJSONEncoder.templateOf('VirtualMachine')(self.moid, self.si._stub)
             if vm_obj:
                 vms.append(vm_obj)
 
@@ -523,7 +524,7 @@ class VmotionManager(PyVmomi):
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(
         dict(
             vm_name=dict(aliases=['vm']),

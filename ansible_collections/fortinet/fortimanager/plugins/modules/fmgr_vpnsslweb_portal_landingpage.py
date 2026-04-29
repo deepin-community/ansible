@@ -131,6 +131,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -146,16 +147,15 @@ EXAMPLES = '''
         adom: <your own value>
         portal: <your own value>
         vpnsslweb_portal_landingpage:
-          form_data:
-            -
-              name: <string>
-              value: <string>
-          logout_url: <string>
-          sso: <value in [disable, static, auto]>
-          sso_credential: <value in [sslvpn-login, alternative]>
-          sso_password: <list or string>
-          sso_username: <string>
-          url: <string>
+          # form_data:
+          #   - name: <string>
+          #     value: <string>
+          # logout_url: <string>
+          # sso: <value in [disable, static, auto]>
+          # sso_credential: <value in [sslvpn-login, alternative]>
+          # sso_password: <list or string>
+          # sso_username: <string>
+          # url: <string>
 '''
 
 RETURN = '''

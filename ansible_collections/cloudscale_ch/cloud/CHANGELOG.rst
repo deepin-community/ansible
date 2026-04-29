@@ -4,6 +4,48 @@ Ansible Collection cloudscale.ch Release Notes
 
 .. contents:: Topics
 
+v2.5.2
+======
+
+Minor Changes
+-------------
+
+- Remove the custom error message from snapshots module to fix root volume snapshots/restores on stopped servers
+
+v2.5.1
+======
+
+Minor Changes
+-------------
+
+- Add ansible-core 2.19+ compatibility
+
+v2.5.0
+======
+
+Minor Changes
+-------------
+
+- volume - Add revert parameter.
+
+Bugfixes
+--------
+
+- floating_ip - Fix sanity tests.
+
+New Modules
+-----------
+
+- volume_snapshot - Manage volume snapshots on the cloudscale.ch IaaS service
+
+v2.4.1
+======
+
+Security Fixes
+--------------
+
+- Validate API tokens before passing them to Ansible, to ensure that a badly formed one (i.e., one with newlines) is not accidentally logged.
+
 v2.4.0
 ======
 

@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -141,7 +141,8 @@ class Devices(object):
             new_object_params['lng'] = self.new_object.get('lng') or \
                 self.new_object.get('lng')
         if self.new_object.get('moveMapMarker') is not None or self.new_object.get('move_map_marker') is not None:
-            new_object_params['moveMapMarker'] = self.new_object.get('moveMapMarker')
+            new_object_params['moveMapMarker'] = self.new_object.get(
+                'moveMapMarker')
         if self.new_object.get('name') is not None or self.new_object.get('name') is not None:
             new_object_params['name'] = self.new_object.get('name') or \
                 self.new_object.get('name')
@@ -246,8 +247,8 @@ class Devices(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):

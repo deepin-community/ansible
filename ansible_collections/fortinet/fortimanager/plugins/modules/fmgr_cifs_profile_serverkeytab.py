@@ -108,6 +108,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -124,9 +125,9 @@ EXAMPLES = '''
         profile: <your own value>
         state: present # <value in [present, absent]>
         cifs_profile_serverkeytab:
-          keytab: <string>
-          principal: <string>
-          password: <list or string>
+          # keytab: <string>
+          # principal: <string>
+          # password: <list or string>
 '''
 
 RETURN = '''

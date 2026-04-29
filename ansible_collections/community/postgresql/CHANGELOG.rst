@@ -4,6 +4,242 @@ Community PostgreSQL Collection Release Notes
 
 .. contents:: Topics
 
+v4.1.0
+======
+
+Release Summary
+---------------
+
+This is a minor release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Deprecated Features
+-------------------
+
+- postgresql modules - the ``port`` alias is deprecated and will be removed in ``community.postgresql 5.0.0``, use the ``login_port`` argument instead.
+
+Bugfixes
+--------
+
+- postgresql_schema - change reported in check_mode was negated. Now it reports a change when removing an existing schema (https://github.com/ansible-collections/community.postgresql/pull/858)
+
+v4.0.1
+======
+
+Release Summary
+---------------
+
+This is a patch release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Bugfixes
+--------
+
+- postgresql_alter_system - fix failure when max_val contains a huge number written in scientific notation (https://github.com/ansible-collections/community.postgresql/issues/853).
+
+v4.0.0
+======
+
+Release Summary
+---------------
+
+This is a major release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Major Changes
+-------------
+
+- the collection does not test against Python 2 and starts accepting content written in Python 3 since collection version 4.0.0 (https://github.com/ansible-collections/community.postgresql/issues/829).
+
+Minor Changes
+-------------
+
+- postgresql_user - return a PostgreSQL error message when a user cannot be removed.
+
+Deprecated Features
+-------------------
+
+- postgresql modules = the ``login``, ``unix_socket`` and ``host`` aliases are deprecated and will be removed in ``community.postgresql 5.0.0``, use the ``login_user``, ``login_unix_socket`` and ``login_host`` arguments instead.
+- postgresql_set - the module has been deprecated and will be removed in ``community.postgresql 5.0.0``. Please use the ``community.postgresql.postgresql_alter_system`` module instead (https://github.com/ansible-collections/community.postgresql/issues/823).
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- postgresql_info - the db alias has been removed in ``community.postgresql 4.0.0``. Please use the ``login_db`` option instead (https://github.com/ansible-collections/community.postgresql/issues/801).
+- postgresql_lang - the module has been removed in ``community.postgresql 4.0.0``. Please use the ``community.postgresql.postgresql_ext`` module instead (https://github.com/ansible-collections/community.postgresql/issues/561).
+- postgresql_privs - the ``password`` argument has been removed in ``community.postgresql 4.0.0``. Use the ``login_password`` argument instead (https://github.com/ansible-collections/community.postgresql/issues/408).
+- postgresql_user - the ``priv`` argument has been removed in ``community.postgresql 4.0.0``. Please use the ``community.postgresql.postgresql_privs`` module to grant/revoke privileges instead (https://github.com/ansible-collections/community.postgresql/issues/493).
+
+v3.14.0
+=======
+
+Release Summary
+---------------
+
+This is a minor release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Deprecated Features
+-------------------
+
+- postgresql_copy - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_db - the ``rename`` choice of the state option is deprecated and will be removed in version 5.0.0, use the ``postgresql_query`` module instead.
+- postgresql_ext - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_idx - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_membership - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_owner - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_ping - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_privs - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_publication - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_query - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_schema - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_script - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_sequence - the ``rename_to`` option is deprecated and will be removed in version 5.0.0, use the ``postgresql_query`` module instead.
+- postgresql_sequence - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_set - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_slot - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_subscription - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_table - the ``rename`` option is deprecated and will be removed in version 5.0.0, use the ``postgresql_query module`` instead.
+- postgresql_table - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_tablespace - the ``rename_to`` option is deprecated and will be removed in version 5.0.0, use the ``postgresql_query`` module instead.
+- postgresql_tablespace - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+- postgresql_user_obj_stat_info - the parameter aliases db and database are deprecated and will be removed in community.postgresql 5.0.0. Use login_db instead.
+
+v3.13.0
+=======
+
+Release Summary
+---------------
+
+This is a minor release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Bugfixes
+--------
+
+- postgresql_table - consider schema name when checking for table (https://github.com/ansible-collections/community.postgresql/issues/817).  Table names are only unique within a schema. This allows using the same table name in multiple schemas.
+
+New Modules
+-----------
+
+- postgresql_alter_system - Change a PostgreSQL server configuration parameter
+
+v3.12.0
+=======
+
+Release Summary
+---------------
+
+This is a minor release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Minor Changes
+-------------
+
+- postgresql_publication - added ``rowfilters`` parameter that adds support for row filtering on PG publications (https://github.com/ansible-collections/community.postgresql/pull/813)
+
+v3.11.0
+=======
+
+Release Summary
+---------------
+
+This is a minor release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Minor Changes
+-------------
+
+- postgresql_pg_hba - adds 'pg_hba_string' which contains the string that is written to the file to the output of the module (https://github.com/ansible-collections/community.postgresql/pull/778)
+- postgresql_pg_hba - adds a parameter 'sort_rules' that allows the user to disable sorting in the module, the default is the previous behavior (https://github.com/ansible-collections/community.postgresql/pull/778)
+- postgresql_pg_hba - regarding #795 will read all kinds of includes and add them to the end of the file in the same order as they were in the original file, does not allow to add includes (https://github.com/ansible-collections/community.postgresql/pull/778)
+- postgresql_user - now there is a ``quote_configuration_values`` parameter that allows to turn off quoting for values which when set to ``false`` allows to set ``search_path`` (https://github.com/ansible-collections/community.postgresql/pull/806)
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- postgresql_info - the ``db`` alias is deprecated and will be removed in the next major release, use the ``login_db`` argument instead.
+- postgresql_pg_hba - regarding #776 'keep_comments_at_rules' has been deprecated and won't do anything, the default is to keep the comments at the rules they are specified with. keep_comments_at_rules will be removed in 5.0.0 (https://github.com/ansible-collections/community.postgresql/pull/778)
+- postgresql_user - the ``db`` alias is deprecated and will be removed in the next major release, use the ``login_db`` argument instead.
+
+Bugfixes
+--------
+
+- postgresql_pg_hba - fixes #776 the module won't be adding/moving comments repeatedly if 'keep_comments_at_rules' is 'false' (https://github.com/ansible-collections/community.postgresql/pull/778)
+
+v3.10.2
+=======
+
+Release Summary
+---------------
+
+This is a patch release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Bugfixes
+--------
+
+- postgresql_info - fix failure when a default database is used (neither ``db`` nor ``login_db`` are specified) (https://github.com/ansible-collections/community.postgresql/issues/794).
+
+v3.10.1
+=======
+
+Release Summary
+---------------
+
+This is a patch release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Bugfixes
+--------
+
+- postgresql_info - fix module failure when the ``db`` parameter is used instead of ``login_db`` (https://github.com/ansible-collections/community.postgresql/issues/794).
+
+v3.10.0
+=======
+
+Release Summary
+---------------
+
+This is a minor release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Minor Changes
+-------------
+
+- postgresql_query - returns the `execution_time_ms` list containing execution time per query in milliseconds (https://github.com/ansible-collections/community.postgresql/issues/787).
+
+Bugfixes
+--------
+
+- postgresql_info - fix issue when gathering information fails if user doesn't have access to all databases (https://github.com/ansible-collections/community.postgresql/pull/788).
+- postgresql_privs -  fix the error occurring when trying to grant a function execution and set the schema to not-specified (https://github.com/ansible-collections/community.postgresql/pull/783).
+
+v3.9.1
+======
+
+Release Summary
+---------------
+
+This is a patch release of the ``community.postgresql`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Bugfixes
+--------
+
+- postgresql_pg_hba - fixes #777 the module will ignore the 'address' and 'netmask' options again when the contype is 'local' (https://github.com/ansible-collections/community.postgresql/pull/779)
+
 v3.9.0
 ======
 

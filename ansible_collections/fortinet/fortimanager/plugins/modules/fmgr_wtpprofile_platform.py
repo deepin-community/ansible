@@ -204,6 +204,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -219,10 +220,10 @@ EXAMPLES = '''
         adom: <your own value>
         wtp_profile: <your own value>
         wtpprofile_platform:
-          type: <value in [30B-50B, 60B, 80CM-81CM, ...]>
-          mode: <value in [dual-5G, single-5G]>
-          ddscan: <value in [disable, enable]>
-          _local_platform_str: <string>
+          # type: <value in [30B-50B, 60B, 80CM-81CM, ...]>
+          # mode: <value in [dual-5G, single-5G]>
+          # ddscan: <value in [disable, enable]>
+          # _local_platform_str: <string>
 '''
 
 RETURN = '''

@@ -94,6 +94,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -107,9 +108,9 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         pm_config_metafields_firewall_addrgrp:
-          importance: <value in [optional, required]>
-          length: <integer>
-          name: <string>
+          # importance: <value in [optional, required]>
+          # length: <integer>
+          # name: <string>
 '''
 
 RETURN = '''

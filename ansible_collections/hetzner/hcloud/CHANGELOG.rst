@@ -4,6 +4,69 @@ Hetzner Cloud Ansible Collection Release Notes
 
 .. contents:: Topics
 
+v5.2.0
+======
+
+Minor Changes
+-------------
+
+- volume - Allow renaming a volume.
+
+Bugfixes
+--------
+
+- volume_attachment - Add ``hcloud_volume_attachment`` alias to ``volume_attachment`` module.
+- volume_attachment - Add ``volume_attachment`` module to action group ``all``.
+
+v5.1.0
+======
+
+Minor Changes
+-------------
+
+- ssh_key - Log a warning when the provided public key does not match one in the API.
+- ssh_key - When the public key does not match the one in the API, allow recreating the SSH Key in the API using the ``force=true`` argument.
+
+Bugfixes
+--------
+
+- All returned resource IDs are now integers instead of strings.
+- server - The ``placement_group`` argument now correctly handles placement group IDs during updates.
+
+v5.0.1
+======
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- server - The deprecated ``force_upgrade`` argument is removed from the server module. Please use the ``force`` argument instead.
+
+v5.0.0
+======
+
+Minor Changes
+-------------
+
+- server - Allow renaming a server.
+- volume_attachment - Add new `volume_attachment` module to manage Volumes attachment.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Drop support for ansible-core 2.15.
+- Drop support for ansible-core 2.16.
+- Drop support for python 3.8.
+- inventory - The default value for the `hostvars_prefix` option is now set to `hcloud_`. Make sure to update all references to host variables provided by the inventory. You may revert this change by setting the `hostvars_prefix` option to `""`.
+- volume - Volumes are no longer detached when the server argument is not provided. Please use the ``volume_attachment`` module to manage volume attachments.
+
+v4.3.0
+======
+
+Minor Changes
+-------------
+
+- server - Add `created` state that creates a server but do not start it.
+
 v4.2.2
 ======
 

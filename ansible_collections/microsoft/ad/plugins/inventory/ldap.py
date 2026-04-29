@@ -236,6 +236,15 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.plugins.inventory import BaseInventoryPlugin, Constructable
 from ansible.utils.unsafe_proxy import wrap_var
 
+USE_DATA_TAGGING = False
+try:
+    from ansible.template import trust_as_template
+
+    USE_DATA_TAGGING = True
+except ImportError:
+    pass
+
+
 try:
     import sansldap
 
@@ -338,6 +347,10 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             "tls_mode",
             "username",
         }
+        templated_option_kwargs = {}
+        if not USE_DATA_TAGGING:
+            templated_option_kwargs['disable_lookups'] = False
+
         for option_name, option_value in connection_options.items():
             if option_name in template_fields and self.templar.is_template(
                 option_value
@@ -345,7 +358,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 self.display.vvv(f"Templating option {option_name}")
                 connection_options[option_name] = self.templar.template(
                     variable=option_value,
-                    disable_lookups=False,
+                    **templated_option_kwargs,
                 )
 
         laps_decryptor = LAPSDecryptor(**connection_options)
@@ -378,11 +391,14 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                     )
 
                     if name.lower() == "mslaps-encryptedpassword" and raw_values:
-                        host_vars["this"] = laps_decryptor.decrypt(raw_values[0])
+                        host_vars["this"] = wrap_var(laps_decryptor.decrypt(raw_values[0]))
                     else:
                         host_vars["this"] = wrap_var(values)
 
                     for n, v in var_info.items():
+                        if USE_DATA_TAGGING:
+                            v = trust_as_template(v)
+
                         try:
                             composite = self._compose(v, host_vars)
                         except Exception as e:

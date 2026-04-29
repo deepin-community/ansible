@@ -100,7 +100,6 @@ options:
     - Required for I(import)
     - A valid signed certicate in PEM format (Base64 encoded)
     - Includes the "-----BEGIN CERTIFICATE-----" and "-----END CERTIFICATE-----" lines
-    - Does not exceed 3000 characters in length
   intermeadiate_cert:
     type: str
     description:
@@ -502,7 +501,7 @@ def main():
     if not HAS_PYCOUNTRY:
         module.fail_json(msg="pycountry sdk is required for this module")
 
-    email_pattern = r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$"
+    email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     array = get_array(module)
     api_version = array.get_rest_version()
 

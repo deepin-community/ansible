@@ -148,6 +148,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -163,29 +164,28 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         bonjourprofile:
-          comment: <string>
-          name: <string>
-          policy_list:
-            -
-              description: <string>
-              from_vlan: <string>
-              policy_id: <integer>
-              services:
-                - "airplay"
-                - "afp"
-                - "bit-torrent"
-                - "ftp"
-                - "ichat"
-                - "itunes"
-                - "printers"
-                - "samba"
-                - "scanners"
-                - "ssh"
-                - "chromecast"
-                - "all"
-                - "miracast"
-              to_vlan: <string>
-          micro_location: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # comment: <string>
+          # policy_list:
+          #   - description: <string>
+          #     from_vlan: <string>
+          #     policy_id: <integer>
+          #     services:
+          #       - "airplay"
+          #       - "afp"
+          #       - "bit-torrent"
+          #       - "ftp"
+          #       - "ichat"
+          #       - "itunes"
+          #       - "printers"
+          #       - "samba"
+          #       - "scanners"
+          #       - "ssh"
+          #       - "chromecast"
+          #       - "all"
+          #       - "miracast"
+          #     to_vlan: <string>
+          # micro_location: <value in [disable, enable]>
 '''
 
 RETURN = '''

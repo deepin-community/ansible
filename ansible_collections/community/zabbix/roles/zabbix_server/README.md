@@ -57,7 +57,7 @@ ansible-galaxy collection install ansible.posix
 
 ### MySQL
 
-When you are a MySQL user and using Ansible 2.10 or newer, then there is a dependency on the collection named `community.mysql`. This collections are needed as the `mysql_` modules are now part of collections and not standard in Ansible anymmore. Installing the collection:
+When you are a MySQL user and using Ansible 2.10 or newer, then there is a dependency on the collection named `community.mysql`. This collections are needed as the `mysql_` modules are now part of collections and not standard in Ansible anymore. Installing the collection:
 
 ```sh
 ansible-galaxy collection install community.mysql
@@ -75,15 +75,14 @@ ansible-galaxy collection install community.postgresql
 
 See the following list of supported Operating systems with the Zabbix releases:
 
-| Zabbix              | 7.0 | 6.4 | 6.0 |
+| Zabbix              | 7.2 | 7.0 | 6.0 |
 |---------------------|-----|-----|-----|
 | Red Hat Fam 9       |  V  |  V  |  V  |
 | Red Hat Fam 8       |  V  |  V  |  V  |
 | Ubuntu 24.04 noble  |  V  |  V  |  V  |
 | Ubuntu 22.04 jammy  |  V  |  V  |  V  |
-| Ubuntu 20.04 focal  |     |  V  |  V  |
 | Debian 12 bookworm  |  V  |  V  |  V  |
-| Debian 11 bullseye  |     |  V  |  V  |
+| Debian 11 bullseye  |     |     |  V  |
 | Suse Fam 15         |  V  |  V  |  V  |
 
 You can bypass this matrix by setting `enable_version_check: false`
@@ -114,11 +113,11 @@ The following is an overview of all available configuration default for this rol
 
 Selinux changes will be installed based on the status of selinux running on the target system.
 
-* `selinux_allow_zabbix_can_network`: Default: `False`. 
-* `selinux_allow_zabbix_can_http`: Default: `False`. 
+* `selinux_allow_zabbix_can_network`: Default: `True`.
 
 ### Zabbix Server
 
+* `zabbix_server_packages`: List of packages to install, can be overridden for a non-supported/custom setup.
 * `zabbix_server_package_state`: Default: `present`. Can be overridden to `latest` to update packages when needed.
 * `zabbix_server_install_recommends`: Default: `True`. `False` does not install the recommended packages that come with the zabbix-server install.
 * `zabbix_server_manage_service`: Default: `True`. When you run multiple Zabbix servers in a High Available cluster setup (e.g. pacemaker), you don't want Ansible to manage the zabbix-server service, because Pacemaker is in control of zabbix-server service and in this case, it needs to be set to `False`.
@@ -141,6 +140,7 @@ Selinux changes will be installed based on the status of selinux running on the 
 * `zabbix_server_install_database_client`: Default: `True`. False does not install database client. Default true
 * `zabbix_server_database_sqlload`:True / False. When you don't want to load the sql files into the database, you can set it to False.
 * `zabbix_server_database_timescaledb`:False / True. When you want to use timescaledb extension into the database, you can set it to True (this option only works for postgreSQL database).
+* `zabbix_server_database_schemas`: List of schemas to load, can be overridden for a non-supported/custom setup.
 * `zabbix_server_dbencoding`: Default: `utf8`. The encoding for the MySQL database.
 * `zabbix_server_dbcollation`: Default: `utf8_bin`. The collation for the MySQL database.
 

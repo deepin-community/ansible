@@ -106,11 +106,9 @@ import json
 import traceback
 
 try:
-    from pyVmomi import vmodl, VmomiSupport
-    HAS_PYVMOMI = True
+    from pyVmomi import vmodl, VmomiJSONEncoder
 except ImportError:
-    PYVMOMI_IMP_ERR = traceback.format_exc()
-    HAS_PYVMOMI = False
+    pass
 
 VSANPYTHONSDK_IMP_ERR = None
 try:
@@ -121,7 +119,8 @@ except ImportError:
     HAS_VSANPYTHONSDK = False
 
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
-from ansible_collections.community.vmware.plugins.module_utils.vmware import vmware_argument_spec, PyVmomi
+from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 
 
 class VSANInfoManager(PyVmomi):
@@ -163,13 +162,13 @@ class VSANInfoManager(PyVmomi):
         except vmodl.fault.RuntimeFault as runtime_fault:
             self.module.fail_json(msg=runtime_fault.msg)
 
-        health = json.dumps(cluster_health, cls=VmomiSupport.VmomiJSONEncoder, sort_keys=True, strip_dynamic=True)
+        health = json.dumps(cluster_health, cls=VmomiJSONEncoder.VmomiJSONEncoder, sort_keys=True, strip_dynamic=True)
 
         self.module.exit_json(changed=False, vsan_health_info=json.loads(health))
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(
         datacenter=dict(required=False, type='str', aliases=['datacenter_name']),
         cluster_name=dict(required=True, type='str'),

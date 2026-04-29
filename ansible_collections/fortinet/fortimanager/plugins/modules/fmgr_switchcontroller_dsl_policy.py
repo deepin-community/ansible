@@ -164,6 +164,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -179,20 +180,20 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_dsl_policy:
-          append_padding: <value in [disable, enable]>
-          cpe_aele: <value in [disable, enable]>
-          cpe_aele_mode: <value in [ELE_M0, ELE_DS, ELE_PB, ...]>
-          cs:
-            - "A43"
-            - "B43"
-            - "A43C"
-            - "V43"
-          ds_bitswap: <value in [disable, enable]>
-          name: <string>
-          pause_frame: <value in [disable, enable]>
-          profile: <value in [auto-30a, auto-17a, auto-12ab]>
-          type: <value in [Procend, Proscend]>
-          us_bitswap: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # append_padding: <value in [disable, enable]>
+          # cpe_aele: <value in [disable, enable]>
+          # cpe_aele_mode: <value in [ELE_M0, ELE_DS, ELE_PB, ...]>
+          # cs:
+          #   - "A43"
+          #   - "B43"
+          #   - "A43C"
+          #   - "V43"
+          # ds_bitswap: <value in [disable, enable]>
+          # pause_frame: <value in [disable, enable]>
+          # profile: <value in [auto-30a, auto-17a, auto-12ab]>
+          # type: <value in [Procend, Proscend]>
+          # us_bitswap: <value in [disable, enable]>
 '''
 
 RETURN = '''

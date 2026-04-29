@@ -90,6 +90,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -103,8 +104,8 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_log_topology:
-          max_depth: <integer>
-          max_depth_share: <integer>
+          # max_depth: <integer>
+          # max_depth_share: <integer>
 '''
 
 RETURN = '''

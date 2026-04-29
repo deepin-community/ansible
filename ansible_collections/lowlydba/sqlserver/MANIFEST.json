@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "lowlydba",
   "name": "sqlserver",
-  "version": "2.3.4",
+  "version": "2.7.0",
   "authors": [
    "John McCall (github.com/lowlydba)"
   ],
@@ -25,7 +25,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "570ee76623bd5dfa3ffc692c30a2ef1d8a7d2f8d9abe4a3dddb6a17e598bdf72",
+  "chksum_sha256": "c0466cbc3263a3133016d94be95458747f1f98a95e08c8ad0f248d8d2910b7de",
   "format": 1
  },
  "format": 1

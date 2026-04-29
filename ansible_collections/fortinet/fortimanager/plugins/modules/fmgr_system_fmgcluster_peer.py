@@ -104,6 +104,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -118,10 +119,10 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         state: present # <value in [present, absent]>
         system_fmgcluster_peer:
-          addr: <string>
-          fqdn: <string>
-          name: <string>
-          sn: <string>
+          name: "your value" # Required variable, string
+          # addr: <string>
+          # fqdn: <string>
+          # sn: <string>
 '''
 
 RETURN = '''

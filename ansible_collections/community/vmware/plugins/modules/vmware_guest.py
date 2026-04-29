@@ -526,13 +526,13 @@ options:
             type: str
             description:
             - Name of the portgroup or distributed virtual portgroup for this interface.
-            - Required per entry.
+            - This is required if C(vlan) isn't defined.
             - When specifying distributed virtual portgroup make sure given O(esxi_hostname) or O(cluster) is associated with it.
         vlan:
             type: int
             description:
             - VLAN number for this interface.
-            - Required per entry.
+            - This is required if C(name) isn't defined.
         device_type:
             type: str
             description:
@@ -753,6 +753,12 @@ options:
             description:
             - List of commands to run at first user logon.
             - Specific to Windows customization.
+        domain_ou:
+            type: str
+            description:
+            - The full LDAP path name of the OU to which the computer belongs.
+            - Specific to Windows customization.
+            - Work for vSphere 8.0U2 and above
     type: dict
     default: {}
   vapp_properties:
@@ -1098,10 +1104,8 @@ import re
 import time
 import string
 
-HAS_PYVMOMI = False
 try:
     from pyVmomi import vim, vmodl
-    HAS_PYVMOMI = True
 except ImportError:
     pass
 
@@ -1114,7 +1118,6 @@ from ansible_collections.community.vmware.plugins.module_utils.vmware import (
     get_all_objs,
     compile_folder_path_for_object,
     serialize_spec,
-    vmware_argument_spec,
     set_vm_power_state,
     PyVmomi,
     find_dvs_by_name,
@@ -1122,11 +1125,12 @@ from ansible_collections.community.vmware.plugins.module_utils.vmware import (
     wait_for_vm_ip,
     quote_obj_name,
 )
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 from ansible_collections.community.vmware.plugins.module_utils.vm_device_helper import PyVmomiDeviceHelper
 from ansible_collections.community.vmware.plugins.module_utils.vmware_spbm import SPBM
 
 
-class PyVmomiCache(object):
+class PyVmomiCache(PyVmomi):
     """ This class caches references to objects which are requested multiples times but not modified """
 
     def __init__(self, content, dc_name=None):
@@ -1166,13 +1170,17 @@ class PyVmomiCache(object):
 
         return objects
 
-    def get_network(self, network):
-        network = quote_obj_name(network)
+    def get_network(self, network_name):
+        network_name = quote_obj_name(network_name)
 
-        if network not in self.networks:
-            self.networks[network] = self.find_obj(self.content, [vim.Network], network)
+        if network_name not in self.networks:
+            networks = self.find_network_by_name(network_name)
+            if len(networks) == 1:
+                self.networks[network_name] = networks[0]
+            else:
+                self.networks[network_name] = self.find_obj(self.content, [vim.Network], network_name)
 
-        return self.networks[network]
+        return self.networks[network_name]
 
     def get_cluster(self, cluster):
         if cluster not in self.clusters:
@@ -1236,9 +1244,9 @@ class PyVmomiHelper(PyVmomi):
             return {'changed': self.change_applied, 'failed': False}
         # Delete VM from Disk
         task = vm.Destroy()
-        self.wait_for_task(task)
+        error_msg = self.wait_for_task(task)
         if task.info.state == 'error':
-            return {'changed': self.change_applied, 'failed': True, 'msg': task.info.error.msg, 'op': 'destroy'}
+            return {'changed': self.change_applied, 'failed': True, 'msg': error_msg, 'op': 'destroy'}
         else:
             return {'changed': self.change_applied, 'failed': False}
 
@@ -1635,9 +1643,9 @@ class PyVmomiHelper(PyVmomi):
                     # Only perform the upgrade if not in check mode.
                     if not self.module.check_mode:
                         task = vm_obj.UpgradeVM_Task(new_version)
-                        self.wait_for_task(task)
+                        error_msg = self.wait_for_task(task)
                         if task.info.state == 'error':
-                            return {'changed': self.change_applied, 'failed': True, 'msg': task.info.error.msg, 'op': 'upgrade'}
+                            return {'changed': self.change_applied, 'failed': True, 'msg': error_msg, 'op': 'upgrade'}
                         self.change_applied = True
 
         secure_boot = self.params['hardware']['secure_boot']
@@ -1940,7 +1948,11 @@ class PyVmomiHelper(PyVmomi):
                         nic.device.deviceInfo.summary = network_name
                         nic_change_detected = True
                     else:
-                        pg = find_obj(self.content, [vim.DistributedVirtualPortgroup], network_name)
+                        pgs = self.find_network_by_name(network_name)
+                        if len(pgs) == 1:
+                            pg = pgs[0]
+                        else:
+                            pg = find_obj(self.content, [vim.DistributedVirtualPortgroup], network_name)
                         if pg is None or nic.device.backing.port.portgroupKey != pg.key:
                             nic.device.deviceInfo.summary = network_name
                             nic_change_detected = True
@@ -1978,7 +1990,11 @@ class PyVmomiHelper(PyVmomi):
                     if pg_obj is None:
                         self.module.fail_json(msg="Unable to find distributed port group %s" % network_name)
                 else:
-                    pg_obj = self.cache.find_obj(self.content, [vim.dvs.DistributedVirtualPortgroup], network_name)
+                    networks = self.find_network_by_name(network_name)
+                    if len(networks) == 1:
+                        pg_obj = networks[0]
+                    else:
+                        pg_obj = self.cache.find_obj(self.content, [vim.dvs.DistributedVirtualPortgroup], network_name)
 
                 # TODO: (akasurde) There is no way to find association between resource pool and distributed virtual portgroup
                 # For now, check if we are able to find distributed virtual switch
@@ -2074,13 +2090,14 @@ class PyVmomiHelper(PyVmomi):
         if vm_obj:
             # VM exists
             orig_spec = vm_obj.config.vAppConfig
+            orig_properties = orig_spec.property if orig_spec is not None else []
 
-            vapp_properties_current = dict((x.id, x) for x in orig_spec.property)
+            vapp_properties_current = dict((x.id, x) for x in orig_properties)
             vapp_properties_to_change = dict((x['id'], x) for x in self.params['vapp_properties'])
 
             # each property must have a unique key
             # init key counter with max value + 1
-            all_keys = [x.key for x in orig_spec.property]
+            all_keys = [x.key for x in orig_properties]
             new_property_index = max(all_keys) + 1 if all_keys else 0
 
             for property_id, property_spec in vapp_properties_to_change.items():
@@ -2358,6 +2375,9 @@ class PyVmomiHelper(PyVmomi):
                 ident.identification.domainAdminPassword = vim.vm.customization.Password()
                 ident.identification.domainAdminPassword.value = self.params['customization']['domainadminpassword']
                 ident.identification.domainAdminPassword.plainText = True
+
+                # Add new spec param for vSphere 8.0U2
+                ident.identification.domainOU = self.params['customization']['domain_ou']
 
             elif self.params['customization']['joinworkgroup'] is not None:
                 ident.identification.joinWorkgroup = self.params['customization']['joinworkgroup']
@@ -3115,7 +3135,7 @@ class PyVmomiHelper(PyVmomi):
                     self.module.fail_json(msg="Failed to create virtual machine due to "
                                               "product versioning restrictions: %s" % to_native(e.msg))
                 self.change_detected = True
-            self.wait_for_task(task)
+            error_msg = self.wait_for_task(task)
         except TypeError as e:
             self.module.fail_json(msg="TypeError was returned, please ensure to give correct inputs. %s" % to_text(e))
 
@@ -3129,7 +3149,7 @@ class PyVmomiHelper(PyVmomi):
             kwargs = {
                 'changed': self.change_applied,
                 'failed': True,
-                'msg': task.info.error.msg,
+                'msg': error_msg,
                 'clonespec': clonespec_json,
                 'configspec': configspec_json,
                 'clone_method': clone_method
@@ -3143,17 +3163,17 @@ class PyVmomiHelper(PyVmomi):
                 annotation_spec = vim.vm.ConfigSpec()
                 annotation_spec.annotation = str(self.params['annotation'])
                 task = vm.ReconfigVM_Task(annotation_spec)
-                self.wait_for_task(task)
+                error_msg = self.wait_for_task(task)
                 if task.info.state == 'error':
-                    return {'changed': self.change_applied, 'failed': True, 'msg': task.info.error.msg, 'op': 'annotation'}
+                    return {'changed': self.change_applied, 'failed': True, 'msg': error_msg, 'op': 'annotation'}
 
             if self.params['advanced_settings']:
                 vm_custom_spec = vim.vm.ConfigSpec()
                 self.customize_advanced_settings(vm_obj=vm, config_spec=vm_custom_spec)
                 task = vm.ReconfigVM_Task(vm_custom_spec)
-                self.wait_for_task(task)
+                error_msg = self.wait_for_task(task)
                 if task.info.state == 'error':
-                    return {'changed': self.change_applied, 'failed': True, 'msg': task.info.error.msg, 'op': 'advanced_settings'}
+                    return {'changed': self.change_applied, 'failed': True, 'msg': error_msg, 'op': 'advanced_settings'}
 
             if self.params['customvalues']:
                 self.customize_customvalues(vm_obj=vm)
@@ -3218,9 +3238,9 @@ class PyVmomiHelper(PyVmomi):
                     self.change_applied = True
                 else:
                     task = self.current_vm_obj.RelocateVM_Task(spec=self.relospec)
-                    self.wait_for_task(task)
+                    error_msg = self.wait_for_task(task)
                     if task.info.state == 'error':
-                        return {'changed': self.change_applied, 'failed': True, 'msg': task.info.error.msg, 'op': 'relocate'}
+                        return {'changed': self.change_applied, 'failed': True, 'msg': error_msg, 'op': 'relocate'}
 
         # Only send VMware task if we see a modification
         if self.change_detected:
@@ -3234,9 +3254,9 @@ class PyVmomiHelper(PyVmomi):
                 except vim.fault.RestrictedVersion as e:
                     self.module.fail_json(msg="Failed to reconfigure virtual machine due to"
                                               " product versioning restrictions: %s" % to_native(e.msg))
-                self.wait_for_task(task)
+                error_msg = self.wait_for_task(task)
                 if task.info.state == 'error':
-                    return {'changed': self.change_applied, 'failed': True, 'msg': task.info.error.msg, 'op': 'reconfig'}
+                    return {'changed': self.change_applied, 'failed': True, 'msg': error_msg, 'op': 'reconfig'}
 
         # Rename VM
         if self.params['uuid'] and self.params['name'] and self.params['name'] != self.current_vm_obj.config.name:
@@ -3245,9 +3265,9 @@ class PyVmomiHelper(PyVmomi):
                 self.change_applied = True
             else:
                 task = self.current_vm_obj.Rename_Task(self.params['name'])
-                self.wait_for_task(task)
+                error_msg = self.wait_for_task(task)
                 if task.info.state == 'error':
-                    return {'changed': self.change_applied, 'failed': True, 'msg': task.info.error.msg, 'op': 'rename'}
+                    return {'changed': self.change_applied, 'failed': True, 'msg': error_msg, 'op': 'rename'}
 
         # Mark VM as Template
         if self.params['is_template'] and not self.current_vm_obj.config.template:
@@ -3332,9 +3352,9 @@ class PyVmomiHelper(PyVmomi):
             self.module.fail_json(msg="failed to customization virtual machine due to RuntimeFault: %s" % to_native(e.msg))
         except Exception as e:
             self.module.fail_json(msg="failed to customization virtual machine due to fault: %s" % to_native(e.msg))
-        self.wait_for_task(task)
+        error_msg = self.wait_for_task(task)
         if task.info.state == 'error':
-            return {'changed': self.change_applied, 'failed': True, 'msg': task.info.error.msg, 'op': 'customize_exist'}
+            return {'changed': self.change_applied, 'failed': True, 'msg': error_msg, 'op': 'customize_exist'}
 
         if self.params['wait_for_customization']:
             set_vm_power_state(self.content, self.current_vm_obj, 'poweredon', force=False)
@@ -3360,9 +3380,19 @@ class PyVmomiHelper(PyVmomi):
         # https://www.vmware.com/support/developer/vc-sdk/visdk25pubs/ReferenceGuide/vim.Task.html
         # https://www.vmware.com/support/developer/vc-sdk/visdk25pubs/ReferenceGuide/vim.TaskInfo.html
         # https://github.com/virtdevninja/pyvmomi-community-samples/blob/master/samples/tools/tasks.py
+        error_msg = ''
         while task.info.state not in ['error', 'success']:
             time.sleep(poll_interval)
+
+        if task.info.state == 'error':
+            error_msg = task.info.error.msg
+            if hasattr(task.info.error, 'faultMessage'):
+                for fault in task.info.error.faultMessage:
+                    if hasattr(fault, 'message') and fault.message:
+                        error_msg += fault.message + ';'
+                error_msg = error_msg.rstrip(';')
         self.change_applied = self.change_applied or task.info.state == 'success'
+        return error_msg
 
     def get_vm_events(self, vm, eventTypeIdList):
         byEntity = vim.event.EventFilterSpec.ByEntity(entity=vm, recursion="self")
@@ -3403,7 +3433,7 @@ class PyVmomiHelper(PyVmomi):
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(
         state=dict(type='str', default='present',
                    choices=['absent', 'poweredoff', 'powered-off',
@@ -3521,6 +3551,7 @@ def main():
                 domain=dict(type='str'),
                 domainadmin=dict(type='str'),
                 domainadminpassword=dict(type='str', no_log=True),
+                domain_ou=dict(type='str'),
                 existing_vm=dict(type='bool'),
                 fullname=dict(type='str'),
                 hostname=dict(type='str'),

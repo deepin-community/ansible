@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -67,7 +67,8 @@ class OrganizationsApplianceVpnVpnFirewallRules(object):
             new_object_params['rules'] = self.new_object.get('rules') or \
                 self.new_object.get('rules')
         if self.new_object.get('syslogDefaultRule') is not None or self.new_object.get('syslog_default_rule') is not None:
-            new_object_params['syslogDefaultRule'] = self.new_object.get('syslogDefaultRule')
+            new_object_params['syslogDefaultRule'] = self.new_object.get(
+                'syslogDefaultRule')
         if self.new_object.get('organizationId') is not None or self.new_object.get('organization_id') is not None:
             new_object_params['organizationId'] = self.new_object.get('organizationId') or \
                 self.new_object.get('organization_id')
@@ -83,8 +84,8 @@ class OrganizationsApplianceVpnVpnFirewallRules(object):
                 params=self.get_all_params(name=name),
             )
             if isinstance(items, dict):
-                if 'response' in items:
-                    items = items.get('response')
+                if 'rules' in items:
+                    items = items.get('rules')
             result = get_dict_result(items, 'name', name)
             if result is None:
                 result = items
@@ -102,7 +103,8 @@ class OrganizationsApplianceVpnVpnFirewallRules(object):
         prev_obj = None
         id_exists = False
         name_exists = False
-        o_id = self.new_object.get("organizationId") or self.new_object.get("organization_id")
+        o_id = self.new_object.get(
+            "organizationId") or self.new_object.get("organization_id")
         name = self.new_object.get("name")
         if o_id:
             prev_obj = self.get_object_by_name(o_id)
@@ -130,8 +132,8 @@ class OrganizationsApplianceVpnVpnFirewallRules(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):
@@ -182,7 +184,8 @@ class ActionModule(ActionBase):
         self._check_argspec()
 
         meraki = MERAKI(self._task.args)
-        obj = OrganizationsApplianceVpnVpnFirewallRules(self._task.args, meraki)
+        obj = OrganizationsApplianceVpnVpnFirewallRules(
+            self._task.args, meraki)
 
         state = self._task.args.get("state")
 

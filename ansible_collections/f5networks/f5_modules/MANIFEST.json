@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "f5networks",
   "name": "f5_modules",
-  "version": "1.32.1",
+  "version": "1.38.0",
   "authors": [
    "Wojciech Wypior (@wojtek0806)",
    "Rohit Upadhyay (@urohit011)"
@@ -31,7 +31,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "48292da096c54d2650bb1008452dda2f213b49f82f64b074efb8aa4f0c92b931",
+  "chksum_sha256": "8a5af439efabfbdc7bf47e89f4d4710b06e71a19befa1ead6221b4f9d37b8706",
   "format": 1
  },
  "format": 1

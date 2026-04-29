@@ -124,11 +124,12 @@ except ImportError:
 import datetime
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.community.vmware.plugins.module_utils.vmware import connect_to_api, vmware_argument_spec
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
+from ansible_collections.community.vmware.plugins.module_utils.clients._vmware import PyvmomiClient
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(dict(
         extension_key=dict(type='str', required=True, no_log=False),
         version=dict(type='str', required=True),
@@ -165,8 +166,14 @@ def main():
     visible = module.params['visible']
     thumbprint = module.params['ssl_thumbprint']
 
-    content = connect_to_api(module, False)
-    em = content.extensionManager
+    pyvmomi_client = PyvmomiClient(
+        hostname=module.params.get('hostname'),
+        username=module.params.get('username'),
+        password=module.params.get('password'),
+        port=module.params.get('port'),
+        validate_certs=module.params.get('validate_certs')
+    )
+    em = pyvmomi_client.content.extensionManager
     key_check = em.FindExtension(extension_key)
     results = dict(changed=False, installed=dict())
 

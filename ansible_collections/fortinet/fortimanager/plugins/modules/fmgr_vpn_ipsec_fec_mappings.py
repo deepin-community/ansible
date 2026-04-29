@@ -128,6 +128,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -144,14 +145,14 @@ EXAMPLES = '''
         fec: <your own value>
         state: present # <value in [present, absent]>
         vpn_ipsec_fec_mappings:
-          bandwidth_bi_threshold: <integer>
-          bandwidth_down_threshold: <integer>
-          bandwidth_up_threshold: <integer>
-          base: <integer>
-          latency_threshold: <integer>
-          packet_loss_threshold: <integer>
-          redundant: <integer>
-          seqno: <integer>
+          # bandwidth_bi_threshold: <integer>
+          # bandwidth_down_threshold: <integer>
+          # bandwidth_up_threshold: <integer>
+          # base: <integer>
+          # latency_threshold: <integer>
+          # packet_loss_threshold: <integer>
+          # redundant: <integer>
+          # seqno: <integer>
 '''
 
 RETURN = '''

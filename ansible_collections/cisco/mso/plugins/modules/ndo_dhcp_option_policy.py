@@ -87,8 +87,9 @@ EXAMPLES = r"""
         id: 1
         data: data_1
     state: present
+  register: create
 
-- name: Query a dhcp option policy with template_name
+- name: Query a dhcp option policy with name
   cisco.mso.ndo_dhcp_option_policy:
     host: mso_host
     username: admin
@@ -97,6 +98,16 @@ EXAMPLES = r"""
     option_policy: ansible_test_option_policy
     state: query
   register: query_one
+
+- name: Query a dhcp option policy with UUID
+  cisco.mso.ndo_dhcp_option_policy:
+    host: mso_host
+    username: admin
+    password: SomeSecretPassword
+    template: ansible_tenant_template
+    option_policy_uuid: '{{ create.current.uuid }}'
+    state: query
+  register: query_uuid
 
 - name: Query all dhcp option policy in the template
   cisco.mso.ndo_dhcp_option_policy:
@@ -172,23 +183,17 @@ def main():
     mso_template.validate_template("tenantPolicy")
 
     path = "/tenantPolicyTemplate/template/dhcpOptionPolicies"
-    existing_dhcp_option_policies = mso_template.template.get("tenantPolicyTemplate", {}).get("template", {}).get("dhcpOptionPolicies", [])
-    if option_policy:
-        object_description = "DHCP Option Policy"
-        if option_policy_uuid:
-            match = mso_template.get_object_by_uuid(object_description, existing_dhcp_option_policies, option_policy_uuid)
-        else:
-            kv_list = [KVPair("name", option_policy)]
-            match = mso_template.get_object_by_key_value_pairs(object_description, existing_dhcp_option_policies, kv_list)
+
+    match = get_dhcp_option_policy(mso_template, option_policy_uuid, option_policy)
+
+    if option_policy_uuid or option_policy:
         if match:
-            mso.existing = mso.previous = copy.deepcopy(match.details)
-    else:
-        mso.existing = mso.previous = existing_dhcp_option_policies
+            mso.existing = mso.previous = copy.deepcopy(match.details)  # Query a specific object
+    elif match:
+        mso.existing = match  # Query all objects
 
     if state == "present":
-
         if match:
-
             if module.params.get("options") is not None and len(options) == 0:
                 mso.fail_json(msg=err_message_min_options)
 
@@ -207,7 +212,6 @@ def main():
             mso.sanitize(match.details)
 
         else:
-
             if not options:
                 mso.fail_json(msg=err_message_min_options)
 
@@ -227,9 +231,25 @@ def main():
         mso.existing = {}
 
     if not module.check_mode and ops:
-        mso.request(mso_template.template_path, method="PATCH", data=ops)
+        mso_template.template = mso.request(mso_template.template_path, method="PATCH", data=ops)
+        match = get_dhcp_option_policy(mso_template, option_policy_uuid, option_policy)
+        if match:
+            mso.existing = match.details  # When the state is present
+        else:
+            mso.existing = {}  # When the state is absent
+    elif module.check_mode and state != "query":  # When the state is present/absent with check mode
+        mso.existing = mso.proposed if state == "present" else {}
 
     mso.exit_json()
+
+
+def get_dhcp_option_policy(mso_template, uuid=None, name=None, fail_module=False):
+    existing_dhcp_option_policies = mso_template.template.get("tenantPolicyTemplate", {}).get("template", {}).get("dhcpOptionPolicies", [])
+    if uuid or name:  # Query a specific object
+        return mso_template.get_object_by_key_value_pairs(
+            "DHCP Option Policy", existing_dhcp_option_policies, [KVPair("uuid", uuid) if uuid else KVPair("name", name)], fail_module
+        )
+    return existing_dhcp_option_policies  # Query all objects
 
 
 def get_options_payload(options):

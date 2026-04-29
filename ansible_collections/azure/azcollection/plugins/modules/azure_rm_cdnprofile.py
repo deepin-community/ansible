@@ -44,6 +44,11 @@ options:
             - standard_microsoft
             - standard_azurefrontdoor
             - premium_azurefrontdoor
+            - standard_955bandwidth_chinacdn
+            - standard_avgbandwidth_chinacdn
+            - standardplus_chinacdn
+            - standardplus_955bandwidth_chinacdn
+            - standardplus_avgbandwidth_chinacdn
     state:
         description:
             - Assert the state of the CDN profile. Use C(present) to create or update a CDN profile and C(absent) to delete it.
@@ -91,7 +96,6 @@ import uuid
 
 try:
     from azure.mgmt.cdn.models import Profile, Sku, ManagedServiceIdentity, UserAssignedIdentity, ProfileUpdateParameters
-    from azure.mgmt.cdn import CdnManagementClient
 except ImportError as ec:
     # This is handled in azure_rm_common
     pass
@@ -134,9 +138,10 @@ class AzureRMCdnprofile(AzureRMModuleBaseExt):
             sku=dict(
                 type='str',
                 choices=[
-                    'standard_verizon', 'premium_verizon', 'custom_verizon', 'standard_akamai',
-                    'standard_chinacdn', 'standard_microsoft',
-                    'standard_azurefrontdoor', 'premium_azurefrontdoor'
+                    'standard_verizon', 'premium_verizon', 'custom_verizon', 'standard_akamai', 'standard_chinacdn',
+                    'standard_microsoft', 'standard_azurefrontdoor', 'premium_azurefrontdoor',
+                    'standard_955bandwidth_chinacdn', 'standard_avgbandwidth_chinacdn', 'standardplus_chinacdn',
+                    'standardplus_955bandwidth_chinacdn', 'standardplus_avgbandwidth_chinacdn'
                 ]
             ),
             identity=dict(
@@ -153,8 +158,6 @@ class AzureRMCdnprofile(AzureRMModuleBaseExt):
         self.sku = None
         self.identity = None
         self._managed_identity = None
-
-        self.cdn_client = None
 
         required_if = [
             ('state', 'present', ['sku'])
@@ -181,8 +184,6 @@ class AzureRMCdnprofile(AzureRMModuleBaseExt):
 
         for key in list(self.module_arg_spec.keys()) + ['tags']:
             setattr(self, key, kwargs[key])
-
-        self.cdn_client = self.get_cdn_client()
 
         to_be_updated = False
 
@@ -322,13 +323,6 @@ class AzureRMCdnprofile(AzureRMModuleBaseExt):
         except Exception:
             self.log('Did not find the CDN profile.')
             return False
-
-    def get_cdn_client(self):
-        if not self.cdn_client:
-            self.cdn_client = self.get_mgmt_svc_client(CdnManagementClient,
-                                                       base_url=self._cloud_environment.endpoints.resource_manager,
-                                                       api_version='2024-02-01')
-        return self.cdn_client
 
 
 def main():

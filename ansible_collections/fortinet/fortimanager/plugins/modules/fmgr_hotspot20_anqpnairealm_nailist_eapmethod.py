@@ -174,6 +174,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -191,13 +192,12 @@ EXAMPLES = '''
         nai_list: <your own value>
         state: present # <value in [present, absent]>
         hotspot20_anqpnairealm_nailist_eapmethod:
-          auth_param:
-            -
-              id: <value in [non-eap-inner-auth, inner-auth-eap, credential, ...]>
-              index: <integer>
-              val: <value in [eap-identity, eap-md5, eap-tls, ...]>
-          index: <integer>
-          method: <value in [eap-identity, eap-md5, eap-tls, ...]>
+          index: 0 # Required variable, integer
+          # auth_param:
+          #   - id: <value in [non-eap-inner-auth, inner-auth-eap, credential, ...]>
+          #     index: <integer>
+          #     val: <value in [eap-identity, eap-md5, eap-tls, ...]>
+          # method: <value in [eap-identity, eap-md5, eap-tls, ...]>
 '''
 
 RETURN = '''

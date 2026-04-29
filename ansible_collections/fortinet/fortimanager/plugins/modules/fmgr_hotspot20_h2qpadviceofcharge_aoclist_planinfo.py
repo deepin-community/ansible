@@ -121,6 +121,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -138,10 +139,10 @@ EXAMPLES = '''
         aoc_list: <your own value>
         state: present # <value in [present, absent]>
         hotspot20_h2qpadviceofcharge_aoclist_planinfo:
-          currency: <string>
-          info_file: <string>
-          lang: <string>
-          name: <string>
+          name: "your value" # Required variable, string
+          # currency: <string>
+          # info_file: <string>
+          # lang: <string>
 '''
 
 RETURN = '''

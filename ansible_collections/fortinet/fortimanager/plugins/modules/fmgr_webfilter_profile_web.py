@@ -174,6 +174,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -189,36 +190,36 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         webfilter_profile_web:
-          blacklist: <value in [disable, enable]>
-          bword_table: <string>
-          bword_threshold: <integer>
-          content_header_list: <string>
-          keyword_match: <list or string>
-          log_search: <value in [disable, enable]>
-          safe_search:
-            - "google"
-            - "yahoo"
-            - "bing"
-            - "url"
-            - "header"
-          urlfilter_table: <string>
-          whitelist:
-            - "exempt-av"
-            - "exempt-webcontent"
-            - "exempt-activex-java-cookie"
-            - "exempt-dlp"
-            - "exempt-rangeblock"
-            - "extended-log-others"
-          youtube_restrict: <value in [strict, none, moderate]>
-          allowlist:
-            - "exempt-av"
-            - "exempt-webcontent"
-            - "exempt-activex-java-cookie"
-            - "exempt-dlp"
-            - "exempt-rangeblock"
-            - "extended-log-others"
-          blocklist: <value in [disable, enable]>
-          vimeo_restrict: <string>
+          # blacklist: <value in [disable, enable]>
+          # bword_table: <string>
+          # bword_threshold: <integer>
+          # content_header_list: <string>
+          # keyword_match: <list or string>
+          # log_search: <value in [disable, enable]>
+          # safe_search:
+          #   - "google"
+          #   - "yahoo"
+          #   - "bing"
+          #   - "url"
+          #   - "header"
+          # urlfilter_table: <string>
+          # whitelist:
+          #   - "exempt-av"
+          #   - "exempt-webcontent"
+          #   - "exempt-activex-java-cookie"
+          #   - "exempt-dlp"
+          #   - "exempt-rangeblock"
+          #   - "extended-log-others"
+          # youtube_restrict: <value in [strict, none, moderate]>
+          # allowlist:
+          #   - "exempt-av"
+          #   - "exempt-webcontent"
+          #   - "exempt-activex-java-cookie"
+          #   - "exempt-dlp"
+          #   - "exempt-rangeblock"
+          #   - "extended-log-others"
+          # blocklist: <value in [disable, enable]>
+          # vimeo_restrict: <string>
 '''
 
 RETURN = '''

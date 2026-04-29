@@ -8,7 +8,7 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: ibm_svc_manage_volume
 short_description: This module manages standard volumes on IBM Storage Virtualize family systems
@@ -62,6 +62,14 @@ options:
       - Defines the size of the volume. This parameter can also be used to resize an existing volume.
       - Required when I(state=present), to create or modify a volume.
     type: str
+  warning:
+    description:
+      - Raises a warning when the used disk capacity on the thin-provisioned copy first exceeds the specified threshold.
+      - The value is specified as a percentage of the total capacity of the thin-provisioned volume, hence it must be between 0 and 100.
+      - When not specified, the default value is 80%.
+      - Valid when I(state=present), to create or modify a thin-provisioned or compressed volume.
+    type: int
+    version_added: '2.7.0'
   unit:
     description:
       - Specifies the data units to use with the capacity that is specified by the 'size' parameter.
@@ -88,6 +96,7 @@ options:
       - Specifies the type of volume to create. Volume can be thinclone or clone type.
       - Valid when I(state=present), to create a thinclone or clone volume.
       - Supported from Storage Virtualize family systems from 8.6.2.0 or later.
+      - Also used to convert a thinclone volume to clone. type = clone should be specified.
     choices: [thinclone, clone]
     type: str
   fromsourcevolume:
@@ -127,6 +136,14 @@ options:
       - Parameters 'novolumegroup' and 'volumegroup' are mutually exclusive.
       - Valid when I(state=present), to modify a volume.
     type: bool
+  unmap:
+    description:
+      - Removes specified objects associated with the volume which is to be deleted.
+      - Valid when I(state=absent), to delete a volume.
+    type: list
+    elements: str
+    choices: [ host_mappings, remotecopy_relationships, flashcopy_mappings ]
+    version_added: 2.7.0
   old_name:
     description:
       - Specifies the old name of the volume during renaming.
@@ -165,13 +182,16 @@ author:
     - Sreshtant Bohidar(@Sreshtant-Bohidar)
 notes:
     - This module supports C(check_mode).
+    - For unmap parameter, the option remotecopy_relationships has been deprecated from 8.7.1.0 onwards.
+    - CMMVC9855E The command failed because one of more of the specified volumes does not exist.
+      This error occurs when the user-provided volume(s) do not exist.
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Create a volume
   ibm.storage_virtualize.ibm_svc_manage_volume:
     clustername: "{{ clustername }}"
-    domain: "{{domain}}"
+    domain: "{{ domain }}"
     username: "{{ username }}"
     password: "{{ password }}"
     log_path: "{{ log_path }}"
@@ -215,7 +235,7 @@ EXAMPLES = '''
 - name: Creating a volume with iogrp- io_grp0
   ibm.storage_virtualize.ibm_svc_manage_volume:
     clustername: "{{ clustername }}"
-    domain: "{{ domain}}"
+    domain: "{{ domain }}"
     username: "{{ username }}"
     password: "{{ password }}"
     log_path: "{{ log_path }}"
@@ -267,6 +287,26 @@ EXAMPLES = '''
     old_name: "volume_name"
     name: "new_volume_name"
     state: "present"
+- name: Convert a thinclone volume to clone
+  ibm.storage_virtualize.ibm_svc_manage_volume:
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "vol0-0"
+    type: "clone"
+    log_path: "{{ log_path }}"
+    state: "present"
+- name: Convert list of thinclone volumes to clone
+  ibm.storage_virtualize.ibm_svc_manage_volume:
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "vol0:vol1:vol2"
+    type: "clone"
+    log_path: "{{ log_path }}"
+    state: "present"
 - name: Enable cloud backup in an existing volume
   ibm.storage_virtualize.ibm_svc_manage_volume:
     clustername: "{{ clustername }}"
@@ -286,6 +326,16 @@ EXAMPLES = '''
     log_path: "{{ log_path }}"
     name: "new_volume_name"
     state: "absent"
+- name: Delete a volume and remove associated host mappings, remote copy relationships, and flashcopy mappings
+  ibm.storage_virtualize.ibm_svc_manage_volume:
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    log_path: "{{ log_path }}"
+    name: "new_volume_name"
+    state: "absent"
+    unmap: ['host_mappings', 'remotecopy_relationships', 'flashcopy_mappings']
 '''
 
 RETURN = '''#'''
@@ -312,6 +362,7 @@ class IBMSVCvolume(object):
                 state=dict(type='str', required=True, choices=['absent', 'present']),
                 pool=dict(type='str', required=False),
                 size=dict(type='str', required=False),
+                warning=dict(type='int', required=False),
                 unit=dict(type='str', default='mb', choices=['b', 'kb',
                                                              'mb', 'gb',
                                                              'tb', 'pb']),
@@ -319,6 +370,9 @@ class IBMSVCvolume(object):
                 iogrp=dict(type='str', required=False),
                 volumegroup=dict(type='str', required=False),
                 novolumegroup=dict(type='bool', required=False),
+                unmap=dict(type='list', elements='str', required=False, choices=['host_mappings',
+                                                                                 'remotecopy_relationships',
+                                                                                 'flashcopy_mappings']),
                 thin=dict(type='bool', required=False),
                 compressed=dict(type='bool', required=False),
                 deduplicated=dict(type='bool', required=False),
@@ -345,6 +399,7 @@ class IBMSVCvolume(object):
         # Optional Parameters
         self.pool = self.module.params['pool']
         self.size = self.module.params['size']
+        self.warning = self.module.params['warning']
         self.unit = self.module.params['unit']
         self.iogrp = self.module.params['iogrp']
         self.buffersize = self.module.params['buffersize']
@@ -359,6 +414,7 @@ class IBMSVCvolume(object):
         self.allow_hs = self.module.params['allow_hs']
         self.type = self.module.params['type']
         self.fromsourcevolume = self.module.params['fromsourcevolume']
+        self.unmap = self.module.params['unmap']
 
         # internal variable
         self.changed = False
@@ -394,7 +450,7 @@ class IBMSVCvolume(object):
                 else:
                     temp.append(item)
             if invalid:
-                self.module.fail_json(msg='Empty or non-existing iogrp detected: %s' % invalid)
+                self.module.fail_json(msg='Empty or non-existing iogrp detected: {0}'.format(invalid))
             self.iogrp = temp
 
     # for validating mandatory parameters of the module
@@ -404,12 +460,16 @@ class IBMSVCvolume(object):
             self.module.fail_json(msg='Missing mandatory parameter: [{0}]'.format(', '.join(missing)))
         if self.volumegroup and self.novolumegroup:
             self.module.fail_json(msg='Mutually exclusive parameters detected: [volumegroup] and [novolumegroup]')
+        if self.thin and self.compressed:
+            self.module.fail_json(msg='Mutually exclusive parameters detected: [thin] and [compressed]')
+        if self.state == 'present' and self.unmap is not None:
+            self.module.fail_json(msg='Parameter [unmap] cannot be specified when creating or updating a volume.')
 
     # for validating parameter while removing an existing volume
     def volume_deletion_parameter_validation(self):
         invalids = ('pool', 'size', 'iogrp', 'buffersize', 'volumegroup', 'novolumegroup',
                     'thin', 'compressed', 'deduplicated', 'old_name', 'enable_cloud_snapshot',
-                    'cloud_account_name', 'allow_hs', 'type', 'fromsourcevolume')
+                    'cloud_account_name', 'allow_hs', 'type', 'fromsourcevolume', 'warning')
 
         invalid_params = ', '.join((param for param in invalids if getattr(self, param)))
 
@@ -431,6 +491,9 @@ class IBMSVCvolume(object):
 
         if (self.type and not self.fromsourcevolume) or (self.fromsourcevolume and not self.type):
             self.module.fail_json(msg='Parameters [type] and [fromsourcevolume] parameters must be used together')
+
+        if (self.warning) and not self.thin and not self.compressed:
+            self.module.fail_json(msg='Parameter [warning] is invalid without [thin] or [compressed]')
 
         missing = []
         if self.type and self.fromsourcevolume:
@@ -486,6 +549,46 @@ class IBMSVCvolume(object):
         return self.restapi.svc_obj_info(
             'lsvdisk', {'bytes': True}, [volume_name]
         )
+
+    def get_all_target_volumes(self, criteria=None):
+        # This function does following:
+        # 1. It fetches a set of volumes from SVC in all_vols_set
+        # 2. It converts self.name into a provided_vols_set
+        # 3. It gets common volumes set from both that meet the criteria
+        # 4. If any user-provide volume(s) do not exist on the cluster, returns error
+        # 5. It sets a new attribute self.target_vols_list_str which is a string formed
+        #    by joining colon-separated list of common volumes.
+
+        all_vols_set = set()
+        self.target_vols_list_str = ''
+
+        if self.module.check_mode:
+            self.changed = True
+            return
+
+        cmdopts = {}
+        if criteria:
+            cmdopts['filtervalue'] = criteria
+        data = self.restapi.svc_obj_info('lsvdisk', cmdopts, None)
+        if data:
+            for item in data:
+                all_vols_set.add(item['name'])
+
+        user_provided_vols_set = set(self.name.split(':'))
+        invalid_vols_list = list(user_provided_vols_set.difference(all_vols_set))
+        if invalid_vols_list:
+            self.module.fail_json(msg="CMMVC9855E The command failed because one or more of"
+                                  " the specified volumes does not exist.")
+
+        target_vols_list = []
+        if data:
+            for item in data:
+                if item['name'] in user_provided_vols_set and item['volume_type'] == "thinclone":
+                    target_vols_list.append(item['name'])
+        self.target_vols_list_str = ':'.join(target_vols_list)
+        self.log("Volume(s) that need to be converted from thinclone to clone: [%s].", self.target_vols_list_str)
+
+        return
 
     # function to get list of associated iogrp to a volume
     def get_existing_iogrp(self):
@@ -546,6 +649,8 @@ class IBMSVCvolume(object):
             cmdopts['buffersize'] = self.buffersize
         if self.name:
             cmdopts['name'] = self.name
+        if self.warning:
+            cmdopts['warning'] = str(self.warning) + '%'
         if self.type:
             cmdopts['type'] = self.type
             snapshot_id = self.create_transient_snapshot()
@@ -564,11 +669,21 @@ class IBMSVCvolume(object):
     # function to remove an existing volume
     def remove_volume(self):
         self.volume_deletion_parameter_validation()
+        cmdopts = {}
         if self.module.check_mode:
             self.changed = True
             return
+        name_params_map = {
+            'host_mappings': 'removehostmappings',
+            'remotecopy_relationships': 'removercrelationships',
+            'flashcopy_mappings': 'removefcmaps'
+        }
+        if self.unmap:
+            for name in self.unmap:
+                cmdopts[name_params_map[name]] = True
+
         self.restapi.svc_run_command(
-            'rmvolume', None, [self.name]
+            'rmvolume', cmdopts, [self.name]
         )
         self.changed = True
 
@@ -607,6 +722,14 @@ class IBMSVCvolume(object):
                     props['size'] = {
                         'shrink': existing_size - input_size
                     }
+        if self.warning:
+            # Check for standard or compressed volume
+            if (data[0]['capacity'] != data[1]['real_capacity']) or (data[1]['compressed_copy'] == 'yes'):
+                if (int(data[1]['warning']) != (self.warning)):
+                    props['warning'] = str(self.warning) + '%'
+            else:
+                self.module.fail_json(msg='Parameter [warning] is applicable only for thin-provisioned and compressed volumes.')
+
         # check for changes in volumegroup
         if self.volumegroup:
             if self.volumegroup != data[0]['volume_group_name']:
@@ -733,10 +856,29 @@ class IBMSVCvolume(object):
         )
         self.changed = True
 
+    def convert_to_clone(self):
+        # when check_mode is enabled
+        if self.module.check_mode:
+            self.msg = 'Skipping changes due to check mode.'
+            self.changed = True
+            return
+
+        cmdopts = {}
+        # For a list of volumes, target_volumes_list_str will be set by get_all_target_volumes()
+        if hasattr(self, 'target_vols_list_str') and self.target_vols_list_str != '':
+            cmdopts['volumes'] = self.target_vols_list_str
+        else:
+            cmdopts['volumes'] = self.name
+        cmdargs = None
+        self.restapi.svc_run_command('converttoclone', cmdopts, cmdargs)
+        self.msg = "Volume(s) [{0}] converted to clone.".format(self.name)
+        self.changed = True
+        return
+
     # function to update an existing volume
     def update_volume(self, modify):
         # raise error for unsupported parameter
-        unsupported_parameters = ['pool', 'thin', 'compressed', 'deduplicated', 'type', 'fromsourcevolume']
+        unsupported_parameters = ['pool', 'thin', 'compressed', 'deduplicated', 'fromsourcevolume']
         unsupported_exists = []
         for parameter in unsupported_parameters:
             if parameter in modify:
@@ -747,6 +889,7 @@ class IBMSVCvolume(object):
         if self.module.check_mode:
             self.changed = True
             return
+
         # updating iogrps of a volume
         if 'iogrp' in modify:
             if 'add' in modify['iogrp']:
@@ -763,12 +906,13 @@ class IBMSVCvolume(object):
         if 'cloud_backup' in modify:
             self.update_cloud_backup()
 
-        # updating volumegroup, novolumegroup of a volume
         cmdopts = {}
         if 'volumegroup' in modify:
             cmdopts['volumegroup'] = modify['volumegroup']['name']
         if 'novolumegroup' in modify:
             cmdopts['novolumegroup'] = modify['novolumegroup']['status']
+        if 'warning' in modify:
+            cmdopts['warning'] = modify['warning']
         if cmdopts:
             self.restapi.svc_run_command(
                 'chvdisk',
@@ -801,7 +945,34 @@ class IBMSVCvolume(object):
     def apply(self):
         changed, msg, modify = False, None, {}
         self.mandatory_parameter_validation()
-        volume_data = self.get_existing_volume(self.name)
+
+        if ':' in self.name and self.type == 'clone' and self.state == 'present':
+            # Special handling for list of volumes
+            # Only applicable for converting thinclone volumes list to clone
+            self.get_all_target_volumes()
+            # self.target_vols_list_str will be set after calling get_all_target_volumes()
+            if self.target_vols_list_str != '':
+                self.convert_to_clone()
+                self.module.exit_json(msg=self.msg, changed=self.changed)
+            else:
+                self.msg = "Volume(s) [{0}] are not thinclone!!".format(self.name)
+                self.module.exit_json(msg=self.msg, changed=self.changed)
+        else:
+            volume_data = self.get_existing_volume(self.name)
+
+        if volume_data and self.type == 'clone' and not self.fromsourcevolume:
+            # If an existing volume was passed along with type=clone
+            # but not fromsourcevolume, user wants to convert thinclone to clone
+            if volume_data[0].get('volume_type') == 'thinclone':
+                # If volume is thinclone, convert it to clone.
+                self.convert_to_clone()
+                self.module.exit_json(msg=self.msg, changed=self.changed)
+            else:
+                # If volume is not thinclone, just return message.
+                # This is for cases, where it was either already done
+                # the last time it was run, or was never a thinclone.
+                self.module.exit_json(msg='Volume {0} is not a thinclone.'.format(self.name), changed=self.changed)
+
         if self.state == "present" and self.old_name:
             msg = self.volume_rename(volume_data)
         elif self.state == "absent" and self.old_name:

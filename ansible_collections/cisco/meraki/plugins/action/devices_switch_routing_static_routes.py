@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -39,6 +39,7 @@ argument_spec.update(dict(
     subnet=dict(type="str"),
     serial=dict(type="str"),
     staticRouteId=dict(type="str"),
+    managementNextHop=dict(type="str"),
 ))
 
 required_if = [
@@ -57,10 +58,12 @@ class DevicesSwitchRoutingStaticRoutes(object):
             advertiseViaOspfEnabled=params.get("advertiseViaOspfEnabled"),
             name=params.get("name"),
             nextHopIp=params.get("nextHopIp"),
-            preferOverOspfRoutesEnabled=params.get("preferOverOspfRoutesEnabled"),
+            preferOverOspfRoutesEnabled=params.get(
+                "preferOverOspfRoutesEnabled"),
             subnet=params.get("subnet"),
             serial=params.get("serial"),
             staticRouteId=params.get("staticRouteId"),
+            managementNextHop=params.get("managementNextHop"),
         )
 
     def get_all_params(self, name=None, id=None):
@@ -81,7 +84,8 @@ class DevicesSwitchRoutingStaticRoutes(object):
     def create_params(self):
         new_object_params = {}
         if self.new_object.get('advertiseViaOspfEnabled') is not None or self.new_object.get('advertise_via_ospf_enabled') is not None:
-            new_object_params['advertiseViaOspfEnabled'] = self.new_object.get('advertiseViaOspfEnabled')
+            new_object_params['advertiseViaOspfEnabled'] = self.new_object.get(
+                'advertiseViaOspfEnabled')
         if self.new_object.get('name') is not None or self.new_object.get('name') is not None:
             new_object_params['name'] = self.new_object.get('name') or \
                 self.new_object.get('name')
@@ -89,7 +93,8 @@ class DevicesSwitchRoutingStaticRoutes(object):
             new_object_params['nextHopIp'] = self.new_object.get('nextHopIp') or \
                 self.new_object.get('next_hop_ip')
         if self.new_object.get('preferOverOspfRoutesEnabled') is not None or self.new_object.get('prefer_over_ospf_routes_enabled') is not None:
-            new_object_params['preferOverOspfRoutesEnabled'] = self.new_object.get('preferOverOspfRoutesEnabled')
+            new_object_params['preferOverOspfRoutesEnabled'] = self.new_object.get(
+                'preferOverOspfRoutesEnabled')
         if self.new_object.get('subnet') is not None or self.new_object.get('subnet') is not None:
             new_object_params['subnet'] = self.new_object.get('subnet') or \
                 self.new_object.get('subnet')
@@ -111,7 +116,11 @@ class DevicesSwitchRoutingStaticRoutes(object):
     def update_by_id_params(self):
         new_object_params = {}
         if self.new_object.get('advertiseViaOspfEnabled') is not None or self.new_object.get('advertise_via_ospf_enabled') is not None:
-            new_object_params['advertiseViaOspfEnabled'] = self.new_object.get('advertiseViaOspfEnabled')
+            new_object_params['advertiseViaOspfEnabled'] = self.new_object.get(
+                'advertiseViaOspfEnabled')
+        if self.new_object.get('managementNextHop') is not None or self.new_object.get('management_next_hop') is not None:
+            new_object_params['managementNextHop'] = self.new_object.get('managementNextHop') or \
+                self.new_object.get('management_next_hop')
         if self.new_object.get('name') is not None or self.new_object.get('name') is not None:
             new_object_params['name'] = self.new_object.get('name') or \
                 self.new_object.get('name')
@@ -119,7 +128,8 @@ class DevicesSwitchRoutingStaticRoutes(object):
             new_object_params['nextHopIp'] = self.new_object.get('nextHopIp') or \
                 self.new_object.get('next_hop_ip')
         if self.new_object.get('preferOverOspfRoutesEnabled') is not None or self.new_object.get('prefer_over_ospf_routes_enabled') is not None:
-            new_object_params['preferOverOspfRoutesEnabled'] = self.new_object.get('preferOverOspfRoutesEnabled')
+            new_object_params['preferOverOspfRoutesEnabled'] = self.new_object.get(
+                'preferOverOspfRoutesEnabled')
         if self.new_object.get('subnet') is not None or self.new_object.get('subnet') is not None:
             new_object_params['subnet'] = self.new_object.get('subnet') or \
                 self.new_object.get('subnet')
@@ -207,11 +217,12 @@ class DevicesSwitchRoutingStaticRoutes(object):
             ("subnet", "subnet"),
             ("serial", "serial"),
             ("staticRouteId", "staticRouteId"),
+            ("managementNextHop", "managementNextHop"),
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (DNAC) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def create(self):

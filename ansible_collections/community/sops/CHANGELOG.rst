@@ -4,6 +4,114 @@ Community SOPS Release Notes
 
 .. contents:: Topics
 
+v2.2.2
+======
+
+Release Summary
+---------------
+
+Bugfix release.
+
+Bugfixes
+--------
+
+- Avoid deprecated functionality in ansible-core 2.20 (https://github.com/ansible-collections/community.sops/pull/260).
+- all modules and plugins - the default of ``enable_local_keyservice`` changed from ``false`` to ``true``, and explicitly setting it to ``false`` now passes ``--enable-local-keyservice=false``. SOPS' default has always been ``true``, and when setting this option to ``true`` so far it resulted in passing ``--enable-local-keyservice``, which is equivalent to ``--enable-local-keyservice=true`` and had no effect. This means that from now on, setting ``enable_local_keyservice`` explicitly to ``false`` has an effect. If ``enable_local_keyservice`` was not set before, or was set to ``true``, nothing will change (https://github.com/ansible-collections/community.sops/issues/261, https://github.com/ansible-collections/community.sops/pull/262).
+
+v2.2.1
+======
+
+Release Summary
+---------------
+
+Bugfix release.
+
+Bugfixes
+--------
+
+- install role - avoid deprecated parameter value for the ``ansible.builtin.uri`` module (https://github.com/ansible-collections/community.sops/pull/255).
+
+v2.2.0
+======
+
+Release Summary
+---------------
+
+Feature release.
+
+Minor Changes
+-------------
+
+- load_vars - expressions can now be lazily evaluated when using ansible-core 2.19 or newer (https://github.com/ansible-collections/community.sops/pull/229).
+
+v2.1.0
+======
+
+Release Summary
+---------------
+
+Feature release.
+
+Minor Changes
+-------------
+
+- Now supports specifying SSH private keys for age with the new ``age_ssh_private_keyfile`` option (https://github.com/ansible-collections/community.sops/pull/241).
+
+v2.0.5
+======
+
+Release Summary
+---------------
+
+Maintenance release with updated SOPS version test coverage.
+
+v2.0.4
+======
+
+Release Summary
+---------------
+
+Maintenance release with Data Tagging support.
+
+Bugfixes
+--------
+
+- load_vars - make evaluation compatible with Data Tagging in upcoming ansible-core release (https://github.com/ansible-collections/community.sops/pull/225).
+
+v2.0.3
+======
+
+Release Summary
+---------------
+
+Bugfix release.
+
+Bugfixes
+--------
+
+- install role - ``sops_install_on_localhost=false`` was not working properly if the role was running on more than one host due to a bug in ansible-core (https://github.com/ansible-collections/community.sops/issues/223, https://github.com/ansible-collections/community.sops/pull/224).
+
+v2.0.2
+======
+
+Release Summary
+---------------
+
+Bugfix release.
+
+Bugfixes
+--------
+
+- install role - when used with Debian on ARM architecture, the architecture name is now correctly translated from ``aarch64`` to ``arm64`` (https://github.com/ansible-collections/community.sops/issues/220, https://github.com/ansible-collections/community.sops/pull/221).
+
+v2.0.1
+======
+
+Release Summary
+---------------
+
+Maintenance release with updated documentation.
+
 v2.0.0
 ======
 

@@ -41,7 +41,9 @@ Most modules also implement a "stat" state.  This is used to gather information,
 
 ## Installation
 Install the Infinidat Ansible collection on hosts or within containers using:
-`ansible-galaxy collection install infinidat.infibox -p ~/.ansible/collections`
+`ansible-galaxy collection install infinidat.infinibox -p ~/.ansible/collections`
+
+Use of Python virtual environments (venv module) is recommended.
 
 Complete instructions for installing collections is available at https://docs.ansible.com/ansible/latest/user_guide/collections_using.html.
 

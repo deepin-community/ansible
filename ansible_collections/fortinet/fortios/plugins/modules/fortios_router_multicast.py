@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -411,6 +412,69 @@ options:
                         description:
                             - Groups allowed to source specific multicast. Source router.access-list.name.
                         type: str
+            pim_sm_global_vrf:
+                description:
+                    - per-VRF PIM sparse-mode global settings.
+                type: list
+                elements: dict
+                suboptions:
+                    bsr_allow_quick_refresh:
+                        description:
+                            - Enable/disable accept BSR quick refresh packets from neighbors.
+                        type: str
+                        choices:
+                            - 'enable'
+                            - 'disable'
+                    bsr_candidate:
+                        description:
+                            - Enable/disable allowing this router to become a bootstrap router (BSR).
+                        type: str
+                        choices:
+                            - 'enable'
+                            - 'disable'
+                    bsr_hash:
+                        description:
+                            - BSR hash length (0 - 32).
+                        type: int
+                    bsr_interface:
+                        description:
+                            - Interface to advertise as candidate BSR. Source system.interface.name.
+                        type: str
+                    bsr_priority:
+                        description:
+                            - BSR priority (0 - 255).
+                        type: int
+                    cisco_crp_prefix:
+                        description:
+                            - Enable/disable making candidate RP compatible with old Cisco IOS.
+                        type: str
+                        choices:
+                            - 'enable'
+                            - 'disable'
+                    rp_address:
+                        description:
+                            - Statically configure RP addresses.
+                        type: list
+                        elements: dict
+                        suboptions:
+                            group:
+                                description:
+                                    - Groups to use this RP. Source router.access-list.name.
+                                type: str
+                            id:
+                                description:
+                                    - ID. see <a href='#notes'>Notes</a>.
+                                required: true
+                                type: int
+                            ip_address:
+                                description:
+                                    - RP router address.
+                                type: str
+                    vrf:
+                        description:
+                            - VRF ID. see <a href='#notes'>Notes</a>.
+                        required: true
+                        type: int
             route_limit:
                 description:
                     - Maximum number of multicast routes.
@@ -494,6 +558,20 @@ EXAMPLES = """
               spt_threshold_group: "<your_own_value> (source router.access-list.name)"
               ssm: "enable"
               ssm_range: "<your_own_value> (source router.access-list.name)"
+          pim_sm_global_vrf:
+              -
+                  bsr_allow_quick_refresh: "enable"
+                  bsr_candidate: "enable"
+                  bsr_hash: "10"
+                  bsr_interface: "<your_own_value> (source system.interface.name)"
+                  bsr_priority: "0"
+                  cisco_crp_prefix: "enable"
+                  rp_address:
+                      -
+                          group: "<your_own_value> (source router.access-list.name)"
+                          id: "77"
+                          ip_address: "<your_own_value>"
+                  vrf: "<you_own_value>"
           route_limit: "2147483647"
           route_threshold: ""
 """
@@ -575,6 +653,18 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_router_multicast_data(json):
@@ -582,6 +672,7 @@ def filter_router_multicast_data(json):
         "interface",
         "multicast_routing",
         "pim_sm_global",
+        "pim_sm_global_vrf",
         "route_limit",
         "route_threshold",
     ]
@@ -597,29 +688,114 @@ def filter_router_multicast_data(json):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def router_multicast(data, fos, check_mode=False):
 
-def router_multicast(data, fos):
     state = None
     vdom = data["vdom"]
+    state = data.get("state", None)
     router_multicast_data = data["router_multicast"]
 
     filtered_data = filter_router_multicast_data(router_multicast_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("router", "multicast", filtered_data, vdom=vdom)
+        current_data = fos.get("router", "multicast", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["router_multicast"] = converted_data
+    data_copy["router_multicast"] = filtered_data
     fos.do_member_operation(
         "router",
         "multicast",
@@ -641,12 +817,14 @@ def is_successful_status(resp):
     )
 
 
-def fortios_router(data, fos):
+def fortios_router(data, fos, check_mode):
+
     if data["router_multicast"]:
-        resp = router_multicast(data, fos)
+        resp = router_multicast(data, fos, check_mode)
     else:
         fos._module.fail_json(msg="missing task body: %s" % ("router_multicast"))
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -688,6 +866,11 @@ versioned_schema = {
                     "type": "string",
                     "options": [{"value": "enable"}, {"value": "disable"}],
                 },
+                "cisco_crp_prefix": {
+                    "v_range": [["v6.0.0", ""]],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
                 "cisco_register_checksum": {
                     "v_range": [["v6.0.0", ""]],
                     "type": "string",
@@ -696,11 +879,6 @@ versioned_schema = {
                 "cisco_register_checksum_group": {
                     "v_range": [["v6.0.0", ""]],
                     "type": "string",
-                },
-                "cisco_crp_prefix": {
-                    "v_range": [["v6.0.0", ""]],
-                    "type": "string",
-                    "options": [{"value": "enable"}, {"value": "disable"}],
                 },
                 "cisco_ignore_rp_set_priority": {
                     "v_range": [["v6.0.0", ""]],
@@ -768,6 +946,50 @@ versioned_schema = {
                     "v_range": [["v6.0.0", ""]],
                 },
             },
+        },
+        "pim_sm_global_vrf": {
+            "type": "list",
+            "elements": "dict",
+            "children": {
+                "vrf": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "integer",
+                    "required": True,
+                },
+                "bsr_candidate": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+                "bsr_interface": {"v_range": [["v7.6.1", ""]], "type": "string"},
+                "bsr_priority": {"v_range": [["v7.6.1", ""]], "type": "integer"},
+                "bsr_hash": {"v_range": [["v7.6.1", ""]], "type": "integer"},
+                "bsr_allow_quick_refresh": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+                "cisco_crp_prefix": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+                "rp_address": {
+                    "type": "list",
+                    "elements": "dict",
+                    "children": {
+                        "id": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "integer",
+                            "required": True,
+                        },
+                        "ip_address": {"v_range": [["v7.6.1", ""]], "type": "string"},
+                        "group": {"v_range": [["v7.6.1", ""]], "type": "string"},
+                    },
+                    "v_range": [["v7.6.1", ""]],
+                },
+            },
+            "v_range": [["v7.6.1", ""]],
         },
         "interface": {
             "type": "list",
@@ -920,7 +1142,7 @@ def main():
         if mkeyname and mkeyname == attribute_name:
             fields["router_multicast"]["options"][attribute_name]["required"] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -943,7 +1165,9 @@ def main():
             fos, versioned_schema, "router_multicast"
         )
 
-        is_error, has_changed, result, diff = fortios_router(module.params, fos)
+        is_error, has_changed, result, diff = fortios_router(
+            module.params, fos, module.check_mode
+        )
 
     else:
         module.fail_json(**FAIL_SOCKET_MSG)

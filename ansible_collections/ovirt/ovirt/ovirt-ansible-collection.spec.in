@@ -6,37 +6,23 @@ Name:		@PACKAGE_NAME@
 Summary:	Ansible collection to manage all ovirt modules and inventory
 Version:	@RPM_VERSION@
 Release:	@RPM_RELEASE@%{?release_suffix}%{?dist}
-Source0:	http://resources.ovirt.org/pub/src/@PACKAGE_NAME@/@PACKAGE_NAME@-@PACKAGE_VERSION@.tar.gz
+Source0:	https://resources.ovirt.org/pub/src/@PACKAGE_NAME@/@PACKAGE_NAME@-@PACKAGE_VERSION@.tar.gz
 License:	ASL 2.0 and GPLv3+
 BuildArch:	noarch
 Url:		http://www.ovirt.org
 
 BuildRequires:	ansible-core
 BuildRequires:	ansible-test
-%if 0%{?rhel} > 7 && 0%{?rhel} < 9
-BuildRequires:	glibc-langpack-en
-%endif
 
-Requires:	ansible-core >= 2.13.0
-Requires:	ansible-collection-ansible-netcommon
+Requires:	ansible-core >= 1:2.14.7-1
 Requires:	ansible-collection-ansible-posix
-Requires:	ansible-collection-ansible-utils
 Requires:	qemu-img
-Requires:   python3-jmespath
+Requires:	python3-jmespath
 
-%if 0%{?rhel} >= 9
-Requires:	python3.11-ovirt-imageio-client
-Requires:	python3.11-ovirt-engine-sdk4 >= 4.5.0
-Requires:	python3.11-jmespath
-Requires:	python3.11-passlib
-%endif
+Requires:	ovirt-imageio-client
+Requires:	python3-ovirt-engine-sdk4 >= 4.5.0
+Requires:	python3-passlib
 
-%if 0%{?rhel} < 9
-Requires:	python3.11-ovirt-imageio-client
-Requires:	python3.11-ovirt-engine-sdk4 >= 4.5.0
-Requires:	python3.11-jmespath
-Requires:	python3.11-passlib
-%endif
 
 Obsoletes:	ansible < 2.10.0
 Obsoletes:	ovirt-ansible-cluster-upgrade
@@ -79,9 +65,6 @@ sh build.sh install %{collectionname}
 
 %files
 %{_datadir}/%{ansible_collections_dir}/%{namespace}
-%if "%{collectionname}" == "rhv"
-%{_datadir}/%{ansible_collections_dir}/ovirt
-%endif
 
 %doc README.md
 %doc examples/
@@ -89,6 +72,14 @@ sh build.sh install %{collectionname}
 %license licenses
 
 %changelog
+* Tue Jun 3 2025 Jean-Louis Dupond <jean-louis@dupond.be> - 3.2.1-1
+- drop el8 support
+- roles - Fix ansible-test errors change include to include_tasks
+- ovirt_disk - fix documentation for lun_id parameter
+- ovirt_proxied_check - fix documentation string
+- Enable and start postfix service so that ovirt-ha-agent logs are not filled with mail notification errors
+- Maintenance tasks regarding linting, testing and CI
+
 * Mon Oct 2 2023 Martin Necas <mnecas@redhat.com> - 3.2.0-1
 - ovirt_vm - Add tpm_enabled
 - storage_error_resume_behaviour - Support VM storage error resume behaviour "auto_resume", "kill", "leave_paused"

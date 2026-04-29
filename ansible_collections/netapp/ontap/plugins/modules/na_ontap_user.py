@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2023, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 '''
@@ -19,7 +19,7 @@ short_description: NetApp ONTAP user configuration and management
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: 2.6.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 
 description:
 - Create or destroy users.
@@ -79,7 +79,7 @@ options:
       second_authentication_method:
         description: when using ssh, optional additional authentication method for MFA.
         type: str
-        choices: ['none', 'password', 'publickey', 'nsswitch']
+        choices: ['none', 'password', 'publickey', 'nsswitch', 'totp']
   authentication_method:
     description:
       - Authentication method for the application.  If you need more than one method, use C(application_dicts).
@@ -189,78 +189,77 @@ options:
 '''
 
 EXAMPLES = """
+- name: Create User
+  netapp.ontap.na_ontap_user:
+    state: present
+    name: SampleUser
+    applications: ssh,console
+    authentication_method: password
+    set_password: apn1242183u1298u41
+    lock_user: true
+    role_name: vsadmin
+    vserver: ansibleVServer
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Create User
-      netapp.ontap.na_ontap_user:
-        state: present
-        name: SampleUser
-        applications: ssh,console
-        authentication_method: password
-        set_password: apn1242183u1298u41
-        lock_user: True
-        role_name: vsadmin
-        vserver: ansibleVServer
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Create cluster scoped user in REST.
+  netapp.ontap.na_ontap_user:
+    state: present
+    name: SampleUser
+    applications: ssh,console
+    authentication_method: password
+    set_password: apn1242183u1298u41
+    lock_user: true
+    role_name: admin
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Create cluster scoped user in REST.
-      netapp.ontap.na_ontap_user:
-        state: present
-        name: SampleUser
-        applications: ssh,console
-        authentication_method: password
-        set_password: apn1242183u1298u41
-        lock_user: True
-        role_name: admin
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Delete User
+  netapp.ontap.na_ontap_user:
+    state: absent
+    name: SampleUser
+    applications: ssh
+    authentication_method: password
+    vserver: ansibleVServer
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Delete User
-      netapp.ontap.na_ontap_user:
-        state: absent
-        name: SampleUser
-        applications: ssh
-        authentication_method: password
-        vserver: ansibleVServer
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Create user with snmp application (ZAPI)
+  netapp.ontap.na_ontap_user:
+    state: present
+    name: test_cert_snmp
+    applications: snmp
+    authentication_method: usm
+    role_name: admin
+    authentication_protocol: md5
+    authentication_password: '12345678'
+    privacy_protocol: 'aes128'
+    privacy_password: '12345678'
+    engine_id: '7063514941000000000000'
+    remote_switch_ipaddress: 10.0.0.0
+    vserver: "{{ vserver }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Create user with snmp application (ZAPI)
-      netapp.ontap.na_ontap_user:
-        state: present
-        name: test_cert_snmp
-        applications: snmp
-        authentication_method: usm
-        role_name: admin
-        authentication_protocol: md5
-        authentication_password: '12345678'
-        privacy_protocol: 'aes128'
-        privacy_password: '12345678'
-        engine_id: '7063514941000000000000'
-        remote_switch_ipaddress: 10.0.0.0
-        vserver: "{{ vserver }}"
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-
-    - name: Create user
-      netapp.ontap.na_ontap_user:
-        state: present
-        name: test123
-        application_dicts:
-          - application: http
-            authentication_methods: password
-          - application: ssh
-            authentication_methods: password,publickey
-        role_name: vsadmin
-        set_password: bobdole1234566
-        vserver: "{{ vserver }}"
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+- name: Create user
+  netapp.ontap.na_ontap_user:
+    state: present
+    name: test123
+    application_dicts:
+      - application: http
+        authentication_methods: password
+      - application: ssh
+        authentication_methods: password,publickey
+    role_name: vsadmin
+    set_password: bobdole1234566
+    vserver: "{{ vserver }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """
@@ -296,7 +295,7 @@ class NetAppOntapUser:
                                                                  'sp', 'service-processor', 'service_processor', 'ssh', 'telnet'],),
                                        authentication_methods=dict(required=True, type='list', elements='str',
                                                                    choices=['community', 'password', 'publickey', 'domain', 'nsswitch', 'usm', 'cert', 'saml']),
-                                       second_authentication_method=dict(type='str', choices=['none', 'password', 'publickey', 'nsswitch']))),
+                                       second_authentication_method=dict(type='str', choices=['none', 'password', 'publickey', 'nsswitch', 'totp']))),
             authentication_method=dict(type='str',
                                        choices=['community', 'password', 'publickey', 'domain', 'nsswitch', 'usm', 'cert', 'saml']),
             set_password=dict(type='str', no_log=True),
@@ -418,8 +417,9 @@ class NetAppOntapUser:
             for application in response['applications']:
                 if application.get('second_authentication_method') == 'none':
                     application['second_authentication_method'] = None
-                # new read-only attribute in 9.11, breaks idempotency when present
+                # new read-only attributes in 9.14 onwards, breaks idempotency when present
                 application.pop('is_ldap_fastbind', None)
+                application.pop('is_ns_switch_group', None)
             return_value = {
                 'role_name': response['role']['name'],
                 'applications': response['applications']

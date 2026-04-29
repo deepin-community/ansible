@@ -25,14 +25,14 @@
    "name": ".github/workflows/CI.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "123b77a907e54d2342804810653b910173ff576f19f27d113822aab39c53667f",
+   "chksum_sha256": "e654bcbd867b2bf7b6b8e7ea4e3b4511f5fbaac57a085f615c4f832d960f9639",
    "format": 1
   },
   {
    "name": ".github/workflows/FastCI.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3f8607ef0946ef96025c3f7cd6977db800e150594b77340617247defcdeb7bfb",
+   "chksum_sha256": "254a95cc58544c86a4f8f23c88829e785fb5ce9da5062d9b698ff67622053591",
    "format": 1
   },
   {
@@ -60,7 +60,7 @@
    "name": "changelogs/changelog.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "caa1a1be21ebfefcf82b3bb041e7b0489c684dfb189c6023c55ed69096e03803",
+   "chksum_sha256": "99db8623e1e3b08fdc8855abfc5e4e57567e574cd67edfaaa73b695dd3bf05dc",
    "format": 1
   },
   {
@@ -81,7 +81,7 @@
    "name": "meta/runtime.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "df18179bb2f5447a56ac92261a911649b96821c0b2c08eea62d5cc6b0195203f",
+   "chksum_sha256": "6185a131be38253fc4fd5b1b948468ca0ccc09363f84a7440eb8a0c57fa10e7b",
    "format": 1
   },
   {
@@ -102,7 +102,7 @@
    "name": "plugins/cliconf/ciscosmb.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b5bb0ff1d5658fc7d4e8a4337430c13f1289ffba4d49089fdc8a075a91ccbe95",
+   "chksum_sha256": "cfca3b09382af89d1ab3501ee149a73c1e05fb6573e739d63c147dab7ebcbeff",
    "format": 1
   },
   {
@@ -158,7 +158,7 @@
    "name": "plugins/modules/facts.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "710465293235ea44b25f55d81f083086549adabb87cc83b3e535f2275222d5bd",
+   "chksum_sha256": "3b33ee5cba8d12ddce99814ecf0a081dc2b48eb2a954531641fc6af08f56e088",
    "format": 1
   },
   {
@@ -253,6 +253,13 @@
    "format": 1
   },
   {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_command-C1300-8FP-2G-show_version",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0fe5e65cb760bb8e026c4365dd26687da76c7317626aeb9bf434cccc69c04469",
+   "format": 1
+  },
+  {
    "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_command-CBS350-24P-4G-show_version",
    "ftype": "file",
    "chksum_type": "sha256",
@@ -285,6 +292,90 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "f7d1e14e7ae2a7654de65c20fde45713531eeb8a50d722fba6f754c165abd44a",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-dir",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "b3c7d97efdbeb73bda53b7837fcf795135332a20dc40de6bd7b0888c772fa9f5",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_cpu_utilization",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "22e546e3a87127528b68a99246b01b1784906850273072316ecb614c52630fc3",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_interfaces_configuration",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "32ccb9000d84df5fc41bea39fc0edca3c987e5fbe329a18fbd341cb3b1c6c5fd",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_interfaces_description",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ff4b337d225bd21b0b562576defdcca927105ca4d819daed963715c1c0cc0f8f",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_interfaces_status",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "84aba0c2488e7e67540dd314779a19d3c3e199a82ccd567cd23e1054b0aa5488",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_inventory",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "d7235570e3b631227bc879dc60bf87bfce8e2455aa52cbbfc7bb6fe26f4a6820",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_ip_interface",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "2712a91cbc71b3d97ccf8c00af3ce42f1c3fd72c136bb56980ae75d1d39f9e76",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_ip_route",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "9b85df2b5349daeb940c24750a230bfd3b5d1e99aa11837fb182849674dd3c87",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_ipv6_interface_brief",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "bce2ebac7fb79c1ff9dc44ce84d05edce53a253361d9e6f0979b38cf5b983a10",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_ports_jumbo-frame",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "2a112a860692ceed02790b658ddd02d49d0b0db4987e779bd074572dd9e69591",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_system",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "2136a5a92bdaf126cc0929e6af3c24c580dbd2cf895c175c6777017af56789cc",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/fixtures/ciscosmb_facts-C1300-8FP-2G-show_version",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0fe5e65cb760bb8e026c4365dd26687da76c7317626aeb9bf434cccc69c04469",
    "format": 1
   },
   {
@@ -575,80 +666,94 @@
    "format": 1
   },
   {
+   "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_command-C1300-8FP-2G.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ad094b3d3a4ff56917e5959da61e2b48f9a87b81d66b56a325278ae4889c2b21",
+   "format": 1
+  },
+  {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_command-CBS350-24P-4G.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ab8525cfcaa0daa8752d3245c9b22383be30c164effa4b651775505824c04f46",
+   "chksum_sha256": "ed7f8fd6a2d3c9082bc9d3e5b05c3f75e097ede444d968674ef60b6d0376c1c7",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_command-SG350-28-K9.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "481c01025b36b0fbe1bffcc44ab212191ad4184e3377a7f6957c003ef0c2fc2b",
+   "chksum_sha256": "92e9eb75c8954a946fe2f6c43f6bd97ae5e1ee2a5f65beee78ff3823e4f36cd9",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_command-SG500-52-K9.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2c0255d03881b847c3e61040350e9d3d47215cca9cbc763c545be473023ff945",
+   "chksum_sha256": "473bca4a62f8732d712ade5159bafdfe64f1b3ccd297a2caa9f6f249719f1681",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_command-SG550X-24MP-K9.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "36e2db555ead81b3608a5d58c574bbc397a56320c45b0935766fe2b05b22bbc2",
+   "chksum_sha256": "d362c62539c6d2afd5bf439e27f8328eba1532b5bfee358a694242769c4dafa2",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_command-stackSG550X-48.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "c3e9c244a80e947e6289709c7b53de0cea65a37d51d2ab5485f52d79555c1c93",
+   "chksum_sha256": "e6563be0b90d5ca910a6d4afb7ffdd0b15227ab0e4cc542030fcdf8c4144d8cb",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_facts-C1300-8FP-2G.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "247eec41474c58190a8de636f9a5ec14fc9273b04f3a97e89935d8b6d37a6d58",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_facts-CBS350-24P-4G.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "fc4a90c30fa9c1b6813c9e569fd1e5693b4f71ebf77ddeb7080662def106af78",
+   "chksum_sha256": "7c65bbdf81fd44d9be4f8af8a1b87afb2a6b5d275ef23953262fd25d4603dcf0",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_facts-SG350-28-K9.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b2a2f34bf4a7dab3c8337031d508930d64f37c2130e0640b95a96aa592d52132",
+   "chksum_sha256": "d91d08ec0f1fa49642b1f7782f44d8d6982a9cf6982acd55d0218ee242ef45b9",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_facts-SG500-52-K9.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "de8e5dc48a066d75be282819a947f132edaf27462f5572ff1fceede749346be4",
+   "chksum_sha256": "2892a0c42c997908bce3400d071300325e713c7155f95be54caa896bcf404f88",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_facts-SG550X-24MP-K9.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1472d614fbb52c5e59b0d6911b127ad328e00477126219f4efdd910b8ccead0f",
+   "chksum_sha256": "da218a3948bdbe563ff4e41a82adefb96ab64a6cd65e2fb95b929f34c696421f",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_facts-SX550X-24F-K9.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "96412400372f479ed04b12986df6eebbb0e21ec763b650655ad8ac36949ef68e",
+   "chksum_sha256": "ee6c5e529f0aefce1f561b9c53051ee9e5f803bc748a86702827fdc6cb3fb6fc",
    "format": 1
   },
   {
    "name": "tests/unit/plugins/modules/ciscosmb/test_ciscosmb_facts-stackSG550X-48.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4d66545bd4a5dd2575fa9ebc564b9c481bdb1a491921d841ede399ffcc493ebc",
+   "chksum_sha256": "cbb77a70e4a8406c321f6e53b29d1893d88408f5e964625b978ba4f9d9e06b58",
    "format": 1
   },
   {
@@ -683,7 +788,14 @@
    "name": "tests/unit/requirements.txt",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "chksum_sha256": "b6834b132b5b4c813fa7c807a4410bfd238671875045572b3c04d350ebacbf06",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/requirements.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "8215462f19d64158eda54059f4c93db5bf8502dde2dbf6d995c7bd3b9023419d",
    "format": 1
   },
   {
@@ -704,7 +816,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "64accbe17f9d81d7bcb88b4c90f58d2536e9fc8defa7bd19d878b71bc865c4d2",
+   "chksum_sha256": "0f157d5841c5bbcddc7919f4a2c172de13fd7e3ff6f1448026cc419e0781ad39",
    "format": 1
   },
   {
@@ -732,7 +844,7 @@
    "name": "README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8b7d0c6c412dd63b33cb45e4fe981241150fa1a6d48516e75f91783831022b19",
+   "chksum_sha256": "af70bfd35091fdf75849f996c09e31051f60d275e7d2fa8fd4a1cc098ddd3ba6",
    "format": 1
   },
   {
@@ -753,7 +865,7 @@
    "name": "requirements-dev.txt",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1c9a238e7f6f27169652be53e36fb94a29f159b1d709d0c7dafbf41fe43998bb",
+   "chksum_sha256": "4534bea939dadd15b7dc4ebedd8f5b853b1346ccbb513fd43fa9a75923899453",
    "format": 1
   }
  ],

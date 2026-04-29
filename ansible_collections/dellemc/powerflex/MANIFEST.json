@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "dellemc",
   "name": "powerflex",
-  "version": "2.5.0",
+  "version": "2.6.1",
   "authors": [
    "Akash Shendge <ansible.team@dell.com>",
    "Arindam Datta <ansible.team@dell.com>",
@@ -19,8 +19,7 @@
   ],
   "description": "Ansible modules for PowerFlex",
   "license": [
-   "GPL-3.0-or-later",
-   "Apache-2.0"
+   "GPL-3.0-or-later"
   ],
   "license_file": null,
   "dependencies": {},
@@ -33,7 +32,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "51f896ec559ff97298cc533c294c99efe947cbfefff775b717b3448199bde426",
+  "chksum_sha256": "8e8f1b6e27f20f2d8a283f9910a1bf2eb53953687b5c9d897b18a74c5a269454",
   "format": 1
  },
  "format": 1

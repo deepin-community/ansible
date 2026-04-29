@@ -78,9 +78,9 @@ def _create_repeated(argument_name, pre=False):
     return f
 
 
-def _create_boolean(argument_name, pre=False):
+def _create_boolean(argument_name, pre=False, invert=False):
     def f(value, arguments_pre, arguments_post, env, version):
-        if value:
+        if value ^ invert:
             _add_argument(arguments_pre, arguments_post, argument_name, pre=pre)
 
     return f
@@ -96,12 +96,13 @@ def _create_env_variable(argument_name):
 GENERAL_OPTIONS = {
     'age_key': _create_env_variable('SOPS_AGE_KEY'),
     'age_keyfile': _create_env_variable('SOPS_AGE_KEY_FILE'),
+    'age_ssh_private_keyfile': _create_env_variable('SOPS_AGE_SSH_PRIVATE_KEY_FILE'),
     'aws_profile': _create_single_arg('--aws-profile'),
     'aws_access_key_id': _create_env_variable('AWS_ACCESS_KEY_ID'),
     'aws_secret_access_key': _create_env_variable('AWS_SECRET_ACCESS_KEY'),
     'aws_session_token': _create_env_variable('AWS_SESSION_TOKEN'),
     'config_path': _create_single_arg('--config', pre=True),
-    'enable_local_keyservice': _create_boolean('--enable-local-keyservice'),
+    'enable_local_keyservice': _create_boolean('--enable-local-keyservice=false', invert=True),
     'keyservice': _create_repeated('--keyservice'),
 }
 
@@ -356,6 +357,9 @@ def get_sops_argument_spec(add_encrypt_specific=False):
         'age_keyfile': {
             'type': 'path',
         },
+        'age_ssh_private_keyfile': {
+            'type': 'path',
+        },
         'aws_profile': {
             'type': 'str',
         },
@@ -375,7 +379,7 @@ def get_sops_argument_spec(add_encrypt_specific=False):
         },
         'enable_local_keyservice': {
             'type': 'bool',
-            'default': False,
+            'default': True,
         },
         'keyservice': {
             'type': 'list',

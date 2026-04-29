@@ -114,6 +114,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -131,8 +132,8 @@ EXAMPLES = '''
         proxy_policy: <your own value>
         state: present # <value in [present, absent]>
         pkg_firewall_proxypolicy_sectionvalue:
-          attr: <value in [label, global-label]>
-          name: <string>
+          # attr: <value in [label, global-label]>
+          # name: <string>
 '''
 
 RETURN = '''

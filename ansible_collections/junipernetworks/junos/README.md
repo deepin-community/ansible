@@ -8,13 +8,34 @@ The Ansible Juniper Networks Junos collection includes a variety of Ansible cont
 
 This collection has been tested against Juniper Networks Junos OS 18.4R1.
 
+## Support
+
+As a Red Hat Ansible [Certified Content](https://catalog.redhat.com/software/search?target_platforms=Red%20Hat%20Ansible%20Automation%20Platform), this collection is entitled to [support](https://access.redhat.com/support/) through [Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) (AAP).
+
+If a support case cannot be opened with Red Hat and the collection has been obtained either from [Galaxy](https://galaxy.ansible.com/ui/) or [GitHub](https://github.com/ansible-collections/junipernetworks.junos), there is community support available at no charge.
+
+You can join us on [#network:ansible.com](https://matrix.to/#/#network:ansible.com) room or the [Ansible Forum Network Working Group](https://forum.ansible.com/g/network-wg).
+
+For more information you can check the communication section below.
+
+## Communication
+
+* Join the Ansible forum:
+  * [Get Help](https://forum.ansible.com/c/help/6): get help or help others.
+  * [Posts tagged with 'juniper'](https://forum.ansible.com/tag/juniper): subscribe to participate in collection-related conversations.
+  * [Ansible Network Automation Working Group](https://forum.ansible.com/g/network-wg/): by joining the team you will automatically get subscribed to the posts tagged with [network](https://forum.ansible.com/tags/network).
+  * [Social Spaces](https://forum.ansible.com/c/chat/4): gather and interact with fellow enthusiasts.
+  * [News & Announcements](https://forum.ansible.com/c/news/5): track project-wide announcements including social events.
+
+* The Ansible [Bullhorn newsletter](https://docs.ansible.com/ansible/devel/community/communication.html#the-bullhorn): used to announce releases and important changes.
+
+For more information about communication, see the [Ansible communication guide](https://docs.ansible.com/ansible/devel/community/communication.html).
+
 <!--start requires_ansible-->
 ## Ansible version compatibility
 
-This collection has been tested against following Ansible versions: **>=2.15.0**.
+This collection has been tested against the following Ansible versions: **>=2.16.0**.
 
-For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
-fully qualified collection name (for example, `cisco.ios.ios`).
 Plugins and modules within a collection may be tested with only specific Ansible versions.
 A collection may contain metadata that identifies these versions.
 PEP440 is the schema used to describe the versions of Ansible.
@@ -69,7 +90,6 @@ Name | Description
 [junipernetworks.junos.junos_routing_instances](https://github.com/ansible-collections/junipernetworks.junos/blob/main/docs/junipernetworks.junos.junos_routing_instances_module.rst)|Manage routing instances on Junos devices.
 [junipernetworks.junos.junos_routing_options](https://github.com/ansible-collections/junipernetworks.junos/blob/main/docs/junipernetworks.junos.junos_routing_options_module.rst)|Manage routing-options configuration on Junos devices.
 [junipernetworks.junos.junos_rpc](https://github.com/ansible-collections/junipernetworks.junos/blob/main/docs/junipernetworks.junos.junos_rpc_module.rst)|Runs an arbitrary RPC over NetConf on an Juniper JUNOS device
-[junipernetworks.junos.junos_scp](https://github.com/ansible-collections/junipernetworks.junos/blob/main/docs/junipernetworks.junos.junos_scp_module.rst)|Transfer files from or to remote devices running Junos
 [junipernetworks.junos.junos_security_policies](https://github.com/ansible-collections/junipernetworks.junos/blob/main/docs/junipernetworks.junos.junos_security_policies_module.rst)|Create and manage security policies on Juniper JUNOS devices
 [junipernetworks.junos.junos_security_policies_global](https://github.com/ansible-collections/junipernetworks.junos/blob/main/docs/junipernetworks.junos.junos_security_policies_global_module.rst)|Manage global security policy settings on Juniper JUNOS devices
 [junipernetworks.junos.junos_security_zones](https://github.com/ansible-collections/junipernetworks.junos/blob/main/docs/junipernetworks.junos.junos_security_zones_module.rst)|Manage security zones on Juniper JUNOS devices

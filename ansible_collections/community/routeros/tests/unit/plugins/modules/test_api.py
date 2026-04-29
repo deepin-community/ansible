@@ -6,9 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-from ansible_collections.community.routeros.tests.unit.compat.mock import patch, MagicMock
+from ansible_collections.community.internal_test_tools.tests.unit.compat.mock import patch, MagicMock
+from ansible_collections.community.internal_test_tools.tests.unit.plugins.modules.utils import set_module_args, AnsibleExitJson, AnsibleFailJson, ModuleTestCase
+
 from ansible_collections.community.routeros.tests.unit.plugins.modules.fake_api import FakeLibRouterosError, Key, Or, fake_ros_api
-from ansible_collections.community.routeros.tests.unit.plugins.modules.utils import set_module_args, AnsibleExitJson, AnsibleFailJson, ModuleTestCase
 from ansible_collections.community.routeros.plugins.modules import api
 
 
@@ -34,8 +35,8 @@ class TestRouterosApiModule(ModuleTestCase):
 
     def test_module_fail_when_required_args_missing(self):
         with self.assertRaises(AnsibleFailJson) as exc:
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -43,8 +44,8 @@ class TestRouterosApiModule(ModuleTestCase):
     @patch('ansible_collections.community.routeros.plugins.modules.api.ROS_api_module.api_add_path', new=fake_ros_api.path)
     def test_api_path(self):
         with self.assertRaises(AnsibleExitJson) as exc:
-            set_module_args(self.config_module_args.copy())
-            self.module.main()
+            with set_module_args(self.config_module_args.copy()):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -54,8 +55,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['add'] = "name=unit_test_brige"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -65,8 +66,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleFailJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['add'] = "name=unit_test_brige_exist"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -77,8 +78,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['remove'] = "*A1"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -88,8 +89,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleFailJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['remove'] = "*A2"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -100,8 +101,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['cmd'] = "add name=unit_test_brige_arbitrary"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -111,8 +112,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleFailJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['cmd'] = "add NONE_EXIST=unit_test_brige_arbitrary"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -123,8 +124,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['update'] = ".id=*A1 name=unit_test_brige"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -134,8 +135,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleFailJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['update'] = ".id=*A2 name=unit_test_brige"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -146,8 +147,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['query'] = ".id name"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -162,8 +163,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['query'] = ".id other"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -174,8 +175,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['query'] = ".id name WHERE name == dummy_bridge_A2"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -188,8 +189,8 @@ class TestRouterosApiModule(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as exc:
             module_args = self.config_module_args.copy()
             module_args['query'] = ".id name WHERE name != dummy_bridge_A2"
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -204,8 +205,8 @@ class TestRouterosApiModule(ModuleTestCase):
             module_args['extended_query'] = {
                 'attributes': ['.id', 'name'],
             }
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -222,8 +223,8 @@ class TestRouterosApiModule(ModuleTestCase):
             module_args['extended_query'] = {
                 'attributes': ['.id', 'other'],
             }
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -243,8 +244,8 @@ class TestRouterosApiModule(ModuleTestCase):
                     },
                 ],
             }
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -266,8 +267,8 @@ class TestRouterosApiModule(ModuleTestCase):
                     },
                 ],
             }
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -298,8 +299,8 @@ class TestRouterosApiModule(ModuleTestCase):
                     },
                 ],
             }
-            set_module_args(module_args)
-            self.module.main()
+            with set_module_args(module_args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)

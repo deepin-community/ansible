@@ -379,6 +379,17 @@ options:
                             - 'SSLv3'
                             - 'TLSv1'
                             - 'TLSv1-3'
+                    vrf_select:
+                        aliases: ['vrf-select']
+                        type: int
+                        description: VRF ID used for connection to server.
+                    validate_server_certificate:
+                        aliases: ['validate-server-certificate']
+                        type: str
+                        description: Validate server certificate.
+                        choices:
+                            - 'disable'
+                            - 'enable'
             group_filter:
                 aliases: ['group-filter']
                 type: str
@@ -591,11 +602,16 @@ options:
                 aliases: ['source-ip-interface']
                 type: raw
                 description: (list) Source interface for communication with the LDAP server.
+            vrf_select:
+                aliases: ['vrf-select']
+                type: int
+                description: VRF ID used for connection to server.
 '''
 
 EXAMPLES = '''
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -744,17 +760,19 @@ def main():
                         'source-port': {'v_range': [['7.0.0', '']], 'type': 'int'},
                         'client-cert': {'v_range': [['7.2.0', '']], 'type': 'str'},
                         'client-cert-auth': {'v_range': [['7.2.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                        'max-connections': {'v_range': [['7.0.11', '7.0.13'], ['7.2.5', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
+                        'max-connections': {'v_range': [['7.0.11', '7.0.13'], ['7.2.5', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
                         'two-factor-filter': {'v_range': [['7.2.1', '']], 'type': 'str'},
                         'account-key-upn-san': {'v_range': [['7.2.2', '']], 'choices': ['othername', 'rfc822name', 'dnsname'], 'type': 'str'},
                         'account-key-cert-field': {'v_range': [['7.4.1', '']], 'choices': ['othername', 'rfc822name', 'dnsname', 'cn'], 'type': 'str'},
                         'status-ttl': {'v_range': [['7.4.3', '']], 'type': 'int'},
                         'source-ip-interface': {'v_range': [['7.6.0', '']], 'type': 'raw'},
                         'ssl-max-proto-version': {
-                            'v_range': [['7.4.4', '7.4.5']],
+                            'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']],
                             'choices': ['TLSv1-1', 'TLSv1-2', 'SSLv3', 'TLSv1', 'TLSv1-3'],
                             'type': 'str'
-                        }
+                        },
+                        'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'},
+                        'validate-server-certificate': {'v_range': [['7.6.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
                     },
                     'elements': 'dict'
                 },
@@ -796,7 +814,8 @@ def main():
                 'account-key-upn-san': {'v_range': [['7.2.2', '']], 'choices': ['othername', 'rfc822name', 'dnsname'], 'type': 'str'},
                 'account-key-cert-field': {'v_range': [['7.4.1', '']], 'choices': ['othername', 'rfc822name', 'dnsname', 'cn'], 'type': 'str'},
                 'status-ttl': {'v_range': [['7.4.3', '']], 'type': 'int'},
-                'source-ip-interface': {'v_range': [['7.6.0', '']], 'type': 'raw'}
+                'source-ip-interface': {'v_range': [['7.6.0', '']], 'type': 'raw'},
+                'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'}
             }
         }
     }

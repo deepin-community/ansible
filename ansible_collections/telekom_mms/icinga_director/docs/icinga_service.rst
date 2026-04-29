@@ -143,7 +143,7 @@ Parameters
 
 
   url (True, str, None)
-    HTTP, HTTPS, or FTP URL in the form (http|https|ftp)://[user[:pass]]@host.domain[:port]/path
+    HTTP, HTTPS, or FTP URL in the form (http\|https\|ftp)://[user[:pass]]@host.domain[:port]/path
 
 
   force (optional, bool, False)
@@ -200,6 +200,10 @@ Parameters
     Credentials for GSSAPI can be specified with :emphasis:`url\_username`\ /\ :emphasis:`url\_password` or with the GSSAPI env var :literal:`KRB5CCNAME` that specified a custom Kerberos credential cache.
 
     NTLM authentication is :literal:`not` supported even if the GSSAPI mech for NTLM has been installed.
+
+
+  api_timeout (optional, int, 10)
+    Default timeout to wait for transaction to finish in seconds.
 
 
 

@@ -110,7 +110,6 @@ options:
             id:
                 type: str
                 description: ID of authentication parameter.
-                required: true
                 choices:
                     - 'non-eap-inner-auth'
                     - 'inner-auth-eap'
@@ -119,6 +118,7 @@ options:
             index:
                 type: int
                 description: Param index.
+                required: true
             val:
                 type: str
                 description: Value of authentication parameter.
@@ -158,6 +158,7 @@ options:
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -165,8 +166,8 @@ EXAMPLES = '''
     ansible_httpapi_port: 443
   tasks:
     - name: EAP auth param.
-      fortinet.fortimanager.fmgr_hotspot20_anqpnairealm_nailist_eapmethod_authparam:
-        # bypass_validation: false
+      ? fortinet.fortimanager.fmgr_hotspot20_anqpnairealm_nailist_eapmethod_authparam
+      : # bypass_validation: false
         workspace_locking_adom: <value in [global, custom adom including root]>
         workspace_locking_timeout: 300
         # rc_succeeded: [0, -2, -3, ...]
@@ -177,9 +178,9 @@ EXAMPLES = '''
         eap_method: <your own value>
         state: present # <value in [present, absent]>
         hotspot20_anqpnairealm_nailist_eapmethod_authparam:
-          id: <value in [non-eap-inner-auth, inner-auth-eap, credential, ...]>
-          index: <integer>
-          val: <value in [eap-identity, eap-md5, eap-tls, ...]>
+          index: 0 # Required variable, integer
+          id: "non-eap-inner-auth" # <value in [non-eap-inner-auth, inner-auth-eap, credential, ...]>
+          # val: <value in [eap-identity, eap-md5, eap-tls, ...]>
 '''
 
 RETURN = '''
@@ -233,7 +234,7 @@ def main():
         '/pm/config/global/obj/wireless-controller/hotspot20/anqp-nai-realm/{anqp-nai-realm}/nai-list/{nai-list}/eap-method/{eap-method}/auth-param'
     ]
     url_params = ['adom', 'anqp-nai-realm', 'nai-list', 'eap-method']
-    module_primary_key = 'id'
+    module_primary_key = 'index'
     module_arg_spec = {
         'adom': {'required': True, 'type': 'str'},
         'anqp-nai-realm': {'type': 'str', 'api_name': 'anqp_nai_realm'},
@@ -246,8 +247,8 @@ def main():
             'type': 'dict',
             'v_range': [['6.0.0', '']],
             'options': {
-                'id': {'required': True, 'choices': ['non-eap-inner-auth', 'inner-auth-eap', 'credential', 'tunneled-credential'], 'type': 'str'},
-                'index': {'type': 'int'},
+                'id': {'choices': ['non-eap-inner-auth', 'inner-auth-eap', 'credential', 'tunneled-credential'], 'type': 'str'},
+                'index': {'required': True, 'type': 'int'},
                 'val': {
                     'choices': [
                         'eap-identity', 'eap-md5', 'eap-tls', 'eap-ttls', 'eap-peap', 'eap-sim', 'eap-aka', 'eap-aka-prime', 'non-eap-pap',

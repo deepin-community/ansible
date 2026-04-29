@@ -51,6 +51,7 @@ options:
         type: list
         elements: str
         required: false
+        default: []
     datastores_to_remove:
         description:
             - List of datastores to remove from the vCLS config
@@ -60,10 +61,11 @@ options:
         type: list
         elements: str
         required: false
+        default: []
 
 
 extends_documentation_fragment:
-    - vmware.vmware.vmware.documentation
+    - vmware.vmware.base_options
 '''
 
 EXAMPLES = r'''
@@ -92,6 +94,14 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
+cluster:
+    description:
+        - Information about the target cluster
+    returned: On success
+    type: dict
+    sample:
+        moid: cluster-79828,
+        name: test-cluster
 added_datastores:
     description: List of datastores that were added by this module. Empty if none had to be added
     returned: always
@@ -136,25 +146,27 @@ except ImportError:
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware import (
-    PyVmomi,
-    vmware_argument_spec
+from ansible_collections.vmware.vmware.plugins.module_utils._module_pyvmomi_base import (
+    ModulePyvmomiBase
 )
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_tasks import (
+from ansible_collections.vmware.vmware.plugins.module_utils.argument_spec import (
+    base_argument_spec
+)
+from ansible_collections.vmware.vmware.plugins.module_utils._vsphere_tasks import (
     TaskError,
     RunningTaskMonitor
 )
 
 
-class VMwareClusterVcls(PyVmomi):
+class VMwareClusterVcls(ModulePyvmomiBase):
     def __init__(self, module):
         super(VMwareClusterVcls, self).__init__(module)
         if module.params.get('datacenter'):
-            datacenter = self.get_datacenter_by_name(module.params['datacenter'], fail_on_missing=True)
+            datacenter = self.get_datacenter_by_name_or_moid(module.params['datacenter'], fail_on_missing=True)
         else:
             datacenter = None
 
-        self.cluster = self.get_cluster_by_name(module.params['cluster'], datacenter=datacenter, fail_on_missing=True)
+        self.cluster = self.get_cluster_by_name_or_moid(module.params['cluster'], datacenter=datacenter, fail_on_missing=True)
 
     def get_current_configured_datastores(self):
         """
@@ -198,7 +210,7 @@ class VMwareClusterVcls(PyVmomi):
         Adds a datastore to the potential new vCLS spec. Causes a failure if the datastore does not exist.
         """
         allowed_datastore_spec = vim.cluster.DatastoreUpdateSpec()
-        allowed_datastore_spec.datastore = self.get_datastore_by_name(ds_name, fail_on_missing=True)
+        allowed_datastore_spec.datastore = self.get_datastore_by_name_or_moid(ds_name, fail_on_missing=True)
         allowed_datastore_spec.operation = 'add'
         cluster_config_spec.systemVMsConfig.allowedDatastores.append(allowed_datastore_spec)
 
@@ -207,7 +219,7 @@ class VMwareClusterVcls(PyVmomi):
         Removes a datastore from the potential new vCLS spec
         """
         allowed_datastore_spec = vim.cluster.DatastoreUpdateSpec()
-        allowed_datastore_spec.removeKey = self.get_datastore_by_name(ds_name, fail_on_missing=False)
+        allowed_datastore_spec.removeKey = self.get_datastore_by_name_or_moid(ds_name, fail_on_missing=False)
         allowed_datastore_spec.operation = 'remove'
         cluster_config_spec.systemVMsConfig.allowedDatastores.append(allowed_datastore_spec)
 
@@ -246,12 +258,12 @@ class VMwareClusterVcls(PyVmomi):
 def main():
     module = AnsibleModule(
         argument_spec={
-            **vmware_argument_spec(), **dict(
+            **base_argument_spec(), **dict(
                 cluster=dict(type='str', required=True, aliases=['cluster_name']),
                 datacenter=dict(type='str', required=False, aliases=['datacenter_name']),
                 allowed_datastores=dict(type='list', elements='str'),
-                datastores_to_add=dict(type='list', elements='str'),
-                datastores_to_remove=dict(type='list', elements='str'),
+                datastores_to_add=dict(type='list', elements='str', default=[]),
+                datastores_to_remove=dict(type='list', elements='str', default=[]),
             )
         },
         mutually_exclusive=[
@@ -268,10 +280,17 @@ def main():
         changed=False,
         added_datastores=[],
         removed_datastores=[],
-        allowed_datastores=[]
+        allowed_datastores=[],
+        cluster=dict(
+            name="",
+            moid=""
+        )
     )
 
     vmware_cluster_vcls = VMwareClusterVcls(module)
+    results['cluster']['name'] = vmware_cluster_vcls.cluster.name
+    results['cluster']['moid'] = vmware_cluster_vcls.cluster._GetMoId()
+
     ds_to_add, ds_to_remove, new_allowed_datastores = vmware_cluster_vcls.resolve_datastores_to_add_and_remove()
     results['allowed_datastores'] = new_allowed_datastores
     if ds_to_add or ds_to_remove:

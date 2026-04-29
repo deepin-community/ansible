@@ -48,6 +48,11 @@ options:
     - The hostname or management IP of the Storage Virtualize system.
     type: str
     required: true
+  domain:
+    description:
+    - Domain for the Storage Virtualize storage system.
+    - Valid when hostname is used for the parameter I(clustername).
+    type: str
   username:
     description:
     - Username for the Storage Virtualize system.
@@ -56,7 +61,6 @@ options:
   password:
     description:
     - Password for the Storage Virtualize system.
-    required: true
     type: str
   log_path:
     description:
@@ -68,30 +72,39 @@ EXAMPLES = '''
 - name: Run svctask CLI commands using SSH client with password
   ibm.storage_virtualize.ibm_svctask_command:
     command: [
-        "svctask mkvdisk -name {{ volname }} -mdiskgrp '{{ pool }}' -easytier '{{ easy_tier }}' -size {{ size }} -unit {{ unit }}",
-        "svctask rmvdisk {{ volname }}"
+      "svctask mkvdisk -name {{ volname }} -mdiskgrp '{{ pool }}' -easytier '{{ easy_tier }}' -size {{ size }} -unit {{ unit }}",
+      "svctask rmvdisk {{ volname }}"
     ]
-    clustername: "{{clustername}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     log_path: /tmp/ansible.log
 - name: Run svctask CLI command using passwordless SSH Client
   ibm.storage_virtualize.ibm_svctask_command:
     command: [
-        "svctask mkvdisk -name vol0 -mdiskgrp pool0 -easytier off -size 1 -unit gb",
-        "svctask rmvdisk vol0"
+      "svctask mkvdisk -name vol0 -mdiskgrp pool0 -easytier off -size 1 -unit gb",
+      "svctask rmvdisk vol0"
     ]
-    clustername: "{{clustername}}"
-    username: "{{username}}"
-    password:
-    usesshkey: yes
+    clustername: "{{ clustername }}"
+    username: "{{ username }}"
+    usesshkey: 'yes'
     log_path: /tmp/ansible.log
 - name: Run satask CLI command
   ibm.storage_virtualize.ibm_svctask_command:
     command: "satask snap"
-    clustername: "{{clustername}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    log_path: /tmp/ansible.log
+- name: Generate and export system-signed root CA certificate
+  ibm.storage_virtualize.ibm_svctask_command:
+    command: [
+      "svctask chsystemcert -mksystemsigned",
+      "svctask chsystemcert -exportrootcacert"
+    ]
+    clustername: "{{ clustername }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     log_path: /tmp/ansible.log
 '''
 
@@ -117,6 +130,7 @@ class IBMSVCsshClient(object):
 
         argument_spec.update(
             dict(
+                password=dict(type='str', required=False, no_log=True),
                 command=dict(type='list', elements='str', required=False),
                 usesshkey=dict(type='str', required=False, default='no', choices=['yes', 'no']),
                 key_filename=dict(type='str', required=False)
@@ -141,14 +155,17 @@ class IBMSVCsshClient(object):
         # Required
         self.clustername = self.module.params['clustername']
         self.username = self.module.params['username']
-        self.password = self.module.params['password']
         self.log_path = log_path
+
+        # Optional
+        self.domain = self.module.params.get('domain', '')
+        self.password = self.module.params.get('password', '')
 
         # Handling missing mandatory parameter
         if not self.command:
             self.module.fail_json(msg='Missing mandatory parameter: command')
 
-        if self.password is None:
+        if not self.password:
             if self.usesshkey == 'yes':
                 self.log("password is none and use ssh private key. Check for its path")
                 if self.key_filename:
@@ -167,6 +184,7 @@ class IBMSVCsshClient(object):
         self.ssh_client = IBMSVCssh(
             module=self.module,
             clustername=self.module.params['clustername'],
+            domain=self.domain,
             username=self.module.params['username'],
             password=self.module.params['password'],
             look_for_keys=self.look_for_keys,

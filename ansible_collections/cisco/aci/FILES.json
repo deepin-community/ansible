@@ -11,7 +11,7 @@
    "name": ".DS_Store",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "be8536e540953dd873ccdfc3591329e1a8093e6c12ca7cbf38dd0bc2563f7a83",
+   "chksum_sha256": "a8803b77c45780d913620f4fd1b440b9fbfba6de0d50432c1c85430ea41e70f3",
    "format": 1
   },
   {
@@ -165,7 +165,21 @@
    "name": "plugins/httpapi/aci.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "90e4a7de2ed18e8abe8ab5b9154c91c85c283e9c81a4263782925a950fa78df1",
+   "chksum_sha256": "314b22ec1c3ac073340c5d1d9d8f1d4c7ae9149a190e1a2965397d9323aaba5d",
+   "format": 1
+  },
+  {
+   "name": "plugins/inventory",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "plugins/inventory/aci_inventory_system.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0413da5f8f109a977df262d31df34d95aeeb47b099b4d49ffabfe2f8d10e52f8",
    "format": 1
   },
   {
@@ -186,7 +200,7 @@
    "name": "plugins/module_utils/constants.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "013841b3447dc0b532bc9ed45dd84df4f674a89b73c6836644bce597c8660656",
+   "chksum_sha256": "1fda2f5442b02eed6aeb117414c7d098de9413416445312a65b72d90b92e6322",
    "format": 1
   },
   {
@@ -200,7 +214,7 @@
    "name": "plugins/module_utils/aci.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ad162c897ba75ed15ec2a1636db26704d07dce03ee9a4f8335e196d798fc82cc",
+   "chksum_sha256": "465281b2c122e339036728aeb41e7a87adfd9041a2c5e269f9ea9328ce8ee076",
    "format": 1
   },
   {
@@ -249,7 +263,7 @@
    "name": "plugins/modules/aci_l3out_bgp_peer.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b57c084e2e928d8152da4bd450545c5f9b924a6e264e41247f86719c0dc31d73",
+   "chksum_sha256": "116983f28036a2b4ddea32bf951f6eb4be6600bdf3f1b5b5451ad03e06b671e0",
    "format": 1
   },
   {
@@ -257,6 +271,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "015d871aab7f67a100475162beb125a51ef33054dee99591cfadbd4606c6c61b",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_concrete_interface_attachment.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "38be809a3d996e6d8b416af2accba221cbc074fafc90336f852f9f17d3a23fe6",
    "format": 1
   },
   {
@@ -270,7 +291,7 @@
    "name": "plugins/modules/aci_l3out_hsrp_group.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ca8bd82ccb564caba50c8ab1e6993d410fb2859ebd058d73de2357fd6142e707",
+   "chksum_sha256": "47c26ee1ec0c63989646373b533730c590a64e78c35949bf31af209b873026b3",
    "format": 1
   },
   {
@@ -291,7 +312,7 @@
    "name": "plugins/modules/aci_vlan_pool.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "362a0784fd63138e5838587f072abcd3960273766d39d81ecd72b3c402e3579d",
+   "chksum_sha256": "e46b4d00aa2d3735b67deeaeae7fcdf2d91cf7226965b9d9d3b2302dd516b3cb",
    "format": 1
   },
   {
@@ -305,7 +326,7 @@
    "name": "plugins/modules/aci_domain_to_encap_pool.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5467c60221c3a7518f5e4210c54d59dfe29067accc32a7771f4fb67f37756ac0",
+   "chksum_sha256": "8b3c2ee5637f5969eaec8a260b103890942984f26b40f6995341059da40af643",
    "format": 1
   },
   {
@@ -313,6 +334,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "603020187a12f0bd7c967e50148f6bddc98220f8f9aa153c8077841882c443f4",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_device.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a30e829f3adaae60b7969b01c3a134e9dd9ab943c6fc8530305eed861acbdacd",
    "format": 1
   },
   {
@@ -326,7 +354,7 @@
    "name": "plugins/modules/aci_vmm_vswitch_policy.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "60c932093daeaa29b19fb47f61e06f6e74e3a120376c6c43695d2d86fa95bcc3",
+   "chksum_sha256": "20a4ffd023bd59f2b8d2e9a7937c8f2c0804b272cb6e6256c4a3364cbee4a978",
    "format": 1
   },
   {
@@ -334,6 +362,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "59585865eaf69e60bfabe97a3be44abe2b7662ff2d4fec127a578876a453bb3b",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_device_selection_policy.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "adc98859cb8843ce001f53e5c87a523bbba70865261692b597d18cc85c8d91f0",
    "format": 1
   },
   {
@@ -361,7 +396,7 @@
    "name": "plugins/modules/aci_system_banner.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "794eb271593b0c42162d6f9fa36b9418fb219550822cba248413af8b500fb5bd",
+   "chksum_sha256": "0712764465ef396726265ef8d07c3a231e162b1c822f906cee6de220bef2cd92",
    "format": 1
   },
   {
@@ -375,21 +410,21 @@
    "name": "plugins/modules/aci_domain_to_vlan_pool.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "101d246d0da768de469e06b2f20c172023edcb3a800f994d6dff3ea5edacea43",
+   "chksum_sha256": "019e6a7ec18c5d8c3fd624709ea7fbe344563dc5fdee853119d61fb8d650cfe4",
    "format": 1
   },
   {
    "name": "plugins/modules/aci_l3out_hsrp_interface_profile.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "54b3b4e078f04024a8151020a2c83df600631c05d958e8af76154f39e7a0213a",
+   "chksum_sha256": "4a0cd0a4597e0d6e350803b73d87e3f5b1aadaa770a63345a1709d6e24095392",
    "format": 1
   },
   {
    "name": "plugins/modules/aci_l3out_extsubnet.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "536d3512e9e86a3cefb778fbe5d16134431aefb31433c9d1a264ccfb8c88fd6f",
+   "chksum_sha256": "ba7f0fc51e216c3237471e1684c9e953ecda4c52026b5d9425ee1bbd2ac2230e",
    "format": 1
   },
   {
@@ -445,14 +480,14 @@
    "name": "plugins/modules/aci_cloud_subnet.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "82263cfcf517105743790db9b882f8af315bcb380365aee9b321baef5575b155",
+   "chksum_sha256": "f212343f1b360b3e8156095f2a03e8f994ef2421a9b2dae3498b594537d2f8b3",
    "format": 1
   },
   {
    "name": "plugins/modules/aci_aep_to_domain.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f1993e5ecd2b23c0a89eae972b51fabe0b3a694db2177bb6daa07e37b76195a0",
+   "chksum_sha256": "cd808f54bd444fb5ccffb71f326d101d15e61ca731736b6ea1463365640e4dee",
    "format": 1
   },
   {
@@ -536,7 +571,7 @@
    "name": "plugins/modules/aci_config_snapshot.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "09f9c15833f527017def13d8ed456740dc4faa58c34f6a7966adf1578e08d5d4",
+   "chksum_sha256": "f2f50c590c0bcce73bc5e1f73c3d9a4adc3d3da52cd4ce444bf3d6a11f3e945e",
    "format": 1
   },
   {
@@ -558,6 +593,20 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "3df7b6bc4f3bc25152578626e5340f963d437f039cc3a5d0ae01d395552691b5",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_redirect_health_group.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ec4d34b008f777ae3ec1d49262b1b7c168ffcaa8aace6445d0f174ef82f1a324",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_service_graph_template.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "d382fa0eaf4b57de651a7bc4525ba75a4e398a291a873641a9d036e5ed19e75e",
    "format": 1
   },
   {
@@ -606,7 +655,7 @@
    "name": "plugins/modules/aci_vmm_controller.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9775c2e58de346c098000bee99bd4bc0e9c8d06a4fb9978dc774a069bec4f0b2",
+   "chksum_sha256": "1172f272a22f21599cd72adaae4b3ae0af3f2c7d49a62e3e58480a2b6e0b4fa3",
    "format": 1
   },
   {
@@ -628,6 +677,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "f1834c534a4e766e6d764624062eee4bfae8001ea4186ab98ee13680501e6ed2",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_service_graph_template_functional_connection.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "5ffd93757b729de9d4d181b5c322bbfac4e263fe84bd2cced5a4fc31db0e6712",
    "format": 1
   },
   {
@@ -680,6 +736,13 @@
    "format": 1
   },
   {
+   "name": "plugins/modules/aci_vmm_enhanced_lag_policy.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f13acc82b3d59bb307cfe201fdd013469389cc3d6367f9bcd329bdbea48eb221",
+   "format": 1
+  },
+  {
    "name": "plugins/modules/aci_l3out_floating_svi_path_secondary_ip.py",
    "ftype": "file",
    "chksum_type": "sha256",
@@ -690,14 +753,14 @@
    "name": "plugins/modules/aci_l3out_interface_secondary_ip.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b73391a4d77efc3fe3715d6f75bdaab2cb8aa43164121c14f90a5d910208eb2f",
+   "chksum_sha256": "2d320dbc956978b4c7bcaba7e8e7f3891507980dc87195eb64d3ea9145c41f2d",
    "format": 1
   },
   {
    "name": "plugins/modules/aci_interface_policy_hsrp.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "343f4f001a77cf8cd7097e68c287fe7359b701168805b63e54e3e5e57c1e1e35",
+   "chksum_sha256": "5e6138ba8937e2cd3bb06228d1720e8d80673e5f5d903fffdd4ac33018c0fbd1",
    "format": 1
   },
   {
@@ -725,7 +788,7 @@
    "name": "plugins/modules/aci_syslog_group.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "62fac942a3cf0956bf262280a23e48f7b55bd251e5eb8974cde8d443358ec848",
+   "chksum_sha256": "80c30efbb36037efbcb0a286da09dccaf0cd6e162884bb9eea7687aead8eee1f",
    "format": 1
   },
   {
@@ -795,7 +858,7 @@
    "name": "plugins/modules/aci_switch_policy_vpc_protection_group.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3c5aa5e987f844c0c229be29cb0072b31a7bd9f93a35556db5eb02a89d5468b5",
+   "chksum_sha256": "b5f99fead2b8b90162fad14a97ba7c1fcebb30786f4803ef41de8458bd50694a",
    "format": 1
   },
   {
@@ -841,6 +904,13 @@
    "format": 1
   },
   {
+   "name": "plugins/modules/aci_l4l7_service_graph_template_node.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "b1170665115bf4031006cafdf0e17ea8810ab0c7a49b8635bbdea884fd40c31b",
+   "format": 1
+  },
+  {
    "name": "plugins/modules/aci_fabric_management_access.py",
    "ftype": "file",
    "chksum_type": "sha256",
@@ -872,7 +942,14 @@
    "name": "plugins/modules/aci_l3out_hsrp_secondary_vip.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d62ee02eb4cc8ff60846ede1fbb93c04a5d5a29c4b273058b2a60c4ee5a733b9",
+   "chksum_sha256": "c6ef969d5a2bd96e8550fce8d082086d091db60e1072318f96d0699982d9fef8",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_node_mgmt_epg_to_contract.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "84e1087e4b2f16c6e55720a8b5acd73dd19ecbfd7e3d44edf3756724bc263d2c",
    "format": 1
   },
   {
@@ -886,7 +963,7 @@
    "name": "plugins/modules/aci_action_rule_set_as_path.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8481d6f2c98dbd7307632bf1827c98899a0e4815adc90c6ad3d0ebc8889503e5",
+   "chksum_sha256": "8f926e11e2143a781929c43a3b896804219a6bde3d0d483b51056339a97ce1a5",
    "format": 1
   },
   {
@@ -995,6 +1072,13 @@
    "format": 1
   },
   {
+   "name": "plugins/modules/aci_l4l7_service_graph_template_connection_to_connector.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "24f99235673e4444e2be3461ddc87d4bf5e0abac8b29e947b6ea1768f001b747",
+   "format": 1
+  },
+  {
    "name": "plugins/modules/aci_access_span_src_group_src.py",
    "ftype": "file",
    "chksum_type": "sha256",
@@ -1026,7 +1110,7 @@
    "name": "plugins/modules/aci_contract.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4df6f4836dca4741269fa57aaf7d25c6d20e530970240ce6b9bfe3899a74eae2",
+   "chksum_sha256": "ed5f3f5869d55d301fef31e8d8968b8baed2b75ae046552321ad9e54c19eeec5",
    "format": 1
   },
   {
@@ -1124,7 +1208,7 @@
    "name": "plugins/modules/aci_l3out_static_routes_nexthop.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5a878a58f8a8edb7aa866014b592011a8321f7a12683e6a8fc2052731e80cc07",
+   "chksum_sha256": "d26bd7cb975fae1fcc07000735b23ff4bfea7e4aced1c019bc4154154311c9ca",
    "format": 1
   },
   {
@@ -1152,7 +1236,7 @@
    "name": "plugins/modules/aci_vrf_multicast.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "aea2bac8fffdef0c83a10495aef5a2d43854df36d05b53ffaaef41ad80d9bf82",
+   "chksum_sha256": "0db48b5529b29546a67d31743010230f95b8cff09a18a9be66bb4834ffe01912",
    "format": 1
   },
   {
@@ -1167,6 +1251,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "bc5142a109daa4ac85fc68ac36247fcafa3762ff1ffb6a360e25e4cac03eba32",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_concrete_interface.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "5607a9ceda713a4efb53c9c9bcc3e1ff3509a3af2ca9e708496232658b907765",
    "format": 1
   },
   {
@@ -1187,7 +1278,7 @@
    "name": "plugins/modules/aci_dns_profile.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "240fc467c21956eb1554d0e1fbb8367e4134321044cdc5e141a455511eb8b970",
+   "chksum_sha256": "2f3dc9c2e6bbf95f5e3f0c29a1c6e198098d5c58fb5163a6cc32872f38d07ab1",
    "format": 1
   },
   {
@@ -1195,6 +1286,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "77e5d6cc4c8be1908de624deaa8b809447c2f01be6ea51e1a61d38d8c4cbc014",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_policy_based_redirect_destination.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "35fbba2712b798284a93c0b8a6a6944b0c395633e94baade576b3eb8174ba685",
    "format": 1
   },
   {
@@ -1236,7 +1334,7 @@
    "name": "plugins/modules/aci_interface_config.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a2245b78051930e1939be20957cef47b177c7a5132fe18971e95db197080fcbf",
+   "chksum_sha256": "43896111c9c5c5de63eb50fee3eddab4065be03c89c2d48b7bc24029a3196951",
    "format": 1
   },
   {
@@ -1247,10 +1345,17 @@
    "format": 1
   },
   {
+   "name": "plugins/modules/aci_vrf_fallback_route_group.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ead3e41ee35efa7722f0739cb2506742b96f447f57144063ff619ba19071a4ab",
+   "format": 1
+  },
+  {
    "name": "plugins/modules/aci_l3out_logical_node_profile.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5510c4c25e12b0686cf30d60b5a0142999311a7c197b5e753d08ba55b3d5cabf",
+   "chksum_sha256": "150acb9c717be6c99e02b78588b5a24be88d9497091790fd84d8b29bbea45e30",
    "format": 1
   },
   {
@@ -1313,7 +1418,7 @@
    "name": "plugins/modules/aci_bulk_static_binding_to_epg.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a456d7160f81a4a5643537b87d6fbe03b8254947c39c3a1fce76413f040f7c74",
+   "chksum_sha256": "f37eb3c0e2d5739e1b0ad724ea06d6a797d5452224b2dd470bf29ad7e3b4f35c",
    "format": 1
   },
   {
@@ -1376,7 +1481,7 @@
    "name": "plugins/modules/aci_bd_subnet.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "58930e496a02c5b5edc9d629dc6947490aac1cd8062cd3a7a0947f0a86802445",
+   "chksum_sha256": "d8cb0e381821a06fd6912b3eb1ed89ee1665cd7e93e2fa2ecaad9eca47fb5980",
    "format": 1
   },
   {
@@ -1453,7 +1558,14 @@
    "name": "plugins/modules/aci_domain.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "43c2b0fbc8ca6096e52d35657922fae229ab88228b1ed6f482f7821a66426d05",
+   "chksum_sha256": "a3f1f93ec122c5e7f68d5fb803af99d2132b2cc5bfd339b782edb249c855e47d",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_service_graph_template_connection.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "08ca9e5ddfb98535f8f6153c72c065b3a1de35f082161ffe6428eb60bf5f1647",
    "format": 1
   },
   {
@@ -1474,7 +1586,7 @@
    "name": "plugins/modules/aci_l3out_interface.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b2a0521013fff389caef9786d6db15ad691e5e3ce522e523c2769348bcb51436",
+   "chksum_sha256": "24a39766a0d8fd297527a2536f20804bd0801110aab6126cd304f3acc09dec13",
    "format": 1
   },
   {
@@ -1482,6 +1594,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "de20dfa79cee8adb14d7f14a2cf96cf84c8ddb91914adab0d934e4c11441d975",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_service_graph_template_term_node.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "9b3c49e552fecfc5fbdb7dd909ce28b56b9ee65fab701b9d4a4e56825bc0ebf7",
    "format": 1
   },
   {
@@ -1544,7 +1663,7 @@
    "name": "plugins/modules/aci_access_port_block_to_access_port.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "bd80caf580b0e53bbaf6a8d0f6d3349c95e3c6d92f6b17e45cd0ec60af2d98bb",
+   "chksum_sha256": "3f8ca8f63d7a72e30f909acd135a4dfde7a18f5e58da07590b09701befddb28b",
    "format": 1
   },
   {
@@ -1572,7 +1691,7 @@
    "name": "plugins/modules/aci_rest.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3c6f89d356cd20405ef51bdbdfdef3166219de58f15f81e53742fac35a542576",
+   "chksum_sha256": "36f7df300e0745a33e6f000a27b54089563cae037c9751f842b0baf325c2c81b",
    "format": 1
   },
   {
@@ -1583,6 +1702,13 @@
    "format": 1
   },
   {
+   "name": "plugins/modules/aci_l4l7_concrete_device.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e557f705495ba234bdbc024858e69a7de6cacbef044afdd550e8997d4f652b74",
+   "format": 1
+  },
+  {
    "name": "plugins/modules/aci_fabric_pod_selector.py",
    "ftype": "file",
    "chksum_type": "sha256",
@@ -1590,10 +1716,17 @@
    "format": 1
   },
   {
+   "name": "plugins/modules/aci_ip_sla_monitoring_policy.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "27b5a086d4ec4e5259bd0f7eed29683abd5556dc08310756abe593d06a888853",
+   "format": 1
+  },
+  {
    "name": "plugins/modules/aci_l3out_logical_interface_vpc_member.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "773e5486d8340dfa66ac727526218fec9cabce021a4dbb55eff26051c3b9ee2c",
+   "chksum_sha256": "542cfc544bb93e7ba0f2e115715c1c15d84c8ca71970fc82931993003f8f047d",
    "format": 1
   },
   {
@@ -1656,14 +1789,21 @@
    "name": "plugins/modules/aci_l2out_logical_interface_profile.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2e46597067c3945e05d3cfa7f725d3873a476ceae0212b0ada6cca8b57f586d7",
+   "chksum_sha256": "b3c10c148221b997a187b44a1dca54da0be28352edc09128e262147ee4e97fda",
    "format": 1
   },
   {
    "name": "plugins/modules/aci_l3out_logical_node.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8aa2f76bc802f3dbf193053da7b2fc0edebc041a7b0e74fd0108c7ec71911d8e",
+   "chksum_sha256": "a6aa52313f1b678941a9d0f092faa1dd382f28589840e9a3f2afaa041d3c7cd8",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_oob_contract.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c29a614b6b01314be2e6c68dcbd80d656bfa0fa4951fc9eeaa19f8ba1dfdaee6",
    "format": 1
   },
   {
@@ -1678,6 +1818,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "382374fda6f15ff1ff50447cf256f9c68678e45870246d95d6b36a5438841aa6",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_device_selection_interface_context.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a8b5abd5003cef9e268f3d83c3e3666d280434befb42794aa64761d8a8008746",
    "format": 1
   },
   {
@@ -1698,7 +1845,7 @@
    "name": "plugins/modules/aci_ntp_policy.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1d75cb4af507406070bd26eff775f7099c6037fabed8ce4bd6880aa614a27184",
+   "chksum_sha256": "29b10e6b9c800a4743eab278deba19b4dbaf55e184e0f7e7f589d4b640829888",
    "format": 1
   },
   {
@@ -1741,6 +1888,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "4894305f24388d89aef159890dd4b72670285239014942321c06c5b97585d917",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_endpoint_tag_mac.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "1f556240ef76b08a51247719a11c218ca1c00ea4101bdd1ed65b9268e690b6a2",
    "format": 1
   },
   {
@@ -1814,6 +1968,13 @@
    "format": 1
   },
   {
+   "name": "plugins/modules/aci_l4l7_policy_based_redirect.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "2b294a19dc1586541dacdc44fbbf3a691e1b8ea52005f5fc190d193665ff0c55",
+   "format": 1
+  },
+  {
    "name": "plugins/modules/aci_aaa_ssh_auth.py",
    "ftype": "file",
    "chksum_type": "sha256",
@@ -1849,10 +2010,17 @@
    "format": 1
   },
   {
+   "name": "plugins/modules/aci_interface_policy_port_channel_member.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "be577c5b968668d5a0977c7b2e6c7feee9c2b9ab76192148e1b3877e281155be",
+   "format": 1
+  },
+  {
    "name": "plugins/modules/aci_interface_description.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8443f8928c0acf67bd199a42bbb62783f72fa2d840687d0d16e88440a1752cc3",
+   "chksum_sha256": "76af9ede0d46513cc73715aab8183b11587cb3ac36509e350abd08b624b0744e",
    "format": 1
   },
   {
@@ -1866,7 +2034,7 @@
    "name": "plugins/modules/aci_epg_to_domain.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5cca1da914e70dcb6ddd2492330fce8ce00356e38ebec79d6c03002ba4a0f7e7",
+   "chksum_sha256": "40cd3716cb77a6d68502dc18b74ea09a29298a801eb1367658b30d15d8014bb2",
    "format": 1
   },
   {
@@ -1887,7 +2055,7 @@
    "name": "plugins/modules/aci_l2out_logical_node_profile.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0fad05ff02df088faef3e5724349116f237bbf4c00f00fde28483ddd994cc339",
+   "chksum_sha256": "bdfffd9c02187bc50a7c6fbfe37af9fabd3762a03fbb3c4a57a644fe59b67bf8",
    "format": 1
   },
   {
@@ -1902,6 +2070,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "9b099b5a0ed706ce351ca1515aca2892b97114cf29af4b83aa12325676f57b64",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_endpoint_tag_ip.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "2a82d6a2345619b9c81059a6ff5cbf44e790b976129c76abf60afca68bed9151",
    "format": 1
   },
   {
@@ -1929,7 +2104,14 @@
    "name": "plugins/modules/aci_dhcp_relay_provider.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6d11d7f2bf3c8a58f93cbb10e7059db50827ae9f90412689f6363a62d3e4f3d7",
+   "chksum_sha256": "b3f747b8beba5e021086b5f76c607138b77bcc0c23ef7c1b0572f16811df4e1b",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/aci_l4l7_logical_interface.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c6a93d57009e54ca22abc06424f6763d895f258f8f0822f094bc2c1c387119f1",
    "format": 1
   },
   {
@@ -1950,7 +2132,7 @@
    "name": "plugins/modules/aci_esg_ip_subnet_selector.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b5753aee69b9c0b956fef638a487badab47e2575faaad5896383a815c17308ca",
+   "chksum_sha256": "5c8873c085ac8ae111dc3efe7d09fa817c111dd0780831d6af41e74b75abfb1a",
    "format": 1
   },
   {
@@ -1978,7 +2160,7 @@
    "name": "plugins/modules/aci_vmm_credential.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "af3e4e8a334fbdb1de72a61fef3890f03785c4ef9b06dc33dae63fc8f1287c55",
+   "chksum_sha256": "f2e309af15d9aeb89b0e110a3b8031e931d78f47a6accee8b664f213b251ff5f",
    "format": 1
   },
   {
@@ -2013,7 +2195,7 @@
    "name": "plugins/modules/aci_l2out_logical_interface_path.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8884fbb1ecec52a84f8e9704b7cd73c9452d2d518d458d18d08ff64f64d3e490",
+   "chksum_sha256": "7ada1857c802f9d798fc731fb53ab72603041299e9ec2b97d5fdda938e575563",
    "format": 1
   },
   {
@@ -2293,7 +2475,7 @@
    "name": "tests/integration/targets/aci_l3out_static_routes_nexthop/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6a353dbc99717ed8177c119dff25131364efe1a53d1cd475818ac262b389e5b2",
+   "chksum_sha256": "5b33df789fa4ebf908dad4e62fd3de8c16a82845a40c9ef0f4c5b261c83fa98d",
    "format": 1
   },
   {
@@ -2556,6 +2738,97 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_inventory_system",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/playbooks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/playbooks/role_leaf.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "d80dfc8d7c8a644f0da63ced969512a62387bdd4043506e5f00cbf047aaf7e78",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/playbooks/invalid.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "70385f95f04b8c562311a31c54853fd3162ebb194aa7ec0a069a459050a5dab2",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/playbooks/no_role_defined.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f2e06a768d4ea360afbaa88cff699064bddc16d84debdf82699bd4af114f9426",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/playbooks/create_inventories.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "53d6eac3b6eae1a135e2f72ebb0f324f7abaa11a63f3d14d37d99adb2e9379dc",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/playbooks/role_controller.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6b6ba1bca49c6d73353a6c94acd87dff6831ba5d2b61bfb87e7d219ecc9104c3",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/runme.sh",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ec5c75b12156f87179bd7f7c5eff2ccea072543e576dc05c2ecd08db93054bd0",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/templates",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/templates/cisco_aci_invalid_input.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f33153c2a52db036d77ca9012b90c640f07010f22d02c22fd344d9917c0884d4",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/templates/cisco_aci.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "38fd0fec5fa13f7afac4b0af7d6de338f29024cf6439aa745ba624b763526066",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/templates/cisco_aci_keyed_groups.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "68f3181757e95857f62623a6cc78c18908762c632c116c1e9dc1c329a669324e",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_inventory_system/templates/cisco_aci_invalid_inventory_name.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f33153c2a52db036d77ca9012b90c640f07010f22d02c22fd344d9917c0884d4",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_access_port_block_to_access_port",
    "ftype": "dir",
    "chksum_type": null,
@@ -2573,11 +2846,39 @@
    "name": "tests/integration/targets/aci_access_port_block_to_access_port/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2ea0d9197777664d16d11dae2a33cfea35346472a092eda6748ceb0eb445d1d1",
+   "chksum_sha256": "985e67d21de70a032af61735967a75db7cc0d0082779ae18b420abeff4634ace",
    "format": 1
   },
   {
    "name": "tests/integration/targets/aci_access_port_block_to_access_port/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_oob_contract",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_oob_contract/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_oob_contract/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6ca98aa78b6c0b7f061377f37e7e0233d805752e64fbf0aa7c3d9226d03cfac5",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_oob_contract/aliases",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
@@ -2685,7 +2986,7 @@
    "name": "tests/integration/targets/aci_interface_config/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "bdd483a3e9175b7e37640176f4e41bd2cfe3cde64ca27da979e28ac8b6468bcb",
+   "chksum_sha256": "b4ebcaa698d6644487e9a82123823619e87f9effe194e670f7eb7c438fd5f20e",
    "format": 1
   },
   {
@@ -2825,14 +3126,14 @@
    "name": "tests/integration/targets/aci_vlan_pool/tasks/dynamic.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "91bc67bd296c556bf94eebf42fc939c98eb5adfbe92e87191beff06f7168f6e5",
+   "chksum_sha256": "85274feaf89e14c6295482306e59a381bee3f04cf41609d1d6490640a0c472dc",
    "format": 1
   },
   {
    "name": "tests/integration/targets/aci_vlan_pool/tasks/static.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2dd127083ff68df0a3dbf696db8d8a40a79d047f4a293c3c403699627c6e60e2",
+   "chksum_sha256": "a11426f1d30dd66c7e014eb0182df2a2b10e31ebd2698f225e650b5484754721",
    "format": 1
   },
   {
@@ -3084,7 +3385,7 @@
    "name": "tests/integration/targets/aci_l3out_logical_interface_vpc_member/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "315a59b0363d15adf5c69ed52b58f1ff42f2b1d07e298c6cf841f1fab4bd17cf",
+   "chksum_sha256": "72791e28a09cdd89e04dd33ed021a50c08f77e39e849205bc9c3277cfce5f8d7",
    "format": 1
   },
   {
@@ -3588,7 +3889,7 @@
    "name": "tests/integration/targets/aci_config_snapshot/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ffaf6e7f0074f0cc2c13d5de9c6ba0694d99bb7b99be2ca416cc479c4fd41ce3",
+   "chksum_sha256": "a5598b3251309b82c789d4089954796271793d7f6f888a8ebf84af59a6416a37",
    "format": 1
   },
   {
@@ -3844,6 +4145,55 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_vmm_enhanced_lag_policy",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_vmm_enhanced_lag_policy/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_vmm_enhanced_lag_policy/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "85cca4a82662f43f0581ccdf3fc0f7c9ec27688bd4224bb1f097a990ec2bbd96",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_vmm_enhanced_lag_policy/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "7900fb6dce21e0b31ecaf09ef29cfdc6fd56afd55866ea2f48d9a4f37914ef45",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_netflow_monitor_policy",
    "ftype": "dir",
    "chksum_type": null,
@@ -4085,7 +4435,7 @@
    "name": "tests/integration/targets/aci_bd_subnet/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9e3198f94c96de4c7ea6be196d7c3141ef7638a2699f91384b854a2af974b344",
+   "chksum_sha256": "720f1a5350227832e5adedcbd3a4992ec6ce91f37521aedd903504d0bfceae68",
    "format": 1
   },
   {
@@ -4218,7 +4568,7 @@
    "name": "tests/integration/targets/aci_system_banner/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "c3dfe182aa2cc04090da103aec29a93790275b8cbd966453c688f70adf95887e",
+   "chksum_sha256": "9f1faa874d4edb29f377900aa2107428cf856f828a2feba56c436f5b10111a64",
    "format": 1
   },
   {
@@ -4386,7 +4736,7 @@
    "name": "tests/integration/targets/aci_contract/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6c3d695d9cc94bfb6edb9c98da462c4129f2ba7a72d57f3ccbb7fc2e993d2cbe",
+   "chksum_sha256": "a7910e38ef48db8e1d5af4885d52721938366aab02d8516534feb650cd3092dd",
    "format": 1
   },
   {
@@ -4419,6 +4769,34 @@
   },
   {
    "name": "tests/integration/targets/aci_node_mgmt_epg/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_endpoint_tag_ip",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_endpoint_tag_ip/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_endpoint_tag_ip/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "973f84a485c878db91527b95cb52b65d989e8990ffcbac28ffe5d12cf93acc60",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_endpoint_tag_ip/aliases",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
@@ -4806,7 +5184,7 @@
    "name": "tests/integration/targets/aci_action_rule_set_as_path/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "68ce66ae1b1a1475fbbc7f7ec356c4d869ae309edd1ef84d29db395d95c4b8cb",
+   "chksum_sha256": "6efd4bf8b7dafc61c1755e6f755a9081efde9366ab5302f64f449ace5fdeb93f",
    "format": 1
   },
   {
@@ -4873,6 +5251,34 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_l4l7_device",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_device/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_device/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ea44b70808a0b586eb3b0e5964397b2b1a03ed5df02993e551e289eb66fe6ff5",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_device/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_match_community_factor",
    "ftype": "dir",
    "chksum_type": null,
@@ -4929,6 +5335,27 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_node",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_node/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_node/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "529b500ea97606bc0efc27634621faad4bb92340fcf220f3732c313bc01e8338",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_interface_policy_spine_policy_group",
    "ftype": "dir",
    "chksum_type": null,
@@ -4951,6 +5378,34 @@
   },
   {
    "name": "tests/integration/targets/aci_interface_policy_spine_policy_group/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_interface_attachment",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_interface_attachment/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_interface_attachment/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "90a161ac55e7ff9422bea4556e4c2caa279425df6ada73ee7df170e9ee3c94a1",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_interface_attachment/aliases",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
@@ -5114,7 +5569,7 @@
    "name": "tests/integration/targets/aci_domain_to_vlan_pool/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1be874b2846aa8cc3262e2fd72f54e4be879ed8cf182f3455dbdfb821ea3fd52",
+   "chksum_sha256": "c5ce1f5c4ebc5dbf5d2e1dac83ec973804786f7ab1c050ce71d72939ee817d7e",
    "format": 1
   },
   {
@@ -5198,7 +5653,7 @@
    "name": "tests/integration/targets/aci_epg_to_domain/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e532d3cb3ba4bfd61a9743796bee3e77a7f8dba5432ca556eee75acd28e7d259",
+   "chksum_sha256": "00b27770775825c2ce1d753760ae5fcd806e8170f7b79c4952c6db65b75021b8",
    "format": 1
   },
   {
@@ -5226,7 +5681,7 @@
    "name": "tests/integration/targets/aci_dhcp_relay_provider/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8ce53bdb5cb776c76480212771310300dfc3914a788b5f4e5dce7c1422c6be0b",
+   "chksum_sha256": "8dcd6e9dfb1d3a1d0a607b5dfbe17e1bc0f6ec8e53f9082ec7bb93694d2200d5",
    "format": 1
   },
   {
@@ -5499,7 +5954,7 @@
    "name": "tests/integration/targets/aci_syslog_group/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6c8d18b7d1b934e886e32960bab072793cb8c9fb411a974b322940bdb47ec526",
+   "chksum_sha256": "28d6e5193117c0593fb3ed7291de2f418820e1576e830bcf161d30ebadd22232",
    "format": 1
   },
   {
@@ -5527,7 +5982,7 @@
    "name": "tests/integration/targets/aci_vrf_multicast/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "c258a4ad5bac870a51363670ef44d922f17e3bc8f88571356799581a4b449bd6",
+   "chksum_sha256": "d1744c19be5a072d0b7322a0a5e648ed348615c0f628ac9108ae4f657dfb724f",
    "format": 1
   },
   {
@@ -5979,6 +6434,83 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_node_mgmt_epg_to_contract",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_node_mgmt_epg_to_contract/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_node_mgmt_epg_to_contract/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "868cd68f3c67c1c4802d72d51271aacff2c0967fb163ff801683213bdf4d5afc",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_node_mgmt_epg_to_contract/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_policy_based_redirect_destination",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_policy_based_redirect_destination/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_policy_based_redirect_destination/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a8d8824316aedda6b2bbaa3fe520ab3f240a635df5f118fb3c4cde826e890006",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_policy_based_redirect_destination/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_functional_connection",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_functional_connection/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_functional_connection/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "52ab45875e1936f74b106db880fa23e086176ae18309317ff8141c3b69967baa",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_fabric_pod_policy_group",
    "ftype": "dir",
    "chksum_type": null,
@@ -6024,7 +6556,7 @@
    "name": "tests/integration/targets/aci_ntp_policy/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f120f96885c5c81468280e9eb51a4d2b03ece33638eb1f42519861aba2218383",
+   "chksum_sha256": "e4eb0706d73654ae819bb2ae4b3b65a41524d19889d2134b010676c4be52458c",
    "format": 1
   },
   {
@@ -6539,6 +7071,27 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_term_node",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_term_node/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_term_node/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "be0c8d0cbd2f1334fdc194b7c192b5888802edb813ddea329e1dedde503b8f34",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_epg_useg_attribute_block_statement",
    "ftype": "dir",
    "chksum_type": null,
@@ -6756,6 +7309,34 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_endpoint_tag_mac",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_endpoint_tag_mac/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_endpoint_tag_mac/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a8d74ee685a908c362684cce3bbeef342324fd28dcde5e57cdd01ed3b05d67d4",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_endpoint_tag_mac/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_tenant_ep_retention_policy",
    "ftype": "dir",
    "chksum_type": null,
@@ -6896,6 +7477,27 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_connection_to_connector",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_connection_to_connector/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_connection_to_connector/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "dae930ae617572200f393b37684abcc9f5a0674a0649ea184a4c67844d13486f",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_fabric_leaf_profile",
    "ftype": "dir",
    "chksum_type": null,
@@ -7025,7 +7627,7 @@
    "name": "tests/integration/targets/aci_l3out_bgp_peer/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a3bbd98e6c7a8dd53c5bf7d99cb4819fc04d6f1f576fd311a92030449f04adc7",
+   "chksum_sha256": "4d8ef7923a04b1f5d2de2421aa5c286abb384e44d52f8fe7b0d9a351d81d7a20",
    "format": 1
   },
   {
@@ -7470,6 +8072,34 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_l4l7_redirect_health_group",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_redirect_health_group/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_redirect_health_group/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "15b96df3699b5ebbb83035ca5b8c2b108a89060f1b9db6c71a1a0243868df2ba",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_redirect_health_group/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_tenant_span_dst_group",
    "ftype": "dir",
    "chksum_type": null,
@@ -7694,6 +8324,27 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_connection",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_connection/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_service_graph_template_connection/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "877a5c7202c59d0f78e932687a11a0cd0634af4f106fab38323ce584dd442088",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_config_export_policy",
    "ftype": "dir",
    "chksum_type": null,
@@ -7772,6 +8423,34 @@
   },
   {
    "name": "tests/integration/targets/aci_epg_to_contract_interface/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_logical_interface",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_logical_interface/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_logical_interface/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "2666f0754e8e4784ab6607513d44ff598d8109d2da226ca3cb73cf53b9bc661d",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_logical_interface/aliases",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
@@ -8282,6 +8961,34 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_l4l7_policy_based_redirect",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_policy_based_redirect/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_policy_based_redirect/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "7d235ef6c3f80d3cf2d517eb3e2262d8112ebf233a59cb3f2823d9e3194d337d",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_policy_based_redirect/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_contract_subject",
    "ftype": "dir",
    "chksum_type": null,
@@ -8534,6 +9241,27 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_l4l7_device_selection_interface_context",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_device_selection_interface_context/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_device_selection_interface_context/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e49c6c8eecef139d651edc37e27733b26fd7eb9937fc8d49ad70b98dfada182e",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_fabric_pod_connectivity_profile",
    "ftype": "dir",
    "chksum_type": null,
@@ -8556,6 +9284,34 @@
   },
   {
    "name": "tests/integration/targets/aci_fabric_pod_connectivity_profile/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_device",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_device/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_device/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cef2180f00e60a3437fcfd23d9a74a195100d6ffc5b534cfbe56392e3c4d1b41",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_device/aliases",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
@@ -8894,7 +9650,7 @@
    "name": "tests/integration/targets/aci_switch_policy_vpc_protection_group/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d36cb34648ae0539a22d1e5195610d2f2b51a905607af531fbea0309f1513216",
+   "chksum_sha256": "c6fb6c33eef45de327185dbe0d6c6decce2021f5868bb7ccecc12f114a84847b",
    "format": 1
   },
   {
@@ -9073,6 +9829,55 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_l4l7_device_selection_policy",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_device_selection_policy/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_device_selection_policy/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f175c297226fb2958854478ccbe32f3ad89e38e800c1e72aa96cfbe33811091c",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_vrf_fallback_route_group",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_vrf_fallback_route_group/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_vrf_fallback_route_group/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c7f7b71d8f960bdc34aba664e1973c8cb376ad8b864aa535158c28351d021d2e",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_vrf_fallback_route_group/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_l3out_floating_svi",
    "ftype": "dir",
    "chksum_type": null,
@@ -9151,6 +9956,34 @@
   },
   {
    "name": "tests/integration/targets/aci_system/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_interface",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_interface/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_interface/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "28028ef0b4c6445849e8c844540eb62006b3971257c81f2175228d6018d9935c",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_l4l7_concrete_interface/aliases",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
@@ -9297,6 +10130,34 @@
    "format": 1
   },
   {
+   "name": "tests/integration/targets/aci_ip_sla_monitoring_policy",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_ip_sla_monitoring_policy/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_ip_sla_monitoring_policy/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "8adb1da64148bcc9331b43cd1224e119001de6720b292f86848c2270b6b0d2c3",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_ip_sla_monitoring_policy/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
    "name": "tests/integration/targets/aci_aaa_certificate_authority",
    "ftype": "dir",
    "chksum_type": null,
@@ -9361,6 +10222,34 @@
   },
   {
    "name": "tests/integration/targets/aci_match_as_path_regex_term/aliases",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_interface_policy_port_channel_member",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_interface_policy_port_channel_member/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_interface_policy_port_channel_member/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0ee3b1ca1a1d2d4ad2170e39992b2ccb911089f4ff78980168525616192709c0",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/aci_interface_policy_port_channel_member/aliases",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "616f27a9a7bb49e561ef3782330e18d1a8cea3840e3166e798796684dd546a69",
@@ -9496,7 +10385,7 @@
    "name": "tests/integration/targets/aci_dns_profile/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "c8f059c2c339e427920a26eb766b5792a91a770f26b8ae2ad5160c14d77b7e63",
+   "chksum_sha256": "880711b7e074395b8e36e2de1010f57896205dbcc49363df460f63dbb70cac83",
    "format": 1
   },
   {
@@ -9755,14 +10644,14 @@
    "name": "tests/integration/targets/aci_rest/tasks/json_inline.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "891a6726743b1acc2f05b500bf832ae3ab02647a4f355344cc7b4f81748dff56",
+   "chksum_sha256": "7a6c26cb7708cd87844ca3c0b80715421107a722744672d221fe513b8b77332a",
    "format": 1
   },
   {
    "name": "tests/integration/targets/aci_rest/tasks/json_string.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "59ac5789bef4ea7ec604c2d1a8fa31ca631a81fb646fdb0d1f8b402cfc056199",
+   "chksum_sha256": "44cfe32974d39ce3f66bdcb1e47f6520f708e2cc80b8223b1c666bef7b23cd86",
    "format": 1
   },
   {
@@ -9783,7 +10672,7 @@
    "name": "tests/integration/targets/aci_rest/tasks/xml_string.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e2068bc8abb044a6fb8e61131f57cf54b750a448e4ca0cfe152c08512840b0e1",
+   "chksum_sha256": "4912c9d5db6ee4f4a92ffc4c3a90ebbe5f9e31023467134992a847389dd80c45",
    "format": 1
   },
   {
@@ -10077,7 +10966,7 @@
    "name": "tests/integration/inventory.networking",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a0e070fd560a8834f7926049541ddfbf048c9a16c7647c3aba4c7fb39fd69181",
+   "chksum_sha256": "ea76995ad187dd68721f096c94785aa29da4ca80f352958d1ff7e70cbd8bc8f9",
    "format": 1
   },
   {
@@ -10112,7 +11001,7 @@
    "name": "meta/runtime.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "27634cb8e1a48975744881ea03b9fc18fdb75ca64d16a51ed43102a42e765fbe",
+   "chksum_sha256": "0c78a0605b809316b73bfa8d15e9fe9a3507fb9ed0caea1c6d969c65dc986796",
    "format": 1
   },
   {
@@ -10161,7 +11050,7 @@
    "name": "changelogs/config.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5ba5480a4348c1f003132c6667e2e03bcca83874e8dcda80309ada33332704c1",
+   "chksum_sha256": "cd336e3b4e5a524b75266659c08e993ca2e988591b61244468ea047c777b769d",
    "format": 1
   },
   {
@@ -10175,21 +11064,21 @@
    "name": "changelogs/.plugin-cache.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "281bde1fe397ef74b8a94e8c5d27807a4ac6cfb6ee3c97091fa2560224a5e719",
+   "chksum_sha256": "d3ae4faf5a9e88e541ea4c6041c01987a9248813e121495fcb439ffad9cda947",
    "format": 1
   },
   {
    "name": "changelogs/changelog.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2ee15b940acbc75335e2864b64de6d49c077e935d8394f4888b8d26568f86221",
+   "chksum_sha256": "8edd1b738233cb56dbb82959759f738e7cf3cfe20991816907ef74ea66dbb864",
    "format": 1
   },
   {
    "name": "README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ee6e8a183eb3be58a7124ea9adcdae7cc5d8eb25fa11e3bd2c503500330c08b6",
+   "chksum_sha256": "f813c221c94846ab8d3363bc0209ea9fb9447b83104c8f89834bcac699581ccf",
    "format": 1
   },
   {
@@ -10204,6 +11093,13 @@
    "ftype": "dir",
    "chksum_type": null,
    "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": ".github/CODEOWNERS",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "dda96fb45446f251cbc73abb063481533c3b918b0d391325d0f330a8b2263e1a",
    "format": 1
   },
   {
@@ -10231,7 +11127,7 @@
    "name": ".github/workflows/ansible-test.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ec8cd77cd5614970a76731bad23e10d164b7eeda469d8356229ed61c06d6e26d",
+   "chksum_sha256": "811b3d2d6c287daddf4fc3a77016339283eb57817e3cf3f772f49e3ba5748747",
    "format": 1
   },
   {
@@ -10239,6 +11135,20 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "66dd79480302f6cb6fedd3fdc1e844267e3f8b780af25069b9887514292fce3b",
+   "format": 1
+  },
+  {
+   "name": ".github/workflows/jira-issue-sync.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "bc1890eaee3752c334cd5ee9892d7226b44f16548dfc11043d1d74253fc6dec9",
+   "format": 1
+  },
+  {
+   "name": ".github/workflows/jira-issue-sync-pr-review.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "db8febcb4a3f631f3d648ce6592056a8c827102207df24f8b04a44c11f6ba3f6",
    "format": 1
   },
   {
@@ -10273,7 +11183,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5a881b4f22609e040cd2206f508990497bbf855c31c759cc4917fb4613fb6420",
+   "chksum_sha256": "93fd8069d02648c02866d6f3d3f28df18623d2c1e724b236b12529638b7ae7f2",
    "format": 1
   },
   {

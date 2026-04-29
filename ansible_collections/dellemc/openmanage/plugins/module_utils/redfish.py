@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # Dell OpenManage Ansible Modules
-# Version 9.3.0
-# Copyright (C) 2019-2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Version 9.12.3
+# Copyright (C) 2019-2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -31,6 +31,7 @@ __metaclass__ = type
 
 import json
 import os
+import re
 from ansible.module_utils.urls import open_url, ConnectionError, SSLValidationError
 from ansible.module_utils.six.moves.urllib.error import URLError, HTTPError
 from ansible.module_utils.six.moves.urllib.parse import urlencode
@@ -48,11 +49,13 @@ redfish_auth_params = {
 }
 
 SESSION_RESOURCE_COLLECTION = {
-    "SESSION": "/redfish/v1/Sessions",
-    "SESSION_ID": "/redfish/v1/Sessions/{Id}",
+    "SESSION": "/redfish/v1/SessionService/Sessions",
+    "SESSION_ID": "/redfish/v1/SessionService/Sessions/{Id}",
 }
 
 HOST_UNRESOLVED_MSG = "Unable to resolve hostname or IP {0}."
+MANAGER_URI = "/redfish/v1/Managers/iDRAC.Embedded.1"
+GET_IDRAC_MANAGER_ATTRIBUTES_9_10 = "/redfish/v1/Managers/iDRAC.Embedded.1/Oem/Dell/DellAttributes/iDRAC.Embedded.1"
 
 
 class OpenURLResponse(object):
@@ -72,10 +75,6 @@ class OpenURLResponse(object):
             raise ValueError("Unable to parse json")
 
     @property
-    def status_code(self):
-        return self.resp.getcode()
-
-    @property
     def success(self):
         status = self.status_code
         return status >= 200 & status <= 299
@@ -83,6 +82,10 @@ class OpenURLResponse(object):
     @property
     def headers(self):
         return self.resp.headers
+
+    @property
+    def status_code(self):
+        return self.resp.getcode()
 
     @property
     def reason(self):
@@ -113,16 +116,6 @@ class Redfish(object):
         """builds base url"""
         return '{0}://{1}'.format(self.protocol, self.hostname)
 
-    def _build_url(self, path, query_param=None):
-        """builds complete url"""
-        url = path
-        base_uri = self._get_base_url()
-        if path:
-            url = base_uri + path
-        if query_param:
-            url += "?{0}".format(urlencode(query_param))
-        return url
-
     def _url_common_args_spec(self, method, api_timeout, headers=None):
         """Creates an argument common spec"""
         req_header = self._headers
@@ -142,6 +135,16 @@ class Redfish(object):
             "follow_redirects": 'all',
         }
         return url_kwargs
+
+    def _build_url(self, path, query_param=None):
+        """builds complete url"""
+        url = path
+        base_uri = self._get_base_url()
+        if path:
+            url = base_uri + path
+        if query_param:
+            url += "?{0}".format(urlencode(query_param))
+        return url
 
     def _args_without_session(self, path, method, api_timeout, headers=None):
         """Creates an argument spec in case of basic authentication"""
@@ -209,11 +212,31 @@ class Redfish(object):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        """Deletes a session id, which is in use for request"""
+        """Deletes a session id, which is in use for request for redfish session"""
         if self.session_id:
             path = SESSION_RESOURCE_COLLECTION["SESSION_ID"].format(Id=self.session_id)
             self.invoke_request('DELETE', path)
         return False
+
+    @property
+    def get_server_generation(self):
+        """
+        This method fetches the connected server generation.
+        :return: 14, 4.11.11.11, iDRAC 9
+        """
+        firmware_version = None
+        response = self.invoke_request(method='GET', path=MANAGER_URI)
+        if response.status_code == 200:
+            generation = int(re.search(r"\d+(?=G)", response.json_data["Model"]).group())
+            firmware_version = response.json_data["FirmwareVersion"]
+        hw_model = ""
+        try:
+            hw_model_out = self.invoke_request(method='GET', path=GET_IDRAC_MANAGER_ATTRIBUTES_9_10)
+            if hw_model_out.status_code == 200:
+                hw_model = hw_model_out.json_data.get('Attributes', {}).get('Info.1.HWModel', "iDRAC 9")
+        except HTTPError:
+            hw_model = "iDRAC 8"
+        return generation, firmware_version, hw_model
 
     def strip_substr_dict(self, odata_dict, chkstr='@odata.'):
         cp = odata_dict.copy()
@@ -251,12 +274,12 @@ class RedfishAnsibleModule(AnsibleModule):
         if mutually_exclusive is None:
             mutually_exclusive = []
         mutually_exclusive.extend(auth_mutually_exclusive)
-        if required_together is None:
-            required_together = []
-        required_together.extend(auth_required_together)
         if required_one_of is None:
             required_one_of = []
         required_one_of.extend(auth_required_one_of)
+        if required_together is None:
+            required_together = []
+        required_together.extend(auth_required_together)
         if required_by is None:
             required_by = {}
 

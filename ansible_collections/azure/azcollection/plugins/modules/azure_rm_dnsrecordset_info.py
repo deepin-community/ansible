@@ -141,6 +141,12 @@ dnsrecordsets:
                 - Fully qualified domain name of the record set.
             type: str
             sample: www.newzone.com
+        target_resource:
+            description:
+                - A reference to an azure resource from where the dns resource value is taken.
+            type: dict
+            returned: always
+            sample: {'id': /subscriptions/xxx-xxx/resourceGroups/testRG/providers/Microsoft.Network/publicIPAddresses/pip01'}
 '''
 
 from ansible_collections.azure.azcollection.plugins.module_utils.azure_rm_common import AzureRMModuleBase
@@ -197,10 +203,6 @@ class AzureRMRecordSetInfo(AzureRMModuleBase):
 
     def exec_module(self, **kwargs):
 
-        is_old_facts = self.module._name == 'azure_rm_dnsrecordset_facts'
-        if is_old_facts:
-            self.module.deprecate("The 'azure_rm_dnsrecordset_facts' module has been renamed to 'azure_rm_dnsrecordset_info'", version=(2.9, ))
-
         for key in self.module_arg_spec:
             setattr(self, key, kwargs[key])
 
@@ -225,10 +227,6 @@ class AzureRMRecordSetInfo(AzureRMModuleBase):
             # if there is a zone name listed, then they want all the record sets in a zone
             results = self.list_zone()
 
-        if is_old_facts:
-            self.results['ansible_facts'] = {
-                'azure_dnsrecordset': self.serialize_list(results)
-            }
         self.results['dnsrecordsets'] = self.curated_list(results)
         return self.results
 
@@ -293,7 +291,8 @@ class AzureRMRecordSetInfo(AzureRMModuleBase):
             time_to_live=record.ttl,
             fqdn=record.fqdn,
             provisioning_state=record.provisioning_state,
-            metadata=record.metadata
+            metadata=record.metadata,
+            target_resource=dict(id=record.target_resource.id) if record.target_resource.id else None
         )
 
 

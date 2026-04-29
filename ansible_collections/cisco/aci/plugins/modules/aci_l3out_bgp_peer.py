@@ -186,8 +186,8 @@ extends_documentation_fragment:
 - cisco.aci.annotation
 
 seealso:
-- module: aci_l3out
-- module: aci_l3out_logical_node_profile
+- module: cisco.aci.aci_l3out
+- module: cisco.aci.aci_l3out_logical_node_profile
 - name: APIC Management Information Model reference
   description: More information about the internal APIC classes B(bgp:peerP) and B(bgp:InfraPeerP)
   link: https://developer.cisco.com/docs/apic-mim-ref/
@@ -618,7 +618,7 @@ def main():
 
     bgp_peer_profile_dict = dict(
         aci_class=aci_class,
-        aci_rn="infraPeerP-[{0}]".format(peer_ip) if bgp_infra_peer else "peerP-{0}".format(peer_ip),
+        aci_rn="infraPeerP-[{0}]".format(peer_ip) if bgp_infra_peer else "peerP-[{0}]".format(peer_ip),
         module_object=peer_ip,
         target_filter={"addr": peer_ip},
     )

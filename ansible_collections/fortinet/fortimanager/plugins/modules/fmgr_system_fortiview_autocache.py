@@ -114,6 +114,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -127,10 +128,10 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_fortiview_autocache:
-          aggressive_fortiview: <value in [disable, enable]>
-          interval: <integer>
-          status: <value in [disable, enable]>
-          incr_fortiview: <value in [disable, enable]>
+          # aggressive_fortiview: <value in [disable, enable]>
+          # interval: <integer>
+          # status: <value in [disable, enable]>
+          # incr_fortiview: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -192,7 +193,7 @@ def main():
                 'aggressive-fortiview': {'choices': ['disable', 'enable'], 'type': 'str'},
                 'interval': {'type': 'int'},
                 'status': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'incr-fortiview': {'v_range': [['7.2.5', '7.2.8'], ['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'incr-fortiview': {'v_range': [['7.2.5', '7.2.9'], ['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }
         }
     }

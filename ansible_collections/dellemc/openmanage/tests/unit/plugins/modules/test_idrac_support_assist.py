@@ -20,7 +20,7 @@ from ansible.module_utils.urls import ConnectionError, SSLValidationError
 from ansible.module_utils._text import to_text
 from ansible_collections.dellemc.openmanage.plugins.modules import idrac_support_assist
 from ansible_collections.dellemc.openmanage.tests.unit.plugins.modules.common import FakeAnsibleModule
-from mock import MagicMock
+from unittest.mock import MagicMock
 from ansible_collections.dellemc.openmanage.plugins.modules.idrac_support_assist import main
 
 MODULE_PATH = 'ansible_collections.dellemc.openmanage.plugins.modules.idrac_support_assist.'
@@ -1015,7 +1015,7 @@ class TestExportSupportAssist(FakeAnsibleModule):
             params=idrac_default_args, check_mode=False)
         export_support_assist_obj = self.module.ExportSupportAssist(
             idrac_connection_support_assist_mock, f_module)
-        result = export_support_assist_obj._ExportSupportAssist__export_support_assist_http()
+        result = export_support_assist_obj._ExportSupportAssist__export_support_assist_remote_shares()
         assert result == payload
 
     def test_export_support_assist_cifs(self, idrac_default_args, idrac_connection_support_assist_mock, mocker):
@@ -1028,24 +1028,7 @@ class TestExportSupportAssist(FakeAnsibleModule):
             }
         }
         mocker.patch(MODULE_PATH + PAYLOAD_FUNC, return_value=payload)
-        # Scenario 1: With workgroup
-        export_params = {
-            'share_parameters': {
-                'share_type': 'cifs',
-                'share_name': 'myshare',
-                'ignore_certificate_warning': 'off',
-                'workgroup': 'myworkgroup'
-            }
-        }
-        idrac_default_args.update(export_params)
-        f_module = self.get_module_mock(
-            params=idrac_default_args, check_mode=False)
-        export_support_assist_obj = self.module.ExportSupportAssist(
-            idrac_connection_support_assist_mock, f_module)
-        result = export_support_assist_obj._ExportSupportAssist__export_support_assist_cifs()
-        assert result == payload
-
-        # Scenario 2: Without workgroup
+        # Scenario 1: Without workgroup
         payload = {
             'share_parameters': {
                 'share_type': 'cifs',
@@ -1066,7 +1049,7 @@ class TestExportSupportAssist(FakeAnsibleModule):
             params=idrac_default_args, check_mode=False)
         export_support_assist_obj = self.module.ExportSupportAssist(
             idrac_connection_support_assist_mock, f_module)
-        result = export_support_assist_obj._ExportSupportAssist__export_support_assist_cifs()
+        result = export_support_assist_obj._ExportSupportAssist__export_support_assist_remote_shares()
         assert result == payload
 
     def test_export_support_assist_nfs(self, idrac_default_args, idrac_connection_support_assist_mock, mocker):

@@ -13,7 +13,7 @@ short_description: NetApp ONTAP module to set the CLI inactivity timeout value.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: '22.9.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   -  Modify the timeout value for CLI sessions.
 options:
@@ -35,25 +35,25 @@ notes:
 """
 
 EXAMPLES = """
-  - name: Modify the timeout value for CLI sessions to be 15 minutes
-    netapp.ontap.na_ontap_cli_timeout:
-      state: present
-      timeout: 15
-      hostname: "{{ netapp_hostname }}"
-      username: "{{ netapp_username }}"
-      password: "{{ netapp_password }}"
-      https: true
-      validate_certs: "{{ validate_certs }}"
+- name: Modify the timeout value for CLI sessions to be 15 minutes
+  netapp.ontap.na_ontap_cli_timeout:
+    state: present
+    timeout: 15
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
 
-  - name: Prevent CLI sessions from timing out
-    netapp.ontap.na_ontap_cli_timeout:
-      state: present
-      timeout: 0
-      hostname: "{{ netapp_hostname }}"
-      username: "{{ netapp_username }}"
-      password: "{{ netapp_password }}"
-      https: true
-      validate_certs: "{{ validate_certs }}"
+- name: Prevent CLI sessions from timing out
+  netapp.ontap.na_ontap_cli_timeout:
+    state: present
+    timeout: 0
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
 """
 
 RETURN = """

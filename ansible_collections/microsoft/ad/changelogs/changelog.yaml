@@ -252,3 +252,65 @@ releases:
     - debug-ldap-client-doc.yml
     - release-summary.yml
     release_date: '2024-09-04'
+  1.8.0:
+    changes:
+      minor_changes:
+      - Added support for Windows Server 2025
+      - domain - Added ``replication_source_dc`` to specify the domain controller
+        to use as the replication source for the new domain - https://github.com/ansible-collections/microsoft.ad/issues/159
+      - domain_controller - Added ``replication_source_dc`` to specify the domain
+        controller to use as the replication source for the new domain controller
+        - https://github.com/ansible-collections/microsoft.ad/issues/159
+      - microsoft.ad.user - Added ``groups.permissions_failure_action`` to control
+        the behaviour when failing to modify the user's groups - (https://github.com/ansible-collections/microsoft.ad/issues/140).
+      release_summary: Release summary for v1.8.0
+    fragments:
+    - release-summary.yml
+    - replication-dc.yml
+    - user-permissions-handling.yml
+    - win-2025.yml
+    plugins:
+      filter:
+      - description: Splits an LDAP DistinguishedName.
+        name: split_dn
+        namespace: null
+    release_date: '2024-12-11'
+  1.8.1:
+    changes:
+      release_summary: Minor release for Galaxy/AH documention update
+    fragments:
+    - release-summary.yml
+    release_date: '2025-03-27'
+  1.9.0:
+    changes:
+      bugfixes:
+      - ldap inventory - Fix up support for Ansible 2.19.
+      minor_changes:
+      - Set minimum supported Ansible version to 2.16 to align with the versions still
+        supported by Ansible.
+      release_summary: Release summary for v1.9.0
+    fragments:
+    - ansible-ver.yml
+    - ldap-dt.yml
+    - release-summary.yml
+    release_date: '2025-04-29'
+  1.9.1:
+    changes:
+      bugfixes:
+      - microsoft.ad.ldap - Ensure the encrypted LAPS value is marked as unsafe to
+        stop unexpected templating of the raw JSON result value - https://github.com/ansible-collections/microsoft.ad/issues/194
+      release_summary: Release summary for v1.9.1
+    fragments:
+    - laps-templating.yml
+    - release-summary.yml
+    release_date: '2025-05-27'
+  1.9.2:
+    changes:
+      bugfixes:
+      - microsoft.ad.object_info - Correctly return multivalued attributes with one
+        entry as array with on item (instead of returning a string) - https://github.com/ansible-collections/microsoft.ad/issues/199
+      release_summary: Release summary for v1.9.2
+    fragments:
+    - correctly-return-multivalued-attributes-with-one-entry-as-array-instead-of-string.yml
+    - release-summary.yml
+    release_date: '2025-07-22'

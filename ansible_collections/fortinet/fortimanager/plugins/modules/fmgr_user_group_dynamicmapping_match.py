@@ -118,6 +118,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -135,10 +136,10 @@ EXAMPLES = '''
         dynamic_mapping: <your own value>
         state: present # <value in [present, absent]>
         user_group_dynamicmapping_match:
-          _gui_meta: <string>
-          group_name: <string>
-          id: <integer>
-          server_name: <string>
+          id: 0 # Required variable, integer
+          # _gui_meta: <string>
+          # group_name: <string>
+          # server_name: <string>
 '''
 
 RETURN = '''

@@ -12,8 +12,29 @@ action_groups:
     - firewall
     - firewall_info
     - reset
+    - reset_info
     - reverse_dns
     - server
     - server_info
     - ssh_key
     - ssh_key_info
+    - storagebox
+    - storagebox_info
+    - storagebox_set_password
+    - storagebox_snapshot
+    - storagebox_snapshot_info
+    - storagebox_snapshot_plan
+    - storagebox_snapshot_plan_info
+    - storagebox_subaccount
+    - storagebox_subaccount_info
+    - v_switch
+  api:
+    - storagebox
+    - storagebox_info
+    - storagebox_set_password
+    - storagebox_snapshot
+    - storagebox_snapshot_info
+    - storagebox_snapshot_plan
+    - storagebox_snapshot_plan_info
+    - storagebox_subaccount
+    - storagebox_subaccount_info

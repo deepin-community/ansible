@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "community",
   "name": "mongodb",
-  "version": "1.7.8",
+  "version": "1.7.10",
   "authors": [
    "Ansible (https://github.com/ansible)",
    "Rhys Campbell (https://github.com/rhysmeister)",
@@ -36,7 +36,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "ba0b7aa2a5b08e7d0010b39d6369a57b30038ea17e9a3f4e8a4f81635f061fe8",
+  "chksum_sha256": "51aff10a07c7f28615a0411888ca1791cf21f8343262b06f5924952ca9536ed3",
   "format": 1
  },
  "format": 1
