@@ -1,0 +1,7 @@
+0002-fix-libvirt-encoding-errors-on-windows-guests.patch
+0003-fix-libvirt-path-resolution.patch
+community-grafana-py312.patch
+community-mongodb-py313.patch
+cloud-common-flaky-test.patch
+community-hashi_vault-ansible-core-2.18-1.patch
+community-hashi-vault-ansible-core-2.18-2.patch

@@ -1,4 +1,33 @@
 #!/usr/bin/make -f
 
+# Make it easier to build one machines with ansible << 2.10 installed.
+export ANSIBLE_SKIP_CONFLICT_CHECK=1
+
 %:
-	dh $@
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_clean:
+	dh_clean \
+		-X.bak \
+		-X.md~ \
+		-X.j2~ \
+		-X.py~ \
+		-X.txt~ \
+		-X.txt.orig \
+		-X.un~ \
+		-X.yaml~ \
+		-X.yml~
+
+override_dh_auto_test:
+	# For now, disable the tests
+	#make tests-nonet
+
+override_dh_python3:
+	dh_python3 --shebang=/usr/bin/python3
+
+execute_after_dh_auto_install:
+	find debian/ansible/ -depth -name '.git*' -exec rm -r {} +
+	find debian/ansible/ -depth -name '.*' -exec rm -r {} +
+	find debian/ansible/ -name '*~' -delete
+	find debian/ansible/ -name '*.bak' -delete
+	find debian/ansible/ -name '*.orig' -delete

@@ -1,0 +1,45 @@
+ansible (4.6.0-1) experimental; urgency=medium
+
+  The Ansible Project has now split what was known as "ansible" into two parts:
+  The binaries (now called "ansible-core"), and the content (modules, plugins, and
+  in the future possibly roles and playbooks) in "ansible" (a.k.a "ansible
+  collections").  Each will follow their own release schedule and diverge in
+  version numbers over time.
+
+  When reading about the various parts there are naming clashes to consider:
+
+  - Debian package "ansible"
+    -> called "ansible" on PyPI
+    -> is called "ansible collections" through most of the documentation
+    -> upstream PyPI packages are generated through
+       https://github.com/ansible-community/ansible-build-data
+
+  - Debian package "ansible-core"
+    -> called "ansible-core" on PyPI
+    -> upstream source is "ansible" at https://github.com/ansible/ansible/
+
+  Any older documentation you may find will refer to both parts as just
+  "ansible". To make the confusion complete, PyPI "ansible-core" was named 
+  "ansible-base" in 2.10.x.
+
+  This package depends on ansible-core, so no further action is needed.
+
+ -- Lee Garrett <debian@rocketjump.eu>  Wed, 29 Sep 2021 20:32:14 +0200
+
+ansible (2.7.5+dfsg-2) experimental; urgency=medium
+
+  With this version build and runtime of ansible has switched to python3. If you
+  don't use custom task modules or custom inventory modules, this will likely
+  not affect you. If you do have the above, you need to ensure those work with
+  python 3 before upgrading. Instructions and migration tips can be found in the
+  upstream documentation or in the ansible-doc package.
+
+  Note that switching will only affects the ansible controller. The remote nodes
+  will continue to use python 2. This means you need to ensure that your custom
+  task modules run on both python 2 and 3.
+
+  If you also want to switch the remote nodes to python 3, you need to ensure
+  that they have at least python 3.5 installed. You can then set the
+  "ansible_python_interpreter" inventory variable to /usr/bin/python3.
+
+ -- Lee Garrett <debian@rocketjump.eu>  Sun, 30 Dec 2018 23:45:34 +0100

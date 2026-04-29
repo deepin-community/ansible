@@ -1,0 +1,12 @@
+# That's just normal HTML. Tables, example output, etc.
+ansible source: source-is-missing [ansible_collections/containers/podman/docs/*.html]
+
+# Yep. It doesn't. And it won't. That's not how ansible works.
+ansible source: package-does-not-install-examples [ansible_collections/*]
+
+# Scheduled for removal in Ansible 12:
+# https://github.com/ansible-community/ansible-build-data/pull/464
+ansible source: uses-deprecated-python-stdlib distutils * [ansible_collections/sensu/sensu_go/*]
+
+# No.
+ansible source: maintainer-manual-page [debian/man/ansible-community.1]

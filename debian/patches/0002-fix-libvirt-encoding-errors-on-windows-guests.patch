@@ -1,0 +1,32 @@
+Description: Fix encoding errors on Windows libvirt guests
+ On Windows guests the default encoding will be set to whatever
+ default legacy encoding, not utf-8. This issue isn't apparent on English locale
+ Windows guests, as there the encodings (ISO-8859-1, utf-8) happen to coincide.
+ However, on e.g. German Windows guests this will cause an encoding error when
+ reading any output from there.
+ This patch ensures that the proper encoding is set on every command.
+Author: Lee Garrett <debian@rocketjump.eu>
+Bug: https://github.com/ansible-collections/community.libvirt/issues/156
+Applied-Upstream: https://github.com/ansible-collections/community.libvirt/pull/157
+Reviewed-by: Lee Garrett <debian@rocketjump.eu>
+Last-Update: 2024-06-05
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/ansible_collections/community/libvirt/plugins/connection/libvirt_qemu.py
++++ b/ansible_collections/community/libvirt/plugins/connection/libvirt_qemu.py
+@@ -164,6 +164,10 @@
+             # utf-8, this must be done via chcp to get utf-8 (65001)
+             cmd = ' '.join(["chcp.com", "65001", self._shell._SHELL_REDIRECT_ALLNULL, self._shell._SHELL_AND, cmd])
+ 
++            # Make sure our first command is to set the console encoding to
++            # utf-8, this must be done via chcp to get utf-8 (65001)
++            cmd = ' '.join(["chcp.com", "65001", self._shell._SHELL_REDIRECT_ALLNULL, self._shell._SHELL_AND, cmd])
++
+             # Generate powershell commands
+             cmd_args_list = self._shell._encode_script(cmd, as_list=True, strict_mode=False, preserve_rc=False)
+ 
+--- /dev/null
++++ b/ansible_collections/community/libvirt/changelogs/fragments/156_fix_windows_encoding.yml
+@@ -0,0 +1,2 @@
++bugfixes:
++  - libvirt_qemu - fix encoding errors on Windows guests for non-ASCII return values (https://github.com/ansible-collections/community.libvirt/pull/157)

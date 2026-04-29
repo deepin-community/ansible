@@ -1,0 +1,3 @@
+New major updates bring new dependencies for the unit tests. Maybe use
+dh_python3 or /usr/share/dh-python/dhpython/pydist.py to automate mapping the
+lib names to Debian packages?

@@ -1,0 +1,24 @@
+From: Felix Fontein <felix@fontein.de>
+Date: Tue, 24 Sep 2024 22:16:29 +0300
+Subject: Adjust test to
+ https://github.com/ansible/ansible/commit/6efb30b43e89e56061311235b3ee97181039a1c9.
+
+Origin: upstream, https://github.com/ansible-collections/community.hashi_vault/pull/452/commits/a8a1d1bb612b98725ce31cb4a4cdac2b40c57f33
+Last-Update: 2024-11-12
+---
+ .../unit/plugins/module_utils/test_hashi_vault_connection_options.py    | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ansible_collections/community/hashi_vault/tests/unit/plugins/module_utils/test_hashi_vault_connection_options.py b/ansible_collections/community/hashi_vault/tests/unit/plugins/module_utils/test_hashi_vault_connection_options.py
+index 6a45b98..3e09795 100644
+--- a/ansible_collections/community/hashi_vault/tests/unit/plugins/module_utils/test_hashi_vault_connection_options.py
++++ b/ansible_collections/community/hashi_vault/tests/unit/plugins/module_utils/test_hashi_vault_connection_options.py
+@@ -134,7 +134,7 @@ class TestHashiVaultConnectionOptions(object):
+     # can be specified as a positive int or a dict
+     # (or any string that can be interpreted as one of those)
+ 
+-    @pytest.mark.parametrize('opt_retries', ['plz retry', ('1', '1'), [True], -1, 1.0])
++    @pytest.mark.parametrize('opt_retries', ['plz retry', ('1', '1'), [True], -1, 1.1])
+     def test_process_option_retries_invalid(self, connection_options, predefined_options, adapter, opt_retries):
+         adapter.set_option('retries', opt_retries)
+ 
