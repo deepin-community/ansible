@@ -160,6 +160,7 @@ options:
     description:
       - The subnet ID in which to launch the instance (VPC).
       - If none is provided, M(amazon.aws.ec2_instance) will chose the default zone of the default VPC.
+      - If used along with O(network), O(vpc_subnet_id) is used as a fallback to prevent errors when O(network.subnet_id) is not specified.
     aliases: ['subnet_id']
     type: str
   network:
@@ -170,6 +171,7 @@ options:
       - This field is deprecated and will be removed in a release after 2026-12-01, use O(network_interfaces) or O(network_interfaces_ids) instead.
       - Mutually exclusive with O(network_interfaces).
       - Mutually exclusive with O(network_interfaces_ids).
+      - If used along with O(vpc_subnet_id), O(vpc_subnet_id)  is used as a fallback to prevent errors when O(network.subnet_id) is not specified.
     type: dict
     suboptions:
       interfaces:
@@ -1570,9 +1572,9 @@ def build_network_spec(client, module: AnsibleAWSModule) -> List[Dict[str, Any]]
                 for inty in network_interfaces
             ]
         )
-    elif not network and not network_interfaces_ids:
-        # They did not specify any network interface configuration
-        # build network interface using subnet_id and security group(s) defined on the module
+    elif not network and not network_interfaces_ids and not module.params.get("launch_template"):
+        # No network interface configuration specified and no launch template
+        # Build network interface using subnet_id and security group(s) defined in the module
         interfaces.append(ansible_to_boto3_eni_specification(client, module, {}, vpc_subnet_id, groups))
     elif network:
         # handle list of `network.interfaces` options
@@ -1799,9 +1801,14 @@ def build_run_instance_spec(client, module: AnsibleAWSModule, current_count: int
 
     # Validate network parameters
     validate_network_params(module, nb_instances)
-
-    spec["NetworkInterfaces"] = build_network_spec(client, module)
-    spec["BlockDeviceMappings"] = build_volume_spec(params)
+    # Build network specs
+    network_specs = build_network_spec(client, module)
+    if network_specs:
+        spec["NetworkInterfaces"] = network_specs
+    # Build volume specs
+    volume_specs = build_volume_spec(params)
+    if volume_specs:
+        spec["BlockDeviceMappings"] = volume_specs
 
     tag_spec = build_instance_tags(params)
     if tag_spec is not None:
@@ -1928,6 +1935,8 @@ def diff_instance_and_params(
             if network_interfaces:
                 subnet_id = network_interfaces[0].get("subnet_id")
                 groups = network_interfaces[0].get("groups")
+                if not subnet_id and module.params.get("vpc_subnet_id"):
+                    subnet_id = module.params.get("vpc_subnet_id")
             elif module.params.get("vpc_subnet_id"):
                 subnet_id = module.params.get("vpc_subnet_id")
             else:
@@ -2621,17 +2630,18 @@ def build_network_filters(client, module: AnsibleAWSModule) -> Dict[str, List[st
 
 
 def build_filters(client, module: AnsibleAWSModule) -> Dict[str, Any]:
-    filters = {
-        # all states except shutting-down and terminated
-        "instance-state-name": ["pending", "running", "stopping", "stopped"],
-    }
-    if isinstance(module.params.get("instance_ids"), string_types):
-        filters["instance-id"] = [module.params.get("instance_ids")]
-    elif isinstance(module.params.get("instance_ids"), list) and len(module.params.get("instance_ids")):
-        filters["instance-id"] = module.params.get("instance_ids")
+    # all states except shutting-down and terminated
+    instance_state_names = ["pending", "running", "stopping", "stopped"]
+    filters = {}
+    instance_ids = module.params.get("instance_ids")
+    if isinstance(instance_ids, string_types):
+        filters = {"instance-id": [instance_ids], "instance-state-name": instance_state_names}
+    elif isinstance(instance_ids, list) and len(instance_ids):
+        filters = {"instance-id": instance_ids, "instance-state-name": instance_state_names}
     else:
-        # Network filters
-        filters.update(build_network_filters(client, module))
+        if not module.params.get("launch_template"):
+            # Network filters
+            filters.update(build_network_filters(client, module))
         if module.params.get("name"):
             filters["tag:Name"] = [module.params.get("name")]
         elif module.params.get("tags"):
@@ -2643,6 +2653,10 @@ def build_filters(client, module: AnsibleAWSModule) -> Dict[str, Any]:
             filters["image-id"] = [module.params.get("image_id")]
         elif (module.params.get("image") or {}).get("id"):
             filters["image-id"] = [module.params.get("image", {}).get("id")]
+
+        if filters:
+            # add the instance state filter if any filter key was provided
+            filters["instance-state-name"] = instance_state_names
     return filters
 
 
@@ -2839,7 +2853,7 @@ def main():
     retry_decorator = AWSRetry.jittered_backoff(
         catch_extra_error_codes=[
             "IncorrectState",
-            "InsuffienctInstanceCapacity",
+            "InsufficientInstanceCapacity",
             "InvalidInstanceID.NotFound",
         ]
     )
@@ -2850,7 +2864,9 @@ def main():
         filters = build_filters(client, module)
 
     try:
-        existing_matches = find_instances(client, module, filters=filters)
+        existing_matches = []
+        if filters:
+            existing_matches = find_instances(client, module, filters=filters)
 
         if state in ("terminated", "absent"):
             if existing_matches:

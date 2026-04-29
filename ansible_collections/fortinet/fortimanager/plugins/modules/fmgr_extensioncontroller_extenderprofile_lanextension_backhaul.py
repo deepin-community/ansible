@@ -127,6 +127,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -143,10 +144,10 @@ EXAMPLES = '''
         extender_profile: <your own value>
         state: present # <value in [present, absent]>
         extensioncontroller_extenderprofile_lanextension_backhaul:
-          name: <string>
-          port: <value in [wan, lte1, lte2, ...]>
-          role: <value in [primary, secondary]>
-          weight: <integer>
+          name: "your value" # Required variable, string
+          # port: <value in [wan, lte1, lte2, ...]>
+          # role: <value in [primary, secondary]>
+          # weight: <integer>
 '''
 
 RETURN = '''

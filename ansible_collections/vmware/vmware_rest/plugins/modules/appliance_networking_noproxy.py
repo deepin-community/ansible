@@ -15,6 +15,10 @@ description: Sets servers for which no proxy configuration should be applied. Th
     a logout from appliance or a service restart is required. If IPv4 is enabled,
     "127.0.0.1" and "localhost" will always bypass the proxy (even if they are not
     explicitly configured).
+deprecated:
+    removed_in: 5.0.0
+    why: This module has been moved to the L(new vmware.vmware collection,https://forum.ansible.com/t/5880)
+    alternative: Use M(vmware.vmware.vcsa_settings) instead.
 options:
     servers:
         description:
@@ -115,18 +119,20 @@ PAYLOAD_FORMAT = {
 }  # pylint: disable=line-too-long
 
 from ansible.module_utils.basic import env_fallback
+import os
 
-try:
-    from ansible_collections.cloud.common.plugins.module_utils.turbo.exceptions import (
-        EmbeddedModuleFailure,
-    )
-    from ansible_collections.cloud.common.plugins.module_utils.turbo.module import (
-        AnsibleTurboModule as AnsibleModule,
-    )
+if os.getenv("VMWARE_ENABLE_TURBO", False):
+    try:
+        from ansible_collections.cloud.common.plugins.module_utils.turbo.module import (
+            AnsibleTurboModule as AnsibleModule,
+        )
 
-    AnsibleModule.collection_name = "vmware.vmware_rest"
-except ImportError:
+        AnsibleModule.collection_name = "vmware.vmware_rest"
+    except ImportError:
+        from ansible.module_utils.basic import AnsibleModule
+else:
     from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.vmware.vmware_rest.plugins.module_utils.vmware_rest import (
     exists,
     gen_args,
@@ -201,8 +207,11 @@ async def main():
             validate_certs=module.params["vcenter_validate_certs"],
             log_file=module.params["vcenter_rest_log_file"],
         )
-    except EmbeddedModuleFailure as err:
-        module.fail_json(err.get_message())
+    except Exception as err:
+        if hasattr(err, "get_message"):
+            module.fail_json(err.get_message())
+        else:
+            module.fail_json(str(err))
     result = await entry_point(module, session)
     module.exit_json(**result)
 

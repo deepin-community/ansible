@@ -193,6 +193,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -208,28 +209,28 @@ EXAMPLES = '''
         adom: <your own value>
         pkg: <your own value>
         pkg_authentication_setting:
-          active_auth_scheme: <string>
-          auth_https: <value in [disable, enable]>
-          captive_portal: <string>
-          captive_portal_ip: <string>
-          captive_portal_ip6: <string>
-          captive_portal_port: <integer>
-          captive_portal_ssl_port: <integer>
-          captive_portal_type: <value in [fqdn, ip]>
-          captive_portal6: <string>
-          rewrite_https_port: <integer>
-          sso_auth_scheme: <string>
-          dev_range: <list or string>
-          user_cert_ca: <list or string>
-          cert_auth: <value in [disable, enable]>
-          cert_captive_portal: <string>
-          cert_captive_portal_ip: <string>
-          cert_captive_portal_port: <integer>
-          cookie_max_age: <integer>
-          cookie_refresh_div: <integer>
-          ip_auth_cookie: <value in [disable, enable]>
-          persistent_cookie: <value in [disable, enable]>
-          update_time: <string>
+          # active_auth_scheme: <string>
+          # auth_https: <value in [disable, enable]>
+          # captive_portal: <string>
+          # captive_portal_ip: <string>
+          # captive_portal_ip6: <string>
+          # captive_portal_port: <integer>
+          # captive_portal_ssl_port: <integer>
+          # captive_portal_type: <value in [fqdn, ip]>
+          # captive_portal6: <string>
+          # rewrite_https_port: <integer>
+          # sso_auth_scheme: <string>
+          # dev_range: <list or string>
+          # user_cert_ca: <list or string>
+          # cert_auth: <value in [disable, enable]>
+          # cert_captive_portal: <string>
+          # cert_captive_portal_ip: <string>
+          # cert_captive_portal_port: <integer>
+          # cookie_max_age: <integer>
+          # cookie_refresh_div: <integer>
+          # ip_auth_cookie: <value in [disable, enable]>
+          # persistent_cookie: <value in [disable, enable]>
+          # update_time: <string>
 '''
 
 RETURN = '''
@@ -299,7 +300,7 @@ def main():
                 'captive-portal-ssl-port': {'v_range': [['6.2.1', '']], 'type': 'int'},
                 'captive-portal-type': {'v_range': [['6.2.1', '']], 'choices': ['fqdn', 'ip'], 'type': 'str'},
                 'captive-portal6': {'v_range': [['6.2.1', '']], 'type': 'str'},
-                'rewrite-https-port': {'v_range': [['6.2.1', '']], 'type': 'int'},
+                'rewrite-https-port': {'v_range': [['6.2.1', '7.6.2']], 'type': 'int'},
                 'sso-auth-scheme': {'v_range': [['6.2.1', '']], 'type': 'str'},
                 'dev-range': {'v_range': [['7.0.0', '']], 'type': 'raw'},
                 'user-cert-ca': {'v_range': [['7.0.0', '']], 'type': 'raw'},

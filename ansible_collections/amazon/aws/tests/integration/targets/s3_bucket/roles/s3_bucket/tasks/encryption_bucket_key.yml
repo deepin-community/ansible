@@ -8,7 +8,7 @@
   block:
     - name: Set facts for encryption_bucket_key test
       ansible.builtin.set_fact:
-        local_bucket_name: "{{ bucket_name | hash('md5') }}-bucket-key"
+        local_bucket_name: "{{ s3_bucket_name | hash('md5') }}-bucket-key"
     # ============================================================
 
     - name: Create a simple bucket
@@ -36,7 +36,7 @@
       ansible.builtin.assert:
         that:
           - output.changed
-          - output.encryption
+          - output.encryption != {}
 
     - name: Re-enable bucket key for bucket with aws:kms encryption (idempotent)
       amazon.aws.s3_bucket:
@@ -49,7 +49,7 @@
       ansible.builtin.assert:
         that:
           - not output.changed
-          - output.encryption
+          - output.encryption != {}
 
     ## # ============================================================
     ##
@@ -96,6 +96,13 @@
 
   # ============================================================
   always:
+    - name: Ensure all buckets are deleted
+      amazon.aws.s3_bucket_info:
+        name: "{{ local_bucket_name }}"
+        bucket_facts:
+          bucket_encryption: true
+      failed_when: false
+
     - name: Ensure all buckets are deleted
       amazon.aws.s3_bucket:
         name: "{{ local_bucket_name }}"

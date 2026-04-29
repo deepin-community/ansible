@@ -119,6 +119,7 @@ options:
                     - 'ftp'
                     - 'socks'
                     - 'ssh'
+                    - 'ztna-portal'
             srcaddr:
                 type: raw
                 description: (list or str) Select an IPv4 source address from available options.
@@ -189,6 +190,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -205,24 +207,24 @@ EXAMPLES = '''
         pkg: <your own value>
         state: present # <value in [present, absent]>
         pkg_authentication_rule:
-          active_auth_method: <string>
-          comments: <string>
-          ip_based: <value in [disable, enable]>
-          name: <string>
-          protocol: <value in [http, ftp, socks, ...]>
-          srcaddr: <list or string>
-          srcaddr6: <list or string>
-          sso_auth_method: <string>
-          status: <value in [disable, enable]>
-          transaction_based: <value in [disable, enable]>
-          web_auth_cookie: <value in [disable, enable]>
-          web_portal: <value in [disable, enable]>
-          dstaddr: <list or string>
-          dstaddr6: <list or string>
-          srcintf: <list or string>
-          cors_depth: <integer>
-          cors_stateful: <value in [disable, enable]>
-          cert_auth_cookie: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # active_auth_method: <string>
+          # comments: <string>
+          # ip_based: <value in [disable, enable]>
+          # protocol: <value in [http, ftp, socks, ...]>
+          # srcaddr: <list or string>
+          # srcaddr6: <list or string>
+          # sso_auth_method: <string>
+          # status: <value in [disable, enable]>
+          # transaction_based: <value in [disable, enable]>
+          # web_auth_cookie: <value in [disable, enable]>
+          # web_portal: <value in [disable, enable]>
+          # dstaddr: <list or string>
+          # dstaddr6: <list or string>
+          # srcintf: <list or string>
+          # cors_depth: <integer>
+          # cors_stateful: <value in [disable, enable]>
+          # cert_auth_cookie: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -287,7 +289,7 @@ def main():
                 'comments': {'v_range': [['6.2.1', '']], 'type': 'str'},
                 'ip-based': {'v_range': [['6.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'name': {'v_range': [['6.2.1', '']], 'required': True, 'type': 'str'},
-                'protocol': {'v_range': [['6.2.1', '']], 'choices': ['http', 'ftp', 'socks', 'ssh'], 'type': 'str'},
+                'protocol': {'v_range': [['6.2.1', '']], 'choices': ['http', 'ftp', 'socks', 'ssh', 'ztna-portal'], 'type': 'str'},
                 'srcaddr': {'v_range': [['6.2.1', '']], 'type': 'raw'},
                 'srcaddr6': {'v_range': [['6.2.1', '']], 'type': 'raw'},
                 'sso-auth-method': {'v_range': [['6.2.1', '']], 'type': 'str'},

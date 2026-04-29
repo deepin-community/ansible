@@ -200,6 +200,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -213,14 +214,14 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_locallog_syslogd_setting:
-          csv: <value in [disable, enable]>
-          facility: <value in [kernel, user, ntp, ...]>
-          severity: <value in [emergency, alert, critical, ...]>
-          status: <value in [disable, enable]>
-          syslog_name: <string>
-          cert: <string>
-          reliable: <value in [disable, enable]>
-          secure_connection: <value in [disable, enable]>
+          # csv: <value in [disable, enable]>
+          # facility: <value in [kernel, user, ntp, ...]>
+          # severity: <value in [emergency, alert, critical, ...]>
+          # status: <value in [disable, enable]>
+          # syslog_name: <string>
+          # cert: <string>
+          # reliable: <value in [disable, enable]>
+          # secure_connection: <value in [disable, enable]>
 '''
 
 RETURN = '''

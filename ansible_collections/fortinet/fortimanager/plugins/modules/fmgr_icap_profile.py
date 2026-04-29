@@ -316,12 +316,20 @@ options:
             comment:
                 type: str
                 description: Comment.
+            ocr_only:
+                aliases: ['ocr-only']
+                type: str
+                description: Enable/disable this FortiGate unit to submit only OCR interested content to the ICAP server.
+                choices:
+                    - 'disable'
+                    - 'enable'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -337,64 +345,62 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         icap_profile:
-          methods:
-            - "delete"
-            - "get"
-            - "head"
-            - "options"
-            - "post"
-            - "put"
-            - "trace"
-            - "other"
-            - "connect"
-          name: <string>
-          replacemsg_group: <string>
-          request: <value in [disable, enable]>
-          request_failure: <value in [error, bypass]>
-          request_path: <string>
-          request_server: <string>
-          response: <value in [disable, enable]>
-          response_failure: <value in [error, bypass]>
-          response_path: <string>
-          response_server: <string>
-          streaming_content_bypass: <value in [disable, enable]>
-          icap_headers:
-            -
-              base64_encoding: <value in [disable, enable]>
-              content: <string>
-              id: <integer>
-              name: <string>
-          preview: <value in [disable, enable]>
-          preview_data_length: <integer>
-          response_req_hdr: <value in [disable, enable]>
-          respmod_default_action: <value in [bypass, forward]>
-          respmod_forward_rules:
-            -
-              action: <value in [bypass, forward]>
-              header_group:
-                -
-                  case_sensitivity: <value in [disable, enable]>
-                  header: <string>
-                  header_name: <string>
-                  id: <integer>
-              host: <string>
-              http_resp_status_code: <list or integer>
-              name: <string>
-          204_response: <value in [disable, enable]>
-          204_size_limit: <integer>
-          chunk_encap: <value in [disable, enable]>
-          extension_feature:
-            - "scan-progress"
-          file_transfer:
-            - "ssh"
-            - "ftp"
-          file_transfer_failure: <value in [error, bypass]>
-          file_transfer_path: <string>
-          file_transfer_server: <string>
-          icap_block_log: <value in [disable, enable]>
-          scan_progress_interval: <integer>
-          timeout: <integer>
-          comment: <string>
+          name: "your value" # Required variable, string
+          # methods:
+          #   - "delete"
+          #   - "get"
+          #   - "head"
+          #   - "options"
+          #   - "post"
+          #   - "put"
+          #   - "trace"
+          #   - "other"
+          #   - "connect"
+          # replacemsg_group: <string>
+          # request: <value in [disable, enable]>
+          # request_failure: <value in [error, bypass]>
+          # request_path: <string>
+          # request_server: <string>
+          # response: <value in [disable, enable]>
+          # response_failure: <value in [error, bypass]>
+          # response_path: <string>
+          # response_server: <string>
+          # streaming_content_bypass: <value in [disable, enable]>
+          # icap_headers:
+          #   - base64_encoding: <value in [disable, enable]>
+          #     content: <string>
+          #     id: <integer>
+          #     name: <string>
+          # preview: <value in [disable, enable]>
+          # preview_data_length: <integer>
+          # response_req_hdr: <value in [disable, enable]>
+          # respmod_default_action: <value in [bypass, forward]>
+          # respmod_forward_rules:
+          #   - action: <value in [bypass, forward]>
+          #     header_group:
+          #       - case_sensitivity: <value in [disable, enable]>
+          #         header: <string>
+          #         header_name: <string>
+          #         id: <integer>
+          #     host: <string>
+          #     http_resp_status_code: <list or integer>
+          #     name: <string>
+          # 204_response: <value in [disable, enable]>
+          # 204_size_limit: <integer>
+          # chunk_encap: <value in [disable, enable]>
+          # extension_feature:
+          #   - "scan-progress"
+          # file_transfer:
+          #   - "ssh"
+          #   - "ftp"
+          # file_transfer_failure: <value in [error, bypass]>
+          # file_transfer_path: <string>
+          # file_transfer_server: <string>
+          # icap_block_log: <value in [disable, enable]>
+          # scan_progress_interval: <integer>
+          # timeout: <integer>
+          # comment: <string>
+          # ocr_only: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -519,7 +525,8 @@ def main():
                 'icap-block-log': {'v_range': [['7.0.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'scan-progress-interval': {'v_range': [['7.0.2', '']], 'type': 'int'},
                 'timeout': {'v_range': [['7.2.0', '']], 'type': 'int'},
-                'comment': {'v_range': [['7.2.2', '']], 'type': 'str'}
+                'comment': {'v_range': [['7.2.2', '']], 'type': 'str'},
+                'ocr-only': {'v_range': [['7.6.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }
         }
     }

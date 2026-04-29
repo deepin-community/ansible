@@ -118,9 +118,21 @@ options:
                 elements: str
                 choices:
                     - '0'
+                    - '35'
+                    - '36'
+                    - '37'
                     - '1080'
                     - '1081'
                     - '1082'
+                    - '1083'
+                    - '1084'
+                    - '1085'
+                    - '1089'
+                    - '1090'
+                    - '1091'
+                    - '1092'
+                    - '1093'
+                    - '1094'
             addke2:
                 description:
                     - ADDKE2 group.
@@ -128,9 +140,21 @@ options:
                 elements: str
                 choices:
                     - '0'
+                    - '35'
+                    - '36'
+                    - '37'
                     - '1080'
                     - '1081'
                     - '1082'
+                    - '1083'
+                    - '1084'
+                    - '1085'
+                    - '1089'
+                    - '1090'
+                    - '1091'
+                    - '1092'
+                    - '1093'
+                    - '1094'
             addke3:
                 description:
                     - ADDKE3 group.
@@ -138,9 +162,21 @@ options:
                 elements: str
                 choices:
                     - '0'
+                    - '35'
+                    - '36'
+                    - '37'
                     - '1080'
                     - '1081'
                     - '1082'
+                    - '1083'
+                    - '1084'
+                    - '1085'
+                    - '1089'
+                    - '1090'
+                    - '1091'
+                    - '1092'
+                    - '1093'
+                    - '1094'
             addke4:
                 description:
                     - ADDKE4 group.
@@ -148,9 +184,21 @@ options:
                 elements: str
                 choices:
                     - '0'
+                    - '35'
+                    - '36'
+                    - '37'
                     - '1080'
                     - '1081'
                     - '1082'
+                    - '1083'
+                    - '1084'
+                    - '1085'
+                    - '1089'
+                    - '1090'
+                    - '1091'
+                    - '1092'
+                    - '1093'
+                    - '1094'
             addke5:
                 description:
                     - ADDKE5 group.
@@ -158,9 +206,21 @@ options:
                 elements: str
                 choices:
                     - '0'
+                    - '35'
+                    - '36'
+                    - '37'
                     - '1080'
                     - '1081'
                     - '1082'
+                    - '1083'
+                    - '1084'
+                    - '1085'
+                    - '1089'
+                    - '1090'
+                    - '1091'
+                    - '1092'
+                    - '1093'
+                    - '1094'
             addke6:
                 description:
                     - ADDKE6 group.
@@ -168,9 +228,21 @@ options:
                 elements: str
                 choices:
                     - '0'
+                    - '35'
+                    - '36'
+                    - '37'
                     - '1080'
                     - '1081'
                     - '1082'
+                    - '1083'
+                    - '1084'
+                    - '1085'
+                    - '1089'
+                    - '1090'
+                    - '1091'
+                    - '1092'
+                    - '1093'
+                    - '1094'
             addke7:
                 description:
                     - ADDKE7 group.
@@ -178,9 +250,21 @@ options:
                 elements: str
                 choices:
                     - '0'
+                    - '35'
+                    - '36'
+                    - '37'
                     - '1080'
                     - '1081'
                     - '1082'
+                    - '1083'
+                    - '1084'
+                    - '1085'
+                    - '1089'
+                    - '1090'
+                    - '1091'
+                    - '1092'
+                    - '1093'
+                    - '1094'
             assign_ip:
                 description:
                     - Enable/disable assignment of IP to IPsec interface via configuration method.
@@ -1164,6 +1248,7 @@ options:
                     - 'simplified-static-fortigate'
                     - 'hub-fortigate-auto-discovery'
                     - 'spoke-fortigate-auto-discovery'
+                    - 'fabric-overlay-orchestrator'
             xauthtype:
                 description:
                     - XAuth type.
@@ -1449,6 +1534,9 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_vpn_ipsec_phase1_data(json):
@@ -1632,8 +1720,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -1669,24 +1756,25 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def vpn_ipsec_phase1(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     vpn_ipsec_phase1_data = data["vpn_ipsec_phase1"]
 
     filtered_data = filter_vpn_ipsec_phase1_data(vpn_ipsec_phase1_data)
@@ -1699,40 +1787,56 @@ def vpn_ipsec_phase1(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("vpn.ipsec", "phase1", filtered_data, vdom=vdom)
         current_data = fos.get("vpn.ipsec", "phase1", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -1758,8 +1862,9 @@ def vpn_ipsec_phase1(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["vpn_ipsec_phase1"] = converted_data
+    data_copy["vpn_ipsec_phase1"] = filtered_data
     fos.do_member_operation(
         "vpn.ipsec",
         "phase1",
@@ -1788,6 +1893,7 @@ def is_successful_status(resp):
 
 
 def fortios_vpn_ipsec(data, fos, check_mode):
+
     if data["vpn_ipsec_phase1"]:
         resp = vpn_ipsec_phase1(data, fos, check_mode)
     else:
@@ -2160,9 +2266,21 @@ versioned_schema = {
             "type": "list",
             "options": [
                 {"value": "0"},
+                {"value": "35", "v_range": [["v7.6.1", ""]]},
+                {"value": "36", "v_range": [["v7.6.1", ""]]},
+                {"value": "37", "v_range": [["v7.6.1", ""]]},
                 {"value": "1080"},
                 {"value": "1081"},
                 {"value": "1082"},
+                {"value": "1083", "v_range": [["v7.6.1", ""]]},
+                {"value": "1084", "v_range": [["v7.6.1", ""]]},
+                {"value": "1085", "v_range": [["v7.6.1", ""]]},
+                {"value": "1089", "v_range": [["v7.6.1", ""]]},
+                {"value": "1090", "v_range": [["v7.6.1", ""]]},
+                {"value": "1091", "v_range": [["v7.6.1", ""]]},
+                {"value": "1092", "v_range": [["v7.6.1", ""]]},
+                {"value": "1093", "v_range": [["v7.6.1", ""]]},
+                {"value": "1094", "v_range": [["v7.6.1", ""]]},
             ],
             "multiple_values": True,
             "elements": "str",
@@ -2172,9 +2290,21 @@ versioned_schema = {
             "type": "list",
             "options": [
                 {"value": "0"},
+                {"value": "35", "v_range": [["v7.6.1", ""]]},
+                {"value": "36", "v_range": [["v7.6.1", ""]]},
+                {"value": "37", "v_range": [["v7.6.1", ""]]},
                 {"value": "1080"},
                 {"value": "1081"},
                 {"value": "1082"},
+                {"value": "1083", "v_range": [["v7.6.1", ""]]},
+                {"value": "1084", "v_range": [["v7.6.1", ""]]},
+                {"value": "1085", "v_range": [["v7.6.1", ""]]},
+                {"value": "1089", "v_range": [["v7.6.1", ""]]},
+                {"value": "1090", "v_range": [["v7.6.1", ""]]},
+                {"value": "1091", "v_range": [["v7.6.1", ""]]},
+                {"value": "1092", "v_range": [["v7.6.1", ""]]},
+                {"value": "1093", "v_range": [["v7.6.1", ""]]},
+                {"value": "1094", "v_range": [["v7.6.1", ""]]},
             ],
             "multiple_values": True,
             "elements": "str",
@@ -2184,9 +2314,21 @@ versioned_schema = {
             "type": "list",
             "options": [
                 {"value": "0"},
+                {"value": "35", "v_range": [["v7.6.1", ""]]},
+                {"value": "36", "v_range": [["v7.6.1", ""]]},
+                {"value": "37", "v_range": [["v7.6.1", ""]]},
                 {"value": "1080"},
                 {"value": "1081"},
                 {"value": "1082"},
+                {"value": "1083", "v_range": [["v7.6.1", ""]]},
+                {"value": "1084", "v_range": [["v7.6.1", ""]]},
+                {"value": "1085", "v_range": [["v7.6.1", ""]]},
+                {"value": "1089", "v_range": [["v7.6.1", ""]]},
+                {"value": "1090", "v_range": [["v7.6.1", ""]]},
+                {"value": "1091", "v_range": [["v7.6.1", ""]]},
+                {"value": "1092", "v_range": [["v7.6.1", ""]]},
+                {"value": "1093", "v_range": [["v7.6.1", ""]]},
+                {"value": "1094", "v_range": [["v7.6.1", ""]]},
             ],
             "multiple_values": True,
             "elements": "str",
@@ -2196,9 +2338,21 @@ versioned_schema = {
             "type": "list",
             "options": [
                 {"value": "0"},
+                {"value": "35", "v_range": [["v7.6.1", ""]]},
+                {"value": "36", "v_range": [["v7.6.1", ""]]},
+                {"value": "37", "v_range": [["v7.6.1", ""]]},
                 {"value": "1080"},
                 {"value": "1081"},
                 {"value": "1082"},
+                {"value": "1083", "v_range": [["v7.6.1", ""]]},
+                {"value": "1084", "v_range": [["v7.6.1", ""]]},
+                {"value": "1085", "v_range": [["v7.6.1", ""]]},
+                {"value": "1089", "v_range": [["v7.6.1", ""]]},
+                {"value": "1090", "v_range": [["v7.6.1", ""]]},
+                {"value": "1091", "v_range": [["v7.6.1", ""]]},
+                {"value": "1092", "v_range": [["v7.6.1", ""]]},
+                {"value": "1093", "v_range": [["v7.6.1", ""]]},
+                {"value": "1094", "v_range": [["v7.6.1", ""]]},
             ],
             "multiple_values": True,
             "elements": "str",
@@ -2208,9 +2362,21 @@ versioned_schema = {
             "type": "list",
             "options": [
                 {"value": "0"},
+                {"value": "35", "v_range": [["v7.6.1", ""]]},
+                {"value": "36", "v_range": [["v7.6.1", ""]]},
+                {"value": "37", "v_range": [["v7.6.1", ""]]},
                 {"value": "1080"},
                 {"value": "1081"},
                 {"value": "1082"},
+                {"value": "1083", "v_range": [["v7.6.1", ""]]},
+                {"value": "1084", "v_range": [["v7.6.1", ""]]},
+                {"value": "1085", "v_range": [["v7.6.1", ""]]},
+                {"value": "1089", "v_range": [["v7.6.1", ""]]},
+                {"value": "1090", "v_range": [["v7.6.1", ""]]},
+                {"value": "1091", "v_range": [["v7.6.1", ""]]},
+                {"value": "1092", "v_range": [["v7.6.1", ""]]},
+                {"value": "1093", "v_range": [["v7.6.1", ""]]},
+                {"value": "1094", "v_range": [["v7.6.1", ""]]},
             ],
             "multiple_values": True,
             "elements": "str",
@@ -2220,9 +2386,21 @@ versioned_schema = {
             "type": "list",
             "options": [
                 {"value": "0"},
+                {"value": "35", "v_range": [["v7.6.1", ""]]},
+                {"value": "36", "v_range": [["v7.6.1", ""]]},
+                {"value": "37", "v_range": [["v7.6.1", ""]]},
                 {"value": "1080"},
                 {"value": "1081"},
                 {"value": "1082"},
+                {"value": "1083", "v_range": [["v7.6.1", ""]]},
+                {"value": "1084", "v_range": [["v7.6.1", ""]]},
+                {"value": "1085", "v_range": [["v7.6.1", ""]]},
+                {"value": "1089", "v_range": [["v7.6.1", ""]]},
+                {"value": "1090", "v_range": [["v7.6.1", ""]]},
+                {"value": "1091", "v_range": [["v7.6.1", ""]]},
+                {"value": "1092", "v_range": [["v7.6.1", ""]]},
+                {"value": "1093", "v_range": [["v7.6.1", ""]]},
+                {"value": "1094", "v_range": [["v7.6.1", ""]]},
             ],
             "multiple_values": True,
             "elements": "str",
@@ -2232,9 +2410,21 @@ versioned_schema = {
             "type": "list",
             "options": [
                 {"value": "0"},
+                {"value": "35", "v_range": [["v7.6.1", ""]]},
+                {"value": "36", "v_range": [["v7.6.1", ""]]},
+                {"value": "37", "v_range": [["v7.6.1", ""]]},
                 {"value": "1080"},
                 {"value": "1081"},
                 {"value": "1082"},
+                {"value": "1083", "v_range": [["v7.6.1", ""]]},
+                {"value": "1084", "v_range": [["v7.6.1", ""]]},
+                {"value": "1085", "v_range": [["v7.6.1", ""]]},
+                {"value": "1089", "v_range": [["v7.6.1", ""]]},
+                {"value": "1090", "v_range": [["v7.6.1", ""]]},
+                {"value": "1091", "v_range": [["v7.6.1", ""]]},
+                {"value": "1092", "v_range": [["v7.6.1", ""]]},
+                {"value": "1093", "v_range": [["v7.6.1", ""]]},
+                {"value": "1094", "v_range": [["v7.6.1", ""]]},
             ],
             "multiple_values": True,
             "elements": "str",
@@ -2296,6 +2486,7 @@ versioned_schema = {
                     "value": "spoke-fortigate-auto-discovery",
                     "v_range": [["v6.2.0", ""]],
                 },
+                {"value": "fabric-overlay-orchestrator", "v_range": [["v7.6.1", ""]]},
             ],
         },
         "xauthtype": {

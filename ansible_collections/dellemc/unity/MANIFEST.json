@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "dellemc",
   "name": "unity",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "authors": [
    "Akash Shendge <ansible.team@dell.com>",
    "Ambuj Dubey <ansible.team@dell.com>",
@@ -25,16 +25,16 @@
   ],
   "license_file": null,
   "dependencies": {},
-  "repository": "https://github.com/dell/ansible-unity/tree/2.0.0",
-  "documentation": "https://github.com/dell/ansible-unity/tree/2.0.0/docs",
-  "homepage": "https://github.com/dell/ansible-unity/tree/2.0.0",
+  "repository": "https://github.com/dell/ansible-unity/tree/2.1.0",
+  "documentation": "https://github.com/dell/ansible-unity/tree/2.1.0/docs",
+  "homepage": "https://github.com/dell/ansible-unity/tree/2.1.0",
   "issues": "https://www.dell.com/community/Automation/bd-p/Automation"
  },
  "file_manifest_file": {
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "0cde7569a5266f0469d36b79b9c3e2618cf770d1da7f06b2060bc529f28f59a9",
+  "chksum_sha256": "471c79465ab2f698b12665a46ce82618882c27dd4f083f0e4345e089c8043ccf",
   "format": 1
  },
  "format": 1

@@ -5,32 +5,29 @@
 
 from __future__ import annotations
 
-
 import pytest
-
 from ansible.errors import AnsibleError
-
 from ansible_collections.community.dns.plugins.plugin_utils import ips
-
 from ansible_collections.community.dns.plugins.plugin_utils.ips import (
     assert_requirements_present,
 )
 
+
 # We need ipaddress
-ipaddress = pytest.importorskip('ipaddress')
+ipaddress = pytest.importorskip("ipaddress")
 
 
-def test_assert_requirements_present():
+def test_assert_requirements_present() -> None:
     orig_importerror = ips.IPADDRESS_IMPORT_EXC
     try:
         ips.IPADDRESS_IMPORT_EXC = None
-        assert_requirements_present('community.dns.foo', 'lookup')
+        assert_requirements_present("community.dns.foo", "lookup")
 
-        ips.IPADDRESS_IMPORT_EXC = Exception('asdf')
+        ips.IPADDRESS_IMPORT_EXC = ImportError("ipaddress")
         with pytest.raises(AnsibleError) as exc:
-            assert_requirements_present('community.dns.foo', 'lookup')
+            assert_requirements_present("community.dns.foo", "lookup")
 
-        assert 'ipaddress' in exc.value.args[0]
+        assert "ipaddress" in exc.value.args[0]
 
     finally:
         ips.IPADDRESS_IMPORT_EXC = orig_importerror

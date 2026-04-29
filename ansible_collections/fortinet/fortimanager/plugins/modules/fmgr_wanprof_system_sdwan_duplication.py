@@ -150,6 +150,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -166,18 +167,18 @@ EXAMPLES = '''
         wanprof: <your own value>
         state: present # <value in [present, absent]>
         wanprof_system_sdwan_duplication:
-          dstaddr: <list or string>
-          dstaddr6: <list or string>
-          dstintf: <list or string>
-          id: <integer>
-          packet_de_duplication: <value in [disable, enable]>
-          packet_duplication: <value in [disable, force, on-demand]>
-          service: <list or string>
-          srcaddr: <list or string>
-          srcaddr6: <list or string>
-          srcintf: <list or string>
-          service_id: <list or string>
-          sla_match_service: <value in [disable, enable]>
+          id: 0 # Required variable, integer
+          # dstaddr: <list or string>
+          # dstaddr6: <list or string>
+          # dstintf: <list or string>
+          # packet_de_duplication: <value in [disable, enable]>
+          # packet_duplication: <value in [disable, force, on-demand]>
+          # service: <list or string>
+          # srcaddr: <list or string>
+          # srcaddr6: <list or string>
+          # srcintf: <list or string>
+          # service_id: <list or string>
+          # sla_match_service: <value in [disable, enable]>
 '''
 
 RETURN = '''

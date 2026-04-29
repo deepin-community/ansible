@@ -13,7 +13,7 @@ short_description: NetApp ONTAP module to modify SNMP configuration.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: '22.9.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Modify cluster wide SNMP configuration.
   - Enable or disable SNMP on a cluster.
@@ -46,26 +46,26 @@ notes:
 """
 
 EXAMPLES = """
-  - name: Disable SNMP on cluster
-    netapp.ontap.na_ontap_snmp_config:
-      state: present
-      enabled: false
-      hostname: "{{ netapp_hostname }}"
-      username: "{{ netapp_username }}"
-      password: "{{ netapp_password }}"
-      https: true
-      validate_certs: "{{ validate_certs }}"
+- name: Disable SNMP on cluster
+  netapp.ontap.na_ontap_snmp_config:
+    state: present
+    enabled: false
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
 
-  - name: Modify SNMP configuration
-    netapp.ontap.na_ontap_snmp_config:
-      state: present
-      auth_traps_enabled: true
-      traps_enabled: true
-      hostname: "{{ netapp_hostname }}"
-      username: "{{ netapp_username }}"
-      password: "{{ netapp_password }}"
-      https: true
-      validate_certs: "{{ validate_certs }}"
+- name: Modify SNMP configuration
+  netapp.ontap.na_ontap_snmp_config:
+    state: present
+    auth_traps_enabled: true
+    traps_enabled: true
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
 """
 
 RETURN = """

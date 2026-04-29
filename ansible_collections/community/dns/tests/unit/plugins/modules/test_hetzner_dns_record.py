@@ -3,18 +3,18 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+
 __metaclass__ = type
 
+# These imports are needed so patching below works
+import ansible_collections.community.dns.plugins.module_utils.http  # noqa: F401, pylint: disable=unused-import
+from ansible_collections.community.dns.plugins.modules import hetzner_dns_record
 from ansible_collections.community.internal_test_tools.tests.unit.utils.fetch_url_module_framework import (
     BaseTestModule,
     FetchUrlCall,
 )
-
-from ansible_collections.community.dns.plugins.modules import hetzner_dns_record
-
-# These imports are needed so patching below works
-import ansible_collections.community.dns.plugins.module_utils.http  # noqa: F401, pylint: disable=unused-import
 
 from .hetzner import (
     HETZNER_JSON_DEFAULT_ENTRIES,
@@ -139,7 +139,7 @@ class TestHetznerDNSRecordJSON(BaseTestModule):
             .expect_header('auth-api-token', 'foo')
             .expect_url('https://dns.hetzner.com/api/v1/zones', without_query=True)
             .expect_query_values('name', 'example.org')
-            .result_str(''),
+            .result_error('Internal Server Error', body=''),
         ])
 
         assert result['msg'].startswith('Error: GET https://dns.hetzner.com/api/v1/zones?')

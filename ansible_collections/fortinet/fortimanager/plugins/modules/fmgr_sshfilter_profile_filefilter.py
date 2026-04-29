@@ -150,6 +150,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -165,19 +166,18 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         sshfilter_profile_filefilter:
-          entries:
-            -
-              action: <value in [log, block]>
-              comment: <string>
-              direction: <value in [any, incoming, outgoing]>
-              file_type: <list or string>
-              filter: <string>
-              password_protected: <value in [any, yes]>
-              protocol:
-                - "ssh"
-          log: <value in [disable, enable]>
-          scan_archive_contents: <value in [disable, enable]>
-          status: <value in [disable, enable]>
+          # entries:
+          #   - action: <value in [log, block]>
+          #     comment: <string>
+          #     direction: <value in [any, incoming, outgoing]>
+          #     file_type: <list or string>
+          #     filter: <string>
+          #     password_protected: <value in [any, yes]>
+          #     protocol:
+          #       - "ssh"
+          # log: <value in [disable, enable]>
+          # scan_archive_contents: <value in [disable, enable]>
+          # status: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -237,25 +237,25 @@ def main():
         'profile': {'required': True, 'type': 'str'},
         'sshfilter_profile_filefilter': {
             'type': 'dict',
-            'v_range': [['6.2.2', '']],
+            'v_range': [['6.2.2', '7.6.2']],
             'options': {
                 'entries': {
-                    'v_range': [['6.2.2', '']],
+                    'v_range': [['6.2.2', '7.6.2']],
                     'type': 'list',
                     'options': {
-                        'action': {'v_range': [['6.2.2', '']], 'choices': ['log', 'block'], 'type': 'str'},
-                        'comment': {'v_range': [['6.2.2', '']], 'type': 'str'},
-                        'direction': {'v_range': [['6.2.2', '']], 'choices': ['any', 'incoming', 'outgoing'], 'type': 'str'},
-                        'file-type': {'v_range': [['6.2.2', '']], 'type': 'raw'},
-                        'filter': {'v_range': [['6.2.2', '']], 'type': 'str'},
-                        'password-protected': {'v_range': [['6.2.2', '']], 'choices': ['any', 'yes'], 'type': 'str'},
-                        'protocol': {'v_range': [['6.2.2', '']], 'type': 'list', 'choices': ['ssh'], 'elements': 'str'}
+                        'action': {'v_range': [['6.2.2', '7.6.2']], 'choices': ['log', 'block'], 'type': 'str'},
+                        'comment': {'v_range': [['6.2.2', '7.6.2']], 'type': 'str'},
+                        'direction': {'v_range': [['6.2.2', '7.6.2']], 'choices': ['any', 'incoming', 'outgoing'], 'type': 'str'},
+                        'file-type': {'v_range': [['6.2.2', '7.6.2']], 'type': 'raw'},
+                        'filter': {'v_range': [['6.2.2', '7.6.2']], 'type': 'str'},
+                        'password-protected': {'v_range': [['6.2.2', '7.6.2']], 'choices': ['any', 'yes'], 'type': 'str'},
+                        'protocol': {'v_range': [['6.2.2', '7.6.2']], 'type': 'list', 'choices': ['ssh'], 'elements': 'str'}
                     },
                     'elements': 'dict'
                 },
-                'log': {'v_range': [['6.2.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'scan-archive-contents': {'v_range': [['6.2.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'status': {'v_range': [['6.2.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'log': {'v_range': [['6.2.2', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'scan-archive-contents': {'v_range': [['6.2.2', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'status': {'v_range': [['6.2.2', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }
         }
     }

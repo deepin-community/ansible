@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -90,7 +90,8 @@ class NetworksAppliancePorts(object):
             new_object_params['allowedVlans'] = self.new_object.get('allowedVlans') or \
                 self.new_object.get('allowed_vlans')
         if self.new_object.get('dropUntaggedTraffic') is not None or self.new_object.get('drop_untagged_traffic') is not None:
-            new_object_params['dropUntaggedTraffic'] = self.new_object.get('dropUntaggedTraffic')
+            new_object_params['dropUntaggedTraffic'] = self.new_object.get(
+                'dropUntaggedTraffic')
         if self.new_object.get('enabled') is not None or self.new_object.get('enabled') is not None:
             new_object_params['enabled'] = self.new_object.get('enabled')
         if self.new_object.get('type') is not None or self.new_object.get('type') is not None:
@@ -148,7 +149,8 @@ class NetworksAppliancePorts(object):
         prev_obj = None
         id_exists = False
         name_exists = False
-        o_id = self.new_object.get("networkId") or self.new_object.get("network_id")
+        o_id = self.new_object.get(
+            "networkId") or self.new_object.get("network_id")
         o_id = o_id or self.new_object.get(
             "port_id") or self.new_object.get("portId")
         name = self.new_object.get("name")
@@ -187,8 +189,8 @@ class NetworksAppliancePorts(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):

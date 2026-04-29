@@ -21,7 +21,7 @@ Installing SOPS
 
 You can find binaries and packages `on the project's release page <https://github.com/getsops/sops/releases>`_. Depending on your operating system, you might also be able to install it with your system's package manager.
 
-This collection provides a :ansplugin:`role community.sops.install <community.sops.install#role>` which allows to install SOPS and `GNU Privacy Guard (GPG) <https://en.wikipedia.org/wiki/GNU_Privacy_Guard>`__. The role allows to install SOPS from the system's package manager or from GitHub. Both SOPS and GPG can be installed on the remote hosts or the Ansible controller.
+This collection provides a :ansplugin:`role community.sops.install <community.sops.install#role>` which allows to install SOPS and `GNU Privacy Guard (GPG) <https://en.wikipedia.org/wiki/GNU_Privacy_Guard>`__. The role allows to install SOPS from the system's package manager or from GitHub; see :ansopt:`community.sops.install#role:main:sops_source` for details. Both SOPS and GPG can be installed on the remote hosts or the Ansible controller; see :ansopt:`community.sops.install#role:main:sops_install_on_localhost` for details.
 
 .. code-block:: yaml
 
@@ -45,7 +45,7 @@ This collection provides a :ansplugin:`role community.sops.install <community.so
 
 When using ansible-core 2.11 or later, you can also use two convenience playbooks:
 
-.. code-block:: bash
+.. code-block:: console
 
     # Install SOPS on Ansible controller
     $ ansible-playbook community.sops.install_localhost
@@ -103,7 +103,7 @@ For simplicity, you can work with GPG keys. If you do not have one, or do not wa
 
 Here, ``FBC7B9E2A4F9289AC0C1D4843D16CEE4A27381B4`` is the 40 hex-digit key ID. With this file you can create a SOPS-encrypted file by running the following in the directory where ``.sops.yaml`` was placed, or a subdirectory of it:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ sops test.sops.yaml
 
@@ -164,7 +164,7 @@ You can decrypt SOPS-encrypted files with the :ansplugin:`community.sops.sops lo
 
 Assume that you have an encrypted private key ``keys/private_key.pem.sops``, which was in PEM format before being encrypted by SOPS:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ openssl genrsa -out keys/private_key.pem 2048
     $ sops --encrypt keys/private_key.pem > keys/private_key.pem.sops

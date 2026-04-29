@@ -214,7 +214,7 @@
    "name": "plugins/modules/ucs_vnic_template.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b56589fb2da6608d60cf1b2c1579b407dded432dfe18d05842b6f700c9c73d69",
+   "chksum_sha256": "29d8bc299da847d30c4ce01caf47f84d257f58b8c36f63e9c67b5f20c0dc56fa",
    "format": 1
   },
   {
@@ -249,7 +249,7 @@
    "name": "plugins/modules/ucs_ip_pool.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d0c9c7b75f78983de93af951e3605eed7f8687bf7bc784da1f94e17977d7da28",
+   "chksum_sha256": "b97a4fd22591ae28008e623f67cbaef3887e119091f280c7e31af1c12e28ee3b",
    "format": 1
   },
   {
@@ -522,7 +522,7 @@
    "name": "playbooks/ucs_vnic_template.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "639f1d8330179e8c7bb92a16193ae25c41f4583717045def0d0f8901a7c9379e",
+   "chksum_sha256": "45ef3ff50bac1a8750c15dbd81fb5586c72d24a4a42a8d441c676b3e23466c83",
    "format": 1
   },
   {
@@ -592,7 +592,7 @@
    "name": "playbooks/ucs_ip_pool.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9a3ffdbf399ae872a03515418215a16c1c52b2af2d6269c5e88da3f94dde124e",
+   "chksum_sha256": "82ac118553cb0c621fb9249bd6ac7983af33b29ab986a631bb1fb64111576437",
    "format": 1
   },
   {
@@ -662,7 +662,7 @@
    "name": "README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "eebb8fd73b6f1040b24bb9176c6c28484dab8833149bff13abb25455419eb01f",
+   "chksum_sha256": "e167c086f6323d1a3bf5217965b1867b94e29a995f6c58762bd210dcc96c1e09",
    "format": 1
   },
   {

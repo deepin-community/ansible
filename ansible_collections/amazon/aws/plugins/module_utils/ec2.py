@@ -45,7 +45,7 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-import ansible.module_utils.common.warnings as ansible_warnings
+import ansible.module_utils.common.warnings as ansible_warnings  # pylint: disable=unused-import
 from ansible.module_utils.ansible_release import __version__
 
 # Used to live here, moved into ansible.module_utils.common.dict_transformations
@@ -482,7 +482,7 @@ def delete_nat_gateway(client, nat_gateway_id: str) -> bool:
 
 
 @EC2NatGatewayErrorHandler.common_error_handler("create nat gateway")
-@AWSRetry.jittered_backoff()
+@AWSRetry.jittered_backoff(catch_extra_error_codes=["InvalidElasticIpID.NotFound"])
 def create_nat_gateway(
     client, **params: Dict[str, Union[str, bool, int, EC2TagSpecifications, List[str]]]
 ) -> Dict[str, Any]:
@@ -746,7 +746,7 @@ def detach_volume(client, volume_id: str, **params: Dict[str, Union[str, bool]])
 # EC2 Instance
 EC2_INSTANCE_CATCH_EXTRA_CODES = [
     "IncorrectState",
-    "InsuffienctInstanceCapacity",
+    "InsufficientInstanceCapacity",
     "InvalidInstanceID.NotFound",
 ]
 
@@ -1522,16 +1522,6 @@ def get_ec2_security_group_ids_from_names(sec_group_list, ec2_connection, vpc_id
     def get_sg_id(sg):
         return str(sg["GroupId"])
 
-    if boto3 is not None:
-        ansible_warnings.deprecate(
-            (
-                "The boto3 parameter for get_ec2_security_group_ids_from_names() has been deprecated."
-                "The parameter has been ignored since release 4.0.0."
-            ),
-            date="2025-05-01",
-            collection_name="amazon.aws",
-        )
-
     sec_group_id_list = []
 
     if isinstance(sec_group_list, string_types):
@@ -1816,3 +1806,61 @@ def create_ec2_transit_gateway(
 def delete_ec2_transit_gateway(client, transit_gateway_id: str) -> bool:
     client.delete_transit_gateway(TransitGatewayId=transit_gateway_id)
     return True
+
+
+# EC2 Dedicated host
+class EC2DedicatedHost(AWSErrorHandler):
+    _CUSTOM_EXCEPTION = AnsibleEC2Error
+
+    @classmethod
+    def _is_missing(cls):
+        return is_boto3_error_code("InvalidHostID.NotFound")
+
+
+@EC2DedicatedHost.list_error_handler("describe dedicated host", [])
+@AWSRetry.jittered_backoff()
+def describe_ec2_dedicated_hosts(
+    client, **params: Dict[str, Union[List[str], List[Dict[str, Union[str, List[str]]]]]]
+) -> List[Dict[str, Any]]:
+    paginator = client.get_paginator("describe_hosts")
+    return paginator.paginate(**params).build_full_result()["Hosts"]
+
+
+@EC2DedicatedHost.list_error_handler("describe mac dedicated host", [])
+@AWSRetry.jittered_backoff()
+def describe_ec2_mac_dedicated_hosts(
+    client, **params: Dict[str, Union[List[str], List[Dict[str, Union[str, List[str]]]]]]
+) -> List[Dict[str, Any]]:
+    paginator = client.get_paginator("describe_mac_hosts")
+    return paginator.paginate(**params).build_full_result()["MacHosts"]
+
+
+@EC2DedicatedHost.deletion_error_handler("release dedicated host")
+@AWSRetry.jittered_backoff()
+def release_ec2_dedicated_host(client, host_id: Union[str, List[str]]) -> bool:
+    host_ids = host_id
+    if isinstance(host_id, string_types):
+        host_ids = [host_id]
+    client.release_hosts(HostIds=host_ids)
+    return True
+
+
+@EC2DedicatedHost.common_error_handler("allocate dedicated hosts")
+@AWSRetry.jittered_backoff()
+def allocate_ec2_dedicated_hosts(
+    client, availability_zone: str, **params: Dict[str, Union[List[str], List[Dict[str, Union[str, List[str]]]]]]
+) -> List[str]:
+    return client.allocate_hosts(AvailabilityZone=availability_zone, **params)["HostIds"]
+
+
+@EC2DedicatedHost.common_error_handler("modify dedicated hosts")
+@AWSRetry.jittered_backoff()
+def modify_ec2_dedicated_hosts(
+    client,
+    host_id: Union[List[str], str],
+    **params: Dict[str, Union[List[str], List[Dict[str, Union[str, List[str]]]]]],
+) -> Dict[str, Any]:
+    host_ids = host_id
+    if isinstance(host_id, string_types):
+        host_ids = [host_id]
+    return client.modify_hosts(HostIds=host_ids, **params)

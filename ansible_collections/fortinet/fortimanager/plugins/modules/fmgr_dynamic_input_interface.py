@@ -140,6 +140,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -155,18 +156,16 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         dynamic_input_interface:
-          default_mapping: <value in [disable, enable]>
-          defmap_intf: <string>
-          description: <string>
-          dynamic_mapping:
-            -
-              _scope:
-                -
-                  name: <string>
-                  vdom: <string>
-              local_intf: <string>
-          name: <string>
-          skip_unmapped: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # default_mapping: <value in [disable, enable]>
+          # defmap_intf: <string>
+          # description: <string>
+          # dynamic_mapping:
+          #   - _scope:
+          #       - name: <string>
+          #         vdom: <string>
+          #     local_intf: <string>
+          # skip_unmapped: <value in [disable, enable]>
 '''
 
 RETURN = '''

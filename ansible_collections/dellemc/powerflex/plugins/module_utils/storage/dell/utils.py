@@ -1,5 +1,5 @@
-# Copyright: (c) 2024, Dell Technologies
-# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+# Copyright: (c) 2024-2025, Dell Technologies
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
@@ -21,25 +21,19 @@ import string
 try:
     from PyPowerFlex import PowerFlexClient
     from PyPowerFlex.objects.system import SnapshotDef  # pylint: disable=unused-import
+    from PyPowerFlex.utils import filter_response  # pylint: disable=unused-import
     HAS_POWERFLEX_SDK, POWERFLEX_SDK_IMP_ERR = True, None
 except ImportError:
     HAS_POWERFLEX_SDK, POWERFLEX_SDK_IMP_ERR = False, traceback.format_exc()
 
-"""importing pkg_resources"""
+"""importing importlib.metadata"""
 try:
-    from pkg_resources import parse_version
-    import pkg_resources
+    from importlib.metadata import version as get_version
+    from ansible.module_utils.compat.version import LooseVersion
 
     PKG_RSRC_IMPORTED, PKG_RSRC_IMP_ERR = True, None
 except ImportError:
     PKG_RSRC_IMPORTED, PKG_RSRC_IMP_ERR = False, traceback.format_exc()
-
-"""importing dateutil"""
-try:
-    import dateutil.relativedelta  # noqa   # pylint: disable=unused-import
-    HAS_DATEUTIL, DATEUTIL_IMP_ERR = True, None
-except ImportError:
-    HAS_DATEUTIL, DATEUTIL_IMP_ERR = False, traceback.format_exc()
 
 
 def get_powerflex_gateway_host_parameters():
@@ -74,22 +68,18 @@ def get_powerflex_gateway_host_connection(module_params):
 def ensure_required_libs(module):
     """Check required libraries"""
 
-    if not HAS_DATEUTIL:
-        module.fail_json(msg=missing_required_lib("python-dateutil"),
-                         exception=DATEUTIL_IMP_ERR)
-
     if not PKG_RSRC_IMPORTED:
-        module.fail_json(msg=missing_required_lib("pkg_resources"),
+        module.fail_json(msg=missing_required_lib("importlib.metadata"),
                          exception=PKG_RSRC_IMP_ERR)
 
     if not HAS_POWERFLEX_SDK:
-        module.fail_json(msg=missing_required_lib("PyPowerFlex V 1.12.0 or above"),
+        module.fail_json(msg=missing_required_lib("PyPowerFlex V 1.14.1 or above"),
                          exception=POWERFLEX_SDK_IMP_ERR)
 
-    min_ver = '1.12.0'
+    min_ver = '1.14.1'
     try:
-        curr_version = pkg_resources.require("PyPowerFlex")[0].version
-        supported_version = (parse_version(curr_version) >= parse_version(min_ver))
+        curr_version = get_version("PyPowerFlex")
+        supported_version = (LooseVersion(curr_version) >= LooseVersion(min_ver))
         if not supported_version:
             module.fail_json(msg="PyPowerFlex {0} is not supported. "
                              "Required minimum version is "
@@ -171,7 +161,14 @@ def is_version_less_than_3_6(version):
     """Verifies if powerflex version is less than 3.6"""
     version = re.search(r'R\s*([\d.]+)', version.replace('_', '.')).group(1)
     return \
-        pkg_resources.parse_version(version) < pkg_resources.parse_version('3.6')
+        LooseVersion(version) < LooseVersion('3.6')
+
+
+def is_version_less_than_4_6(version):
+    """Verifies if powerflex version is less than 3.6"""
+    version = re.search(r'R\s*([\d.]+)', version.replace('_', '.')).group(1)
+    return \
+        LooseVersion(version) < LooseVersion('4.6')
 
 
 def is_invalid_name(name):
@@ -223,7 +220,5 @@ def get_filter(name, id=None):
 
 
 def random_uuid_generation():
-    generate_uuid = ''.join(
-        [random.choice(string.ascii_lowercase + string.digits) for n in range(32)])
-
-    return generate_uuid
+    """Generate a random UUID using lowercase letters and digits."""
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=32))

@@ -106,6 +106,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -121,10 +122,10 @@ EXAMPLES = '''
         adom: <your own value>
         vap: <your own value>
         vap_portalmessageoverrides:
-          auth_disclaimer_page: <string>
-          auth_login_failed_page: <string>
-          auth_login_page: <string>
-          auth_reject_page: <string>
+          # auth_disclaimer_page: <string>
+          # auth_login_failed_page: <string>
+          # auth_login_page: <string>
+          # auth_reject_page: <string>
 '''
 
 RETURN = '''

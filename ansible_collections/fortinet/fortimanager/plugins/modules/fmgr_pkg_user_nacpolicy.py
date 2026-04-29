@@ -216,12 +216,20 @@ options:
                     - 'disable'
                     - 'enable'
                     - 'global'
+            match_remove:
+                aliases: ['match-remove']
+                type: str
+                description: Options to remove the matched override devices.
+                choices:
+                    - 'link-down'
+                    - 'default'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -238,34 +246,35 @@ EXAMPLES = '''
         pkg: <your own value>
         state: present # <value in [present, absent]>
         pkg_user_nacpolicy:
-          category: <value in [device, firewall-user, ems-tag, ...]>
-          description: <string>
-          ems_tag: <string>
-          family: <string>
-          host: <string>
-          hw_vendor: <string>
-          hw_version: <string>
-          mac: <string>
-          name: <string>
-          os: <string>
-          src: <string>
-          ssid_policy: <string>
-          status: <value in [disable, enable]>
-          sw_version: <string>
-          type: <string>
-          user: <string>
-          user_group: <string>
-          severity: <list or integer>
-          firewall_address: <list or string>
-          fortivoice_tag: <list or string>
-          match_period: <integer>
-          match_type: <value in [dynamic, override]>
-          switch_fortilink: <list or string>
-          switch_group: <list or string>
-          switch_mac_policy: <list or string>
-          switch_scope: <list or string>
-          switch_port_policy: <list or string>
-          switch_auto_auth: <value in [disable, enable, global]>
+          name: "your value" # Required variable, string
+          # category: <value in [device, firewall-user, ems-tag, ...]>
+          # description: <string>
+          # ems_tag: <string>
+          # family: <string>
+          # host: <string>
+          # hw_vendor: <string>
+          # hw_version: <string>
+          # mac: <string>
+          # os: <string>
+          # src: <string>
+          # ssid_policy: <string>
+          # status: <value in [disable, enable]>
+          # sw_version: <string>
+          # type: <string>
+          # user: <string>
+          # user_group: <string>
+          # severity: <list or integer>
+          # firewall_address: <list or string>
+          # fortivoice_tag: <list or string>
+          # match_period: <integer>
+          # match_type: <value in [dynamic, override]>
+          # switch_fortilink: <list or string>
+          # switch_group: <list or string>
+          # switch_mac_policy: <list or string>
+          # switch_scope: <list or string>
+          # switch_port_policy: <list or string>
+          # switch_auto_auth: <value in [disable, enable, global]>
+          # match_remove: <value in [link-down, default]>
 '''
 
 RETURN = '''
@@ -348,16 +357,17 @@ def main():
                 'user': {'v_range': [['7.2.1', '']], 'type': 'str'},
                 'user-group': {'v_range': [['7.2.1', '']], 'type': 'str'},
                 'severity': {'v_range': [['7.4.0', '']], 'type': 'raw'},
-                'firewall-address': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
+                'firewall-address': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
                 'fortivoice-tag': {'v_range': [['7.4.3', '']], 'type': 'raw'},
                 'match-period': {'v_range': [['7.4.3', '']], 'type': 'int'},
                 'match-type': {'v_range': [['7.4.3', '']], 'choices': ['dynamic', 'override'], 'type': 'str'},
-                'switch-fortilink': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'switch-group': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'switch-mac-policy': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'switch-scope': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'switch-port-policy': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'switch-auto-auth': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'choices': ['disable', 'enable', 'global'], 'type': 'str'}
+                'switch-fortilink': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'switch-group': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'switch-mac-policy': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'switch-scope': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'switch-port-policy': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'switch-auto-auth': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'choices': ['disable', 'enable', 'global'], 'type': 'str'},
+                'match-remove': {'v_range': [['7.6.3', '']], 'choices': ['link-down', 'default'], 'type': 'str'}
             }
         }
     }

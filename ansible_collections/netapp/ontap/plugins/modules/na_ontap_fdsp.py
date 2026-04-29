@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2021-2024, NetApp, Inc
+# (c) 2021-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -12,7 +12,7 @@ short_description: NetApp ONTAP create or delete a file directory security polic
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: 21.8.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 
 description:
   - Create or delete a file directory security policy.
@@ -38,23 +38,23 @@ options:
 """
 
 EXAMPLES = """
-    - name: Create File Directory Security Policy
-      netapp.ontap.na_ontap_fdsp:
-        state: present
-        name: "ansible_security_policyl"
-        vserver: "svm1"
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+- name: Create File Directory Security Policy
+  netapp.ontap.na_ontap_fdsp:
+    state: present
+    name: "ansible_security_policyl"
+    vserver: "svm1"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 
-    - name: Delete File Directory Security Policy
-      netapp.ontap.na_ontap_fdsp:
-        state: absent
-        vserver: "svm1"
-        name: "ansible_security_policyl"
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+- name: Delete File Directory Security Policy
+  netapp.ontap.na_ontap_fdsp:
+    state: absent
+    vserver: "svm1"
+    name: "ansible_security_policyl"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 """
 
 RETURN = """

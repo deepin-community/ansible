@@ -171,13 +171,6 @@ cdnendpoints:
 '''
 
 from ansible_collections.azure.azcollection.plugins.module_utils.azure_rm_common import AzureRMModuleBase
-
-try:
-    from azure.mgmt.cdn import CdnManagementClient
-except ImportError:
-    # handled in azure_rm_common
-    pass
-
 import re
 
 AZURE_OBJECT_CLASS = 'endpoints'
@@ -223,16 +216,8 @@ class AzureRMCdnEndpointInfo(AzureRMModuleBase):
 
     def exec_module(self, **kwargs):
 
-        is_old_facts = self.module._name == 'azure_rm_cdnendpoint_facts'
-        if is_old_facts:
-            self.module.deprecate("The 'azure_rm_cdnendpoint_facts' module has been renamed to 'azure_rm_cdnendpoint_info'", version=(2.9, ))
-
         for key in self.module_args:
             setattr(self, key, kwargs[key])
-
-        self.cdn_client = self.get_mgmt_svc_client(CdnManagementClient,
-                                                   base_url=self._cloud_environment.endpoints.resource_manager,
-                                                   api_version='2017-04-02')
 
         if self.name:
             self.results['cdnendpoints'] = self.get_item()

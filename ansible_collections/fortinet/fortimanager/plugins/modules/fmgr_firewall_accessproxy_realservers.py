@@ -121,6 +121,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -137,11 +138,11 @@ EXAMPLES = '''
         access_proxy: <your own value>
         state: present # <value in [present, absent]>
         firewall_accessproxy_realservers:
-          id: <integer>
-          ip: <string>
-          port: <integer>
-          status: <value in [active, standby, disable]>
-          weight: <integer>
+          id: 0 # Required variable, integer
+          # ip: <string>
+          # port: <integer>
+          # status: <value in [active, standby, disable]>
+          # weight: <integer>
 '''
 
 RETURN = '''

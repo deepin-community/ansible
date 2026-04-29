@@ -10,13 +10,11 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: swupd
 short_description: Manages updates and bundles in ClearLinux systems
 description:
-  - Manages updates and bundles with the swupd bundle manager, which is used by the
-    Clear Linux Project for Intel Architecture.
+  - Manages updates and bundles with the swupd bundle manager, which is used by the Clear Linux Project for Intel Architecture.
 author: Alberto Murillo (@albertomurillo)
 extends_documentation_fragment:
   - community.general.attributes
@@ -28,19 +26,17 @@ attributes:
 options:
   contenturl:
     description:
-      - URL pointing to the contents of available bundles.
-        If not specified, the contents are retrieved from clearlinux.org.
+      - URL pointing to the contents of available bundles. If not specified, the contents are retrieved from clearlinux.org.
     type: str
   format:
     description:
-      - The format suffix for version file downloads. For example [1,2,3,staging,etc].
+      - The format suffix for version file downloads. For example V(1), V(2), V(3), and so on, or the special value V(staging).
         If not specified, the default format is used.
     type: str
   manifest:
     description:
-      - The manifest contains information about the bundles at certain version of the OS.
-        Specify a Manifest version to verify against that version or leave unspecified to
-        verify against the current version.
+      - The manifest contains information about the bundles at certain version of the OS. Specify a Manifest version to verify
+        against that version or leave unspecified to verify against the current version.
     aliases: [release, version]
     type: int
   name:
@@ -50,8 +46,8 @@ options:
     type: str
   state:
     description:
-      - Indicates the desired (I)bundle state. V(present) ensures the bundle
-        is installed while V(absent) ensures the (I)bundle is not installed.
+      - Indicates the desired (I)bundle state. V(present) ensures the bundle is installed while V(absent) ensures the (I)bundle
+        is not installed.
     default: present
     choices: [present, absent]
     type: str
@@ -73,9 +69,9 @@ options:
     description:
       - URL for version string download.
     type: str
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Update the OS to the latest version
   community.general.swupd:
     update: true
@@ -98,18 +94,8 @@ EXAMPLES = '''
   community.general.swupd:
     verify: true
     manifest: 12920
-'''
+"""
 
-RETURN = '''
-stdout:
-  description: stdout of swupd
-  returned: always
-  type: str
-stderr:
-  description: stderr of swupd
-  returned: always
-  type: str
-'''
 
 import os
 from ansible.module_utils.basic import AnsibleModule
@@ -144,19 +130,19 @@ class Swupd(object):
         self.rc, self.stdout, self.stderr = self.module.run_command(cmd, check_rc=False)
 
     def _get_cmd(self, command):
-        cmd = "%s %s" % (self.swupd_cmd, command)
+        cmd = [self.swupd_cmd] + command
 
         if self.format:
-            cmd += " --format=%s" % self.format
+            cmd.append("--format=%s" % self.format)
         if self.manifest:
-            cmd += " --manifest=%s" % self.manifest
+            cmd.append("--manifest=%s" % self.manifest)
         if self.url:
-            cmd += " --url=%s" % self.url
+            cmd.append("--url=%s" % self.url)
         else:
             if self.contenturl and command != "check-update":
-                cmd += " --contenturl=%s" % self.contenturl
+                cmd.append("--contenturl=%s" % self.contenturl)
             if self.versionurl:
-                cmd += " --versionurl=%s" % self.versionurl
+                cmd.append("--versionurl=%s" % self.versionurl)
 
         return cmd
 
@@ -169,7 +155,7 @@ class Swupd(object):
         return True
 
     def _needs_update(self):
-        cmd = self._get_cmd("check-update")
+        cmd = self._get_cmd(["check-update"])
         self._run_cmd(cmd)
 
         if self.rc == 0:
@@ -182,7 +168,7 @@ class Swupd(object):
         self.msg = "Failed to check for updates"
 
     def _needs_verify(self):
-        cmd = self._get_cmd("verify")
+        cmd = self._get_cmd(["verify"])
         self._run_cmd(cmd)
 
         if self.rc != 0:
@@ -203,7 +189,7 @@ class Swupd(object):
             self.msg = "Bundle %s is already installed" % bundle
             return
 
-        cmd = self._get_cmd("bundle-add %s" % bundle)
+        cmd = self._get_cmd(["bundle-add", bundle])
         self._run_cmd(cmd)
 
         if self.rc == 0:
@@ -223,7 +209,7 @@ class Swupd(object):
             self.msg = "Bundle %s not installed"
             return
 
-        cmd = self._get_cmd("bundle-remove %s" % bundle)
+        cmd = self._get_cmd(["bundle-remove", bundle])
         self._run_cmd(cmd)
 
         if self.rc == 0:
@@ -243,7 +229,7 @@ class Swupd(object):
             self.msg = "There are no updates available"
             return
 
-        cmd = self._get_cmd("update")
+        cmd = self._get_cmd(["update"])
         self._run_cmd(cmd)
 
         if self.rc == 0:
@@ -263,7 +249,7 @@ class Swupd(object):
             self.msg = "No files where changed"
             return
 
-        cmd = self._get_cmd("verify --fix")
+        cmd = self._get_cmd(["verify", "--fix"])
         self._run_cmd(cmd)
 
         if self.rc == 0 and (self.FILES_REPLACED in self.stdout or self.FILES_FIXED in self.stdout or self.FILES_DELETED in self.stdout):

@@ -10,7 +10,7 @@ __metaclass__ = type
 
 DOCUMENTATION = '''
 module: na_ontap_active_directory_domain_controllers
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 short_description: NetApp ONTAP configure active directory preferred domain controllers
 extends_documentation_fragment:
   - netapp.ontap.netapp.na_ontap_rest
@@ -53,29 +53,29 @@ notes:
   - CLI support is available for other lower ONTAP versions.
 '''
 EXAMPLES = """
-    - name: Create active directory preferred domain controllers
-      netapp.ontap.na_ontap_active_directory_domain_controllers:
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        https: true
-        validate_certs: false
-        vserver: ansible
-        state: present
-        fqdn: test.com
-        server_ip: 10.10.10.10
+- name: Create active directory preferred domain controllers
+  netapp.ontap.na_ontap_active_directory_domain_controllers:
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: false
+    vserver: ansible
+    state: present
+    fqdn: test.com
+    server_ip: 10.10.10.10
 
-    - name: Delete active directory preferred domain controllers
-      netapp.ontap.na_ontap_active_directory_domain_controllers:
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        https: true
-        validate_certs: false
-        vserver: ansible
-        state: absent
-        fqdn: test.com
-        server_ip: 10.10.10.10
+- name: Delete active directory preferred domain controllers
+  netapp.ontap.na_ontap_active_directory_domain_controllers:
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: false
+    vserver: ansible
+    state: absent
+    fqdn: test.com
+    server_ip: 10.10.10.10
 """
 RETURN = """
 

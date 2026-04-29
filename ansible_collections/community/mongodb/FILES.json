@@ -25,21 +25,21 @@
    "name": ".github/workflows/ansible-test.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8cb9fb472e6ba71255c148829232cb73e8375e53dba82b142a92d664633fbf5c",
+   "chksum_sha256": "1297ee724ceaec447206ff4cf8b9ceed3b09f37664e0dd33672e5b785f186153",
    "format": 1
   },
   {
    "name": ".github/workflows/mongodb-cache.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "921782d512da6b56ac4a9ce8e6b636b54dd79c29d93aefa885594fd16ab13654",
+   "chksum_sha256": "2a1c98a1b0d5666cf041cfac7280f5015012ee5601a2adc706ec8c3967f313a6",
    "format": 1
   },
   {
    "name": ".github/workflows/publish_collection.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4c0c2b13c6757e329050ce100a140ec69205852d27a617c295085fbdcfc15ca6",
+   "chksum_sha256": "b293003a434efa5a2246368b98d3c77a11227f53a9abee4c1f8e1b9675dc285e",
    "format": 1
   },
   {
@@ -53,14 +53,14 @@
    "name": ".github/workflows/test-roles.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "c858ac2e2d8b2de839d7d80fbf54559d6dfc72033b05723ca03c28038e410932",
+   "chksum_sha256": "7d1841b332e8c8a5355188e72ee3a95cf3bd2bd7cf5fbc781ffb40c309f3a1b2",
    "format": 1
   },
   {
    "name": ".github/workflows/x509.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d6baa86ed9824833086a9fb836187727038c859ab51f1648f7052187ede2c992",
+   "chksum_sha256": "d6d20c7bd4c739caa0f3699c7c386e71cf25e8a7b21ea10cbe5a99e504bd72ef",
    "format": 1
   },
   {
@@ -95,7 +95,7 @@
    "name": "changelogs/changelog.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "36a6e25fd901955288eaf1c40eb462685b019d5b75cca3c19ec001f8094dce23",
+   "chksum_sha256": "cd02bbe0d7eda6425f0bafbc4482a1f0b678ca6d85505e1e11cf5a4d196f58a6",
    "format": 1
   },
   {
@@ -151,7 +151,7 @@
    "name": "plugins/cache/mongodb.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "898489d29a2dc0005b03bcf082f9acf9ba132ac9075e3feee0770e04dc69c781",
+   "chksum_sha256": "3825046f05e015bdf9156954eaa99458afb3a1cce24c132a97211d4cffb47da3",
    "format": 1
   },
   {
@@ -235,7 +235,7 @@
    "name": "plugins/module_utils/mongodb_shell.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "53cce3d1110da5651daf4d52166aae8b06706a61da326c7ded37f5e26ce8c69d",
+   "chksum_sha256": "d20bdd6ac66941e5bc41ea8ef1ad7bd610442e36d8f049e9ca6949c747ed96e4",
    "format": 1
   },
   {
@@ -298,7 +298,7 @@
    "name": "plugins/modules/mongodb_info.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "44d32c225bbd7c3f7db5ad857e985f98f6836e202083a100b712db2e3616f8dd",
+   "chksum_sha256": "e4136f05ca01b9bfcb209e18d13e58618e846d027169da7cc6335425a4a94f37",
    "format": 1
   },
   {
@@ -326,7 +326,7 @@
    "name": "plugins/modules/mongodb_replicaset.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e2f541038b65d6814807fc29ea1a42526de65b6b5416c78fb3280d9243ad74c7",
+   "chksum_sha256": "da3d49d503551673b9ceb92bee45057f449b46cfba5a0cc832fb27491a34fb37",
    "format": 1
   },
   {
@@ -459,7 +459,7 @@
    "name": "roles/mongodb_auth/molecule/default/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -480,14 +480,14 @@
    "name": "roles/mongodb_auth/molecule/default/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "bd0a902897b008492a783b3a124ef2eab7b9ea98575878e520f3d9edb794201a",
+   "chksum_sha256": "642a1398260d3182bd0c1e8fe68a46a509b02e5c4172df794682830b09cdae79",
    "format": 1
   },
   {
    "name": "roles/mongodb_auth/molecule/default/prepare.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a096b727e992c6c7fb0d7e62054879fde79fe2c2f1604ffabc1f36b180c61f2b",
+   "chksum_sha256": "92a91feeee943c68d17859820c182b74040f9d556b1e0cdd1b1a1d79d0e435e0",
    "format": 1
   },
   {
@@ -634,7 +634,7 @@
    "name": "roles/mongodb_config/molecule/custom_db_path/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -655,7 +655,7 @@
    "name": "roles/mongodb_config/molecule/custom_db_path/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "021afb713280121ee415af3b92f30133ad4f2ebaab02fa28633df2ed496e67a6",
+   "chksum_sha256": "82f85435c9778ba05f1e4cf383311221e94e2e27ae5c5e3a9212fd70c52563ed",
    "format": 1
   },
   {
@@ -676,7 +676,7 @@
    "name": "roles/mongodb_config/molecule/default/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -697,7 +697,7 @@
    "name": "roles/mongodb_config/molecule/default/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "22747c5253e99fdcf01b9cfefedf156b9cd3a518ccff7a8682cd6d795ee6d948",
+   "chksum_sha256": "5fd1d07b2ff9d7b59a6b480ffe92d0d582b8307056a0d50dfbe25982a61c7f87",
    "format": 1
   },
   {
@@ -732,7 +732,7 @@
    "name": "roles/mongodb_config/templates/configsrv.conf.j2",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6c5effb7b7bfed61ff65d8ab5c4456efb023bc5b0ded52f44c6abcce78ce299b",
+   "chksum_sha256": "4d3b3fa19f80b71a1f5a09ec5ae262835c3a28a34a9360b179c9f4bba63f417b",
    "format": 1
   },
   {
@@ -851,14 +851,14 @@
    "name": "roles/mongodb_install/molecule/default/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "98b654066c863692a635e26b2ce7900587da04201b407ec8bdcbb381099dddaa",
+   "chksum_sha256": "0479fd5b0643ac7031ceead9de813e8a480dd2a9e8200faa8be269648b55d480",
    "format": 1
   },
   {
    "name": "roles/mongodb_install/molecule/default/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -893,7 +893,7 @@
    "name": "roles/mongodb_install/molecule/mongodb_hold_packages/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f99013ceb6cf561ae5afc4f698001381ef517cbec3b53fc100eff0864f9c8adf",
+   "chksum_sha256": "c7009124d195f02e55bea5abfb91debb1238ac54e68afa8ed2192d42b06b9d59",
    "format": 1
   },
   {
@@ -907,7 +907,7 @@
    "name": "roles/mongodb_install/molecule/mongodb_hold_packages/prepare.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3a588d66274a9be9a34cc1340862fad029e73fd2558b24c03e61cf81b3651d35",
+   "chksum_sha256": "9b22a8f3cb94a272d324cfac69f97eac559c04d2fa7069adfba4fcce3dff5759",
    "format": 1
   },
   {
@@ -935,7 +935,7 @@
    "name": "roles/mongodb_install/molecule/mongodb_nohold_packages/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3993cdecb11b6298db2c601f703880b1e75834c848c5e578ca2267870dbdcd9b",
+   "chksum_sha256": "f3e56b1e716788515f1eca0cdfb31e705bd4944714ee5eafc63e29cd63ad453d",
    "format": 1
   },
   {
@@ -949,7 +949,7 @@
    "name": "roles/mongodb_install/molecule/mongodb_nohold_packages/prepare.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3a588d66274a9be9a34cc1340862fad029e73fd2558b24c03e61cf81b3651d35",
+   "chksum_sha256": "9b22a8f3cb94a272d324cfac69f97eac559c04d2fa7069adfba4fcce3dff5759",
    "format": 1
   },
   {
@@ -963,7 +963,7 @@
    "name": "roles/mongodb_install/molecule/specific_mongodb_version/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -984,14 +984,14 @@
    "name": "roles/mongodb_install/molecule/specific_mongodb_version/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "785537eab33ba53842c92ab2c471c250c9a76fed2e710087110f6c3983b08a53",
+   "chksum_sha256": "3f74baab8c59fd3ee2f62b250b4b493ca76b5248c98cb7866e1b33fda06e813d",
    "format": 1
   },
   {
    "name": "roles/mongodb_install/molecule/specific_mongodb_version/prepare.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3a588d66274a9be9a34cc1340862fad029e73fd2558b24c03e61cf81b3651d35",
+   "chksum_sha256": "9b22a8f3cb94a272d324cfac69f97eac559c04d2fa7069adfba4fcce3dff5759",
    "format": 1
   },
   {
@@ -1019,7 +1019,7 @@
    "name": "roles/mongodb_install/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "219f4c3aaf364b00b21ca94c208dd2a70ad2a963c1e2c1a400963762d1651f79",
+   "chksum_sha256": "ce9c798605aee79d2adfeb2aecf9417b96d63b4c4b71841a3815a0d5d8f49114",
    "format": 1
   },
   {
@@ -1054,7 +1054,7 @@
    "name": "roles/mongodb_linux/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d86ecaec3b0c92ecd4838d5d23c78facb542ec49032799451ba4e4faafccc63c",
+   "chksum_sha256": "da4e041d2077c3acfad330cdb927fdfe9d0b692a82eeeb56ba4f091a6a97d3ea",
    "format": 1
   },
   {
@@ -1068,7 +1068,14 @@
    "name": "roles/mongodb_linux/files/thp-disable.service",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8b7ce5d74e14d3efe593ed64d94376f5320183f9f522b407cbad53a72bbb5439",
+   "chksum_sha256": "729cb9b679f3ef2ab85060f16a3c7f0de62999ce58d81b16582c4de9c4a91673",
+   "format": 1
+  },
+  {
+   "name": "roles/mongodb_linux/files/thp-enable.service",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "d65874701d6b8a382a6747e9601e6a6b6d60f8228904d529861140942fed5351",
    "format": 1
   },
   {
@@ -1103,7 +1110,7 @@
    "name": "roles/mongodb_linux/molecule/default/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -1117,14 +1124,14 @@
    "name": "roles/mongodb_linux/molecule/default/tests/test_default.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "656b4520041f212ab4eb8acbd6a380208f179ed4ef3798683a7e0d37bbef6bcd",
+   "chksum_sha256": "88d57ef71fcefd3de23afaafd643d8e72092f0e291dc5e2f34273868b09d5288",
    "format": 1
   },
   {
    "name": "roles/mongodb_linux/molecule/default/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4c2a0b84d10e12a7c53a760075b92df7a5a522362e5b6550640db1eb4d324acf",
+   "chksum_sha256": "26c7fcabd2431a86ec8d2a39515e5c151ecdf803f18f016ee370e97b82207ab7",
    "format": 1
   },
   {
@@ -1145,7 +1152,7 @@
    "name": "roles/mongodb_linux/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "725c0159c62486bfbb4fdc9f2c8cdebcf0d3d0100c01401e625dc3e2766a6d3f",
+   "chksum_sha256": "9f7cd11cc4641b176ef3018851da31d2248090a7abb3b9fa25e82b4a688f79e2",
    "format": 1
   },
   {
@@ -1292,7 +1299,7 @@
    "name": "roles/mongodb_mongod/molecule/custom_db_path/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -1313,14 +1320,14 @@
    "name": "roles/mongodb_mongod/molecule/custom_db_path/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "95b45a72b2c206f05bfbd81f742403836d4bf0096401196ba99aa857465c91f6",
+   "chksum_sha256": "8851dbcb86032567739f18d267c7d0b0443840fe47a5607695174deaa27a3002",
    "format": 1
   },
   {
    "name": "roles/mongodb_mongod/molecule/custom_db_path/prepare.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b487413c8c24e8d62c06c51ac6b6635bd3f17c734c6c578e0457950d4500ac77",
+   "chksum_sha256": "e9071f3e1354d55da1f37c687485f6c4f0e704fc7ab26d317b41a0c8bb14b410",
    "format": 1
   },
   {
@@ -1334,7 +1341,7 @@
    "name": "roles/mongodb_mongod/molecule/default/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -1355,14 +1362,56 @@
    "name": "roles/mongodb_mongod/molecule/default/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a394c4927954124c94a19c49be18ab397fccc74516a21eab1c9fc986131787db",
+   "chksum_sha256": "8bc29ca2aef4f857711aee40595df7baf78cf0533dbab3bc0e1046b0cda61652",
    "format": 1
   },
   {
    "name": "roles/mongodb_mongod/molecule/default/prepare.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b487413c8c24e8d62c06c51ac6b6635bd3f17c734c6c578e0457950d4500ac77",
+   "chksum_sha256": "f4bbe197cc622aacfbcaa07743f143fa7e71922f3aa510df4bad7869bdd248f1",
+   "format": 1
+  },
+  {
+   "name": "roles/mongodb_mongod/molecule/mongodb_version_float",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/mongodb_mongod/molecule/mongodb_version_float/molecule.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
+   "format": 1
+  },
+  {
+   "name": "roles/mongodb_mongod/molecule/mongodb_version_float/tests",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/mongodb_mongod/molecule/mongodb_version_float/tests/test_default.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "15fc816abf231757cf147e2a45308bff470711e07f3b1c702258326c822b82b2",
+   "format": 1
+  },
+  {
+   "name": "roles/mongodb_mongod/molecule/mongodb_version_float/converge.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "515012142945d96c6f148f016f31d9d066aac3e08ff52c3a458d2c7e82c18c6b",
+   "format": 1
+  },
+  {
+   "name": "roles/mongodb_mongod/molecule/mongodb_version_float/prepare.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e9071f3e1354d55da1f37c687485f6c4f0e704fc7ab26d317b41a0c8bb14b410",
    "format": 1
   },
   {
@@ -1376,7 +1425,7 @@
    "name": "roles/mongodb_mongod/molecule/multiple_bind_ip/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -1404,7 +1453,7 @@
    "name": "roles/mongodb_mongod/molecule/multiple_bind_ip/prepare.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cc1e890ae1f37fd8eae65509a3fb9775c0148163612ad7e0de8119439394ddf2",
+   "chksum_sha256": "a05822df7ef0213bad9622392277d35f7842e513ca586a9c889ae9686461e5c3",
    "format": 1
   },
   {
@@ -1439,7 +1488,7 @@
    "name": "roles/mongodb_mongod/templates/mongod.conf.j2",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b13fcb483b070ce7bf9cd99f742bffce8ce7170e59a4eaa183f40ea6ee7cc0f7",
+   "chksum_sha256": "0ed756257e4b1c6d3763d934123868676668482cdbed152a0f5ced76c457d49b",
    "format": 1
   },
   {
@@ -1579,7 +1628,7 @@
    "name": "roles/mongodb_mongos/molecule/default/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "87729b7bdde21b61badd4d907ed5c22ff630c3290e07d32d05a6cd9d6e6c96ee",
+   "chksum_sha256": "d38f7e7ed8a6338e12b13e280666762833f1765972bc0027e1e3d2825545b674",
    "format": 1
   },
   {
@@ -1593,7 +1642,7 @@
    "name": "roles/mongodb_mongos/molecule/default/prepare.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8bce20624373a8d20cff179dc3cb27826dd8968522e343a71af5edfc4f20c689",
+   "chksum_sha256": "f81bca47d309c04dfe8d43fde80e97c9477814b72af5bbced8ed8b586e7bf59c",
    "format": 1
   },
   {
@@ -1691,7 +1740,7 @@
    "name": "roles/mongodb_repository/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -1740,7 +1789,7 @@
    "name": "roles/mongodb_repository/molecule/default/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -1761,7 +1810,7 @@
    "name": "roles/mongodb_repository/molecule/default/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b28684e292044b3014cbd669d8ad266d404467bd3ef5f68bc7fa7cc28591849b",
+   "chksum_sha256": "0289a85572e0f446cd994c7263865e15126b734c0ef7ebd1da9a4cbbc4550101",
    "format": 1
   },
   {
@@ -1866,7 +1915,7 @@
    "name": "roles/mongodb_selinux/molecule/default/molecule.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cb0c4372ddf949688af39998609d9ae8b6ca41b9a2d0463e014827d2ca64d5c9",
+   "chksum_sha256": "42eb79f30cd4c1161202eac8d46f5a28b3ddec4f5915c68ddb073f14abe36835",
    "format": 1
   },
   {
@@ -1887,7 +1936,7 @@
    "name": "roles/mongodb_selinux/molecule/default/converge.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4a9fd1441f595120dba5a70e251db39ce412bb082aaf0c6193f68561a0a4aa34",
+   "chksum_sha256": "274c807acffd73315d14df49f5ed5602130274d2b6a81181ba498e79291c9f05",
    "format": 1
   },
   {
@@ -2013,7 +2062,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "98a1d9fc7926dc846e725b3ecf1377020df6a527aa21bac74b29fe4754625378",
+   "chksum_sha256": "ebaf67065b9464167ecd498f5e6201edfbc4eeacbe83b719fd01f3b079327033",
    "format": 1
   },
   {
@@ -2027,7 +2076,7 @@
    "name": "README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "477eb40db887fa5aa5c8b82f3533d41d6d3e940c67728ea6408274e5c4e8c10d",
+   "chksum_sha256": "52c452aa85251323ddf2d5fa5d788cf48d51842d35a47c9485e852084bbc5d16",
    "format": 1
   },
   {

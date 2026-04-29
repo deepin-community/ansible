@@ -8,11 +8,10 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-DOCUMENTATION = r'''
----
+DOCUMENTATION = r"""
 module: pam_limits
 author:
-- "Sebastien Rohaut (@usawa)"
+  - "Sebastien Rohaut (@usawa)"
 short_description: Modify Linux PAM limits
 description:
   - The M(community.general.pam_limits) module modifies PAM limits.
@@ -38,32 +37,32 @@ options:
     description:
       - Limit type, see C(man 5 limits.conf) for an explanation.
     required: true
-    choices: [ "hard", "soft", "-" ]
+    choices: ["hard", "soft", "-"]
   limit_item:
     type: str
     description:
       - The limit to be set.
     required: true
     choices:
-        - "core"
-        - "data"
-        - "fsize"
-        - "memlock"
-        - "nofile"
-        - "rss"
-        - "stack"
-        - "cpu"
-        - "nproc"
-        - "as"
-        - "maxlogins"
-        - "maxsyslogins"
-        - "priority"
-        - "locks"
-        - "sigpending"
-        - "msgqueue"
-        - "nice"
-        - "rtprio"
-        - "chroot"
+      - "core"
+      - "data"
+      - "fsize"
+      - "memlock"
+      - "nofile"
+      - "rss"
+      - "stack"
+      - "cpu"
+      - "nproc"
+      - "as"
+      - "maxlogins"
+      - "maxsyslogins"
+      - "priority"
+      - "locks"
+      - "sigpending"
+      - "msgqueue"
+      - "nice"
+      - "rtprio"
+      - "chroot"
   value:
     type: str
     description:
@@ -74,24 +73,24 @@ options:
     required: true
   backup:
     description:
-      - Create a backup file including the timestamp information so you can get
-        the original file back if you somehow clobbered it incorrectly.
+      - Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered
+        it incorrectly.
     required: false
     type: bool
     default: false
   use_min:
     description:
-      - If set to V(true), the minimal value will be used or conserved.
-      - If the specified value is inferior to the value in the file,
-        file content is replaced with the new value, else content is not modified.
+      - If set to V(true), the minimal value is used or conserved.
+      - If the specified value is inferior to the value in the file, file content is replaced with the new value, else content
+        is not modified.
     required: false
     type: bool
     default: false
   use_max:
     description:
-      - If set to V(true), the maximal value will be used or conserved.
-      - If the specified value is superior to the value in the file,
-        file content is replaced with the new value, else content is not modified.
+      - If set to V(true), the maximal value is used or conserved.
+      - If the specified value is superior to the value in the file, file content is replaced with the new value, else content
+        is not modified.
     required: false
     type: bool
     default: false
@@ -109,9 +108,9 @@ options:
     default: ''
 notes:
   - If O(dest) file does not exist, it is created.
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 - name: Add or modify nofile soft limit for the user joe
   community.general.pam_limits:
     domain: joe
@@ -141,7 +140,7 @@ EXAMPLES = r'''
     limit_type: hard
     limit_item: nofile
     value: 39693561
-'''
+"""
 
 import os
 import re
@@ -184,7 +183,7 @@ def main():
             use_min=dict(default=False, type='bool'),
             backup=dict(default=False, type='bool'),
             dest=dict(default=limits_conf, type='str'),
-            comment=dict(required=False, default='', type='str')
+            comment=dict(default='', type='str')
         ),
         supports_check_mode=True,
     )

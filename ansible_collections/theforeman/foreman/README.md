@@ -17,12 +17,13 @@ We actively test the modules against the latest stable Foreman release and the m
 
 ### Supported Ansible Versions
 
-The supported Ansible versions are aligned with currently maintained Ansible versions that support Collections (2.9+).
+The supported Ansible versions are aligned with currently maintained Ansible versions that support Collections (2.10+).
 You can find the list of maintained Ansible versions [here](https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html).
 
 ### Supported Python Versions
 
-Ansible only supports Python 2.7 and 3.5 (and higher). These are also the only Python versions we develop and test the modules against.
+The supported Python versions are aligned with the currently supported Python versions by maintained Ansible releases.
+You can find the list of maintained Ansible releases and their supported Python versions versions [here](https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html).
 
 ### Known issues
 
@@ -107,7 +108,7 @@ And install all specified requirements with `ansible-galaxy install -r requireme
 
 ### Building and Installing the Collection Locally
 
-For all currently supported versions of Ansible (i.e. Ansible >= 2.9, and particularly Ansible < 2.10 where the above approach is not yet supported), you can build the collection locally:
+For all currently supported versions of Ansible, you can build the collection locally:
 
 ```console
 $ make dist
@@ -125,9 +126,36 @@ These dependencies are required for the Ansible controller, not the Foreman serv
 
 * [`PyYAML`](https://pypi.org/project/PyYAML/)
 * [`requests`](https://pypi.org/project/requests/)
-* [`ipaddress`](https://pypi.org/project/ipaddress/) for the `subnet` module on Python 2.7
 * `rpm` for the RPM support in the `content_upload` module
 * `debian` for the DEB support in the `content_upload` module
+
+## Module defaults groups
+
+With ansible-core >= 2.12 and version >= 3.4.0 of the collection it is possible to specify defaults parameters for all modules in this collection using [Module defaults groups](https://docs.ansible.com/ansible/latest/user_guide/playbooks_module_defaults.html#module-defaults-groups). Use it like this:
+
+```yaml
+---
+- name: Configure Foreman
+  hosts: foreman.example.com
+
+  module_defaults:
+    group/theforeman.foreman.foreman:
+      server_url: "https://foreman.example.com"
+      username: "admin"
+      password: "changeme"
+
+  tasks:
+    - name: Setup architecture
+      theforeman.foreman.architecture:
+        name: "x86_64"
+    - name: Setup sync plan
+      theforeman.foreman.sync_plan:
+        organization: "Default Organization"
+        name: "Daily"
+        interval: "daily"
+        enabled: true
+        sync_date: "2025-07-10 00:00:00 +0000"
+```
 
 # Foreman Ansible Roles
 

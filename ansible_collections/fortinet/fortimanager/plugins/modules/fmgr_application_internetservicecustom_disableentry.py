@@ -128,6 +128,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -144,14 +145,13 @@ EXAMPLES = '''
         internet_service_custom: <your own value>
         state: present # <value in [present, absent]>
         application_internetservicecustom_disableentry:
-          id: <integer>
-          ip_range:
-            -
-              end_ip: <string>
-              id: <integer>
-              start_ip: <string>
-          port: <list or integer>
-          protocol: <integer>
+          id: 0 # Required variable, integer
+          # ip_range:
+          #   - end_ip: <string>
+          #     id: <integer>
+          #     start_ip: <string>
+          # port: <list or integer>
+          # protocol: <integer>
 '''
 
 RETURN = '''

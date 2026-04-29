@@ -1,13 +1,13 @@
 ---
 - module_defaults:
     community.grafana.grafana_dashboard:
+      grafana_url: "{{ grafana_url }}"
+      grafana_user: "{{ grafana_username }}"
+      grafana_password: "{{ grafana_password }}"
       org_name: Main Org.
   block:
     - name: Create Dashboard from file by org_name | check mode | dashboard does not exist
       community.grafana.grafana_dashboard:
-        grafana_url: "{{ grafana_url }}"
-        grafana_user: "{{ grafana_username }}"
-        grafana_password: "{{ grafana_password }}"
         state: present
         commit_message: Updated by ansible
         path: /tmp/dashboard.json
@@ -23,9 +23,6 @@
 
     - name: Create Dashboard from file by org_name | run mode | dashboard does not exist
       community.grafana.grafana_dashboard:
-        grafana_url: "{{ grafana_url }}"
-        grafana_user: "{{ grafana_username }}"
-        grafana_password: "{{ grafana_password }}"
         state: present
         commit_message: Updated by ansible
         path: /tmp/dashboard.json
@@ -37,14 +34,11 @@
           - dbo_result2.failed == false
           - dbo_result2.changed == true
           - dbo_result2.uid is defined
-          - dbo_result2.uid | type_debug == "AnsibleUnsafeText"
+          - dbo_result2.uid is string
           - dbo_result2.msg == 'Dashboard test created'
 
     - name: Create Dashboard from file by org_name | check mode | dashboard exists
       community.grafana.grafana_dashboard:
-        grafana_url: "{{ grafana_url }}"
-        grafana_user: "{{ grafana_username }}"
-        grafana_password: "{{ grafana_password }}"
         state: present
         commit_message: Updated by ansible
         path: /tmp/dashboard.json
@@ -56,14 +50,11 @@
           - dbo_result3.failed == false
           - dbo_result3.changed == false
           - dbo_result3.uid is defined
-          - dbo_result3.uid | type_debug == "AnsibleUnsafeText"
+          - dbo_result3.uid is string
           - dbo_result3.msg == 'Dashboard test unchanged.'
 
     - name: Create Dashboard from file by org_name | run mode | dashboard exists
       community.grafana.grafana_dashboard:
-        grafana_url: "{{ grafana_url }}"
-        grafana_user: "{{ grafana_username }}"
-        grafana_password: "{{ grafana_password }}"
         state: present
         commit_message: Updated by ansible
         path: /tmp/dashboard.json
@@ -75,7 +66,7 @@
           - dbo_result4.failed == false
           - dbo_result4.changed == false
           - dbo_result4.uid is defined
-          - dbo_result4.uid | type_debug == "AnsibleUnsafeText"
+          - dbo_result4.uid is string
           - dbo_result4.msg == 'Dashboard test unchanged.'
 
     - ansible.builtin.include_tasks:

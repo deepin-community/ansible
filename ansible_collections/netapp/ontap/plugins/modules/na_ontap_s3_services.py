@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2024, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -14,7 +14,7 @@ short_description: NetApp ONTAP S3 services
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: 21.20.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Create, delete or modify S3 Service
 
@@ -83,52 +83,51 @@ options:
 '''
 
 EXAMPLES = """
-    - name: create or modify s3 service
-      na_ontap_s3_services:
-        state: present
-        name: carchi-test
-        vserver: ansibleSVM
-        comment: not enabled
-        enabled: False
-        certificate_name: ansibleSVM_16E1C1284D889609
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: true
-        validate_certs: false
-        use_rest: always
+- name: Create or modify s3 service
+  netapp.ontap.na_ontap_s3_services:
+    state: present
+    name: carchi-test
+    vserver: ansibleSVM
+    comment: not enabled
+    enabled: false
+    certificate_name: ansibleSVM_16E1C1284D889609
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: false
+    use_rest: always
 
-    - name: create or modify s3 service with https
-      na_ontap_s3_services:
-        state: present
-        name: carchi-test
-        vserver: ansibleSVM
-        comment: not enabled
-        enabled: True
-        is_https_enabled: True
-        port: 80
-        certificate_name: ansibleSVM_16E1C1284D889609
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: true
-        validate_certs: false
-        use_rest: always
+- name: Create or modify s3 service with https
+  netapp.ontap.na_ontap_s3_services:
+    state: present
+    name: carchi-test
+    vserver: ansibleSVM
+    comment: not enabled
+    enabled: true
+    is_https_enabled: true
+    port: 80
+    certificate_name: ansibleSVM_16E1C1284D889609
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: false
+    use_rest: always
 
-    - name: delete s3 service
-      na_ontap_s3_services:
-        state: absent
-        name: carchi-test
-        vserver: ansibleSVM
-        certificate_name: ansibleSVM_16E1C1284D889609
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: true
-        validate_certs: false
-        use_rest: always
+- name: Delete s3 service
+  netapp.ontap.na_ontap_s3_services:
+    state: absent
+    name: carchi-test
+    vserver: ansibleSVM
+    certificate_name: ansibleSVM_16E1C1284D889609
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: false
+    use_rest: always
 """
-
 
 RETURN = """
 s3_service_info:

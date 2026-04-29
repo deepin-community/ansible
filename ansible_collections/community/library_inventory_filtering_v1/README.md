@@ -5,7 +5,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
 # Community Inventory Filtering Library Collection
-[![CI](https://github.com/ansible-collections/community.library_inventory_filtering/workflows/CI/badge.svg?event=push)](https://github.com/ansible-collections/community.library_inventory_filtering/actions)
+[![Documentation](https://img.shields.io/badge/docs-brightgreen.svg)](https://docs.ansible.com/ansible/devel/collections/community/library_inventory_filtering_v1/)
+[![CI](https://github.com/ansible-collections/community.library_inventory_filtering/actions/workflows/nox.yml/badge.svg?branch=stable-1)](https://github.com/ansible-collections/community.library_inventory_filtering/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/community.library_inventory_filtering)](https://codecov.io/gh/ansible-collections/community.library_inventory_filtering)
 [![REUSE status](https://api.reuse.software/badge/github.com/ansible-collections/community.library_inventory_filtering)](https://api.reuse.software/info/github.com/ansible-collections/community.library_inventory_filtering)
 
@@ -80,6 +81,7 @@ Since multiple versions are maintained in parallel, there is no need to wait bet
 - [Ansible Collection overview](https://github.com/ansible-collections/overview)
 - [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
 - [Ansible Developer guide](https://docs.ansible.com/ansible/latest/dev_guide/index.html)
+- [Antsibull-nox documentation](https://ansible.readthedocs.io/projects/antsibull-nox/)
 - [Ansible Collections Checklist](https://github.com/ansible-collections/overview/blob/master/collection_requirements.rst)
 - [Ansible Community code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
 - [The Bullhorn (the Ansible Contributor newsletter)](https://us19.campaign-archive.com/home/?u=56d874e027110e35dea0e03c1&id=d6635f5420)

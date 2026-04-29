@@ -180,6 +180,7 @@ options:
                             - 'icap'
                             - 'ztna'
                             - 'virtual-patch'
+                            - 'debug'
                     filter:
                         type: str
                         description: Free style filter string.
@@ -295,12 +296,19 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            debug:
+                type: str
+                description: Enable/disable debug logging.
+                choices:
+                    - 'disable'
+                    - 'enable'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -316,40 +324,38 @@ EXAMPLES = '''
         adom: <your own value>
         devprof: <your own value>
         devprof_log_syslogd_filter:
-          severity: <value in [emergency, alert, critical, ...]>
-          anomaly: <value in [disable, enable]>
-          exclude_list:
-            -
-              category: <value in [app-ctrl, attack, dlp, ...]>
-              fields:
-                -
-                  args: <list or string>
-                  field: <string>
-                  negate: <value in [disable, enable]>
-              id: <integer>
-          forward_traffic: <value in [disable, enable]>
-          free_style:
-            -
-              category: <value in [traffic, event, virus, ...]>
-              filter: <string>
-              filter_type: <value in [include, exclude]>
-              id: <integer>
-          gtp: <value in [disable, enable]>
-          local_traffic: <value in [disable, enable]>
-          multicast_traffic: <value in [disable, enable]>
-          sniffer_traffic: <value in [disable, enable]>
-          voip: <value in [disable, enable]>
-          ztna_traffic: <value in [disable, enable]>
-          filter_type: <value in [include, exclude]>
-          filter: <string>
-          cifs: <value in [disable, enable]>
-          ssl: <value in [disable, enable]>
-          dns: <value in [disable, enable]>
-          ssh: <value in [disable, enable]>
-          netscan_discovery: <value in [disable, enable]>
-          netscan_vulnerability: <value in [disable, enable]>
-          forti_switch: <value in [disable, enable]>
-          http_transaction: <value in [disable, enable]>
+          # severity: <value in [emergency, alert, critical, ...]>
+          # anomaly: <value in [disable, enable]>
+          # exclude_list:
+          #   - category: <value in [app-ctrl, attack, dlp, ...]>
+          #     fields:
+          #       - args: <list or string>
+          #         field: <string>
+          #         negate: <value in [disable, enable]>
+          #     id: <integer>
+          # forward_traffic: <value in [disable, enable]>
+          # free_style:
+          #   - category: <value in [traffic, event, virus, ...]>
+          #     filter: <string>
+          #     filter_type: <value in [include, exclude]>
+          #     id: <integer>
+          # gtp: <value in [disable, enable]>
+          # local_traffic: <value in [disable, enable]>
+          # multicast_traffic: <value in [disable, enable]>
+          # sniffer_traffic: <value in [disable, enable]>
+          # voip: <value in [disable, enable]>
+          # ztna_traffic: <value in [disable, enable]>
+          # filter_type: <value in [include, exclude]>
+          # filter: <string>
+          # cifs: <value in [disable, enable]>
+          # ssl: <value in [disable, enable]>
+          # dns: <value in [disable, enable]>
+          # ssh: <value in [disable, enable]>
+          # netscan_discovery: <value in [disable, enable]>
+          # netscan_vulnerability: <value in [disable, enable]>
+          # forti_switch: <value in [disable, enable]>
+          # http_transaction: <value in [disable, enable]>
+          # debug: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -450,7 +456,7 @@ def main():
                             'v_range': [['7.0.4', '7.0.13'], ['7.2.1', '']],
                             'choices': [
                                 'traffic', 'event', 'virus', 'webfilter', 'attack', 'spam', 'voip', 'dlp', 'app-ctrl', 'anomaly', 'waf', 'gtp', 'dns',
-                                'ssh', 'ssl', 'file-filter', 'icap', 'ztna', 'virtual-patch'
+                                'ssh', 'ssl', 'file-filter', 'icap', 'ztna', 'virtual-patch', 'debug'
                             ],
                             'type': 'str'
                         },
@@ -475,7 +481,8 @@ def main():
                 'netscan-discovery': {'v_range': [['7.0.4', '7.0.13']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'netscan-vulnerability': {'v_range': [['7.0.4', '7.0.13']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'forti-switch': {'v_range': [['7.4.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'http-transaction': {'v_range': [['7.6.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'http-transaction': {'v_range': [['7.6.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'debug': {'v_range': [['7.6.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }
         }
     }

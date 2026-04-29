@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # Dell OpenManage Ansible Modules
-# Version 9.3.0
-# Copyright (C) 2019-2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Version 9.12.3
+# Copyright (C) 2019-2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -52,13 +52,14 @@ idrac_auth_params = {
 }
 
 SESSION_RESOURCE_COLLECTION = {
-    "SESSION": "/redfish/v1/Sessions",
-    "SESSION_ID": "/redfish/v1/Sessions/{Id}",
+    "SESSION": "/redfish/v1/SessionService/Sessions",
+    "SESSION_ID": "/redfish/v1/SessionService/Sessions/{Id}",
 }
 MANAGER_URI = "/redfish/v1/Managers/iDRAC.Embedded.1"
 EXPORT_URI = "/redfish/v1/Managers/iDRAC.Embedded.1/Actions/Oem/EID_674_Manager.ExportSystemConfiguration"
 IMPORT_URI = "/redfish/v1/Managers/iDRAC.Embedded.1/Actions/Oem/EID_674_Manager.ImportSystemConfiguration"
 IMPORT_PREVIEW = "/redfish/v1/Managers/iDRAC.Embedded.1/Actions/Oem/EID_674_Manager.ImportSystemConfigurationPreview"
+GET_IDRAC_MANAGER_ATTRIBUTES_9_10 = "/redfish/v1/Managers/iDRAC.Embedded.1/Oem/Dell/DellAttributes/iDRAC.Embedded.1"
 
 
 class OpenURLResponse(object):
@@ -212,10 +213,19 @@ class iDRACRedfishAPI(object):
         """
         firmware_version = None
         response = self.invoke_request(MANAGER_URI, 'GET')
+        generation = 0
         if response.status_code == 200:
             generation = int(re.search(r"\d+(?=G)", response.json_data["Model"]).group())
             firmware_version = response.json_data["FirmwareVersion"]
-        return generation, firmware_version
+        hw_model = ""
+        try:
+            hw_model_out = self.invoke_request(GET_IDRAC_MANAGER_ATTRIBUTES_9_10, 'GET')
+            if hw_model_out.status_code == 200:
+                hw_model = hw_model_out.json_data.get('Attributes', {}).get('Info.1.HWModel', "iDRAC 9")
+        except HTTPError:
+            hw_model = "iDRAC 8"
+
+        return generation, firmware_version, hw_model
 
     def wait_for_job_complete(self, task_uri, job_wait=False):
         """
@@ -228,7 +238,8 @@ class iDRACRedfishAPI(object):
         while job_wait:
             try:
                 response = self.invoke_request(task_uri, "GET")
-                if response.json_data.get("TaskState") == "Running":
+                if response.json_data.get("TaskState") == "Running" or \
+                        response.json_data.get("TaskState") == "New":
                     time.sleep(10)
                 else:
                     break
@@ -296,7 +307,7 @@ class iDRACRedfishAPI(object):
             payload["ShareParameters"]["ProxyUserName"] = share["proxy_username"]
         if share.get("proxy_password") is not None:
             payload["ShareParameters"]["ProxyPassword"] = share["proxy_password"]
-        payload["IncludeInExport"] = include_in_export
+        payload["IncludeInExport"] = [include_in_export]
         response = self.invoke_request(EXPORT_URI, "POST", data=payload)
         if response.status_code == 202 and job_wait:
             task_uri = response.headers["Location"]
@@ -437,6 +448,29 @@ class iDRACRedfishAPI(object):
     def _get_omam_ca_env(self):
         """Check if the value is set in REQUESTS_CA_BUNDLE or CURL_CA_BUNDLE or OMAM_CA_BUNDLE or returns None"""
         return os.environ.get("REQUESTS_CA_BUNDLE") or os.environ.get("CURL_CA_BUNDLE") or os.environ.get("OMAM_CA_BUNDLE")
+
+    def validate_idrac10_and_above(self):
+        gen_details = self.get_server_generation
+        hw_model = gen_details[2]
+        return hw_model == 'iDRAC 10'
+
+    def get_job_uri(self):
+        idrac10_or_above = self.validate_idrac10_and_above()
+        if idrac10_or_above:
+            return "/redfish/v1/Managers/iDRAC.Embedded.1/Oem/Dell/Jobs/{job_id}"
+        return "/redfish/v1/Managers/iDRAC.Embedded.1/Jobs/{job_id}"
+
+    def find_ip_address(self, sharename):
+        pattern_ipv4 = r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b'
+        ipv4_addresses = re.findall(pattern_ipv4, sharename)
+        pattern_ipv6 = r'\b(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}\b'
+        ipv6_addresses = re.findall(pattern_ipv6, sharename)
+        address = None
+        if ipv4_addresses:
+            address = ipv4_addresses[0]
+        elif ipv6_addresses:
+            address = ipv6_addresses[0]
+        return address
 
 
 class IdracAnsibleModule(AnsibleModule):

@@ -97,6 +97,9 @@ options:
     default: false
   rename_to:
     description:
+    - DEPRECATED (see the L(discussion,https://github.com/ansible-collections/community.postgresql/issues/820)).
+      This option will be removed in version 5.0.0.
+      To rename a sequence, use the M(community.postgresql.postgresql_query) module.
     - The new name for the I(sequence).
     - Works only for existing sequences.
     type: str
@@ -123,14 +126,15 @@ options:
     - Permissions checking for SQL commands is carried out as though
       the I(session_role) were the one that had logged in originally.
     type: str
-  db:
+  login_db:
     description:
     - Name of database to connect to and run queries against.
+    - The V(db) and V(database) aliases are deprecated and will be removed in version 5.0.0.
     type: str
     default: ''
     aliases:
     - database
-    - login_db
+    - db
   trust_input:
     description:
     - If C(false), check whether values of parameters I(sequence), I(schema), I(rename_to),
@@ -202,11 +206,6 @@ EXAMPLES = r'''
   community.postgresql.postgresql_sequence:
     name: foobar
     owner: foobar
-
-- name: Rename an existing sequence named foo to bar
-  community.postgresql.postgresql_sequence:
-    name: foo
-    rename_to: bar
 
 - name: Change the schema of an existing sequence to foobar
   community.postgresql.postgresql_sequence:
@@ -484,10 +483,22 @@ def main():
         cycle=dict(type='bool', default=False),
         schema=dict(type='str', default='public'),
         cascade=dict(type='bool', default=False),
-        rename_to=dict(type='str'),
+        rename_to=dict(type='str', removed_in_version='5.0.0',
+                       removed_from_collection='community.postgresql'),
         owner=dict(type='str'),
         newschema=dict(type='str'),
-        db=dict(type='str', default='', aliases=['login_db', 'database']),
+        login_db=dict(type='str', default='', aliases=['db', 'database'], deprecated_aliases=[
+            {
+                'name': 'db',
+                'version': '5.0.0',
+                'collection_name': 'community.postgresql',
+            },
+            {
+                'name': 'database',
+                'version': '5.0.0',
+                'collection_name': 'community.postgresql',
+            }],
+        ),
         session_role=dict(type='str'),
         trust_input=dict(type="bool", default=True),
     )

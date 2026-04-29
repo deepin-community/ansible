@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "community",
   "name": "libvirt",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "authors": [
    "Ansible (https://github.com/ansible)",
    "community.libvirt"
@@ -26,7 +26,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "5209c6a915eee7b459e3bd0275469132b95ac29a0e0a283e41605ccba0c93a87",
+  "chksum_sha256": "178eb49389358cf36a695cf37be00e3600722e993c02a54e286670cb9b3d547c",
   "format": 1
  },
  "format": 1

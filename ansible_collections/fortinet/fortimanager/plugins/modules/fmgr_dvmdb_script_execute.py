@@ -148,6 +148,7 @@ EXAMPLES = '''
 
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -238,7 +239,7 @@ def main():
                     'elements': 'dict'
                 },
                 'script': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'type': 'str'},
-                'pblock': {'v_range': [['7.0.10', '7.0.13'], ['7.2.5', '7.2.8'], ['7.4.2', '']], 'type': 'str'}
+                'pblock': {'v_range': [['7.0.10', '7.0.13'], ['7.2.5', '7.2.9'], ['7.4.2', '']], 'type': 'str'}
             }
         }
     }

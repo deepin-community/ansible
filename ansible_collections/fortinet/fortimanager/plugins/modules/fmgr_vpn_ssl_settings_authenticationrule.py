@@ -169,6 +169,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -185,20 +186,20 @@ EXAMPLES = '''
         vdom: <your own value>
         state: present # <value in [present, absent]>
         vpn_ssl_settings_authenticationrule:
-          auth: <value in [any, local, radius, ...]>
-          cipher: <value in [any, high, medium]>
-          client_cert: <value in [disable, enable]>
-          groups: <list or string>
-          id: <integer>
-          portal: <string>
-          realm: <string>
-          source_address: <list or string>
-          source_address_negate: <value in [disable, enable]>
-          source_address6: <list or string>
-          source_address6_negate: <value in [disable, enable]>
-          source_interface: <list or string>
-          user_peer: <string>
-          users: <list or string>
+          id: 0 # Required variable, integer
+          # auth: <value in [any, local, radius, ...]>
+          # cipher: <value in [any, high, medium]>
+          # client_cert: <value in [disable, enable]>
+          # groups: <list or string>
+          # portal: <string>
+          # realm: <string>
+          # source_address: <list or string>
+          # source_address_negate: <value in [disable, enable]>
+          # source_address6: <list or string>
+          # source_address6_negate: <value in [disable, enable]>
+          # source_interface: <list or string>
+          # user_peer: <string>
+          # users: <list or string>
 '''
 
 RETURN = '''

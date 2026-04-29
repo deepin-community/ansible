@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
     delete_default_rule,
 )
@@ -68,7 +68,8 @@ class NetworksApplianceFirewallL3FirewallRules(object):
             new_object_params['rules'] = self.new_object.get('rules') or \
                 self.new_object.get('rules')
         if self.new_object.get('syslogDefaultRule') is not None or self.new_object.get('syslog_default_rule') is not None:
-            new_object_params['syslogDefaultRule'] = self.new_object.get('syslogDefaultRule')
+            new_object_params['syslogDefaultRule'] = self.new_object.get(
+                'syslogDefaultRule')
         if self.new_object.get('networkId') is not None or self.new_object.get('network_id') is not None:
             new_object_params['networkId'] = self.new_object.get('networkId') or \
                 self.new_object.get('network_id')
@@ -83,9 +84,6 @@ class NetworksApplianceFirewallL3FirewallRules(object):
                 function="getNetworkApplianceFirewallL3FirewallRules",
                 params=self.get_all_params(name=name),
             )
-            if isinstance(items, dict):
-                if 'response' in items:
-                    items = items.get('response')
             result = get_dict_result(items, 'name', name)
             if result is None:
                 result = items
@@ -103,7 +101,8 @@ class NetworksApplianceFirewallL3FirewallRules(object):
         prev_obj = None
         id_exists = False
         name_exists = False
-        o_id = self.new_object.get("networkId") or self.new_object.get("network_id")
+        o_id = self.new_object.get(
+            "networkId") or self.new_object.get("network_id")
         name = self.new_object.get("name")
         if o_id:
             prev_obj = self.get_object_by_name(o_id)
@@ -131,8 +130,8 @@ class NetworksApplianceFirewallL3FirewallRules(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):

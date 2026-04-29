@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -219,6 +220,10 @@ options:
                 description:
                     - IP address used by the DNS server as its source IP.
                 type: str
+            source_ip_interface:
+                description:
+                    - IP address of the specified interface as the source IP address. Source system.interface.name.
+                type: str
             ssl_certificate:
                 description:
                     - Name of local certificate for SSL connections. Source certificate.local.name.
@@ -226,6 +231,10 @@ options:
             timeout:
                 description:
                     - DNS query timeout interval in seconds (1 - 10).
+                type: int
+            vrf_select:
+                description:
+                    - VRF ID used for connection to server.
                 type: int
 """
 
@@ -263,8 +272,10 @@ EXAMPLES = """
                   hostname: "myhostname"
           server_select_method: "least-rtt"
           source_ip: "84.230.14.43"
+          source_ip_interface: "<your_own_value> (source system.interface.name)"
           ssl_certificate: "<your_own_value> (source certificate.local.name)"
           timeout: "5"
+          vrf_select: "0"
 """
 
 RETURN = """
@@ -344,6 +355,18 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_system_dns_data(json):
@@ -373,8 +396,10 @@ def filter_system_dns_data(json):
         "server_hostname",
         "server_select_method",
         "source_ip",
+        "source_ip_interface",
         "ssl_certificate",
         "timeout",
+        "vrf_select",
     ]
 
     json = remove_invalid_fields(json)
@@ -392,8 +417,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -421,30 +445,115 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def system_dns(data, fos, check_mode=False):
 
-def system_dns(data, fos):
     state = None
     vdom = data["vdom"]
+    state = data.get("state", None)
     system_dns_data = data["system_dns"]
 
     filtered_data = filter_system_dns_data(system_dns_data)
     filtered_data = flatten_multilists_attributes(filtered_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("system", "dns", filtered_data, vdom=vdom)
+        current_data = fos.get("system", "dns", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["system_dns"] = converted_data
+    data_copy["system_dns"] = filtered_data
     fos.do_member_operation(
         "system",
         "dns",
@@ -466,12 +575,14 @@ def is_successful_status(resp):
     )
 
 
-def fortios_system(data, fos):
+def fortios_system(data, fos, check_mode):
+
     if data["system_dns"]:
-        resp = system_dns(data, fos)
+        resp = system_dns(data, fos, check_mode)
     else:
         fos._module.fail_json(msg="missing task body: %s" % ("system_dns"))
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -531,6 +642,7 @@ versioned_schema = {
             "options": [{"value": "disable"}, {"value": "enable"}],
         },
         "source_ip": {"v_range": [["v6.0.0", ""]], "type": "string"},
+        "source_ip_interface": {"v_range": [["v7.6.1", ""]], "type": "string"},
         "root_servers": {
             "v_range": [["v7.6.0", ""]],
             "type": "list",
@@ -546,6 +658,7 @@ versioned_schema = {
             "v_range": [["v6.2.0", "v6.2.0"], ["v6.2.5", ""]],
             "type": "string",
         },
+        "vrf_select": {"v_range": [["v7.6.1", ""]], "type": "integer"},
         "server_select_method": {
             "v_range": [["v7.0.1", ""]],
             "type": "string",
@@ -603,7 +716,7 @@ def main():
         if mkeyname and mkeyname == attribute_name:
             fields["system_dns"]["options"][attribute_name]["required"] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -626,7 +739,9 @@ def main():
             fos, versioned_schema, "system_dns"
         )
 
-        is_error, has_changed, result, diff = fortios_system(module.params, fos)
+        is_error, has_changed, result, diff = fortios_system(
+            module.params, fos, module.check_mode
+        )
 
     else:
         module.fail_json(**FAIL_SOCKET_MSG)

@@ -1,12 +1,12 @@
 #!/usr/bin/python
 
-# (c) 2018-2022, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = '''
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Create/Delete NVME subsystem
   - Associate(modify) host/map to NVME subsystem
@@ -56,6 +56,7 @@ options:
   paths:
     description:
       - List of Namespace paths to be associated with the subsystem.
+      - For ASA R2 systems, The paths should match the format <name>[@<snapshot-name>].
     type: list
     elements: str
 short_description: "NetApp ONTAP Manage NVME Subsystem"
@@ -63,52 +64,50 @@ version_added: 2.8.0
 '''
 
 EXAMPLES = """
+- name: Create NVME Subsystem
+  netapp.ontap.na_ontap_nvme_subsystem:
+    state: present
+    subsystem: test_sub
+    vserver: test_dest
+    ostype: linux
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Create NVME Subsystem
-      netapp.ontap.na_ontap_nvme_subsystem:
-        state: present
-        subsystem: test_sub
-        vserver: test_dest
-        ostype: linux
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Delete NVME Subsystem
+  netapp.ontap.na_ontap_nvme_subsystem:
+    state: absent
+    subsystem: test_sub
+    vserver: test_dest
+    skip_host_check: true
+    skip_mapped_check: true
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Delete NVME Subsystem
-      netapp.ontap.na_ontap_nvme_subsystem:
-        state: absent
-        subsystem: test_sub
-        vserver: test_dest
-        skip_host_check: True
-        skip_mapped_check: True
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Associate NVME Subsystem host/map
+  netapp.ontap.na_ontap_nvme_subsystem:
+    state: present
+    subsystem: "{{ subsystem }}"
+    ostype: linux
+    hosts: nqn.1992-08.com.netapp:sn.3017cfc1e2ba11e89c55005056b36338:subsystem.ansible
+    paths: /vol/ansible/test,/vol/ansible/test1
+    vserver: "{{ vserver }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Associate NVME Subsystem host/map
-      netapp.ontap.na_ontap_nvme_subsystem:
-        state: present
-        subsystem: "{{ subsystem }}"
-        ostype: linux
-        hosts: nqn.1992-08.com.netapp:sn.3017cfc1e2ba11e89c55005056b36338:subsystem.ansible
-        paths: /vol/ansible/test,/vol/ansible/test1
-        vserver: "{{ vserver }}"
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-
-    - name: Modify NVME subsystem map
-      netapp.ontap.na_ontap_nvme_subsystem:
-        state: present
-        subsystem: test_sub
-        vserver: test_dest
-        skip_host_check: True
-        skip_mapped_check: True
-        paths: /vol/ansible/test
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-
+- name: Modify NVME subsystem map
+  netapp.ontap.na_ontap_nvme_subsystem:
+    state: present
+    subsystem: test_sub
+    vserver: test_dest
+    skip_host_check: true
+    skip_mapped_check: true
+    paths: /vol/ansible/test
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """
@@ -119,7 +118,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 import ansible_collections.netapp.ontap.plugins.module_utils.netapp as netapp_utils
 from ansible_collections.netapp.ontap.plugins.module_utils.netapp_module import NetAppModule
-from ansible_collections.netapp.ontap.plugins.module_utils import rest_generic
+from ansible_collections.netapp.ontap.plugins.module_utils import rest_generic, rest_ontap_personality
 
 
 class NetAppONTAPNVMESubsystem:
@@ -152,7 +151,16 @@ class NetAppONTAPNVMESubsystem:
         self.parameters = self.na_helper.set_parameters(self.module.params)
         self.rest_api = netapp_utils.OntapRestAPI(self.module)
         self.use_rest = self.rest_api.is_rest()
-
+        self.asa_r2_system = False
+        if self.use_rest:
+            if self.rest_api.meets_rest_minimum_version(True, 9, 16, 0):
+                self.asa_r2_system = rest_ontap_personality.is_asa_r2_system(self.rest_api, self.module)
+                if self.asa_r2_system:
+                    if 'paths' in self.parameters:
+                        self.module.warn('For ASA R2 systems, The paths should match the format <name>[@<snapshot-name>].'
+                                         'The name must begin with a letter or \"_\" and contain only \"_\" and alphanumeric character')
+                        # If the path is passed as vol/vol1/ns it will be converted to ns for asa r2 systems.
+                        self.parameters['paths'] = [item.split("/")[-1] for item in self.parameters['paths']]
         if not self.use_rest:
             if not netapp_utils.has_netapp_lib():
                 self.module.fail_json(msg=netapp_utils.netapp_lib_is_required())

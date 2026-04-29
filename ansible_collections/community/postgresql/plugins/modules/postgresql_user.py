@@ -17,13 +17,10 @@ description:
   ("cluster" in PostgreSQL terminology) and, optionally,
   grants the user access to an existing database or tables.
 - A user is a role with login privilege.
-- You can also use it to grant or revoke user's privileges in a particular database.
 - You cannot remove a user while it still has any privileges granted to it in any database.
 - Set I(fail_on_user) to C(false) to make the module ignore failures when trying to remove a user.
   In this case, the module reports if changes happened as usual and separately reports
   whether the user has been removed or not.
-- B(WARNING) The I(priv) option has been B(deprecated) and will be removed in community.postgresql 4.0.0. Please use the
-  M(community.postgresql.postgresql_privs) module instead.
 options:
   name:
     description:
@@ -46,13 +43,14 @@ options:
     - Note that if the provided password string is already in MD5-hashed
       format, then it is used as-is, regardless of I(encrypted) option.
     type: str
-  db:
+  login_db:
     description:
     - Name of database to connect to and where user's permissions are granted.
+    - The V(db) alias is deprecated and will be removed in version 5.0.0.
     type: str
     default: ''
     aliases:
-    - login_db
+    - db
   fail_on_user:
     description:
     - If C(true), fails when the user (role) cannot be removed. Otherwise just log and continue.
@@ -60,22 +58,6 @@ options:
     type: bool
     aliases:
     - fail_on_role
-  priv:
-    description:
-    - This option has been B(deprecated) and will be removed in
-      community.postgresql 4.0.0. Please use the M(community.postgresql.postgresql_privs) module to
-      GRANT/REVOKE permissions instead.
-    - "Slash-separated PostgreSQL privileges string: C(priv1/priv2), where
-      you can define the user's privileges for the database ( allowed options - 'CREATE',
-      'CONNECT', 'TEMPORARY', 'TEMP', 'ALL'. For example C(CONNECT) ) or
-      for table ( allowed options - 'SELECT', 'INSERT', 'UPDATE', 'DELETE',
-      'TRUNCATE', 'REFERENCES', 'TRIGGER', 'ALL'. For example
-      C(table:SELECT) ). Mixed example of this string:
-      C(CONNECT/CREATE/table1:SELECT/table2:INSERT)."
-    - When I(priv) contains tables, the module uses the schema C(public) by default.
-      If you need to specify a different schema, use the C(schema_name.table_name) notation,
-      for example, C(pg_catalog.pg_stat_database:SELECT).
-    type: str
   role_attr_flags:
     description:
     - "PostgreSQL user attributes string in the format: CREATEDB,CREATEROLE,SUPERUSER."
@@ -148,7 +130,7 @@ options:
     version_added: '0.2.0'
   trust_input:
     description:
-    - If C(false), checks whether values of options I(name), I(password), I(privs), I(expires),
+    - If C(false), checks whether values of options I(name), I(password), I(expires),
       I(role_attr_flags), I(comment), I(session_role) are potentially dangerous.
     - It makes sense to use C(false) only when SQL injections through the options are possible.
     type: bool
@@ -177,6 +159,18 @@ options:
     type: bool
     default: false
     version_added: '3.5.0'
+  quote_configuration_values:
+    description:
+      - Automatically quote the values of configuration variables added via I(configuration). The default is C(true)
+        and setting this to C(false) leaves these options open to SQL-injections and makes the user responsible for
+        properly quoting values.
+      - This is required to be C(false) to modify settings like C(search_path), that need to be unquoted.
+      - If this is C(false) you will also need to make sure that strings are properly quoted.
+        For example C("'16MB'") for C(work_mem).
+      - Set this only to C(false) if you know what you are doing!
+    type: bool
+    default: true
+    version_added: '3.11.0'
 notes:
 - The module creates a user (role) with login privilege by default.
   Use C(NOLOGIN) I(role_attr_flags) to change this behaviour.
@@ -216,70 +210,49 @@ extends_documentation_fragment:
 '''
 
 EXAMPLES = r'''
-# This example uses the 'priv' argument which is deprecated.
-# You should use the 'postgresql_privs' module instead.
-- name: Connect to acme database, create django user, and grant access to database and products table
+- name: Connect to acme database, create django user
   community.postgresql.postgresql_user:
-    db: acme
+    login_db: acme
     name: django
     password: ceec4eif7ya
-    priv: "CONNECT/products:ALL"
     expires: "Jan 31 2020"
 
 - name: Add a comment on django user
   community.postgresql.postgresql_user:
-    db: acme
+    login_db: acme
     name: django
     comment: This is a test user
 
 # Connect to default database, create rails user, set its password (MD5- or SHA256-hashed),
-# and grant privilege to create other databases and demote rails from super user status if user exists
+# and set flags to allow the user to create databases
+# and demote rails from super user status if user exists
 # the hash from the corresponding pg_authid entry.
-- name: Create rails user, set MD5-hashed password, grant privs
+- name: Create rails user, set MD5-hashed password, set flags
   community.postgresql.postgresql_user:
     name: rails
     password: md59543f1d82624df2b31672ec0f7050460
     # password: SCRAM-SHA-256$4096:zFuajwIVdli9mK=NJkcv1Q++$JC4gWIrEHmF6sqRbEiZw5FFW45HUPrpVzNdoM72o730+;fqA4vLN3mCZGbhcbQyvNYY7anCrUTsem1eCh/4YA94=
     role_attr_flags: CREATEDB,NOSUPERUSER
   # When using sha256-hashed password:
-  #environment:
-  #  PGOPTIONS: "-c password_encryption=scram-sha-256"
+  # environment:
+  #   PGOPTIONS: "-c password_encryption=scram-sha-256"
 
-# This example uses the 'priv' argument which is deprecated.
-# You should use the 'postgresql_privs' module instead.
-- name: Connect to acme database and remove test user privileges from there
-  community.postgresql.postgresql_user:
-    db: acme
-    name: test
-    priv: "ALL/products:ALL"
-    state: absent
-    fail_on_user: false
-
-# This example uses the 'priv' argument which is deprecated.
-# You should use the 'postgresql_privs' module instead.
 - name: Connect to test database, remove test user from cluster
   community.postgresql.postgresql_user:
-    db: test
+    login_db: test
     name: test
-    priv: ALL
     state: absent
 
-# This example uses the 'priv' argument which is deprecated.
-# You should use the 'postgresql_privs' module instead.
 - name: Connect to acme database and set user's password with no expire date
   community.postgresql.postgresql_user:
-    db: acme
+    login_db: acme
     name: django
     password: mysupersecretword
-    priv: "CONNECT/products:ALL"
     expires: infinity
-
-# Example privileges string format
-# INSERT,UPDATE/table:SELECT/anothertable:ALL
 
 - name: Connect to test database and remove an existing user's password
   community.postgresql.postgresql_user:
-    db: test
+    login_db: test
     user: test
     password: ""
 
@@ -291,13 +264,6 @@ EXAMPLES = r'''
     password: "secret123"
   environment:
     PGOPTIONS: "-c password_encryption=scram-sha-256"
-
-# This example uses the 'priv' argument which is deprecated.
-# You should use the 'postgresql_privs' module instead.
-- name: Create a user, grant SELECT on pg_catalog.pg_stat_database
-  community.postgresql.postgresql_user:
-    name: monitoring
-    priv: 'pg_catalog.pg_stat_database:SELECT'
 
 # Create a user and set a default-configuration that is active when they start a session
 - name: Create a user with config-parameter
@@ -315,6 +281,13 @@ EXAMPLES = r'''
     configuration:
       work_mem: "16MB"
     reset_unspecified_configuration: true
+
+- name: Set search_path for user
+  community.postgresql.postgresql_user:
+    name: postgres_exporter
+    quote_configuration_values: false
+    configuration:
+      search_path: postgres_exporter, pg_catalog, public
 '''
 
 RETURN = r'''
@@ -334,7 +307,6 @@ from hashlib import md5, sha256
 
 from ansible.module_utils._text import to_bytes, to_native, to_text
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.six import iteritems
 from ansible_collections.community.postgresql.plugins.module_utils import \
     saslprep
 from ansible_collections.community.postgresql.plugins.module_utils.database import (
@@ -375,12 +347,6 @@ FLAGS = ('SUPERUSER', 'CREATEROLE', 'CREATEDB', 'INHERIT', 'LOGIN', 'REPLICATION
 FLAGS_BY_VERSION = {'BYPASSRLS': 90500}
 
 SCRAM_SHA256_REGEX = r'^SCRAM-SHA-256\$(\d+):([A-Za-z0-9+\/=]+)\$([A-Za-z0-9+\/=]+):([A-Za-z0-9+\/=]+)$'
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-VALID_PRIVS = dict(table=frozenset(('SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'REFERENCES', 'TRIGGER', 'ALL')),
-                   database=frozenset(
-                       ('CREATE', 'CONNECT', 'TEMPORARY', 'TEMP', 'ALL')),
-                   )
 
 # map to cope with idiosyncrasies of SUPERUSER and LOGIN
 PRIV_TO_AUTHID_COLUMN = dict(SUPERUSER='rolsuper', CREATEROLE='rolcreaterole',
@@ -724,176 +690,13 @@ def user_delete(cursor, user, module):
         query = 'DROP USER %s' % _pg_quote_user(user, module)
         executed_queries.append(query)
         cursor.execute(query)
-    except Exception:
+    except Exception as e:
         cursor.execute("ROLLBACK TO SAVEPOINT ansible_pgsql_user_delete")
         cursor.execute("RELEASE SAVEPOINT ansible_pgsql_user_delete")
-        return False
+        return False, e
 
     cursor.execute("RELEASE SAVEPOINT ansible_pgsql_user_delete")
-    return True
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def has_table_privileges(cursor, user, table, privs):
-    """
-    Return the difference between the privileges that a user already has and
-    the privileges that they desire to have.
-
-    :returns: tuple of:
-        * privileges that they have and were requested
-        * privileges they currently hold but were not requested
-        * privileges requested that they do not hold
-    """
-    cur_privs = get_table_privileges(cursor, user, table)
-    have_currently = cur_privs.intersection(privs)
-    other_current = cur_privs.difference(privs)
-    desired = privs.difference(cur_privs)
-    return (have_currently, other_current, desired)
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def get_table_privileges(cursor, user, table):
-    if '.' in table:
-        schema, table = table.split('.', 1)
-    else:
-        schema = 'public'
-    query = ("SELECT privilege_type FROM information_schema.role_table_grants "
-             "WHERE grantee=%(user)s AND table_name=%(table)s AND table_schema=%(schema)s")
-    cursor.execute(query, {'user': user, 'table': table, 'schema': schema})
-    return frozenset([x["privilege_type"] for x in cursor.fetchall()])
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def grant_table_privileges(cursor, user, table, privs):
-    # Note: priv escaped by parse_privs
-    privs = ', '.join(privs)
-    query = 'GRANT %s ON TABLE %s TO "%s"' % (
-        privs, pg_quote_identifier(table, 'table'), user)
-    executed_queries.append(query)
-    cursor.execute(query)
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def revoke_table_privileges(cursor, user, table, privs):
-    # Note: priv escaped by parse_privs
-    privs = ', '.join(privs)
-    query = 'REVOKE %s ON TABLE %s FROM "%s"' % (
-        privs, pg_quote_identifier(table, 'table'), user)
-    executed_queries.append(query)
-    cursor.execute(query)
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def get_database_privileges(cursor, user, db):
-    priv_map = {
-        'C': 'CREATE',
-        'T': 'TEMPORARY',
-        'c': 'CONNECT',
-    }
-    query = 'SELECT datacl::text FROM pg_database WHERE datname = %s'
-    cursor.execute(query, (db,))
-    datacl = cursor.fetchone()["datacl"]
-    if datacl is None:
-        return set()
-    r = re.search(r'%s\\?"?=(C?T?c?)/[^,]+,?' % user, datacl)
-    if r is None:
-        return set()
-    o = set()
-    for v in r.group(1):
-        o.add(priv_map[v])
-    return normalize_privileges(o, 'database')
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def has_database_privileges(cursor, user, db, privs):
-    """
-    Return the difference between the privileges that a user already has and
-    the privileges that they desire to have.
-
-    :returns: tuple of:
-        * privileges that they have and were requested
-        * privileges they currently hold but were not requested
-        * privileges requested that they do not hold
-    """
-    cur_privs = get_database_privileges(cursor, user, db)
-    have_currently = cur_privs.intersection(privs)
-    other_current = cur_privs.difference(privs)
-    desired = privs.difference(cur_privs)
-    return (have_currently, other_current, desired)
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def grant_database_privileges(cursor, user, db, privs):
-    # Note: priv escaped by parse_privs
-    privs = ', '.join(privs)
-    if user == "PUBLIC":
-        query = 'GRANT %s ON DATABASE %s TO PUBLIC' % (
-                privs, pg_quote_identifier(db, 'database'))
-    else:
-        query = 'GRANT %s ON DATABASE %s TO "%s"' % (
-                privs, pg_quote_identifier(db, 'database'), user)
-
-    executed_queries.append(query)
-    cursor.execute(query)
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def revoke_database_privileges(cursor, user, db, privs):
-    # Note: priv escaped by parse_privs
-    privs = ', '.join(privs)
-    if user == "PUBLIC":
-        query = 'REVOKE %s ON DATABASE %s FROM PUBLIC' % (
-                privs, pg_quote_identifier(db, 'database'))
-    else:
-        query = 'REVOKE %s ON DATABASE %s FROM "%s"' % (
-                privs, pg_quote_identifier(db, 'database'), user)
-
-    executed_queries.append(query)
-    cursor.execute(query)
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def revoke_privileges(cursor, user, privs):
-    if privs is None:
-        return False
-
-    revoke_funcs = dict(table=revoke_table_privileges,
-                        database=revoke_database_privileges)
-    check_funcs = dict(table=has_table_privileges,
-                       database=has_database_privileges)
-
-    changed = False
-    for type_ in privs:
-        for name, privileges in iteritems(privs[type_]):
-            # Check that any of the privileges requested to be removed are
-            # currently granted to the user
-            differences = check_funcs[type_](cursor, user, name, privileges)
-            if differences[0]:
-                revoke_funcs[type_](cursor, user, name, privileges)
-                changed = True
-    return changed
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def grant_privileges(cursor, user, privs):
-    if privs is None:
-        return False
-
-    grant_funcs = dict(table=grant_table_privileges,
-                       database=grant_database_privileges)
-    check_funcs = dict(table=has_table_privileges,
-                       database=has_database_privileges)
-
-    changed = False
-    for type_ in privs:
-        for name, privileges in iteritems(privs[type_]):
-            # Check that any of the privileges requested for the user are
-            # currently missing
-            differences = check_funcs[type_](cursor, user, name, privileges)
-            if differences[2]:
-                grant_funcs[type_](cursor, user, name, privileges)
-                changed = True
-    return changed
+    return True, None
 
 
 def parse_role_attrs(role_attr_flags, srv_version):
@@ -924,61 +727,6 @@ def parse_role_attrs(role_attr_flags, srv_version):
                                 ' '.join(flags.difference(valid_flags)))
 
     return ' '.join(flags)
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def normalize_privileges(privs, type_):
-    new_privs = set(privs)
-    if 'ALL' in new_privs:
-        new_privs.update(VALID_PRIVS[type_])
-        new_privs.remove('ALL')
-    if 'TEMP' in new_privs:
-        new_privs.add('TEMPORARY')
-        new_privs.remove('TEMP')
-
-    return new_privs
-
-
-# WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-def parse_privs(privs, db):
-    """
-    Parse privilege string to determine permissions for database db.
-    Format:
-
-        privileges[/privileges/...]
-
-    Where:
-
-        privileges := DATABASE_PRIVILEGES[,DATABASE_PRIVILEGES,...] |
-            TABLE_NAME:TABLE_PRIVILEGES[,TABLE_PRIVILEGES,...]
-    """
-    if privs is None:
-        return privs
-
-    o_privs = {
-        'database': {},
-        'table': {}
-    }
-    for token in privs.split('/'):
-        if ':' not in token:
-            type_ = 'database'
-            name = db
-            priv_set = frozenset(x.strip().upper()
-                                 for x in token.split(',') if x.strip())
-        else:
-            type_ = 'table'
-            name, privileges = token.split(':', 1)
-            priv_set = frozenset(x.strip().upper()
-                                 for x in privileges.split(',') if x.strip())
-
-        if not priv_set.issubset(VALID_PRIVS[type_]):
-            raise InvalidPrivsError('Invalid privs specified for %s: %s' %
-                                    (type_, ' '.join(priv_set.difference(VALID_PRIVS[type_]))))
-
-        priv_set = normalize_privileges(priv_set, type_)
-        o_privs[type_][name] = priv_set
-
-    return o_privs
 
 
 def get_valid_flags_by_version(srv_version):
@@ -1038,7 +786,7 @@ def parse_user_configuration(module, configs):
         return {}
 
 
-def user_configuration(cursor, module, user, configuration, reset_unspec_config):
+def user_configuration(cursor, module, user, configuration, reset_unspec_config, quote_values):
     """Updates the user's configuration parameters if necessary."""
     current_config_query = "SELECT rolconfig FROM pg_roles WHERE rolname = %(user)s;"
     cursor.execute(current_config_query, {"user": user})
@@ -1060,8 +808,12 @@ def user_configuration(cursor, module, user, configuration, reset_unspec_config)
             cursor.execute(query)
             changed = True
         for key, value in config_updates["update"].items():
-            query = ('ALTER ROLE %(user)s SET "%(key)s" TO \'%(value)s\';' %
-                     {"user": _pg_quote_user(user, module), "key": key, "value": value})
+            if quote_values:
+                query = ('ALTER ROLE %(user)s SET "%(key)s" TO \'%(value)s\';' %
+                         {"user": _pg_quote_user(user, module), "key": key, "value": value})
+            else:
+                query = ('ALTER ROLE %(user)s SET "%(key)s" TO %(value)s;' %
+                         {"user": _pg_quote_user(user, module), "key": key, "value": value})
             executed_queries.append(query)
             cursor.execute(query)
             changed = True
@@ -1095,8 +847,13 @@ def main():
         user=dict(type='str', required=True, aliases=['name']),
         password=dict(type='str', default=None, no_log=True),
         state=dict(type='str', default='present', choices=['absent', 'present']),
-        priv=dict(type='str', default=None, removed_in_version='4.0.0', removed_from_collection='community.postgreql'),
-        db=dict(type='str', default='', aliases=['login_db']),
+        login_db=dict(type='str', default="", aliases=['db'], deprecated_aliases=[
+            {
+                'name': 'db',
+                'version': '5.0.0',
+                'collection_name': 'community.postgresql',
+            }],
+        ),
         fail_on_user=dict(type='bool', default=True, aliases=['fail_on_role']),
         role_attr_flags=dict(type='str', default=''),
         encrypted=dict(type='bool', default=True),
@@ -1108,6 +865,7 @@ def main():
         trust_input=dict(type='bool', default=True),
         configuration=dict(type='dict', default={}),
         reset_unspecified_configuration=dict(type='bool', default=False),
+        quote_configuration_values=dict(type='bool', default=True),
     )
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -1118,11 +876,6 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     fail_on_user = module.params["fail_on_user"]
-    # WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-    if module.params['db'] == '' and module.params["priv"] is not None:
-        module.fail_json(msg="privileges require a database to be specified")
-    # WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-    privs = parse_privs(module.params["priv"], module.params["db"])
     no_password_changes = module.params["no_password_changes"]
     if module.params["encrypted"]:
         encrypted = "ENCRYPTED"
@@ -1135,11 +888,12 @@ def main():
     session_role = module.params['session_role']
     configuration = module.params['configuration']
     reset_unspec_config = module.params['reset_unspecified_configuration']
+    quote_configuration_values = module.params['quote_configuration_values']
 
     trust_input = module.params['trust_input']
     if not trust_input:
         # Check input for potentially dangerous elements:
-        check_input(module, user, password, privs, expires,
+        check_input(module, user, password, expires,
                     role_attr_flags, comment, session_role, comment, configuration)
 
     # Ensure psycopg libraries are available before connecting to DB:
@@ -1151,10 +905,11 @@ def main():
     srv_version = get_server_version(db_connection)
 
     # sanitize configuration
-    for key, value in configuration.items():
-        if '"' in key or '\'' in key:
-            module.fail_json("The key of a configuration may not contain single or double quotes")
-        configuration[key] = value.replace("'", "''")
+    if quote_configuration_values:
+        for key, value in configuration.items():
+            if '"' in key or '\'' in key:
+                module.fail_json("The key of a configuration may not contain single or double quotes")
+            configuration[key] = value.replace("'", "''")
 
     try:
         role_attr_flags = parse_role_attrs(role_attr_flags, srv_version)
@@ -1163,7 +918,6 @@ def main():
 
     kw = dict(user=user)
     changed = False
-    user_removed = False
 
     if state == "present":
         if user_exists(cursor, user):
@@ -1182,11 +936,6 @@ def main():
                                  exception=traceback.format_exc())
             except SQLParseError as e:
                 module.fail_json(msg=to_native(e), exception=traceback.format_exc())
-        # WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
-        try:
-            changed = grant_privileges(cursor, user, privs) or changed
-        except SQLParseError as e:
-            module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
         if comment is not None:
             try:
@@ -1196,7 +945,8 @@ def main():
                                  exception=traceback.format_exc())
 
         # handle user-specific configuration-defaults
-        changed = user_configuration(cursor, module, user, configuration, reset_unspec_config) or changed
+        changed = user_configuration(cursor, module, user, configuration, reset_unspec_config,
+                                     quote_configuration_values) or changed
 
     else:
         if user_exists(cursor, user):
@@ -1204,17 +954,15 @@ def main():
                 changed = True
                 kw['user_removed'] = True
             else:
-                # WARNING: privs are deprecated and will  be removed in community.postgresql 4.0.0
                 try:
-                    changed = revoke_privileges(cursor, user, privs)
-                    user_removed = user_delete(cursor, user, module)
+                    changed, err = user_delete(cursor, user, module)
                 except SQLParseError as e:
                     module.fail_json(msg=to_native(e), exception=traceback.format_exc())
-                changed = changed or user_removed
-                if fail_on_user and not user_removed:
-                    msg = "Unable to remove user"
+
+                if fail_on_user and not changed:
+                    msg = "Unable to remove user: %s" % err
                     module.fail_json(msg=msg)
-                kw['user_removed'] = user_removed
+                kw['user_removed'] = changed
 
     if module.check_mode:
         db_connection.rollback()

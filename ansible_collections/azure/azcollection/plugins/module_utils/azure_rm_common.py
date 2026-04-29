@@ -240,7 +240,6 @@ except ImportError:
 try:
     from enum import Enum
     from azure.mgmt.core.tools import parse_resource_id, resource_id, is_valid_resource_id
-    from azure.cli.core import cloud as azure_cloud
     from azure.mgmt.network import NetworkManagementClient
     from azure.mgmt.network import models as NetworkModels
     from azure.mgmt.resource.resources import ResourceManagementClient
@@ -261,9 +260,9 @@ try:
     from azure.mgmt.sql import SqlManagementClient
     from azure.mgmt.servicebus import ServiceBusManagementClient
     from azure.mgmt.rdbms.postgresql import PostgreSQLManagementClient
-    from azure.mgmt.rdbms.postgresql_flexibleservers import PostgreSQLManagementClient as PostgreSQLFlexibleManagementClient
+    from azure.mgmt.postgresqlflexibleservers import PostgreSQLManagementClient as PostgreSQLFlexibleManagementClient
     from azure.mgmt.rdbms.mysql import MySQLManagementClient
-    from azure.mgmt.rdbms.mysql_flexibleservers import MySQLManagementClient as MySQLFlexibleManagementClient
+    from azure.mgmt.mysqlflexibleservers import MySQLManagementClient as MySQLFlexibleManagementClient
     from azure.mgmt.rdbms.mariadb import MariaDBManagementClient
     from azure.mgmt.containerregistry import ContainerRegistryManagementClient
     from azure.mgmt.containerinstance import ContainerInstanceManagementClient
@@ -287,9 +286,13 @@ try:
     import azure.mgmt.datafactory.models as DataFactoryModel
     from azure.identity._credentials import client_secret, user_password, certificate, managed_identity
     from azure.identity import AzureCliCredential
-    from msgraph import GraphServiceClient
+    from kiota_authentication_azure.azure_identity_authentication_provider import AzureIdentityAuthenticationProvider
+    from msgraph_core import GraphClientFactory, NationalClouds
+    from msgraph import GraphRequestAdapter, GraphServiceClient
     from azure.mgmt.batch import BatchManagementClient
     from azure.mgmt.batch import models as BatchManagementModel
+    from azure.mgmt.resourcehealth import ResourceHealthMgmtClient
+    from azure.mgmt.cdn import CdnManagementClient
 
 except ImportError as exc:
     Authentication = object
@@ -300,6 +303,7 @@ from base64 import b64encode, b64decode
 from hashlib import sha256
 from hmac import HMAC
 from time import time
+import subprocess
 
 try:
     from urllib import (urlencode, quote_plus)
@@ -308,8 +312,7 @@ except ImportError:
 
 try:
     from azure.cli.core.util import CLIError
-    from azure.common.credentials import get_cli_profile
-    from azure.common.cloud import get_cli_active_cloud
+    from azure.cli.core import cloud as azure_cloud
 except ImportError:
     HAS_AZURE_CLI_CORE = False
     HAS_AZURE_CLI_CORE_EXC = None
@@ -391,7 +394,8 @@ class AzureRMModuleBase(object):
     def __init__(self, derived_arg_spec, bypass_checks=False, no_log=False,
                  check_invalid_arguments=None, mutually_exclusive=None, required_together=None,
                  required_one_of=None, add_file_common_args=False, supports_check_mode=False,
-                 required_if=None, supports_tags=True, facts_module=False, skip_exec=False, is_ad_resource=False):
+                 required_if=None, supports_tags=True, facts_module=False, skip_exec=False,
+                 is_ad_resource=False, required_by=None):
 
         merged_arg_spec = dict()
         merged_arg_spec.update(AZURE_COMMON_ARGS)
@@ -405,6 +409,9 @@ class AzureRMModuleBase(object):
         if required_if:
             merged_required_if += required_if
 
+        if not required_by:
+            required_by = dict()
+
         self.module = AnsibleModule(argument_spec=merged_arg_spec,
                                     bypass_checks=bypass_checks,
                                     no_log=no_log,
@@ -413,7 +420,8 @@ class AzureRMModuleBase(object):
                                     required_one_of=required_one_of,
                                     add_file_common_args=add_file_common_args,
                                     supports_check_mode=supports_check_mode,
-                                    required_if=merged_required_if)
+                                    required_if=merged_required_if,
+                                    required_by=required_by)
 
         if not HAS_PACKAGING_VERSION:
             self.fail(msg=missing_required_lib('packaging'),
@@ -431,6 +439,7 @@ class AzureRMModuleBase(object):
         self._resource_client = None
         self._compute_client = None
         self._disk_client = None
+        self._image_version_client = None
         self._multi_disk_client = None
         self._diskencryptionset_client = None
         self._image_client = None
@@ -445,6 +454,7 @@ class AzureRMModuleBase(object):
         self._postgresql_client = None
         self._postgresql_flexible_client = None
         self._containerregistry_client = None
+        self._containerregistrytoken_client = None
         self._containerinstance_client = None
         self._containerservice_client = None
         self._managedcluster_client = None
@@ -452,6 +462,10 @@ class AzureRMModuleBase(object):
         self._monitor_autoscale_settings_client = None
         self._monitor_log_profiles_client = None
         self._monitor_diagnostic_settings_client = None
+        self._monitor_data_collection_rules_client = None
+        self._monitor_management_client_action_groups = None
+        self._monitor_management_client_activity_log_alerts = None
+        self._monitor_management_client_metric_alerts = None
         self._resource = None
         self._log_analytics_client = None
         self._servicebus_client = None
@@ -465,6 +479,8 @@ class AzureRMModuleBase(object):
         self._notification_hub_client = None
         self._event_hub_client = None
         self._batch_account_client = None
+        self._resourcehealth_client = None
+        self._cdn_client = None
 
         self.check_mode = self.module.check_mode
         self.api_profile = self.module.params.get('api_profile')
@@ -615,7 +631,10 @@ class AzureRMModuleBase(object):
         '''
         resource_dict = parse_resource_id(resource) if not isinstance(resource, dict) else resource
         resource_dict['resource_group'] = resource_dict.get('resource_group', self.resource_group)
-        resource_dict['subscription_id'] = resource_dict.get('subscription', self.subscription_id)
+        if 'subscription_id' in resource_dict:
+            resource_dict['subscription_id'] = resource_dict['subscription_id']
+        else:
+            resource_dict['subscription_id'] = resource_dict.get('subscription', self.subscription_id)
         return resource_dict
 
     def serialize_obj(self, obj, class_name, enum_modules=None):
@@ -902,7 +921,16 @@ class AzureRMModuleBase(object):
     #    return client
 
     def get_msgraph_client(self):
-        return GraphServiceClient(self.azure_auth.azure_credential_track2)
+        auth_provider = AzureIdentityAuthenticationProvider(self.azure_auth.azure_credential_track2)
+        cloud_mapping = {
+            azure_cloud.AZURE_CHINA_CLOUD: NationalClouds.China,
+            azure_cloud.AZURE_US_GOV_CLOUD: NationalClouds.US_GOV,
+            azure_cloud.AZURE_GERMAN_CLOUD: NationalClouds.Germany
+        }
+        host = cloud_mapping.get(self._cloud_environment, NationalClouds.Global)
+        client = GraphClientFactory.create_with_default_middleware(host=host)
+        request_adapter = GraphRequestAdapter(auth_provider, client=client)
+        return GraphServiceClient(self.azure_auth.azure_credential_track2, request_adapter=request_adapter)
 
     def get_mgmt_svc_client(self, client_type, base_url=None, api_version=None, suppress_subscription_id=False):
         self.log('Getting management service client {0}'.format(client_type.__name__))
@@ -1147,6 +1175,20 @@ class AzureRMModuleBase(object):
         return ComputeManagementClient.models("2023-04-02")
 
     @property
+    def image_version_client(self):
+        self.log('Getting gallery image version client')
+        if not self._image_version_client:
+            self._image_version_client = self.get_mgmt_svc_client(ComputeManagementClient,
+                                                                  base_url=self._cloud_environment.endpoints.resource_manager,
+                                                                  api_version='2023-07-03')
+        return self._image_version_client
+
+    @property
+    def image_version_models(self):
+        self.log("Getting image version models")
+        return ComputeManagementClient.models("2023-07-03")
+
+    @property
     def multi_disk_client(self):
         self.log('Getting disk client')
         if not self._multi_disk_client:
@@ -1248,7 +1290,8 @@ class AzureRMModuleBase(object):
         self.log('Getting PostgreSQL client')
         if not self._postgresql_flexible_client:
             self._postgresql_flexible_client = self.get_mgmt_svc_client(PostgreSQLFlexibleManagementClient,
-                                                                        base_url=self._cloud_environment.endpoints.resource_manager)
+                                                                        base_url=self._cloud_environment.endpoints.resource_manager,
+                                                                        api_version='2024-08-01')
         return self._postgresql_flexible_client
 
     @property
@@ -1264,7 +1307,8 @@ class AzureRMModuleBase(object):
         self.log('Getting MySQL Flexible client')
         if not self._mysql_flexible_client:
             self._mysql_flexible_client = self.get_mgmt_svc_client(MySQLFlexibleManagementClient,
-                                                                   base_url=self._cloud_environment.endpoints.resource_manager)
+                                                                   base_url=self._cloud_environment.endpoints.resource_manager,
+                                                                   api_version='2024-08-01')
         return self._mysql_flexible_client
 
     @property
@@ -1292,6 +1336,16 @@ class AzureRMModuleBase(object):
                                                                       api_version='2021-09-01')
 
         return self._containerregistry_client
+
+    @property
+    def containerregistrytoken_client(self):
+        self.log('Getting container registry token mgmt client')
+        if not self._containerregistrytoken_client:
+            self._containerregistrytoken_client = self.get_mgmt_svc_client(ContainerRegistryManagementClient,
+                                                                           base_url=self._cloud_environment.endpoints.resource_manager,
+                                                                           api_version='2023-07-01')
+
+        return self._containerregistrytoken_client
 
     @property
     def containerinstance_client(self):
@@ -1345,6 +1399,42 @@ class AzureRMModuleBase(object):
                                                                                 base_url=self._cloud_environment.endpoints.resource_manager,
                                                                                 api_version="2021-05-01-preview")
         return self._monitor_diagnostic_settings_client
+
+    @property
+    def monitor_management_client_action_groups(self):
+        self.log('Getting monitor client for diagnostic_settings')
+        if not self._monitor_management_client_action_groups:
+            self._monitor_management_client_action_groups = self.get_mgmt_svc_client(MonitorManagementClient,
+                                                                                     base_url=self._cloud_environment.endpoints.resource_manager,
+                                                                                     api_version='2023-01-01')
+        return self._monitor_management_client_action_groups
+
+    @property
+    def monitor_management_client_activity_log_alerts(self):
+        self.log('Getting monitor client for diagnostic_settings')
+        if not self._monitor_management_client_activity_log_alerts:
+            self._monitor_management_client_activity_log_alerts = self.get_mgmt_svc_client(MonitorManagementClient,
+                                                                                           base_url=self._cloud_environment.endpoints.resource_manager,
+                                                                                           api_version='2020-10-01')
+        return self._monitor_management_client_activity_log_alerts
+
+    @property
+    def monitor_management_client_data_collection_rules(self):
+        self.log('Getting monitor client for diagnostic_settings')
+        if not self._monitor_data_collection_rules_client:
+            self._monitor_data_collection_rules_client = self.get_mgmt_svc_client(MonitorManagementClient,
+                                                                                  base_url=self._cloud_environment.endpoints.resource_manager,
+                                                                                  api_version='2022-06-01')
+        return self._monitor_data_collection_rules_client
+
+    @property
+    def monitor_management_client_metric_alerts(self):
+        self.log('Getting monitor client for diagnostic_settings')
+        if not self._monitor_management_client_metric_alerts:
+            self._monitor_management_client_metric_alerts = self.get_mgmt_svc_client(MonitorManagementClient,
+                                                                                     base_url=self._cloud_environment.endpoints.resource_manager,
+                                                                                     api_version='2018-03-01')
+        return self._monitor_management_client_metric_alerts
 
     @property
     def log_analytics_client(self):
@@ -1473,8 +1563,25 @@ class AzureRMModuleBase(object):
         return self._batch_account_client
 
     @property
+    def resourcehealth_client(self):
+        self.log('Getting resource health client...')
+        if not self._resourcehealth_client:
+            self._resourcehealth_client = self.get_mgmt_svc_client(ResourceHealthMgmtClient,
+                                                                   base_url=self._cloud_environment.endpoints.resource_manager)
+        return self._resourcehealth_client
+
+    @property
     def batch_account_model(self):
         return BatchManagementModel
+
+    @property
+    def cdn_client(self):
+        self.log('Getting cdn client...')
+        if not self._cdn_client:
+            self._cdn_client = self.get_mgmt_svc_client(CdnManagementClient,
+                                                        base_url=self._cloud_environment.endpoints.resource_manager,
+                                                        api_version='2024-02-01')
+        return self._cdn_client
 
 
 class AzureRMAuthException(Exception):
@@ -1560,10 +1667,10 @@ class AzureRMAuth(object):
                 except Exception as e:
                     self.fail("cloud_environment {0} could not be resolved: {1}".format(raw_cloud_env, e.message), exception=traceback.format_exc())
 
-        if self.credentials.get('subscription_id', None) is None and self.credentials.get('credentials') is None:
+        if self.credentials.get('subscription_id', None) is None and not self.is_ad_resource:
             self.fail("Credentials did not include a subscription_id value.")
         self.log("setting subscription_id")
-        self.subscription_id = self.credentials['subscription_id']
+        self.subscription_id = self.credentials.get('subscription_id')
 
         # get authentication authority
         # for adfs, user could pass in authority or not.
@@ -1651,10 +1758,10 @@ class AzureRMAuth(object):
             except Exception:
                 pass
 
-        if credentials.get('subscription_id'):
+        if credentials.get('subscription_id') is None and not self.is_ad_resource:
+            return None
+        else:
             return credentials
-
-        return None
 
     def _get_msi_credentials(self, subscription_id=None, client_id=None, _cloud_environment=None, **kwargs):
         # Get object `cloud_environment` from string `_cloud_environment`
@@ -1696,24 +1803,30 @@ class AzureRMAuth(object):
             'auth_source': 'msi'
         }
 
-    def _get_azure_cli_credentials(self, subscription_id=None, resource=None):
-        if self.is_ad_resource:
-            resource = 'https://graph.windows.net/'
+    def _get_azure_cli_credentials(self, subscription_id=None):
         subscription_id = subscription_id or self._get_env('subscription_id')
+        if not subscription_id:
+            try:
+                cmd = ["az", "account", "show", "--query", "id"]
+                subscription_id = subprocess.run(cmd, capture_output=True, text=True, check=True).stdout.strip().strip('"')
+            except Exception as ec:
+                raise CLIError("Obtain the az login's subscription occurred exception as {0}".format(ec))
+
         try:
-            profile = get_cli_profile()
-        except Exception as exc:
-            self.fail("Failed to load CLI profile {0}.".format(str(exc)))
+            cmd = ["az", "cloud", "show", "--query", "name"]
+            cloud_name = subprocess.run(cmd, capture_output=True, text=True, check=True).stdout.strip().strip('"')
+            all_clouds = [x[1] for x in inspect.getmembers(azure_cloud) if isinstance(x[1], azure_cloud.Cloud)]
+            matched_clouds = [x for x in all_clouds if x.name == cloud_name]
+        except Exception as ec:
+            raise CLIError("Obtain the az login's active cloud occurred exception as {0}".format(ec))
 
-        cred, subscription_id, tenant = profile.get_login_credentials(
-            subscription_id=subscription_id)
-        cloud_environment = get_cli_active_cloud()
+        if len(matched_clouds) != 1:
+            raise CLIError("Obtain the active cloud failed, There is no or multiple matching clouds")
 
-        az_cli = AzureCliCredential()
         cli_credentials = {
-            'credentials': az_cli if self.is_ad_resource else cred,
+            'credentials': AzureCliCredential(),
             'subscription_id': subscription_id,
-            'cloud_environment': cloud_environment
+            'cloud_environment': matched_clouds[0],
         }
         return cli_credentials
 
@@ -1726,10 +1839,10 @@ class AzureRMAuth(object):
             credentials = self._get_profile(env_credentials['profile'])
             return credentials
 
-        if env_credentials.get('subscription_id') is not None:
+        if env_credentials.get('subscription_id') is None and not self.is_ad_resource:
+            return None
+        else:
             return env_credentials
-
-        return None
 
     def _get_credentials(self, auth_source=None, **params):
         # Get authentication credentials.

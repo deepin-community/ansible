@@ -110,6 +110,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -124,14 +125,14 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         system_npu_isfnpqueues:
-          cos0: <string>
-          cos1: <string>
-          cos2: <string>
-          cos3: <string>
-          cos4: <string>
-          cos5: <string>
-          cos6: <string>
-          cos7: <string>
+          # cos0: <string>
+          # cos1: <string>
+          # cos2: <string>
+          # cos3: <string>
+          # cos4: <string>
+          # cos5: <string>
+          # cos6: <string>
+          # cos7: <string>
 '''
 
 RETURN = '''

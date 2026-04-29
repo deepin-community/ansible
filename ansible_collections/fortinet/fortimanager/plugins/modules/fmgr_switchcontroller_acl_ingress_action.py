@@ -102,6 +102,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -117,8 +118,8 @@ EXAMPLES = '''
         adom: <your own value>
         ingress: <your own value>
         switchcontroller_acl_ingress_action:
-          count: <value in [disable, enable]>
-          drop: <value in [disable, enable]>
+          # count: <value in [disable, enable]>
+          # drop: <value in [disable, enable]>
 '''
 
 RETURN = '''

@@ -12,6 +12,10 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: vcenter_folder
+deprecated:
+  removed_in: 7.0.0
+  why: This module has been moved to the L(new vmware.vmware collection,https://forum.ansible.com/t/5880)
+  alternative: Use M(vmware.vmware.folder) instead.
 short_description: Manage folders on given datacenter
 description:
 - This module can be used to create, delete, move and rename folder on then given datacenter.
@@ -136,7 +140,8 @@ except ImportError:
     pass
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.community.vmware.plugins.module_utils.vmware import vmware_argument_spec, PyVmomi, find_datacenter_by_name, wait_for_task, get_all_objs
+from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi, find_datacenter_by_name, wait_for_task, get_all_objs
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 from ansible.module_utils._text import to_native
 
 
@@ -329,7 +334,7 @@ class VmwareFolderManager(PyVmomi):
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(
         datacenter=dict(type='str', required=True, aliases=['datacenter_name']),
         folder_name=dict(type='str', required=True),

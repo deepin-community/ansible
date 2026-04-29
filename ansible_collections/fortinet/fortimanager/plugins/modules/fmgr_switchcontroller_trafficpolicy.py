@@ -134,6 +134,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -149,15 +150,15 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_trafficpolicy:
-          cos_queue: <integer>
-          description: <string>
-          guaranteed_bandwidth: <integer>
-          guaranteed_burst: <integer>
-          id: <integer>
-          maximum_burst: <integer>
-          name: <string>
-          policer_status: <value in [disable, enable]>
-          type: <value in [ingress, egress]>
+          id: 0 # Required variable, integer
+          # cos_queue: <integer>
+          # description: <string>
+          # guaranteed_bandwidth: <integer>
+          # guaranteed_burst: <integer>
+          # maximum_burst: <integer>
+          # name: <string>
+          # policer_status: <value in [disable, enable]>
+          # type: <value in [ingress, egress]>
 '''
 
 RETURN = '''

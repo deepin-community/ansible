@@ -355,12 +355,31 @@ options:
             source6:
                 type: str
                 description: Source IPv6 addressused in the health-check packet to server.
+            fortiguard:
+                type: str
+                description: Enable/disable use of FortiGuard predefined server.
+                choices:
+                    - 'disable'
+                    - 'enable'
+            fortiguard_name:
+                aliases: ['fortiguard-name']
+                type: raw
+                description: (list) Predefined health-check target name.
+            agent_probe_timeout:
+                aliases: ['agent-probe-timeout']
+                type: int
+                description: Time to wait before a probe packet is considered lost when detect-mode is agent
+            remote_probe_timeout:
+                aliases: ['remote-probe-timeout']
+                type: int
+                description: Time to wait before a probe packet is considered lost when detect-mode is remote
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -377,67 +396,70 @@ EXAMPLES = '''
         wanprof: <your own value>
         state: present # <value in [present, absent]>
         wanprof_system_sdwan_healthcheck:
-          _dynamic_server: <string>
-          addr_mode: <value in [ipv4, ipv6]>
-          diffservcode: <string>
-          dns_match_ip: <string>
-          dns_request_domain: <string>
-          failtime: <integer>
-          ftp_file: <string>
-          ftp_mode: <value in [passive, port]>
-          ha_priority: <integer>
-          http_agent: <string>
-          http_get: <string>
-          http_match: <string>
-          interval: <integer>
-          members: <list or string>
-          name: <string>
-          packet_size: <integer>
-          password: <list or string>
-          port: <integer>
-          probe_count: <integer>
-          probe_packets: <value in [disable, enable]>
-          probe_timeout: <integer>
-          protocol: <value in [ping, tcp-echo, udp-echo, ...]>
-          quality_measured_method: <value in [half-close, half-open]>
-          recoverytime: <integer>
-          security_mode: <value in [none, authentication]>
-          server: <list or string>
-          sla:
-            -
-              id: <integer>
-              jitter_threshold: <integer>
-              latency_threshold: <integer>
-              link_cost_factor:
-                - "latency"
-                - "jitter"
-                - "packet-loss"
-                - "mos"
-                - "remote"
-              packetloss_threshold: <integer>
-              mos_threshold: <string>
-              priority_in_sla: <integer>
-              priority_out_sla: <integer>
-          sla_fail_log_period: <integer>
-          sla_pass_log_period: <integer>
-          system_dns: <value in [disable, enable]>
-          threshold_alert_jitter: <integer>
-          threshold_alert_latency: <integer>
-          threshold_alert_packetloss: <integer>
-          threshold_warning_jitter: <integer>
-          threshold_warning_latency: <integer>
-          threshold_warning_packetloss: <integer>
-          update_cascade_interface: <value in [disable, enable]>
-          update_static_route: <value in [disable, enable]>
-          user: <string>
-          detect_mode: <value in [active, passive, prefer-passive, ...]>
-          mos_codec: <value in [g711, g722, g729]>
-          source: <string>
-          vrf: <integer>
-          embed_measured_health: <value in [disable, enable]>
-          sla_id_redistribute: <integer>
-          class_id: <string>
-          source6: <string>
+          name: "your value" # Required variable, string
+          # _dynamic_server: <string>
+          # addr_mode: <value in [ipv4, ipv6]>
+          # diffservcode: <string>
+          # dns_match_ip: <string>
+          # dns_request_domain: <string>
+          # failtime: <integer>
+          # ftp_file: <string>
+          # ftp_mode: <value in [passive, port]>
+          # ha_priority: <integer>
+          # http_agent: <string>
+          # http_get: <string>
+          # http_match: <string>
+          # interval: <integer>
+          # members: <list or string>
+          # packet_size: <integer>
+          # password: <list or string>
+          # port: <integer>
+          # probe_count: <integer>
+          # probe_packets: <value in [disable, enable]>
+          # probe_timeout: <integer>
+          # protocol: <value in [ping, tcp-echo, udp-echo, ...]>
+          # quality_measured_method: <value in [half-close, half-open]>
+          # recoverytime: <integer>
+          # security_mode: <value in [none, authentication]>
+          # server: <list or string>
+          # sla:
+          #   - id: <integer>
+          #     jitter_threshold: <integer>
+          #     latency_threshold: <integer>
+          #     link_cost_factor:
+          #       - "latency"
+          #       - "jitter"
+          #       - "packet-loss"
+          #       - "mos"
+          #       - "remote"
+          #     packetloss_threshold: <integer>
+          #     mos_threshold: <string>
+          #     priority_in_sla: <integer>
+          #     priority_out_sla: <integer>
+          # sla_fail_log_period: <integer>
+          # sla_pass_log_period: <integer>
+          # system_dns: <value in [disable, enable]>
+          # threshold_alert_jitter: <integer>
+          # threshold_alert_latency: <integer>
+          # threshold_alert_packetloss: <integer>
+          # threshold_warning_jitter: <integer>
+          # threshold_warning_latency: <integer>
+          # threshold_warning_packetloss: <integer>
+          # update_cascade_interface: <value in [disable, enable]>
+          # update_static_route: <value in [disable, enable]>
+          # user: <string>
+          # detect_mode: <value in [active, passive, prefer-passive, ...]>
+          # mos_codec: <value in [g711, g722, g729]>
+          # source: <string>
+          # vrf: <integer>
+          # embed_measured_health: <value in [disable, enable]>
+          # sla_id_redistribute: <integer>
+          # class_id: <string>
+          # source6: <string>
+          # fortiguard: <value in [disable, enable]>
+          # fortiguard_name: <list or string>
+          # agent_probe_timeout: <integer>
+          # remote_probe_timeout: <integer>
 '''
 
 RETURN = '''
@@ -567,7 +589,11 @@ def main():
                 'embed-measured-health': {'v_range': [['7.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'sla-id-redistribute': {'v_range': [['7.2.1', '']], 'type': 'int'},
                 'class-id': {'v_range': [['7.4.0', '']], 'type': 'str'},
-                'source6': {'v_range': [['7.4.0', '']], 'type': 'str'}
+                'source6': {'v_range': [['7.4.0', '']], 'type': 'str'},
+                'fortiguard': {'v_range': [['7.6.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'fortiguard-name': {'v_range': [['7.6.2', '']], 'type': 'raw'},
+                'agent-probe-timeout': {'v_range': [['7.6.3', '']], 'type': 'int'},
+                'remote-probe-timeout': {'v_range': [['7.6.3', '']], 'type': 'int'}
             }
         }
     }

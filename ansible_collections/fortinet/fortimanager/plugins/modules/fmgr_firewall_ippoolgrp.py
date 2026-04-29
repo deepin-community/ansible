@@ -108,6 +108,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -123,10 +124,10 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         firewall_ippoolgrp:
-          comments: <string>
-          member: <list or string>
-          name: <string>
-          uuid: <string>
+          name: "your value" # Required variable, string
+          # comments: <string>
+          # member: <list or string>
+          # uuid: <string>
 '''
 
 RETURN = '''
@@ -177,7 +178,9 @@ from ansible_collections.fortinet.fortimanager.plugins.module_utils.common impor
 def main():
     urls_list = [
         '/pm/config/adom/{adom}/obj/firewall/ippool_grp',
-        '/pm/config/global/obj/firewall/ippool_grp'
+        '/pm/config/global/obj/firewall/ippool_grp',
+        '/pm/config/adom/{adom}/obj/firewall/ippool-grp',
+        '/pm/config/global/obj/firewall/ippool-grp'
     ]
     url_params = ['adom']
     module_primary_key = 'name'

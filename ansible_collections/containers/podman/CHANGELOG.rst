@@ -5,6 +5,68 @@ Ansible Podman modules and plugins Release Notes
 .. contents:: Topics
 
 
+v1.17.0
+=======
+
+Release Summary
+---------------
+
+Minor changes and system info module
+
+Minor Changes
+-------------
+
+- Add another test for volumes
+- Added checks for volume opts
+
+New Modules
+-----------
+
+- containers.podman.podman_system_info - Get podman system information from host machine
+
+v1.16.4
+=======
+
+Release Summary
+---------------
+
+Bugfixes
+
+Bugfixes
+--------
+
+- Document that sdnotify can be set to healthy
+- Fix CI for podman_image_info
+- Fix None values in LogOpt in Quadlet
+- Fix conditions in CI jobs
+- Fix idempotency for any podman secret driver
+- Fix idempotency for systemd keyword
+- Fix setuptools
+- Handle image arguments in podman_container
+- Remove docker protocol when inspecting image
+- Set custom tmpfs idempotency
+- Use usedforsecurity for hashlib.sha256 only in python version >=3.9
+- correctly quote labels and environment variables for quadlets
+- doc - podman_secret - fix indentation error in example
+- fix(podman_image) - correct intendation on 'loop' keyword
+
+v1.16.3
+=======
+
+Release Summary
+---------------
+
+Bugfixes
+
+Bugfixes
+--------
+
+- Don't pull image when state is absent or pull=never (#889)
+- Fix idempotency for containers with env vars containing MAX_SIZE (#893)
+- Fix list tags failure in podman_search (#875)
+- Fix podman_container_copy examples (#882)
+- docs(podman_container) - improve comments on network property (#878)
+
 v1.16.2
 =======
 

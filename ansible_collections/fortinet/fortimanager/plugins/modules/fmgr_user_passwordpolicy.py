@@ -156,6 +156,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -171,19 +172,19 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         user_passwordpolicy:
-          expire_days: <integer>
-          name: <string>
-          warn_days: <integer>
-          expired_password_renewal: <value in [disable, enable]>
-          expire_status: <value in [disable, enable]>
-          min_change_characters: <integer>
-          min_lower_case_letter: <integer>
-          min_non_alphanumeric: <integer>
-          min_number: <integer>
-          min_upper_case_letter: <integer>
-          minimum_length: <integer>
-          reuse_password: <value in [disable, enable]>
-          reuse_password_limit: <integer>
+          name: "your value" # Required variable, string
+          # expire_days: <integer>
+          # warn_days: <integer>
+          # expired_password_renewal: <value in [disable, enable]>
+          # expire_status: <value in [disable, enable]>
+          # min_change_characters: <integer>
+          # min_lower_case_letter: <integer>
+          # min_non_alphanumeric: <integer>
+          # min_number: <integer>
+          # min_upper_case_letter: <integer>
+          # minimum_length: <integer>
+          # reuse_password: <value in [disable, enable]>
+          # reuse_password_limit: <integer>
 '''
 
 RETURN = '''

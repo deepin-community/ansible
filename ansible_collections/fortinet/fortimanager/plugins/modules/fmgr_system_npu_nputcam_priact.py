@@ -98,6 +98,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -113,8 +114,8 @@ EXAMPLES = '''
         adom: <your own value>
         npu_tcam: <your own value>
         system_npu_nputcam_priact:
-          priority: <integer>
-          weight: <integer>
+          # priority: <integer>
+          # weight: <integer>
 '''
 
 RETURN = '''

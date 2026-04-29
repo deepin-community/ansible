@@ -160,7 +160,7 @@ def convert_volume_binds(binds):
                 mode = 'rw'
 
             # NOTE: this is only relevant for Linux hosts
-            # (doesn't apply in Docker Desktop)
+            # (does not apply in Docker Desktop)
             propagation_modes = [
                 'rshared',
                 'shared',
@@ -303,12 +303,7 @@ def parse_host(addr, is_win32=False, tls=False):
     if proto in ('tcp', 'ssh'):
         port = parsed_url.port or 0
         if port <= 0:
-            if proto != 'ssh':
-                raise errors.DockerException(
-                    'Invalid bind address format: port is required:'
-                    ' {0}'.format(addr)
-                )
-            port = 22
+            port = 22 if proto == 'ssh' else (2375 if tls else 2376)
             netloc = '{0}:{1}'.format(parsed_url.netloc, port)
 
         if not parsed_url.hostname:
@@ -391,7 +386,7 @@ def kwargs_from_env(ssl_version=None, assert_hostname=None, environment=None):
 
     if not tls_verify and assert_hostname is None:
         # assert_hostname is a subset of TLS verification,
-        # so if it's not set already then set it to false.
+        # so if it is not set already then set it to false.
         assert_hostname = False
 
     params['tls'] = TLSConfig(

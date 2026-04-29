@@ -12,6 +12,10 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: vmware_content_deploy_ovf_template
+deprecated:
+  removed_in: 7.0.0
+  why: This module has been moved to the L(new vmware.vmware collection,https://forum.ansible.com/t/5880)
+  alternative: Use M(vmware.vmware.deploy_content_library_ovf) instead.
 short_description: Deploy Virtual Machine from ovf template stored in content library.
 description:
 - Module to deploy virtual machine from ovf template in content library.
@@ -87,7 +91,8 @@ options:
       type: str
       default: 'thin'
       choices: [ thin, thick, eagerZeroedThick, eagerzeroedthick ]
-extends_documentation_fragment: community.vmware.vmware_rest_client.documentation
+extends_documentation_fragment:
+- community.vmware.vmware_rest_client.documentation
 '''
 
 EXAMPLES = r'''
@@ -134,6 +139,7 @@ from ansible.module_utils.basic import AnsibleModule, env_fallback
 from ansible.module_utils._text import to_native
 from ansible_collections.community.vmware.plugins.module_utils.vmware_rest_client import VmwareRestClient
 from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import rest_compatible_argument_spec
 
 HAS_VAUTOMATION = False
 try:
@@ -337,7 +343,7 @@ class VmwareContentDeployOvfTemplate(VmwareRestClient):
 
 
 def main():
-    argument_spec = VmwareRestClient.vmware_client_argument_spec()
+    argument_spec = rest_compatible_argument_spec()
     argument_spec.update(
         log_level=dict(
             type='str',

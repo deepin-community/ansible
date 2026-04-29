@@ -7,7 +7,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-
 DOCUMENTATION = """
 ---
 module: zabbix_action
@@ -219,6 +218,7 @@ options:
                     - " - C(remote_command)"
                     - " - C(notify_all_involved)"
                     - Choice C(notify_all_involved) only supported in I(recovery_operations) and I(acknowledge_operations).
+                    - C(add_host_tags) and C(remove_host_tags) available since Zabbix 7.0.
                 choices:
                     - send_message
                     - remote_command
@@ -232,6 +232,8 @@ options:
                     - disable_host
                     - set_host_inventory_mode
                     - notify_all_involved
+                    - add_host_tags
+                    - remove_host_tags
                 required: true
             esc_period:
                 type: str
@@ -387,6 +389,20 @@ options:
                     - The name of script used for global script commands.
                     - Required when I(command_type=global_script).
                     - Can be used when I(type=remote_command).
+            tags:
+                type: list
+                elements: dict
+                description:
+                    - Host tags to adt have tag property defined.
+                    - The value property is optional. or remove.
+                    - upported if operationtype is set to C(add host tags) or C(remove host tags).
+                suboptions:
+                    tag:
+                      type: str
+                      description: Tag name
+                    value:
+                      type: str
+                      description: Tag value (optional)
     recovery_operations:
         type: list
         elements: dict
@@ -644,7 +660,7 @@ options:
         description:
             - Whether to pause escalation if event is a symptom event.
             - I(supported) if C(event_source) is set to C(trigger)
-            - Works only with >= Zabbix 6.4
+            - Works only with >= Zabbix 7.0
         default: true
 
 
@@ -791,6 +807,7 @@ from ansible_collections.community.zabbix.plugins.module_utils.base import Zabbi
 from ansible.module_utils.compat.version import LooseVersion
 
 import ansible_collections.community.zabbix.plugins.module_utils.helpers as zabbix_utils
+import re
 
 
 class Zapi(ZabbixBase):
@@ -965,7 +982,15 @@ class Zapi(ZabbixBase):
 
         """
         try:
-            discovery_rule_name, dcheck_type = discovery_check_name.split(": ")
+            dcheck_pattern = r'^([^:]+)\:\s([\w\s]+)(\s\(([\d,-]+)\))?(\s\"(.+)\")?$'
+            match = re.match(dcheck_pattern, discovery_check_name)
+            if match:
+                discovery_rule_name = match.group(1)
+                dcheck_type = match.group(2)
+                dcheck_ports = match.group(4)
+                dcheck_key = match.group(6)
+            else:
+                self._module.fail_json(msg="Discovery check name: %s does not set" % discovery_check_name)
             dcheck_type_to_number = {
                 "SSH": "0",
                 "LDAP": "1",
@@ -984,6 +1009,7 @@ class Zapi(ZabbixBase):
                 "HTTPS": "14",
                 "Telnet": "15"
             }
+
             if dcheck_type not in dcheck_type_to_number:
                 self._module.fail_json(msg="Discovery check type: %s does not exist" % dcheck_type)
 
@@ -994,11 +1020,19 @@ class Zapi(ZabbixBase):
             })
             if len(discovery_rule_list) < 1:
                 self._module.fail_json(msg="Discovery check not found: %s" % discovery_check_name)
-
             for dcheck in discovery_rule_list[0]["dchecks"]:
-                if dcheck_type_to_number[dcheck_type] == dcheck["type"]:
+                if dcheck_key is not None and dcheck_ports is not None:
+                    if dcheck_type_to_number[dcheck_type] == dcheck["type"] and dcheck_key == dcheck["key_"] and dcheck_ports == dcheck["ports"]:
+                        return dcheck
+                elif dcheck_key is not None and dcheck_ports is None:
+                    if dcheck_type_to_number[dcheck_type] == dcheck["type"] and dcheck_key == dcheck["key_"]:
+                        return dcheck
+                elif dcheck_key is None and dcheck_ports is not None:
+                    if dcheck_type_to_number[dcheck_type] == dcheck["type"] and dcheck_ports == dcheck["ports"]:
+                        return dcheck
+                elif dcheck_type_to_number[dcheck_type] == dcheck["type"]:
                     return dcheck
-            self._module.fail_json(msg="Discovery check not found: %s" % discovery_check_name)
+            self._module.fail_json(msg="Discovery check not found in condition: %s" % discovery_check_name)
         except Exception as e:
             self._module.fail_json(msg="Failed to get discovery check '%s': %s" % (discovery_check_name, e))
 
@@ -1146,7 +1180,8 @@ class Action(Zapi):
                 "trigger",
                 "discovery",
                 "auto_registration",
-                "internal"], kwargs["event_source"]),
+                "internal",
+                "services"], kwargs["event_source"]),
             "esc_period": kwargs.get("esc_period"),
             "filter": kwargs["conditions"],
             "operations": kwargs["operations"],
@@ -1159,7 +1194,7 @@ class Action(Zapi):
 
         if kwargs["event_source"] == "trigger":
             _params["pause_suppressed"] = "1" if kwargs["pause_in_maintenance"] else "0"
-            if LooseVersion(self._zbx_api_version) >= LooseVersion("6.4"):
+            if LooseVersion(self._zbx_api_version) >= LooseVersion("7.0"):
                 _params["pause_symptoms"] = "1" if kwargs["pause_symptoms"] else "0"
             _params["notify_if_canceled"] = "1" if kwargs["notify_if_canceled"] else "0"
 
@@ -1183,7 +1218,7 @@ class Action(Zapi):
             if isinstance(_params.get("update_operations", None), type(None)) or len(_params.get("update_operations", [])) == 0:
                 _params.pop("update_operations")
 
-        if _params["eventsource"] not in [0, 3]:
+        if _params["eventsource"] not in [0, 4]:
             _params.pop("esc_period")
 
         return _params
@@ -1277,7 +1312,11 @@ class Operations(Zapi):
                 "unlink_from_template",
                 "enable_host",
                 "disable_host",
-                "set_host_inventory_mode"],
+                "set_host_inventory_mode",
+                "none",
+                "none",
+                "add_host_tags",
+                "remove_host_tags"],
                 operation["type"]
             )
         except Exception:
@@ -1488,6 +1527,11 @@ class Operations(Zapi):
             # Add to/Remove from host group
             if constructed_operation["operationtype"] in (4, 5):
                 constructed_operation["opgroup"] = self._construct_opgroup(op)
+
+            if LooseVersion(self._zbx_api_version) >= LooseVersion("7.0"):
+                # Add/Remove tags
+                if constructed_operation["operationtype"] in (13, 14):
+                    constructed_operation["optag"] = op["tags"]
 
             # Link/Unlink template
             if constructed_operation["operationtype"] in (6, 7):
@@ -1983,7 +2027,9 @@ def main():
                         "enable_host",
                         "disable_host",
                         "set_host_inventory_mode",
-                        "notify_all_involved"
+                        "notify_all_involved",
+                        "add_host_tags",
+                        "remove_host_tags"
                     ]
                 ),
                 esc_period=dict(type="str", required=False, default="0s"),
@@ -2033,7 +2079,8 @@ def main():
                 # when type is set_host_inventory_mode
                 inventory=dict(type="str", required=False, choices=["manual", "automatic"]),
                 # when type is link_to_template or unlink_from_template
-                templates=dict(type="list", required=False, elements="str")
+                templates=dict(type="list", required=False, elements="str"),
+                tags=dict(type="list", required=False, elements="dict")
             ),
             required_if=[
                 ["type", "remote_command", ["command_type"]],
@@ -2050,7 +2097,9 @@ def main():
                 ["type", "link_to_template", ["templates"]],
                 ["type", "unlink_from_template", ["templates"]],
                 ["type", "set_host_inventory_mode", ["inventory"]],
-                ["type", "send_message", ["send_to_users", "send_to_groups"], True]
+                ["type", "send_message", ["send_to_users", "send_to_groups"], True],
+                ["type", "add_host_tags", ["tags"], True],
+                ["type", "remove_host_tags", ["tags"], True]
             ]
         ),
         recovery_operations=dict(
@@ -2246,7 +2295,7 @@ def main():
                 notify_if_canceled=notify_if_canceled
             )
 
-            if LooseVersion(zapi_wrapper._zbx_api_version) >= LooseVersion("6.4"):
+            if LooseVersion(zapi_wrapper._zbx_api_version) >= LooseVersion("7.0"):
                 kwargs["pause_symptoms"] = pause_symptoms
 
             kwargs[argument_spec["acknowledge_operations"]["aliases"][0]] = acknowledge_ops.construct_the_data(acknowledge_operations)
@@ -2279,7 +2328,7 @@ def main():
 
             kwargs[argument_spec["acknowledge_operations"]["aliases"][0]] = acknowledge_ops.construct_the_data(acknowledge_operations)
 
-            if LooseVersion(zapi_wrapper._zbx_api_version) >= LooseVersion("6.4"):
+            if LooseVersion(zapi_wrapper._zbx_api_version) >= LooseVersion("7.0"):
                 kwargs["pause_symptoms"] = pause_symptoms
 
             action_id = action.add_action(**kwargs)

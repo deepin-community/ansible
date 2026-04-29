@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -12,7 +12,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 
 DOCUMENTATION = '''
 short_description: NetApp ONTAP Modify SVM Options
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Modify ONTAP SVM Options
   - Only Options that appear on "vserver options show" can be set
@@ -40,14 +40,14 @@ options:
 '''
 
 EXAMPLES = """
-    - name: Set SVM Options
-      na_ontap_svm_options:
-        vserver: "{{ netapp_vserver_name }}"
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        name: snmp.enable
-        value: 'on'
+- name: Set SVM Options
+  netapp.ontap.na_ontap_svm_options:
+    vserver: "{{ netapp_vserver_name }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    name: snmp.enable
+    value: 'on'
 """
 
 RETURN = """

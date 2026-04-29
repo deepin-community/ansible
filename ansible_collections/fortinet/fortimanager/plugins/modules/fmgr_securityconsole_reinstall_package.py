@@ -124,6 +124,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -137,27 +138,25 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         securityconsole_reinstall_package:
-          adom: <string>
-          flags:
-            - "none"
-            - "cp_all_objs"
-            - "preview"
-            - "generate_rev"
-            - "copy_assigned_pkg"
-            - "unassign"
-            - "ifpolicy_only"
-            - "no_ifpolicy"
-            - "objs_only"
-            - "auto_lock_ws"
-            - "check_pkg_st"
-            - "copy_only"
-          target:
-            -
-              pkg: <string>
-              scope:
-                -
-                  name: <string>
-                  vdom: <string>
+          # adom: <string>
+          # flags:
+          #   - "none"
+          #   - "cp_all_objs"
+          #   - "preview"
+          #   - "generate_rev"
+          #   - "copy_assigned_pkg"
+          #   - "unassign"
+          #   - "ifpolicy_only"
+          #   - "no_ifpolicy"
+          #   - "objs_only"
+          #   - "auto_lock_ws"
+          #   - "check_pkg_st"
+          #   - "copy_only"
+          # target:
+          #   - pkg: <string>
+          #     scope:
+          #       - name: <string>
+          #         vdom: <string>
 '''
 
 RETURN = '''

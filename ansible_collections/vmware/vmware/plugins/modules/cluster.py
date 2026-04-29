@@ -45,8 +45,9 @@ seealso:
     - module: vmware.vmware.cluster_drs
     - module: community.vmware.vmware_cluster_ha
     - module: community.vmware.vmware_cluster_vsan
+
 extends_documentation_fragment:
-    - vmware.vmware.vmware.documentation
+    - vmware.vmware.base_options
 '''
 
 EXAMPLES = r'''
@@ -91,17 +92,19 @@ except ImportError:
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware import (
-    PyVmomi,
-    vmware_argument_spec
+from ansible_collections.vmware.vmware.plugins.module_utils._module_pyvmomi_base import (
+    ModulePyvmomiBase
 )
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_tasks import (
+from ansible_collections.vmware.vmware.plugins.module_utils.argument_spec import (
+    base_argument_spec
+)
+from ansible_collections.vmware.vmware.plugins.module_utils._vsphere_tasks import (
     TaskError,
     RunningTaskMonitor
 )
 
 
-class VMwareCluster(PyVmomi):
+class VMwareCluster(ModulePyvmomiBase):
     def __init__(self, module):
         super(VMwareCluster, self).__init__(module)
         self.datacenter_obj = None
@@ -152,9 +155,9 @@ class VMwareCluster(PyVmomi):
         Checks if cluster exists and compares that to the desired state.
         Returns: True if cluster state matches desired state, False otherwise
         """
-        self.datacenter_obj = self.get_datacenter_by_name(self.params['datacenter'], fail_on_missing=True)
-        self.cluster_obj = self.get_cluster_by_name(
-            cluster_name=self.params['cluster'],
+        self.datacenter_obj = self.get_datacenter_by_name_or_moid(self.params['datacenter'], fail_on_missing=True)
+        self.cluster_obj = self.get_cluster_by_name_or_moid(
+            identifier=self.params['cluster'],
             datacenter=self.datacenter_obj,
             fail_on_missing=False
         )
@@ -182,7 +185,7 @@ class VMwareCluster(PyVmomi):
 def main():
     module = AnsibleModule(
         argument_spec={
-            **vmware_argument_spec(), **dict(
+            **base_argument_spec(), **dict(
                 cluster=dict(type='str', required=True, aliases=['cluster_name', 'name']),
                 datacenter=dict(type='str', required=True, aliases=['datacenter_name']),
                 state=dict(type='str', default='present', choices=['absent', 'present']),

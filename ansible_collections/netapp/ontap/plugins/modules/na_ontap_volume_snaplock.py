@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2020, NetApp, Inc
+# (c) 2020-2025, NetApp, Inc
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -21,7 +21,7 @@ short_description: NetApp ONTAP manage volume snaplock retention.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_zapi
 version_added: '20.2.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Modifies the snaplock retention of volumes on NetApp ONTAP.
 options:
@@ -101,18 +101,17 @@ notes:
 '''
 
 EXAMPLES = """
-    - name: Set volume snaplock
-      na_ontap_volume_snaplock:
-        vserver: svm
-        name: ansibleVolume
-        default_retention_period: "5 days"
-        minimum_retention_period: "0 years"
-        maximum_retention_period: "10 days"
-        is_volume_append_mode_enabled: False
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-
+- name: Set volume snaplock
+  netapp.ontap.na_ontap_volume_snaplock:
+    vserver: ansibleSVM
+    name: ansibleVolume
+    default_retention_period: "5 days"
+    minimum_retention_period: "0 years"
+    maximum_retention_period: "10 days"
+    is_volume_append_mode_enabled: false
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """

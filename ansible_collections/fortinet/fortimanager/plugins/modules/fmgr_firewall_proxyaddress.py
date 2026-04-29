@@ -155,6 +155,9 @@ options:
                     - 'put'
                     - 'trace'
                     - 'connect'
+                    - 'other'
+                    - 'patch'
+                    - 'update'
             name:
                 type: str
                 description: Address name.
@@ -243,6 +246,7 @@ options:
 EXAMPLES = '''
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -354,7 +358,11 @@ def main():
                 'header-name': {'type': 'str'},
                 'host': {'type': 'str'},
                 'host-regex': {'type': 'str'},
-                'method': {'type': 'list', 'choices': ['delete', 'get', 'head', 'options', 'post', 'put', 'trace', 'connect'], 'elements': 'str'},
+                'method': {
+                    'type': 'list',
+                    'choices': ['delete', 'get', 'head', 'options', 'post', 'put', 'trace', 'connect', 'other', 'patch', 'update'],
+                    'elements': 'str'
+                },
                 'name': {'required': True, 'type': 'str'},
                 'path': {'type': 'str'},
                 'query': {'type': 'str'},
@@ -370,7 +378,7 @@ def main():
                 },
                 'ua': {'type': 'list', 'choices': ['chrome', 'ms', 'firefox', 'safari', 'other', 'ie', 'edge'], 'elements': 'str'},
                 'uuid': {'type': 'str'},
-                'visibility': {'choices': ['disable', 'enable'], 'type': 'str'},
+                'visibility': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'tags': {'v_range': [['6.2.0', '6.4.15']], 'type': 'str'},
                 '_image-base64': {'v_range': [['6.2.2', '']], 'type': 'str'},
                 'application': {'v_range': [['7.2.1', '']], 'type': 'raw'},

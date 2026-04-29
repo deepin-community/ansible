@@ -5,9 +5,9 @@ The Meraki-Ansible project provides an Ansible collection for managing and autom
 # Quick Start Guide
 
 ## Installation
-1. Ansible must be installed ([Install guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html))
+1. Ansible must be installed just in case needed. Check if your environment does not provide it. Example AAP. ([Install guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html))
 ```
-pip install ansible
+pip install ansible-core
 ```
 
 2. Python Meraki SDK must be installed
@@ -32,7 +32,8 @@ meraki_server
 Create a playbook `who_am_i.yml` ([example](https://github.com/meraki/dashboard-api-ansible/blob/main/playbooks/who_am_i.yml)):
 ```
 ---
-- hosts: meraki_servers
+- name: Play Name
+  hosts: meraki_servers
   gather_facts: false
   tasks:
     - name: Get my administered identities
@@ -66,6 +67,8 @@ Other versions of this collection have support for previous Cisco Meraki version
 |--------------------------|------------------------------|-------------------------------|
 | 1.33.0                    | 2.17.0                      |1.33.0                         |
 | 1.44.1                    | 2.18.3                      |1.44.1                         |
+| 1.53.0                    | 2.20.8                      |1.53.0                         |
+| 1.57.0                    | 2.21.2                      |1.57.0                         |
 
 *Notes*:
 
@@ -122,7 +125,7 @@ The modules that were there before, usually with a `meraki` prefix, are maintain
 
 ### Example
 - Old module:
-  ```yml
+```
   - name: Create webhook
     cisco.meraki.meraki_webhook:
       auth_key: abc123
@@ -134,18 +137,22 @@ The modules that were there before, usually with a `meraki` prefix, are maintain
       shared_secret: shhhdonttellanyone
       payload_template_name: 'Slack (included)'
     delegate_to: localhost
-  ```
+```
 - New module:
-  ```yml
+```
   - name: Create webhook
     cisco.meraki.networks_webhooks_http_servers:
-      meraki_api_key: "{{meraki_api_key}}"
+      meraki_api_key: "{{ meraki_api_key }}"
       state: present
       name: Test_Hook
-      networkId: "{{network_id}}"
+      networkId: "{{ network_id }}"
       payloadTemplate:
         name: Slack (included)
         payloadTemplateId: wpt_00001
       sharedSecret: shhhdonttellanyone
       url: https://webhook.url/
-  ```
+```
+
+## License
+
+This project is licensed under the [GNU General Public License](https://github.com/meraki/dashboard-api-ansible/blob/main/LICENSE).

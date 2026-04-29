@@ -4,6 +4,38 @@ Grafana Collection Release Notes
 
 .. contents:: Topics
 
+v2.3.0
+======
+
+Minor Changes
+-------------
+
+- grafana_team - integrate parameter ``org_id``
+- grafana_team - integrate parameter ``org_name``
+
+Bugfixes
+--------
+
+- Fix parsing of grafana version for pre-releases and security releases
+- grafana_dashboard - fix change detection for dashboards in folders
+
+v2.2.0
+======
+
+Minor Changes
+-------------
+
+- Add argument `tls_servername` for `grafana_datasource`
+- Support `alertmanager` as type for `grafana_datasource`
+- grafana_dashboard - allow creating dashboards in subfolders
+
+Bugfixes
+--------
+
+- Remove field `apiVersion` from return of current `grafana_datasource` for working diff
+- grafana_dashboard - add uid to payload
+- test: replace more deprecated `TestCase.assertEquals` to support Python 3.12
+
 v2.1.0
 ======
 

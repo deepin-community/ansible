@@ -8,14 +8,12 @@
     cname: "{{ name_prefix }}-container"
     project_src: "{{ remote_tmp_dir }}/{{ pname }}"
     test_service: |
-      version: '3'
       services:
         {{ cname }}:
           image: "{{ docker_test_image_alpine }}"
           command: '/bin/sh -c "sleep 10m"'
           stop_grace_period: 1s
     test_service_mod: |
-      version: '3'
       services:
         {{ cname }}:
           image: "{{ docker_test_image_alpine }}"
@@ -86,16 +84,25 @@
         state: present
       register: present_3
 
+    - name: Present with --yes
+      docker_compose_v2:
+        project_src: '{{ project_src }}'
+        state: present
+        assume_yes: true
+      when: docker_compose_version is version('2.32.0', '>=')
+
     - assert:
         that:
           - present_1_check is changed
           - present_1_check.warnings | default([]) | select('regex', ' Please report this at ') | length == 0
           - present_1 is changed
           - present_1.containers | length == 1
-          - present_1.containers[0].Name == pname ~ '-' ~ cname ~ '-1'
+          - present_1.containers[0].Name == (pname ~ '-' ~ cname ~ '-1')
           - present_1.containers[0].Image == docker_test_image_alpine
           - present_1.images | length == 1
-          - present_1.images[0].ContainerName == pname ~ '-' ~ cname ~ '-1'
+          - >-
+            docker_compose_version is version('2.37.0', '>=') or
+            present_1.images[0].ContainerName == (pname ~ '-' ~ cname ~ '-1')
           - present_1.images[0].Repository == (docker_test_image_alpine | split(':') | first)
           - present_1.images[0].Tag == (docker_test_image_alpine | split(':') | last)
           - present_1.warnings | default([]) | select('regex', ' Please report this at ') | length == 0

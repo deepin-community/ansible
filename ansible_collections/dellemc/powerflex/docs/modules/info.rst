@@ -23,7 +23,7 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerFlex storage system version 3.6 or later.
-- PyPowerFlex 1.12.0.
+- PyPowerFlex 1.14.1.
 
 
 
@@ -33,39 +33,43 @@ Parameters
   gather_subset (optional, list, None)
     List of string variables to specify the PowerFlex storage system entities for which information is required.
 
-    Volumes - ``vol``.
+    Volumes - \ :literal:`vol`\ .
 
-    Storage pools - ``storage_pool``.
+    Storage pools - \ :literal:`storage\_pool`\ .
 
-    Protection domains - ``protection_domain``.
+    Protection domains - \ :literal:`protection\_domain`\ .
 
-    SDCs - ``sdc``.
+    SDCs - \ :literal:`sdc`\ .
 
-    SDSs - ``sds``.
+    SDSs - \ :literal:`sds`\ .
 
-    Snapshot policies - ``snapshot_policy``.
+    Snapshot policies - \ :literal:`snapshot\_policy`\ .
 
-    Devices - ``device``.
+    Devices - \ :literal:`device`\ .
 
-    Replication consistency groups - ``rcg``.
+    Replication consistency groups - \ :literal:`rcg`\ .
 
-    Replication pairs - ``replication_pair``.
+    Replication pairs - \ :literal:`replication\_pair`\ .
 
-    Fault Sets - ``fault_set``.
+    Fault Sets - \ :literal:`fault\_set`\ .
 
-    Service templates - ``service_template``.
+    Service templates - \ :literal:`service\_template`\ .
 
-    Managed devices - ``managed_device``.
+    Managed devices - \ :literal:`managed\_device`\ .
 
-    Deployments - ``deployment``.
+    Deployments - \ :literal:`deployment`\ .
 
-    FirmwareRepository - ``firmware_repository``.
+    FirmwareRepository - \ :literal:`firmware\_repository`\ .
+
+    NVMe host - \ :literal:`nvme\_host`\ 
+
+    NVMe Storage Data Target  - \ :literal:`sdt`\ .
 
 
   filters (optional, list, None)
     List of filters to support filtered output for storage entities.
 
-    Each filter is a list of *filter_key*, *filter_operator*, *filter_value*.
+    Each filter is a list of \ :emphasis:`filter\_key`\ , \ :emphasis:`filter\_operator`\ , \ :emphasis:`filter\_value`\ .
 
     Supports passing of multiple filters.
 
@@ -77,7 +81,7 @@ Parameters
     filter_operator (True, str, None)
       Operation to be performed on filter key.
 
-      Choice ``contains`` is supported for *gather_subset* keys ``service_template``, ``managed_device``, ``deployment``, ``firmware_repository``.
+      Choice \ :literal:`contains`\  is supported for \ :emphasis:`gather\_subset`\  keys \ :literal:`service\_template`\ , \ :literal:`managed\_device`\ , \ :literal:`deployment`\ , \ :literal:`firmware\_repository`\ .
 
 
     filter_value (True, str, None)
@@ -88,65 +92,65 @@ Parameters
   limit (optional, int, 50)
     Page limit.
 
-    Supported for *gather_subset* keys ``service_template``, ``managed_device``, ``deployment``, ``firmware_repository``.
+    Supported for \ :emphasis:`gather\_subset`\  keys \ :literal:`service\_template`\ , \ :literal:`managed\_device`\ , \ :literal:`deployment`\ , \ :literal:`firmware\_repository`\ .
 
 
   offset (optional, int, 0)
     Pagination offset.
 
-    Supported for *gather_subset* keys ``service_template``, ``managed_device``, ``deployment``, ``firmware_repository``.
+    Supported for \ :emphasis:`gather\_subset`\  keys \ :literal:`service\_template`\ , \ :literal:`managed\_device`\ , \ :literal:`deployment`\ , \ :literal:`firmware\_repository`\ .
 
 
   sort (optional, str, None)
     Sort the returned components based on specified field.
 
-    Supported for *gather_subset* keys ``service_template``, ``managed_device``, ``deployment``, ``firmware_repository``.
+    Supported for \ :emphasis:`gather\_subset`\  keys \ :literal:`service\_template`\ , \ :literal:`managed\_device`\ , \ :literal:`deployment`\ , \ :literal:`firmware\_repository`\ .
 
-    The supported sort keys for the *gather_subset* can be referred from PowerFlex Manager API documentation in https://developer.dell.com.
+    The supported sort keys for the \ :emphasis:`gather\_subset`\  can be referred from PowerFlex Manager API documentation in \ https://developer.dell.com\ .
 
 
   include_devices (optional, bool, True)
     Include devices in response.
 
-    Applicable when *gather_subset* is ``deployment``.
+    Applicable when \ :emphasis:`gather\_subset`\  is \ :literal:`deployment`\ .
 
 
   include_template (optional, bool, True)
     Include service templates in response.
 
-    Applicable when *gather_subset* is ``deployment``.
+    Applicable when \ :emphasis:`gather\_subset`\  is \ :literal:`deployment`\ .
 
 
   full (optional, bool, False)
     Specify if response is full or brief.
 
-    Applicable when *gather_subset* is ``deployment``, ``service_template``.
+    Applicable when \ :emphasis:`gather\_subset`\  is \ :literal:`deployment`\ , \ :literal:`service\_template`\ .
 
-    For ``deployment`` specify to use full templates including resources in response.
+    For \ :literal:`deployment`\  specify to use full templates including resources in response.
 
 
   include_attachments (optional, bool, True)
     Include attachments.
 
-    Applicable when *gather_subset* is ``service_template``.
+    Applicable when \ :emphasis:`gather\_subset`\  is \ :literal:`service\_template`\ .
 
 
   include_related (optional, bool, False)
     Include related entities.
 
-    Applicable when *gather_subset* is ``firmware_repository``.
+    Applicable when \ :emphasis:`gather\_subset`\  is \ :literal:`firmware\_repository`\ .
 
 
   include_bundles (optional, bool, False)
     Include software bundle entities.
 
-    Applicable when *gather_subset* is ``firmware_repository``.
+    Applicable when \ :emphasis:`gather\_subset`\  is \ :literal:`firmware\_repository`\ .
 
 
   include_components (optional, bool, False)
     Include software component entities.
 
-    Applicable when *gather_subset* is ``firmware_repository``.
+    Applicable when \ :emphasis:`gather\_subset`\  is \ :literal:`firmware\_repository`\ .
 
 
   hostname (True, str, None)
@@ -164,9 +168,9 @@ Parameters
   validate_certs (optional, bool, True)
     Boolean variable to specify whether or not to validate SSL certificate.
 
-    ``true`` - Indicates that the SSL certificate should be verified.
+    \ :literal:`true`\  - Indicates that the SSL certificate should be verified.
 
-    ``false`` - Indicates that the SSL certificate should not be verified.
+    \ :literal:`false`\  - Indicates that the SSL certificate should not be verified.
 
 
   port (optional, int, 443)
@@ -186,9 +190,9 @@ Notes
 -----
 
 .. note::
-   - The *check_mode* is supported.
-   - The supported filter keys for the *gather_subset* can be referred from PowerFlex Manager API documentation in https://developer.dell.com.
-   - The *filter*, *sort*, *limit* and *offset* options will be ignored when more than one *gather_subset* is specified along with ``service_template``, ``managed_device``, ``deployment`` or ``firmware_repository``.
+   - The \ :emphasis:`check\_mode`\  is supported.
+   - The supported filter keys for the \ :emphasis:`gather\_subset`\  can be referred from PowerFlex Manager API documentation in \ https://developer.dell.com\ .
+   - The \ :emphasis:`filter`\ , \ :emphasis:`sort`\ , \ :emphasis:`limit`\  and \ :emphasis:`offset`\  options will be ignored when more than one \ :emphasis:`gather\_subset`\  is specified along with \ :literal:`service\_template`\ , \ :literal:`managed\_device`\ , \ :literal:`deployment`\  or \ :literal:`firmware\_repository`\ .
    - The modules present in the collection named as 'dellemc.powerflex' are built to support the Dell PowerFlex storage platform.
 
 
@@ -217,6 +221,8 @@ Examples
           - rcg
           - replication_pair
           - fault_set
+          - nvme_host
+          - sdt
 
     - name: Get a subset list of PowerFlex volumes
       dellemc.powerflex.info:
@@ -313,6 +319,28 @@ Examples
       ansible.builtin.debug:
         msg: "{{ result_repository_out.FirmwareRepository |
             selectattr('id', 'equalto', '8aaa80788b7') | map(attribute='softwareBundles') | flatten }}"
+
+    - name: Get the list of NVMe hosts
+      dellemc.powerflex.info:
+        hostname: "{{ hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        validate_certs: "{{ validate_certs }}"
+        gather_subset:
+          - nvme_host
+        filters:
+          - filter_key: "name"
+            filter_operator: "equal"
+            filter_value: "ansible_test"
+
+    - name: Get the list of NVMe Storage Data Target
+      dellemc.powerflex.info:
+        hostname: "{{ hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        validate_certs: "{{ validate_certs }}"
+        gather_subset:
+          - sdt
 
 
 
@@ -943,6 +971,264 @@ FirmwareRepository (when I(gather_subset) is C(firmware_repository), list, [{'id
 
   deployments (, list, )
     Deployments of the firmware repository.
+
+
+
+NVMe_Hosts (always, list, [{'hostOsFullType': 'Generic', 'systemId': 'f4c3b7f5c48cb00f', 'sdcApproved': None, 'sdcAgentActive': None, 'mdmIpAddressesCurrent': None, 'sdcIp': None, 'sdcIps': None, 'osType': None, 'perfProfile': None, 'peerMdmId': None, 'sdtId': None, 'mdmConnectionState': None, 'softwareVersionInfo': None, 'socketAllocationFailure': None, 'memoryAllocationFailure': None, 'versionInfo': None, 'sdcType': None, 'nqn': 'nqn.org.nvmexpress:uuid', 'maxNumPaths': 3, 'maxNumSysPorts': 3, 'sdcGuid': None, 'installedSoftwareVersionInfo': None, 'kernelVersion': None, 'kernelBuildNumber': None, 'sdcApprovedIps': None, 'hostType': 'NVMeHost', 'sdrId': None, 'name': 'example_nvme_host', 'id': 'da8f60fd00010000', 'links': [{'rel': 'self', 'href': '/api/instances/Host::da8f60fd00010000'}, {'rel': '/api/Host/relationship/Volume', 'href': '/api/instances/Host::da8f60fd00010000/relationships/Volume'}, {'rel': '/api/Host/relationship/NvmeController', 'href': '/api/instances/Host::da8f60fd00010000/relationships/NvmeController'}, {'rel': '/api/parent/relationship/systemId', 'href': '/api/instances/System::f4c3b7f5c48cb00f'}]}])
+  Details of all NVMe hosts.
+
+
+  hostOsFullType (, str, )
+    Full type of the host OS.
+
+
+  hostType (, str, )
+    Type of the host.
+
+
+  id (, str, )
+    ID of the NVMe host.
+
+
+  installedSoftwareVersionInfo (, str, )
+    Installed software version information.
+
+
+  kernelBuildNumber (, str, )
+    Kernel build number.
+
+
+  kernelVersion (, str, )
+    Kernel version.
+
+
+  links (, list, )
+    Links related to the NVMe host.
+
+
+    href (, str, )
+      Hyperlink reference.
+
+
+    rel (, str, )
+      Relation type.
+
+
+
+  max_num_paths (, int, )
+    Maximum number of paths per volume. Used to create or modify the NVMe host.
+
+
+  max_num_sys_ports (, int, )
+    Maximum number of ports per protection domain. Used to create or modify the NVMe host.
+
+
+  mdmConnectionState (, str, )
+    MDM connection state.
+
+
+  mdmIpAddressesCurrent (, list, )
+    Current MDM IP addresses.
+
+
+  name (, str, )
+    Name of the NVMe host.
+
+
+  nqn (, str, )
+    NQN of the NVMe host. Used to create, get or modify the NVMe host.
+
+
+  osType (, str, )
+    OS type.
+
+
+  peerMdmId (, str, )
+    Peer MDM ID.
+
+
+  perfProfile (, str, )
+    Performance profile.
+
+
+  sdcAgentActive (, bool, )
+    Whether the SDC agent is active.
+
+
+  sdcApproved (, bool, )
+    Whether an SDC has approved access to the system.
+
+
+  sdcApprovedIps (, list, )
+    SDC approved IPs.
+
+
+  sdcGuid (, str, )
+    SDC GUID.
+
+
+  sdcIp (, str, )
+    SDC IP address.
+
+
+  sdcIps (, list, )
+    SDC IP addresses.
+
+
+  sdcType (, str, )
+    SDC type.
+
+
+  sdrId (, str, )
+    SDR ID.
+
+
+  sdtId (, str, )
+    SDT ID.
+
+
+  softwareVersionInfo (, str, )
+    Software version information.
+
+
+  systemId (, str, )
+    ID of the system.
+
+
+  versionInfo (, str, )
+    Version information.
+
+
+
+sdt (when I(gather_subset) is C(sdt), list, [{'authenticationError': 'None', 'certificateInfo': None, 'discoveryPort': 8009, 'faultSetId': None, 'id': '8bddf18b00000000', 'ipList': [{'ip': '10.1.1.1', 'role': 'HostOnly'}, {'ip': '10.1.1.2', 'role': 'StorageOnly'}], 'links': [{'href': '/api/instances/Sdt::8bddf18b00000000', 'rel': 'self'}, {'href': '/api/instances/Sdt::8bddf18b00000000/relationships/Statistics', 'rel': '/api/Sdt/relationship/Statistics'}, {'href': '/api/instances/ProtectionDomain::32a39aa600000000', 'rel': '/api/parent/relationship/protectionDomainId'}], 'maintenanceState': 'NoMaintenance', 'mdmConnectionState': 'Connected', 'membershipState': 'Joined', 'name': 'Sdt-yulan3-pf460-svm-1', 'nvmePort': 4420, 'nvme_hosts': [{'controllerId': 1, 'hostId': '1040d69e00010001', 'hostIp': '10.0.1.1', 'id': 'cc00010001000002', 'isAssigned': False, 'isConnected': True, 'links': [{'href': '/api/instances/NvmeController::cc00010001000002', 'rel': 'self'}], 'name': None, 'sdtId': '8bddf18b00000000', 'subsystem': 'Io', 'sysPortId': 0, 'sysPortIp': '10.1.1.1'}], 'persistentDiscoveryControllersNum': 0, 'protectionDomainId': '32a39aa600000000', 'sdtState': 'Normal', 'softwareVersionInfo': 'R4_5.2100.0', 'storagePort': 12200, 'systemId': '264ec85b3855280f'}])
+  Details of NVMe storage data targets.
+
+
+  authenticationError (, str, )
+    The authentication error details of the SDT object.
+
+
+  certificateInfo (, str, )
+    The certificate information of the SDT object.
+
+
+  discoveryPort (, int, )
+    The discovery port number of the SDT object.
+
+
+  id (, str, )
+    The unique identifier of the SDT object.
+
+
+  ipList (, list, )
+    The list of IP addresses of the SDT object.
+
+
+    ip (, str, )
+      The IP address of the SDT object.
+
+
+    role (, str, )
+      The role associated with the IP address of the SDT object.
+
+
+
+  maintenanceState (, str, )
+    The maintenance state of the SDT object.
+
+
+  mdmConnectionState (, str, )
+    The MDM connection state of the SDT object.
+
+
+  membershipState (, str, )
+    The membership state of the SDT object.
+
+
+  name (, str, )
+    The name of the SDT object.
+
+
+  nvmePort (, int, )
+    The NVMe port number of the SDT object.
+
+
+  nvme_hosts (, list, )
+    The list of NVMe hosts associated with the SDT object.
+
+
+    controllerId (, int, )
+      The controller ID.
+
+
+    hostId (, str, )
+      The host ID associated with the NVMe controller.
+
+
+    hostIp (, str, )
+      The IP address of the host.
+
+
+    id (, str, )
+      The unique identifier of the NVMe controller.
+
+
+    isAssigned (, bool, )
+      Indicates if the NVMe controller is assigned.
+
+
+    isConnected (, bool, )
+      Indicates if the NVMe controller is connected.
+
+
+    links (, list, )
+      Hyperlinks related to the NVMe controller.
+
+
+      href (, str, )
+        The URL of the link.
+
+
+      rel (, str, )
+        The relation type of the link.
+
+
+
+    name (, str, )
+      The name of the NVMe controller. Can be null.
+
+
+    sdtId (, str, )
+      The SDT ID associated with the NVMe controller.
+
+
+    subsystem (, str, )
+      The subsystem associated with the NVMe controller.
+
+
+    sysPortId (, int, )
+      The system port ID.
+
+
+    sysPortIp (, str, )
+      The IP address of the system port.
+
+
+
+  protectionDomainId (, str, )
+    The Protection Domain ID associated with the SDT object.
+
+
+  sdtState (, str, )
+    The state of the SDT object.
+
+
+  softwareVersionInfo (, str, )
+    The software version information of the SDT object.
+
+
+  storagePort (, int, )
+    The storage port number of the SDT object.
 
 
 

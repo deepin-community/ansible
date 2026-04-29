@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "cyberark",
   "name": "pas",
-  "version": "1.0.30",
+  "version": "1.0.35",
   "authors": [
    "CyberArk Business Development (@cyberark-bizdev)",
    "Edward Nunez (@enunez-cyberark)",
@@ -36,7 +36,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "c1cb382bb19b0fb9f1735ea10b19466cd63646c79ccf3ef9738e89464520d718",
+  "chksum_sha256": "0b994fe4f712e71789db545ed35dd239655a7640288da98320b926ee1c6eed65",
   "format": 1
  },
  "format": 1

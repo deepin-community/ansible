@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -61,7 +61,8 @@ class NetworksApplianceSsids(object):
         self.new_object = dict(
             authMode=params.get("authMode"),
             defaultVlanId=params.get("defaultVlanId"),
-            dhcpEnforcedDeauthentication=params.get("dhcpEnforcedDeauthentication"),
+            dhcpEnforcedDeauthentication=params.get(
+                "dhcpEnforcedDeauthentication"),
             dot11w=params.get("dot11w"),
             enabled=params.get("enabled"),
             encryptionMode=params.get("encryptionMode"),
@@ -172,7 +173,8 @@ class NetworksApplianceSsids(object):
         prev_obj = None
         id_exists = False
         name_exists = False
-        o_id = self.new_object.get("networkId") or self.new_object.get("network_id")
+        o_id = self.new_object.get(
+            "networkId") or self.new_object.get("network_id")
         o_id = o_id or self.new_object.get(
             "number") or self.new_object.get("number")
         name = self.new_object.get("name")
@@ -216,8 +218,8 @@ class NetworksApplianceSsids(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):

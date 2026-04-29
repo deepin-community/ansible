@@ -4,6 +4,67 @@ F5Networks F5\_Modules Collection Release Notes
 
 .. contents:: Topics
 
+v1.38.0
+=======
+
+v1.37.1
+=======
+
+Bugfixes
+--------
+
+- fixed automation hub import log issues
+
+v1.37.0
+=======
+
+Bugfixes
+--------
+
+- added github actions
+
+v1.36.0
+=======
+
+Bugfixes
+--------
+
+- bigip_virtual_server fix module crash issue
+
+v1.35.0
+=======
+
+Bugfixes
+--------
+
+- bigip_firewall_address_list to support both cidr and route domain
+- bigip_profile_server_ssl to support parent's [None, "", "None"] profiles
+
+v1.34.1
+=======
+
+v1.34.0
+=======
+
+Minor Changes
+-------------
+
+- bigip_virtual_server - Fixed issue - Disabling/Enabling Virtual Server does not require profiles, type in Update
+
+Bugfixes
+--------
+
+- bigip_profile_server_ssl - Fixed bug - create server SSL profile if SSL key is passphrase protected
+- bigip_snmp_community - Allow v3 usernames that begin with a number or contains any special characters.
+
+v1.33.0
+=======
+
+Bugfixes
+--------
+
+- bigip_monitor_external - external monitor user-defined variables not reflected for non-common partition
+
 v1.32.1
 =======
 

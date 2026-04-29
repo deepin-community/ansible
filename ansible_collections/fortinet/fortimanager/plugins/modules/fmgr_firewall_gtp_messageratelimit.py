@@ -326,6 +326,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -341,65 +342,65 @@ EXAMPLES = '''
         adom: <your own value>
         gtp: <your own value>
         firewall_gtp_messageratelimit:
-          create_aa_pdp_request: <integer>
-          create_aa_pdp_response: <integer>
-          create_mbms_request: <integer>
-          create_mbms_response: <integer>
-          create_pdp_request: <integer>
-          create_pdp_response: <integer>
-          delete_aa_pdp_request: <integer>
-          delete_aa_pdp_response: <integer>
-          delete_mbms_request: <integer>
-          delete_mbms_response: <integer>
-          delete_pdp_request: <integer>
-          delete_pdp_response: <integer>
-          echo_reponse: <integer>
-          echo_request: <integer>
-          error_indication: <integer>
-          failure_report_request: <integer>
-          failure_report_response: <integer>
-          fwd_reloc_complete_ack: <integer>
-          fwd_relocation_complete: <integer>
-          fwd_relocation_request: <integer>
-          fwd_relocation_response: <integer>
-          fwd_srns_context: <integer>
-          fwd_srns_context_ack: <integer>
-          g_pdu: <integer>
-          identification_request: <integer>
-          identification_response: <integer>
-          mbms_de_reg_request: <integer>
-          mbms_de_reg_response: <integer>
-          mbms_notify_rej_request: <integer>
-          mbms_notify_rej_response: <integer>
-          mbms_notify_request: <integer>
-          mbms_notify_response: <integer>
-          mbms_reg_request: <integer>
-          mbms_reg_response: <integer>
-          mbms_ses_start_request: <integer>
-          mbms_ses_start_response: <integer>
-          mbms_ses_stop_request: <integer>
-          mbms_ses_stop_response: <integer>
-          note_ms_request: <integer>
-          note_ms_response: <integer>
-          pdu_notify_rej_request: <integer>
-          pdu_notify_rej_response: <integer>
-          pdu_notify_request: <integer>
-          pdu_notify_response: <integer>
-          ran_info: <integer>
-          relocation_cancel_request: <integer>
-          relocation_cancel_response: <integer>
-          send_route_request: <integer>
-          send_route_response: <integer>
-          sgsn_context_ack: <integer>
-          sgsn_context_request: <integer>
-          sgsn_context_response: <integer>
-          support_ext_hdr_notify: <integer>
-          update_mbms_request: <integer>
-          update_mbms_response: <integer>
-          update_pdp_request: <integer>
-          update_pdp_response: <integer>
-          version_not_support: <integer>
-          echo_response: <integer>
+          # create_aa_pdp_request: <integer>
+          # create_aa_pdp_response: <integer>
+          # create_mbms_request: <integer>
+          # create_mbms_response: <integer>
+          # create_pdp_request: <integer>
+          # create_pdp_response: <integer>
+          # delete_aa_pdp_request: <integer>
+          # delete_aa_pdp_response: <integer>
+          # delete_mbms_request: <integer>
+          # delete_mbms_response: <integer>
+          # delete_pdp_request: <integer>
+          # delete_pdp_response: <integer>
+          # echo_reponse: <integer>
+          # echo_request: <integer>
+          # error_indication: <integer>
+          # failure_report_request: <integer>
+          # failure_report_response: <integer>
+          # fwd_reloc_complete_ack: <integer>
+          # fwd_relocation_complete: <integer>
+          # fwd_relocation_request: <integer>
+          # fwd_relocation_response: <integer>
+          # fwd_srns_context: <integer>
+          # fwd_srns_context_ack: <integer>
+          # g_pdu: <integer>
+          # identification_request: <integer>
+          # identification_response: <integer>
+          # mbms_de_reg_request: <integer>
+          # mbms_de_reg_response: <integer>
+          # mbms_notify_rej_request: <integer>
+          # mbms_notify_rej_response: <integer>
+          # mbms_notify_request: <integer>
+          # mbms_notify_response: <integer>
+          # mbms_reg_request: <integer>
+          # mbms_reg_response: <integer>
+          # mbms_ses_start_request: <integer>
+          # mbms_ses_start_response: <integer>
+          # mbms_ses_stop_request: <integer>
+          # mbms_ses_stop_response: <integer>
+          # note_ms_request: <integer>
+          # note_ms_response: <integer>
+          # pdu_notify_rej_request: <integer>
+          # pdu_notify_rej_response: <integer>
+          # pdu_notify_request: <integer>
+          # pdu_notify_response: <integer>
+          # ran_info: <integer>
+          # relocation_cancel_request: <integer>
+          # relocation_cancel_response: <integer>
+          # send_route_request: <integer>
+          # send_route_response: <integer>
+          # sgsn_context_ack: <integer>
+          # sgsn_context_request: <integer>
+          # sgsn_context_response: <integer>
+          # support_ext_hdr_notify: <integer>
+          # update_mbms_request: <integer>
+          # update_mbms_response: <integer>
+          # update_pdp_request: <integer>
+          # update_pdp_response: <integer>
+          # version_not_support: <integer>
+          # echo_response: <integer>
 '''
 
 RETURN = '''

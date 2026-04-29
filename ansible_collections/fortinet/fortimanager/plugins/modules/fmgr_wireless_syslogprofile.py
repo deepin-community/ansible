@@ -135,12 +135,20 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            server_type:
+                aliases: ['server-type']
+                type: str
+                description: Configure syslog server type
+                choices:
+                    - 'standard'
+                    - 'fortianalyzer'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -156,14 +164,15 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         wireless_syslogprofile:
-          comment: <string>
-          log_level: <value in [emergency, alert, critical, ...]>
-          name: <string>
-          server_addr_type: <value in [fqdn, ip]>
-          server_fqdn: <string>
-          server_ip: <string>
-          server_port: <integer>
-          server_status: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # comment: <string>
+          # log_level: <value in [emergency, alert, critical, ...]>
+          # server_addr_type: <value in [fqdn, ip]>
+          # server_fqdn: <string>
+          # server_ip: <string>
+          # server_port: <integer>
+          # server_status: <value in [disable, enable]>
+          # server_type: <value in [standard, fortianalyzer]>
 '''
 
 RETURN = '''
@@ -235,7 +244,8 @@ def main():
                 'server-fqdn': {'v_range': [['7.2.1', '']], 'type': 'str'},
                 'server-ip': {'v_range': [['7.2.1', '']], 'type': 'str'},
                 'server-port': {'v_range': [['7.2.1', '']], 'type': 'int'},
-                'server-status': {'v_range': [['7.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'server-status': {'v_range': [['7.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'server-type': {'v_range': [['7.6.2', '']], 'choices': ['standard', 'fortianalyzer'], 'type': 'str'}
             }
         }
     }

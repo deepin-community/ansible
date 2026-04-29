@@ -11,17 +11,16 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: scaleway_private_network
 short_description: Scaleway private network management
 version_added: 4.5.0
 author: Pascal MANGIN (@pastral)
 description:
-    - "This module manages private network on Scaleway account (U(https://developer.scaleway.com))."
+  - This module manages private network on Scaleway account (U(https://developer.scaleway.com)).
 extends_documentation_fragment:
-    - community.general.scaleway
-    - community.general.attributes
+  - community.general.scaleway
+  - community.general.attributes
 
 attributes:
   check_mode:
@@ -33,7 +32,7 @@ options:
   state:
     type: str
     description:
-     - Indicate desired state of the VPC.
+      - Indicate desired state of the VPC.
     default: present
     choices:
       - present
@@ -48,33 +47,36 @@ options:
   region:
     type: str
     description:
-     - Scaleway region to use (for example V(par1)).
+      - Scaleway region to use (for example V(par1)).
     required: true
     choices:
       - ams1
       - EMEA-NL-EVS
+      - ams2
+      - ams3
       - par1
       - EMEA-FR-PAR1
       - par2
       - EMEA-FR-PAR2
+      - par3
       - waw1
       - EMEA-PL-WAW1
+      - waw2
+      - waw3
 
   name:
     type: str
     description:
-    - Name of the VPC.
-
+      - Name of the VPC.
   tags:
     type: list
     elements: str
     description:
-    - List of tags to apply to the instance.
+      - List of tags to apply to the instance.
     default: []
+"""
 
-'''
-
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Create an private network
   community.general.scaleway_vpc:
     project: '{{ scw_project }}'
@@ -88,31 +90,31 @@ EXAMPLES = '''
     name: 'foo'
     state: absent
     region: par1
-'''
+"""
 
-RETURN = '''
+RETURN = r"""
 scaleway_private_network:
-    description: Information on the VPC.
-    returned: success when O(state=present)
-    type: dict
-    sample:
-        {
-            "created_at": "2022-01-15T11:11:12.676445Z",
-            "id": "12345678-f1e6-40ec-83e5-12345d67ed89",
-            "name": "network",
-            "organization_id": "a123b4cd-ef5g-678h-90i1-jk2345678l90",
-            "project_id": "a123b4cd-ef5g-678h-90i1-jk2345678l90",
-            "tags": [
-                "tag1",
-                "tag2",
-                "tag3",
-                "tag4",
-                "tag5"
-            ],
-            "updated_at": "2022-01-15T11:12:04.624837Z",
-            "zone": "fr-par-2"
-        }
-'''
+  description: Information on the VPC.
+  returned: success when O(state=present)
+  type: dict
+  sample:
+    {
+      "created_at": "2022-01-15T11:11:12.676445Z",
+      "id": "12345678-f1e6-40ec-83e5-12345d67ed89",
+      "name": "network",
+      "organization_id": "a123b4cd-ef5g-678h-90i1-jk2345678l90",
+      "project_id": "a123b4cd-ef5g-678h-90i1-jk2345678l90",
+      "tags": [
+        "tag1",
+        "tag2",
+        "tag3",
+        "tag4",
+        "tag5"
+      ],
+      "updated_at": "2022-01-15T11:12:04.624837Z",
+      "zone": "fr-par-2"
+    }
+"""
 
 from ansible_collections.community.general.plugins.module_utils.scaleway import SCALEWAY_LOCATION, scaleway_argument_spec, Scaleway
 from ansible.module_utils.basic import AnsibleModule

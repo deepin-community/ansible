@@ -98,6 +98,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -113,11 +114,11 @@ EXAMPLES = '''
         adom: <your own value>
         session_id: <your own value>
         dvmdb_workflow_revert:
-          desc: <string>
-          fmgip: <string>
-          mail_user: <list or string>
-          no_diff: <integer>
-          no_mail: <integer>
+          # desc: <string>
+          # fmgip: <string>
+          # mail_user: <list or string>
+          # no_diff: <integer>
+          # no_mail: <integer>
 '''
 
 RETURN = '''

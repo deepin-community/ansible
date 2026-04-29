@@ -55,15 +55,14 @@ ansible-galaxy collection install community.general
 
 See the following list of supported Operating Systems with the Zabbix releases.
 
-| Zabbix              | 6.4 | 6.0 |
-|---------------------|-----|-----|
-| Red Hat Fam 9       |  V  |  V  |
-| Red Hat Fam 8       |  V  |  V  |
-| Ubuntu 24.04 noble  |  V  |  V  |
-| Ubuntu 22.04 jammy  |  V  |  V  |
-| Ubuntu 20.04 focal  |  V  |  V  |
-| Debian 12 bookworm  |  V  |  V  |
-| Debian 11 bullseye  |  V  |  V  |
+| Zabbix              | 7.2 | 7.0 | 6.0 |
+|---------------------|-----|-----|-----|
+| Red Hat Fam 9       |  V  |  V  |  V  |
+| Red Hat Fam 8       |  V  |  V  |  V  |
+| Ubuntu 24.04 noble  |  V  |  V  |  V  |
+| Ubuntu 22.04 jammy  |  V  |  V  |  V  |
+| Debian 12 bookworm  |  V  |  V  |  V  |
+| Debian 11 bullseye  |     |     |  V  |
 
 You can bypass this matrix by setting `enable_version_check: false`
 
@@ -127,10 +126,15 @@ The following is an overview of all available configuration defaults for this ro
 * `zabbix_web_tls_key`: The path to the TLS key file.
 * `zabbix_web_tls_chain`: The path to the TLS certificate chain file.
 * `zabbix_web_SSLPassPhraseDialog`: Type of pass phrase dialog for encrypted private keys.
-* `zabbix_web_SSLSessionCache`: Type of the global/inter-process SSL Session Cache
-* `zabbix_web_SSLSessionCacheTimeout`: Number of seconds before an SSL session expires in the Session Cache
+* `zabbix_web_ssl_session_cache`: Type of the global/inter-process SSL Session Cache
+* `zabbix_web_ssl_session_cache_timeout`: Number of seconds before an SSL session expires in the Session Cache
 * `zabbix_web_SSLCryptoDevice`: Enable use of a cryptographic hardware accelerator
 * `zabbix_apache_custom_includes`: Configure custom includes. Default: `[]`
+* `zabbix_web_ssl_http2`: Bool (default:  False) if using http2
+* `zabbix_web_ssl_session_protocols`: Space seperated list of ssl protocols to explicitly allow (Nginx only)
+* `zabbix_web_ssl_session_prefer_server_ciphers`: (`on`/`off`)  Should server ciphers be prefered over client ciphers (Nginx only)
+* `zabbix_web_ssl_session_stapling`: (`on`/`off`)  Should enable/disable stapling of OCSP responses by server (Nginx only)
+
 
 When `zabbix_web_tls_crt`, `zabbix_web_tls_key` and/or `zabbix_web_tls_chain` are used, make sure that these files exists before executing this role. The Zabbix-Web role will not install the mentioned files.
 
@@ -141,22 +145,39 @@ See https://httpd.apache.org/docs/current/mod/mod_ssl.html for SSL* configuratio
 
 #### PHP-FPM
 
-The following properties are specific to Zabbix 5.0 and for the PHP(-FPM) configuration:
+The following properties are for the PHP(-FPM) configuration:
 
 * `zabbix_php_fpm_session`: The directory where sessions will be stored. If none are provided, defaults are used.
 * `zabbix_php_fpm_listen`: The path to a socket file or ipaddress:port combination on which PHP-FPM needs to listen. If none are provided, defaults are used.
 * `zabbix_php_fpm_conf_listen`: Default: `true`. If we want to configure the `zabbix_php_fpm_listen` in the PHP-FPM configuration file.
 * `zabbix_php_fpm_conf_user`: The owner of the socket file (When `zabbix_php_fpm_listen` contains a patch to a socket file).
-
 * `zabbix_php_fpm_conf_group`: The group of the owner of the socket file (When `zabbix_php_fpm_listen` contains a patch to a socket file).
+
+
+The following values can be used to tune php-fpm for better performance on the frontend:
+
+* `zabbix_web_php_fpm_mode`: Set the mode the php process management will work in. Available dynamic, static, ondemand - default: dynamic
+* `zabbix_web_php_fpm_max_childs`: Set maximum number of process children php-fpm can spawn - default: 50
+* `zabbix_web_php_fpm_start_servers`: The number of child process to be spawned on start. default: 5
+* `zabbix_web_php_fpm_min_spare_servers`: The minimum number of idle child processes PHP-FPM will create. More are created if fewer than this number are available. - default: 5
+* `zabbix_web_php_fpm_max_spare_servers`: The maximum number of idle child processes PHP-FPM will create. If there are more child processes available than this value, then some will be killed off. - default: 35
+* `zabbix_web_custom_php`:  Any customer php settings
+
+##### Tunning recommendations
+| Setting                              | Value                                                        |
+|--------------------------------------|--------------------------------------------------------------|
+| zabbix_web_php_fpm_max_childs        | (Total RAM – Memory used for Linux, DB, etc.) / process size |
+| zabbix_web_php_fpm_start_servers     | Number of CPU cores x 4                                      |
+| zabbix_web_php_fpm_min_spare_servers | Number of CPU cores x 2                                      |
+| zabbix_web_php_fpm_max_spare_servers | Same as start_servers                                        |
 
 ### SElinux
 
 Selinux changes will be installed based on the status of selinux running on the target system.
 
-* `selinux_allow_httpd_can_connect_zabbix`: Default: `false`. Set SELinux boolean to allow httpd to connect to zabbix.
-* `selinux_allow_httpd_can_connect_ldap`: Default: `false`. Set SELinux boolean to allow httpd to connect to LDAP.
-* `selinux_allow_httpd_can_network_connect_db`: Default: `false` Set SELinux boolean to allow httpd to connect databases over the network.
+* `selinux_allow_httpd_can_connect_ldap`: Default: `False`. Set SELinux boolean to allow httpd to connect to LDAP.
+* `selinux_allow_httpd_can_connect_zabbix`: Default: `True`. Set SELinux boolean to allow httpd to connect to zabbix.
+* `selinux_allow_httpd_can_network_connect_db`: Default: `True` Set SELinux boolean to allow httpd to connect databases over the network.
 
 ### Zabbix Server
 

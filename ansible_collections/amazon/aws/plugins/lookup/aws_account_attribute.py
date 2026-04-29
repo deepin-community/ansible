@@ -44,8 +44,8 @@ vars:
 RETURN = r"""
 _raw:
   description:
-    Returns a boolean when I(attribute) is check_ec2_classic. Otherwise returns the value(s) of the attribute
-    (or all attributes if one is not specified).
+    - Returns a boolean when O(attribute=check_ec2_classic). Otherwise returns the value(s) of the attribute
+      (or all attributes if one is not specified).
 """
 
 try:
@@ -86,7 +86,7 @@ class LookupModule(AWSLookupBase):
 
         if check_ec2_classic:
             attr = response[0]
-            return any(value["AttributeValue"] == "EC2" for value in attr["AttributeValues"])
+            return [any(value["AttributeValue"] == "EC2" for value in attr["AttributeValues"])]
 
         if attribute:
             attr = response[0]
@@ -95,4 +95,4 @@ class LookupModule(AWSLookupBase):
         flattened = {}
         for k_v_dict in response:
             flattened[k_v_dict["AttributeName"]] = [value["AttributeValue"] for value in k_v_dict["AttributeValues"]]
-        return flattened
+        return [flattened]

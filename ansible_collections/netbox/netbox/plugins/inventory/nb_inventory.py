@@ -264,6 +264,11 @@ DOCUMENTATION = """
                 - By default, the inventory hostname is the netbox device name
                 - If set, sets the inventory hostname from this field in custom_fields instead
             default: False
+        headers:
+            description: Dictionary of headers to be passed to the NetBox API.
+            default: {}
+            env:
+                - name: NETBOX_HEADERS
 """
 
 EXAMPLES = """
@@ -281,6 +286,8 @@ query_filters:
 device_query_filters:
   - has_primary_ip: 'true'
   - tenant__n: internal
+headers:
+  Cookie: "{{ auth_cookie }}"
 
 # has_primary_ip is a useful way to filter out patch panels and other passive devices
 # Adding '__n' to a field searches for the negation of the value.
@@ -318,8 +325,8 @@ keyed_groups:
   - prefix: status
     key: status.value
 
-# For use in Ansible Tower (AWX), please see this blog from RedHat: https://www.ansible.com/blog/using-an-inventory-plugin-from-a-collection-in-ansible-tower
-# The credential for NetBox will need to expose NETBOX_API and NETBOX_TOKEN as environment variables.
+# For use in Ansible Tower (AWX) the credential for NetBox will need to expose NETBOX_API
+# and NETBOX_TOKEN as environment variables.
 # Example Ansible Tower credential Input Configuration:
 
 fields:
@@ -399,7 +406,8 @@ from ansible.module_utils._text import to_text, to_native
 from ansible.module_utils.urls import open_url
 from ansible.module_utils.six.moves.urllib import error as urllib_error
 from ansible.module_utils.six.moves.urllib.parse import urlencode
-from ansible.module_utils.six import raise_from
+from ansible.module_utils.six.moves.urllib.parse import urlparse
+
 
 try:
     from packaging import specifiers, version
@@ -1141,19 +1149,19 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         # Pull all prefixes defined in NetBox
         url = self.api_endpoint + "/api/ipam/prefixes"
 
-        if self.fetch_all:
-            prefixes = self.get_resource_list(url)
-        else:
-            prefixes = self.get_resource_list_chunked(
-                api_url=url,
-                query_key="site",
-                query_values=list(self.sites_with_prefixes),
-            )
+        prefixes = self.get_resource_list(url)
         self.prefixes_sites_lookup = defaultdict(list)
 
         # We are only concerned with Prefixes that have actually been assigned to sites
         for prefix in prefixes:
-            if prefix.get("site"):
+            # NetBox >=4.2
+            if (
+                prefix.get("scope_type") == "dcim.site"
+                and prefix.get("scope") is not None
+            ):
+                self.prefixes_sites_lookup[prefix["scope"]["id"]].append(prefix)
+            # NetBox <=4.1
+            elif prefix.get("site"):
                 self.prefixes_sites_lookup[prefix["site"]["id"]].append(prefix)
                 # Remove "site" attribute, as it's redundant when prefixes are assigned to site
                 del prefix["site"]
@@ -1319,6 +1327,15 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         if self.fetch_all:
             services = self.get_resource_list(url)
+        elif self.api_version >= version.parse("4.3.0"):
+            services = self.get_resource_list_chunked(
+                api_url=url,
+                query_key="parent_object_id",
+                # Query only affected devices and vms and sanitize the list to only contain every ID once
+                query_values=set(
+                    chain(self.vms_lookup.keys(), self.devices_lookup.keys())
+                ),
+            )
         else:
             device_services = self.get_resource_list_chunked(
                 api_url=url,
@@ -1340,15 +1357,26 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         for service in services:
             service_id = service["id"]
 
-            if service.get("device"):
-                self.device_services_lookup[service["device"]["id"]][
-                    service_id
-                ] = service
+            if self.api_version >= version.parse("4.3.0"):
+                if service.get("parent_object_type") == "dcim.device":
+                    self.device_services_lookup[service["parent_object_id"]][
+                        service_id
+                    ] = service
 
-            if service.get("virtual_machine"):
-                self.vm_services_lookup[service["virtual_machine"]["id"]][
-                    service_id
-                ] = service
+                if service.get("parent_object_type") == "virtualization.virtualmachine":
+                    self.vm_services_lookup[service["parent_object_id"]][
+                        service_id
+                    ] = service
+            else:
+                if service.get("device"):
+                    self.device_services_lookup[service["device"]["id"]][
+                        service_id
+                    ] = service
+
+                if service.get("virtual_machine"):
+                    self.vm_services_lookup[service["virtual_machine"]["id"]][
+                        service_id
+                    ] = service
 
     def refresh_virtual_disks(self):
         url_vm_virtual_disks = (
@@ -1600,7 +1628,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             cached_api_version = None
             cache = None
 
-        status = self._fetch_information(self.api_endpoint + "/api/status")
+        status = self._fetch_information(self.api_endpoint + "/api/status/")
         netbox_api_version = ".".join(status["netbox-version"].split(".")[:2])
 
         if version.parse(netbox_api_version) >= version.parse("3.5.0"):
@@ -1622,26 +1650,32 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         self.api_version = version.parse(netbox_api_version)
 
         if self.api_version >= version.parse("3.5.0"):
+            parsed_endpoint_url = urlparse(self.api_endpoint)
+            base_path = parsed_endpoint_url.path
             self.allowed_device_query_parameters = [
                 p["name"]
-                for p in openapi["paths"]["/api/dcim/devices/"]["get"]["parameters"]
+                for p in openapi["paths"][base_path + "/api/dcim/devices/"]["get"][
+                    "parameters"
+                ]
             ]
             self.allowed_vm_query_parameters = [
                 p["name"]
-                for p in openapi["paths"]["/api/virtualization/virtual-machines/"][
-                    "get"
-                ]["parameters"]
+                for p in openapi["paths"][
+                    base_path + "/api/virtualization/virtual-machines/"
+                ]["get"]["parameters"]
             ]
         else:
             self.allowed_device_query_parameters = [
                 p["name"]
-                for p in openapi["paths"]["/dcim/devices/"]["get"]["parameters"]
+                for p in openapi["paths"][base_path + "/dcim/devices/"]["get"][
+                    "parameters"
+                ]
             ]
             self.allowed_vm_query_parameters = [
                 p["name"]
-                for p in openapi["paths"]["/virtualization/virtual-machines/"]["get"][
-                    "parameters"
-                ]
+                for p in openapi["paths"][
+                    base_path + "/virtualization/virtual-machines/"
+                ]["get"]["parameters"]
             ]
 
     def validate_query_parameter(self, parameter, allowed_query_parameters):
@@ -2009,10 +2043,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
     def main(self):
         # Check if pytz lib is install, and give error if not
         if PYTZ_IMPORT_ERROR:
-            raise_from(
-                AnsibleError("pytz must be installed to use this plugin"),
-                PYTZ_IMPORT_ERROR,
-            )
+            raise AnsibleError(
+                "pytz must be installed to use this plugin"
+            ) from PYTZ_IMPORT_ERROR
 
         # Get info about the API - version, allowed query parameters
         self.fetch_api_docs()
@@ -2115,6 +2148,12 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 )
             else:
                 self.headers.update({"Authorization": "Token %s" % token})
+        headers = self.get_option("headers")
+        if headers:
+            if isinstance(headers, str):
+                headers = json.loads(headers)
+            if isinstance(headers, dict):
+                self.headers.update(headers)
 
     def parse(self, inventory, loader, path, cache=True):
         super(InventoryModule, self).parse(inventory, loader, path)

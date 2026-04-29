@@ -10,56 +10,58 @@ __metaclass__ = type
 
 
 DOCUMENTATION = r"""
-    name: robot
-    author:
-        - Oleksandr Stepanov (@alexandrst88)
-    short_description: Hetzner Robot inventory source
-    version_added: 1.1.0
+name: robot
+author:
+  - Oleksandr Stepanov (@alexandrst88)
+short_description: Hetzner Robot inventory source
+version_added: 1.1.0
+description:
+  - Reads servers from Hetzner Robot API.
+  - Uses a YAML configuration file that ends with C(robot.yml) or C(robot.yaml).
+  - The inventory plugin adds all values from U(https://robot.your-server.de/doc/webservice/en.html#get-server) prepended
+    with C(hrobot_) to the server's inventory. For example, the variable C(hrobot_dc) contains the data center the server
+    is located in.
+extends_documentation_fragment:
+  - ansible.builtin.constructed
+  - ansible.builtin.inventory_cache
+  - community.hrobot.robot
+  - community.library_inventory_filtering_v1.inventory_filter
+notes:
+  - The O(hetzner_user) and O(hetzner_password) options can be templated.
+options:
+  plugin:
+    description: Token that ensures this is a source file for the plugin.
+    required: true
+    choices: ["community.hrobot.robot"]
+  hetzner_user:
+    env:
+      - name: HROBOT_API_USER
+  hetzner_password:
+    env:
+      - name: HROBOT_API_PASSWORD
+  simple_filters:
     description:
-        - Reads servers from Hetzner Robot API.
-        - Uses a YAML configuration file that ends with C(robot.yml) or C(robot.yaml).
-        - The inventory plugin adds all values from U(https://robot.your-server.de/doc/webservice/en.html#get-server)
-          prepended with C(hrobot_) to the server's inventory.
-          For example, the variable C(hrobot_dc) contains the data center the server is located in.
-    extends_documentation_fragment:
-        - ansible.builtin.constructed
-        - ansible.builtin.inventory_cache
-        - community.hrobot.robot
-        - community.library_inventory_filtering_v1.inventory_filter
-    notes:
-        - The O(hetzner_user) and O(hetzner_password) options can be templated.
-    options:
-        plugin:
-            description: Token that ensures this is a source file for the plugin.
-            required: true
-            choices: ["community.hrobot.robot"]
-        hetzner_user:
-            env:
-                - name: HROBOT_API_USER
-        hetzner_password:
-            env:
-                - name: HROBOT_API_PASSWORD
-        simple_filters:
-            description:
-                - A dictionary of filter value pairs.
-                - Available filters are listed here are keys of server like C(status) or C(server_ip).
-                - See U(https://robot.your-server.de/doc/webservice/en.html#get-server) for all values that can be used.
-                - This option used to be called O(filters) before community.hrobot 2.0.0. It has been renamed from
-                  O(filters) to O(simple_filters) in community.hrobotdns 1.9.0, and the old name was still available
-                  as an alias until community.hrobot 2.0.0. O(filters) is now used for something else.
-            type: dict
-            default: {}
-        filters:
-            version_added: 2.0.0
+      - A dictionary of filter value pairs.
+      - Available filters are listed here are keys of server like C(status) or C(server_ip).
+      - See U(https://robot.your-server.de/doc/webservice/en.html#get-server) for all values that can be used.
+      - This option used to be called O(filters) before community.hrobot 2.0.0. It has been renamed from O(filters) to O(simple_filters)
+        in community.hrobotdns 1.9.0, and the old name was still available as an alias until community.hrobot 2.0.0. O(filters)
+        is now used for something else.
+    type: dict
+    default: {}
+  filters:
+    version_added: 2.0.0
 """
 
 EXAMPLES = r"""
+---
 # Fetch all hosts in Hetzner Robot
 plugin: community.hrobot.robot
 # Filters all servers in ready state
 filters:
   status: ready
 
+---
 # Example showing encrypted credentials and using filters
 # (This assumes that Mozilla sops was used to encrypt keys/hetzner.sops.yaml, which contains two values
 # hetzner_username and hetzner_password. Needs the community.sops collection to decode that file.)
@@ -70,9 +72,10 @@ filters:
   # Accept all servers in FSN1-DC1 and FSN1-DC2
   - include: >-
       hrobot_dc in ["FSN1-DC1", "FSN1-DC2"]
-  # Exclude all servers that didn't match any of the above filters
+  # Exclude all servers that did not match any of the above filters
   - exclude: true
 
+---
 # Example using constructed features to create groups
 plugin: community.hrobot.robot
 simple_filters:
@@ -96,9 +99,11 @@ from ansible.utils.display import Display
 
 from ansible_collections.community.library_inventory_filtering_v1.plugins.plugin_utils.inventory_filter import parse_filters, filter_host
 
+from ansible_collections.community.hrobot.plugins.module_utils.common import (
+    PluginException,
+)
 from ansible_collections.community.hrobot.plugins.module_utils.robot import (
     BASE_URL,
-    PluginException,
     plugin_open_url_json,
 )
 from ansible_collections.community.hrobot.plugins.plugin_utils.unsafe import make_unsafe
@@ -134,12 +139,12 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         # get the user's cache option too to see if we should save the cache if it is changing
         user_cache_setting = self.get_option('cache')
 
-        # read if the user has caching enabled and the cache isn't being refreshed
+        # read if the user has caching enabled and the cache is not being refreshed
         attempt_to_read_cache = user_cache_setting and cache
         # update if the user has caching enabled and the cache is being refreshed; update this value to True if the cache has expired below
         cache_needs_update = user_cache_setting and not cache
 
-        # attempt to read the cache if inventory isn't being refreshed and the user has caching enabled
+        # attempt to read the cache if inventory is not being refreshed and the user has caching enabled
         if attempt_to_read_cache:
             try:
                 servers = self._cache[cache_key]
@@ -148,6 +153,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 cache_needs_update = True
         elif not cache_needs_update:
             servers = self.get_servers()
+        else:
+            # This can only happen if the code is modified so that cache=False
+            pass  # pragma: no cover
 
         if cache_needs_update:
             servers = self.get_servers()

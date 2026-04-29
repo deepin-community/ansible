@@ -22,7 +22,7 @@ attributes:
     description: The check_mode support.
     support: full
 extends_documentation_fragment:
-- vmware.vmware.vmware.vcenter_documentation
+- vmware.vmware.base_options
 '''
 
 EXAMPLES = r'''
@@ -44,10 +44,15 @@ licenses:
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware import PyVmomi, vmware_argument_spec
+from ansible_collections.vmware.vmware.plugins.module_utils._module_pyvmomi_base import (
+    ModulePyvmomiBase
+)
+from ansible_collections.vmware.vmware.plugins.module_utils.argument_spec import (
+    base_argument_spec
+)
 
 
-class VcenterLicenseMgr(PyVmomi):
+class VcenterLicenseMgr(ModulePyvmomiBase):
     def __init__(self, module):
         super(VcenterLicenseMgr, self).__init__(module)
 
@@ -62,7 +67,7 @@ class VcenterLicenseMgr(PyVmomi):
 
 def main():
     module = AnsibleModule(
-        argument_spec=vmware_argument_spec(),
+        argument_spec=base_argument_spec(),
         supports_check_mode=True,
     )
 

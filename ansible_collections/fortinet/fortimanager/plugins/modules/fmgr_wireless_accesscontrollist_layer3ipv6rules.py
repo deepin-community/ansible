@@ -129,6 +129,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -145,14 +146,14 @@ EXAMPLES = '''
         access_control_list: <your own value>
         state: present # <value in [present, absent]>
         wireless_accesscontrollist_layer3ipv6rules:
-          action: <value in [allow, deny]>
-          comment: <string>
-          dstaddr: <string>
-          dstport: <integer>
-          protocol: <integer>
-          rule_id: <integer>
-          srcaddr: <string>
-          srcport: <integer>
+          # action: <value in [allow, deny]>
+          # comment: <string>
+          # dstaddr: <string>
+          # dstport: <integer>
+          # protocol: <integer>
+          # rule_id: <integer>
+          # srcaddr: <string>
+          # srcport: <integer>
 '''
 
 RETURN = '''

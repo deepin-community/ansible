@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "community",
   "name": "windows",
-  "version": "2.3.0",
+  "version": "3.0.1",
   "authors": [
    "Jordan Borean @jborean93",
    "Matt Davis @nitzmahone"
@@ -15,7 +15,7 @@
   "license": [],
   "license_file": "COPYING",
   "dependencies": {
-   "ansible.windows": ">=1.0.0,<3.0.0"
+   "ansible.windows": ">=3.0.0,<4.0.0"
   },
   "repository": "https://github.com/ansible-collections/community.windows",
   "documentation": "https://docs.ansible.com/ansible/devel/collections/community/windows",
@@ -26,7 +26,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "c6a1b4ac925de91fb488b1faddd635d5acc579d396e625b8741b2c21df1b5d79",
+  "chksum_sha256": "5deff0e5db0f61340cd5f890e704c41451c8c0602a7829cce9e50747bc9a141b",
   "format": 1
  },
  "format": 1

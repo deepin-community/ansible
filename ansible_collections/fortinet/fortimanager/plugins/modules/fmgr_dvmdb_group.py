@@ -135,6 +135,8 @@ options:
                     - 'fca'
                     - 'ftc'
                     - 'fss'
+                    - 'fra'
+                    - 'sim'
             type:
                 type: str
                 description: Type.
@@ -154,11 +156,15 @@ options:
                     - 'unknown'
                     - 'vwan'
                     - 'sase'
+                    - 'ums_aws'
+                    - 'ums_azure'
+                    - 'ums_gcp'
 '''
 
 EXAMPLES = '''
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -258,13 +264,13 @@ def main():
                 'os_type': {
                     'choices': [
                         'unknown', 'fos', 'fsw', 'foc', 'fml', 'faz', 'fwb', 'fch', 'fct', 'log', 'fmg', 'fsa', 'fdd', 'fac', 'fpx', 'fna', 'fdc', 'ffw',
-                        'fsr', 'fad', 'fap', 'fxt', 'fts', 'fai', 'fwc', 'fis', 'fed', 'fpa', 'fca', 'ftc', 'fss'
+                        'fsr', 'fad', 'fap', 'fxt', 'fts', 'fai', 'fwc', 'fis', 'fed', 'fpa', 'fca', 'ftc', 'fss', 'fra', 'sim'
                     ],
                     'type': 'str'
                 },
                 'type': {'choices': ['normal', 'default', 'auto', 'cluster', 'fabric'], 'type': 'str'},
                 'id': {'v_range': [['7.2.1', '']], 'type': 'str'},
-                'cluster_type': {'v_range': [['7.2.2', '']], 'choices': ['unknown', 'vwan', 'sase'], 'type': 'str'}
+                'cluster_type': {'v_range': [['7.2.2', '']], 'choices': ['unknown', 'vwan', 'sase', 'ums_aws', 'ums_azure', 'ums_gcp'], 'type': 'str'}
             }
         }
     }

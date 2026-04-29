@@ -4,6 +4,69 @@ Community.Rabbitmq Release Notes
 
 .. contents:: Topics
 
+v1.6.0
+======
+
+Release Summary
+---------------
+
+This is the minor release of the ``community.rabbitmq`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Minor Changes
+-------------
+
+- rabbitmq_policy - add support to policy manipulation through RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/203)
+- rabbitmq_vhost - make rabbitmqctl optional when configuring vhosts using the RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/201)
+
+Bugfixes
+--------
+
+- rabbitmq_user - URL encode the `vhost` and `user` fields to allow for input with '/' characters. (https://github.com/ansible-collections/community.rabbitmq/issues/205)
+- rabbitmq_vhost - Fail module if the requests library is missing. This maintains the same behavior across all the modules.
+- setup_rabbitmq - incorrect SSL library was selected for install on Ubuntu Noble. Fix now installs the correct version on newer Ubuntu versions. (https://github.com/ansible-collections/community.rabbitmq/issues/199)
+
+v1.5.0
+======
+
+Release Summary
+---------------
+
+This is the minor release of the ``community.rabbitmq`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Minor Changes
+-------------
+
+- rabbitmq_vhost - add support to vhost manipulation through RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/171)
+
+Bugfixes
+--------
+
+- rabbitmq_binding - fix idempotency when arguments and/or routing_key are given (https://github.com/ansible-collections/community.rabbitmq/pull/191)
+
+v1.4.0
+======
+
+Release Summary
+---------------
+
+This is the minor release of the ``community.rabbitmq`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Minor Changes
+-------------
+
+- rabbitmq_policy - adjust the `apply_to` parameter to also accept the new options `classic_queues`, `quorum_queues` and `streams` which are supported since rabbitmq 3.12
+
+Bugfixes
+--------
+
+- rabbitmq_publish - fix support for publishing headers as a part of a message (https://github.com/ansible-collections/community.rabbitmq/pull/182)
+
 v1.3.0
 ======
 

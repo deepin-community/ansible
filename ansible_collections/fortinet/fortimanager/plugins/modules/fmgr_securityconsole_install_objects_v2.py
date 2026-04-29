@@ -96,6 +96,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -109,13 +110,12 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         securityconsole_install_objects_v2:
-          adom: <string>
-          category: <string>
-          objects: <list or string>
-          scope:
-            -
-              name: <string>
-              vdom: <string>
+          # adom: <string>
+          # category: <string>
+          # objects: <list or string>
+          # scope:
+          #   - name: <string>
+          #     vdom: <string>
 '''
 
 RETURN = '''

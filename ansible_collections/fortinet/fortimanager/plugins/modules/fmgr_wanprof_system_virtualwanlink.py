@@ -665,6 +665,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -680,141 +681,135 @@ EXAMPLES = '''
         adom: <your own value>
         wanprof: <your own value>
         wanprof_system_virtualwanlink:
-          fail_detect: <value in [disable, enable]>
-          health_check:
-            -
-              _dynamic_server: <string>
-              addr_mode: <value in [ipv4, ipv6]>
-              failtime: <integer>
-              http_agent: <string>
-              http_get: <string>
-              http_match: <string>
-              interval: <integer>
-              members: <list or string>
-              name: <string>
-              packet_size: <integer>
-              password: <list or string>
-              port: <integer>
-              protocol: <value in [ping, tcp-echo, udp-echo, ...]>
-              recoverytime: <integer>
-              security_mode: <value in [none, authentication]>
-              server: <list or string>
-              sla:
-                -
-                  id: <integer>
-                  jitter_threshold: <integer>
-                  latency_threshold: <integer>
-                  link_cost_factor:
-                    - "latency"
-                    - "jitter"
-                    - "packet-loss"
-                  packetloss_threshold: <integer>
-              threshold_alert_jitter: <integer>
-              threshold_alert_latency: <integer>
-              threshold_alert_packetloss: <integer>
-              threshold_warning_jitter: <integer>
-              threshold_warning_latency: <integer>
-              threshold_warning_packetloss: <integer>
-              update_cascade_interface: <value in [disable, enable]>
-              update_static_route: <value in [disable, enable]>
-              internet_service_id: <string>
-              probe_packets: <value in [disable, enable]>
-              sla_fail_log_period: <integer>
-              sla_pass_log_period: <integer>
-              timeout: <integer>
-              ha_priority: <integer>
-              diffservcode: <string>
-              probe_timeout: <integer>
-              dns_request_domain: <string>
-              probe_count: <integer>
-              system_dns: <value in [disable, enable]>
-          load_balance_mode: <value in [source-ip-based, weight-based, usage-based, ...]>
-          members:
-            -
-              _dynamic_member: <string>
-              comment: <string>
-              gateway: <string>
-              gateway6: <string>
-              ingress_spillover_threshold: <integer>
-              interface: <string>
-              priority: <integer>
-              seq_num: <integer>
-              source: <string>
-              source6: <string>
-              spillover_threshold: <integer>
-              status: <value in [disable, enable]>
-              volume_ratio: <integer>
-              weight: <integer>
-              cost: <integer>
-          service:
-            -
-              addr_mode: <value in [ipv4, ipv6]>
-              bandwidth_weight: <integer>
-              default: <value in [disable, enable]>
-              dscp_forward: <value in [disable, enable]>
-              dscp_forward_tag: <string>
-              dscp_reverse: <value in [disable, enable]>
-              dscp_reverse_tag: <string>
-              dst: <list or string>
-              dst_negate: <value in [disable, enable]>
-              dst6: <list or string>
-              end_port: <integer>
-              gateway: <value in [disable, enable]>
-              groups: <list or string>
-              health_check: <string>
-              hold_down_time: <integer>
-              id: <integer>
-              internet_service: <value in [disable, enable]>
-              internet_service_ctrl: <list or integer>
-              internet_service_ctrl_group: <list or string>
-              internet_service_custom: <list or string>
-              internet_service_custom_group: <list or string>
-              internet_service_group: <list or string>
-              internet_service_id: <list or string>
-              jitter_weight: <integer>
-              latency_weight: <integer>
-              link_cost_factor: <value in [latency, jitter, packet-loss, ...]>
-              link_cost_threshold: <integer>
-              member: <string>
-              mode: <value in [auto, manual, priority, ...]>
-              name: <string>
-              packet_loss_weight: <integer>
-              priority_members: <list or string>
-              protocol: <integer>
-              quality_link: <integer>
-              route_tag: <integer>
-              sla:
-                -
-                  health_check: <string>
-                  id: <integer>
-              src: <list or string>
-              src_negate: <value in [disable, enable]>
-              src6: <list or string>
-              start_port: <integer>
-              status: <value in [disable, enable]>
-              tos: <string>
-              tos_mask: <string>
-              users: <list or string>
-              internet_service_app_ctrl: <list or integer>
-              internet_service_app_ctrl_group: <list or string>
-              role: <value in [primary, secondary, standalone]>
-              sla_compare_method: <value in [order, number]>
-              standalone_action: <value in [disable, enable]>
-              input_device: <list or string>
-              internet_service_name: <string>
-              input_device_negate: <value in [disable, enable]>
-          status: <value in [disable, enable]>
-          neighbor:
-            -
-              health_check: <string>
-              ip: <string>
-              member: <string>
-              role: <value in [primary, secondary, standalone]>
-              sla_id: <integer>
-          neighbor_hold_boot_time: <integer>
-          neighbor_hold_down: <value in [disable, enable]>
-          neighbor_hold_down_time: <integer>
-          fail_alert_interfaces: <list or string>
+          # fail_detect: <value in [disable, enable]>
+          # health_check:
+          #   - _dynamic_server: <string>
+          #     addr_mode: <value in [ipv4, ipv6]>
+          #     failtime: <integer>
+          #     http_agent: <string>
+          #     http_get: <string>
+          #     http_match: <string>
+          #     interval: <integer>
+          #     members: <list or string>
+          #     name: <string>
+          #     packet_size: <integer>
+          #     password: <list or string>
+          #     port: <integer>
+          #     protocol: <value in [ping, tcp-echo, udp-echo, ...]>
+          #     recoverytime: <integer>
+          #     security_mode: <value in [none, authentication]>
+          #     server: <list or string>
+          #     sla:
+          #       - id: <integer>
+          #         jitter_threshold: <integer>
+          #         latency_threshold: <integer>
+          #         link_cost_factor:
+          #           - "latency"
+          #           - "jitter"
+          #           - "packet-loss"
+          #         packetloss_threshold: <integer>
+          #     threshold_alert_jitter: <integer>
+          #     threshold_alert_latency: <integer>
+          #     threshold_alert_packetloss: <integer>
+          #     threshold_warning_jitter: <integer>
+          #     threshold_warning_latency: <integer>
+          #     threshold_warning_packetloss: <integer>
+          #     update_cascade_interface: <value in [disable, enable]>
+          #     update_static_route: <value in [disable, enable]>
+          #     internet_service_id: <string>
+          #     probe_packets: <value in [disable, enable]>
+          #     sla_fail_log_period: <integer>
+          #     sla_pass_log_period: <integer>
+          #     timeout: <integer>
+          #     ha_priority: <integer>
+          #     diffservcode: <string>
+          #     probe_timeout: <integer>
+          #     dns_request_domain: <string>
+          #     probe_count: <integer>
+          #     system_dns: <value in [disable, enable]>
+          # load_balance_mode: <value in [source-ip-based, weight-based, usage-based, ...]>
+          # members:
+          #   - _dynamic_member: <string>
+          #     comment: <string>
+          #     gateway: <string>
+          #     gateway6: <string>
+          #     ingress_spillover_threshold: <integer>
+          #     interface: <string>
+          #     priority: <integer>
+          #     seq_num: <integer>
+          #     source: <string>
+          #     source6: <string>
+          #     spillover_threshold: <integer>
+          #     status: <value in [disable, enable]>
+          #     volume_ratio: <integer>
+          #     weight: <integer>
+          #     cost: <integer>
+          # service:
+          #   - addr_mode: <value in [ipv4, ipv6]>
+          #     bandwidth_weight: <integer>
+          #     default: <value in [disable, enable]>
+          #     dscp_forward: <value in [disable, enable]>
+          #     dscp_forward_tag: <string>
+          #     dscp_reverse: <value in [disable, enable]>
+          #     dscp_reverse_tag: <string>
+          #     dst: <list or string>
+          #     dst_negate: <value in [disable, enable]>
+          #     dst6: <list or string>
+          #     end_port: <integer>
+          #     gateway: <value in [disable, enable]>
+          #     groups: <list or string>
+          #     health_check: <string>
+          #     hold_down_time: <integer>
+          #     id: <integer>
+          #     internet_service: <value in [disable, enable]>
+          #     internet_service_ctrl: <list or integer>
+          #     internet_service_ctrl_group: <list or string>
+          #     internet_service_custom: <list or string>
+          #     internet_service_custom_group: <list or string>
+          #     internet_service_group: <list or string>
+          #     internet_service_id: <list or string>
+          #     jitter_weight: <integer>
+          #     latency_weight: <integer>
+          #     link_cost_factor: <value in [latency, jitter, packet-loss, ...]>
+          #     link_cost_threshold: <integer>
+          #     member: <string>
+          #     mode: <value in [auto, manual, priority, ...]>
+          #     name: <string>
+          #     packet_loss_weight: <integer>
+          #     priority_members: <list or string>
+          #     protocol: <integer>
+          #     quality_link: <integer>
+          #     route_tag: <integer>
+          #     sla:
+          #       - health_check: <string>
+          #         id: <integer>
+          #     src: <list or string>
+          #     src_negate: <value in [disable, enable]>
+          #     src6: <list or string>
+          #     start_port: <integer>
+          #     status: <value in [disable, enable]>
+          #     tos: <string>
+          #     tos_mask: <string>
+          #     users: <list or string>
+          #     internet_service_app_ctrl: <list or integer>
+          #     internet_service_app_ctrl_group: <list or string>
+          #     role: <value in [primary, secondary, standalone]>
+          #     sla_compare_method: <value in [order, number]>
+          #     standalone_action: <value in [disable, enable]>
+          #     input_device: <list or string>
+          #     internet_service_name: <string>
+          #     input_device_negate: <value in [disable, enable]>
+          # status: <value in [disable, enable]>
+          # neighbor:
+          #   - health_check: <string>
+          #     ip: <string>
+          #     member: <string>
+          #     role: <value in [primary, secondary, standalone]>
+          #     sla_id: <integer>
+          # neighbor_hold_boot_time: <integer>
+          # neighbor_hold_down: <value in [disable, enable]>
+          # neighbor_hold_down_time: <integer>
+          # fail_alert_interfaces: <list or string>
 '''
 
 RETURN = '''
@@ -873,55 +868,66 @@ def main():
         'wanprof': {'required': True, 'type': 'str'},
         'wanprof_system_virtualwanlink': {
             'type': 'dict',
-            'v_range': [['6.0.0', '']],
+            'v_range': [['6.0.0', '7.6.2']],
             'options': {
-                'fail-detect': {'choices': ['disable', 'enable'], 'type': 'str'},
+                'fail-detect': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'health-check': {
+                    'v_range': [['6.0.0', '7.6.2']],
                     'type': 'list',
                     'options': {
                         '_dynamic-server': {'v_range': [['6.0.0', '6.4.15']], 'type': 'str'},
-                        'addr-mode': {'choices': ['ipv4', 'ipv6'], 'type': 'str'},
-                        'failtime': {'type': 'int'},
-                        'http-agent': {'type': 'str'},
-                        'http-get': {'type': 'str'},
-                        'http-match': {'type': 'str'},
-                        'interval': {'type': 'int'},
-                        'members': {'type': 'raw'},
-                        'name': {'type': 'str'},
-                        'packet-size': {'type': 'int'},
-                        'password': {'no_log': True, 'type': 'raw'},
-                        'port': {'type': 'int'},
-                        'protocol': {'choices': ['ping', 'tcp-echo', 'udp-echo', 'http', 'twamp', 'ping6', 'dns'], 'type': 'str'},
-                        'recoverytime': {'type': 'int'},
-                        'security-mode': {'choices': ['none', 'authentication'], 'type': 'str'},
-                        'server': {'type': 'raw'},
+                        'addr-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['ipv4', 'ipv6'], 'type': 'str'},
+                        'failtime': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'http-agent': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'http-get': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'http-match': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'interval': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'members': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'name': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'packet-size': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'password': {'v_range': [['6.0.0', '7.6.2']], 'no_log': True, 'type': 'raw'},
+                        'port': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'protocol': {
+                            'v_range': [['6.0.0', '7.6.2']],
+                            'choices': ['ping', 'tcp-echo', 'udp-echo', 'http', 'twamp', 'ping6', 'dns'],
+                            'type': 'str'
+                        },
+                        'recoverytime': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'security-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['none', 'authentication'], 'type': 'str'},
+                        'server': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
                         'sla': {
+                            'v_range': [['6.0.0', '7.6.2']],
                             'type': 'list',
                             'options': {
-                                'id': {'type': 'int'},
-                                'jitter-threshold': {'type': 'int'},
-                                'latency-threshold': {'type': 'int'},
-                                'link-cost-factor': {'type': 'list', 'choices': ['latency', 'jitter', 'packet-loss'], 'elements': 'str'},
-                                'packetloss-threshold': {'type': 'int'}
+                                'id': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                                'jitter-threshold': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                                'latency-threshold': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                                'link-cost-factor': {
+                                    'v_range': [['6.0.0', '7.6.2']],
+                                    'type': 'list',
+                                    'choices': ['latency', 'jitter', 'packet-loss'],
+                                    'elements': 'str'
+                                },
+                                'packetloss-threshold': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'}
                             },
                             'elements': 'dict'
                         },
-                        'threshold-alert-jitter': {'type': 'int'},
-                        'threshold-alert-latency': {'type': 'int'},
-                        'threshold-alert-packetloss': {'type': 'int'},
-                        'threshold-warning-jitter': {'type': 'int'},
-                        'threshold-warning-latency': {'type': 'int'},
-                        'threshold-warning-packetloss': {'type': 'int'},
-                        'update-cascade-interface': {'choices': ['disable', 'enable'], 'type': 'str'},
-                        'update-static-route': {'choices': ['disable', 'enable'], 'type': 'str'},
+                        'threshold-alert-jitter': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'threshold-alert-latency': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'threshold-alert-packetloss': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'threshold-warning-jitter': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'threshold-warning-latency': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'threshold-warning-packetloss': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'update-cascade-interface': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'update-static-route': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                         'internet-service-id': {'v_range': [['6.2.0', '7.2.0']], 'type': 'str'},
-                        'probe-packets': {'v_range': [['6.2.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                        'sla-fail-log-period': {'v_range': [['6.2.0', '']], 'type': 'int'},
-                        'sla-pass-log-period': {'v_range': [['6.2.0', '']], 'no_log': True, 'type': 'int'},
+                        'probe-packets': {'v_range': [['6.2.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'sla-fail-log-period': {'v_range': [['6.2.0', '7.6.2']], 'type': 'int'},
+                        'sla-pass-log-period': {'v_range': [['6.2.0', '7.6.2']], 'no_log': True, 'type': 'int'},
                         'timeout': {'v_range': [['6.2.0', '6.4.15']], 'type': 'int'},
-                        'ha-priority': {'v_range': [['6.2.2', '']], 'type': 'int'},
-                        'diffservcode': {'v_range': [['6.2.5', '']], 'type': 'str'},
-                        'probe-timeout': {'v_range': [['6.2.5', '']], 'type': 'int'},
+                        'ha-priority': {'v_range': [['6.2.2', '7.6.2']], 'type': 'int'},
+                        'diffservcode': {'v_range': [['6.2.5', '7.6.2']], 'type': 'str'},
+                        'probe-timeout': {'v_range': [['6.2.5', '7.6.2']], 'type': 'int'},
                         'dns-request-domain': {'v_range': [['6.4.0', '6.4.0']], 'type': 'str'},
                         'probe-count': {'v_range': [['6.4.0', '6.4.0']], 'type': 'int'},
                         'system-dns': {'v_range': [['6.4.0', '6.4.0']], 'choices': ['disable', 'enable'], 'type': 'str'}
@@ -929,108 +935,120 @@ def main():
                     'elements': 'dict'
                 },
                 'load-balance-mode': {
+                    'v_range': [['6.0.0', '7.6.2']],
                     'choices': ['source-ip-based', 'weight-based', 'usage-based', 'source-dest-ip-based', 'measured-volume-based'],
                     'type': 'str'
                 },
                 'members': {
+                    'v_range': [['6.0.0', '7.6.2']],
                     'type': 'list',
                     'options': {
                         '_dynamic-member': {'v_range': [['6.0.0', '6.4.15']], 'type': 'str'},
-                        'comment': {'type': 'str'},
-                        'gateway': {'type': 'str'},
-                        'gateway6': {'type': 'str'},
-                        'ingress-spillover-threshold': {'type': 'int'},
-                        'interface': {'type': 'str'},
-                        'priority': {'type': 'int'},
-                        'seq-num': {'type': 'int'},
-                        'source': {'type': 'str'},
-                        'source6': {'type': 'str'},
-                        'spillover-threshold': {'type': 'int'},
-                        'status': {'choices': ['disable', 'enable'], 'type': 'str'},
-                        'volume-ratio': {'type': 'int'},
-                        'weight': {'type': 'int'},
-                        'cost': {'v_range': [['6.2.0', '']], 'type': 'int'}
+                        'comment': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'gateway': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'gateway6': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'ingress-spillover-threshold': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'interface': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'priority': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'seq-num': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'source': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'source6': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'spillover-threshold': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'volume-ratio': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'weight': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'cost': {'v_range': [['6.2.0', '7.6.2']], 'type': 'int'}
                     },
                     'elements': 'dict'
                 },
                 'service': {
+                    'v_range': [['6.0.0', '7.6.2']],
                     'type': 'list',
                     'options': {
-                        'addr-mode': {'choices': ['ipv4', 'ipv6'], 'type': 'str'},
-                        'bandwidth-weight': {'type': 'int'},
-                        'default': {'choices': ['disable', 'enable'], 'type': 'str'},
-                        'dscp-forward': {'choices': ['disable', 'enable'], 'type': 'str'},
-                        'dscp-forward-tag': {'type': 'str'},
-                        'dscp-reverse': {'choices': ['disable', 'enable'], 'type': 'str'},
-                        'dscp-reverse-tag': {'type': 'str'},
-                        'dst': {'type': 'raw'},
-                        'dst-negate': {'choices': ['disable', 'enable'], 'type': 'str'},
-                        'dst6': {'type': 'raw'},
-                        'end-port': {'type': 'int'},
-                        'gateway': {'choices': ['disable', 'enable'], 'type': 'str'},
-                        'groups': {'type': 'raw'},
-                        'health-check': {'type': 'str'},
-                        'hold-down-time': {'type': 'int'},
-                        'id': {'type': 'int'},
-                        'internet-service': {'choices': ['disable', 'enable'], 'type': 'str'},
+                        'addr-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['ipv4', 'ipv6'], 'type': 'str'},
+                        'bandwidth-weight': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'default': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'dscp-forward': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'dscp-forward-tag': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'dscp-reverse': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'dscp-reverse-tag': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'dst': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'dst-negate': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'dst6': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'end-port': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'gateway': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'groups': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'health-check': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'hold-down-time': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'id': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'internet-service': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                         'internet-service-ctrl': {'v_range': [['6.0.0', '7.2.1']], 'type': 'raw'},
                         'internet-service-ctrl-group': {'v_range': [['6.0.0', '7.2.1']], 'type': 'raw'},
-                        'internet-service-custom': {'type': 'raw'},
-                        'internet-service-custom-group': {'type': 'raw'},
-                        'internet-service-group': {'type': 'raw'},
-                        'internet-service-id': {'type': 'raw'},
-                        'jitter-weight': {'type': 'int'},
-                        'latency-weight': {'type': 'int'},
+                        'internet-service-custom': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'internet-service-custom-group': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'internet-service-group': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'internet-service-id': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'jitter-weight': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'latency-weight': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
                         'link-cost-factor': {
+                            'v_range': [['6.0.0', '7.6.2']],
                             'choices': ['latency', 'jitter', 'packet-loss', 'inbandwidth', 'outbandwidth', 'bibandwidth', 'custom-profile-1'],
                             'type': 'str'
                         },
-                        'link-cost-threshold': {'type': 'int'},
+                        'link-cost-threshold': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
                         'member': {'v_range': [['6.0.0', '7.2.1']], 'type': 'str'},
-                        'mode': {'choices': ['auto', 'manual', 'priority', 'sla', 'load-balance'], 'type': 'str'},
-                        'name': {'type': 'str'},
-                        'packet-loss-weight': {'type': 'int'},
-                        'priority-members': {'type': 'raw'},
-                        'protocol': {'type': 'int'},
-                        'quality-link': {'type': 'int'},
-                        'route-tag': {'type': 'int'},
-                        'sla': {'type': 'list', 'options': {'health-check': {'type': 'str'}, 'id': {'type': 'int'}}, 'elements': 'dict'},
-                        'src': {'type': 'raw'},
-                        'src-negate': {'choices': ['disable', 'enable'], 'type': 'str'},
-                        'src6': {'type': 'raw'},
-                        'start-port': {'type': 'int'},
-                        'status': {'choices': ['disable', 'enable'], 'type': 'str'},
-                        'tos': {'type': 'str'},
-                        'tos-mask': {'type': 'str'},
-                        'users': {'type': 'raw'},
-                        'internet-service-app-ctrl': {'v_range': [['6.2.0', '']], 'type': 'raw'},
-                        'internet-service-app-ctrl-group': {'v_range': [['6.2.0', '']], 'type': 'raw'},
-                        'role': {'v_range': [['6.2.1', '']], 'choices': ['primary', 'secondary', 'standalone'], 'type': 'str'},
-                        'sla-compare-method': {'v_range': [['6.2.1', '']], 'choices': ['order', 'number'], 'type': 'str'},
-                        'standalone-action': {'v_range': [['6.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                        'input-device': {'v_range': [['6.2.2', '']], 'type': 'raw'},
+                        'mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['auto', 'manual', 'priority', 'sla', 'load-balance'], 'type': 'str'},
+                        'name': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'packet-loss-weight': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'priority-members': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'protocol': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'quality-link': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'route-tag': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'sla': {
+                            'v_range': [['6.0.0', '7.6.2']],
+                            'type': 'list',
+                            'options': {
+                                'health-check': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                                'id': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'}
+                            },
+                            'elements': 'dict'
+                        },
+                        'src': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'src-negate': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'src6': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'start-port': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                        'status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'tos': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'tos-mask': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                        'users': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
+                        'internet-service-app-ctrl': {'v_range': [['6.2.0', '7.6.2']], 'type': 'raw'},
+                        'internet-service-app-ctrl-group': {'v_range': [['6.2.0', '7.6.2']], 'type': 'raw'},
+                        'role': {'v_range': [['6.2.1', '7.6.2']], 'choices': ['primary', 'secondary', 'standalone'], 'type': 'str'},
+                        'sla-compare-method': {'v_range': [['6.2.1', '7.6.2']], 'choices': ['order', 'number'], 'type': 'str'},
+                        'standalone-action': {'v_range': [['6.2.1', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'input-device': {'v_range': [['6.2.2', '7.6.2']], 'type': 'raw'},
                         'internet-service-name': {'v_range': [['6.4.0', '6.4.0']], 'type': 'str'},
-                        'input-device-negate': {'v_range': [['6.4.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                        'input-device-negate': {'v_range': [['6.4.1', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'}
                     },
                     'elements': 'dict'
                 },
-                'status': {'choices': ['disable', 'enable'], 'type': 'str'},
+                'status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'neighbor': {
-                    'v_range': [['6.2.1', '']],
+                    'v_range': [['6.2.1', '7.6.2']],
                     'type': 'list',
                     'options': {
-                        'health-check': {'v_range': [['6.2.1', '']], 'type': 'str'},
-                        'ip': {'v_range': [['6.2.1', '']], 'type': 'str'},
-                        'member': {'v_range': [['6.2.1', '']], 'type': 'str'},
-                        'role': {'v_range': [['6.2.1', '']], 'choices': ['primary', 'secondary', 'standalone'], 'type': 'str'},
-                        'sla-id': {'v_range': [['6.2.1', '']], 'type': 'int'}
+                        'health-check': {'v_range': [['6.2.1', '7.6.2']], 'type': 'str'},
+                        'ip': {'v_range': [['6.2.1', '7.6.2']], 'type': 'str'},
+                        'member': {'v_range': [['6.2.1', '7.6.2']], 'type': 'str'},
+                        'role': {'v_range': [['6.2.1', '7.6.2']], 'choices': ['primary', 'secondary', 'standalone'], 'type': 'str'},
+                        'sla-id': {'v_range': [['6.2.1', '7.6.2']], 'type': 'int'}
                     },
                     'elements': 'dict'
                 },
-                'neighbor-hold-boot-time': {'v_range': [['6.2.1', '']], 'type': 'int'},
-                'neighbor-hold-down': {'v_range': [['6.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'neighbor-hold-down-time': {'v_range': [['6.2.1', '']], 'type': 'int'},
-                'fail-alert-interfaces': {'v_range': [['7.2.3', '']], 'type': 'raw'}
+                'neighbor-hold-boot-time': {'v_range': [['6.2.1', '7.6.2']], 'type': 'int'},
+                'neighbor-hold-down': {'v_range': [['6.2.1', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'neighbor-hold-down-time': {'v_range': [['6.2.1', '7.6.2']], 'type': 'int'},
+                'fail-alert-interfaces': {'v_range': [['7.2.3', '7.6.2']], 'type': 'raw'}
             }
         }
     }

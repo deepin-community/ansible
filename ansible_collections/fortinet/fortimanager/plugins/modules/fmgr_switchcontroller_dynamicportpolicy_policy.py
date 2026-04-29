@@ -168,12 +168,31 @@ options:
                 choices:
                     - 'dynamic'
                     - 'override'
+            bounce_port_duration:
+                aliases: ['bounce-port-duration']
+                type: int
+                description: Bounce duration in seconds of a switch port where this policy is applied.
+            poe_reset:
+                aliases: ['poe-reset']
+                type: str
+                description: Enable/disable POE reset of a switch port where this policy is applied.
+                choices:
+                    - 'disable'
+                    - 'enable'
+            match_remove:
+                aliases: ['match-remove']
+                type: str
+                description: Options to remove the matched override devices.
+                choices:
+                    - 'link-down'
+                    - 'default'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -190,23 +209,26 @@ EXAMPLES = '''
         dynamic_port_policy: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_dynamicportpolicy_policy:
-          802_1x: <string>
-          bounce_port_link: <value in [disable, enable]>
-          category: <value in [device, interface-tag]>
-          description: <string>
-          family: <string>
-          host: <string>
-          hw_vendor: <string>
-          interface_tags: <list or string>
-          lldp_profile: <string>
-          mac: <string>
-          name: <string>
-          qos_policy: <string>
-          status: <value in [disable, enable]>
-          type: <string>
-          vlan_policy: <string>
-          match_period: <integer>
-          match_type: <value in [dynamic, override]>
+          name: "your value" # Required variable, string
+          # 802_1x: <string>
+          # bounce_port_link: <value in [disable, enable]>
+          # category: <value in [device, interface-tag]>
+          # description: <string>
+          # family: <string>
+          # host: <string>
+          # hw_vendor: <string>
+          # interface_tags: <list or string>
+          # lldp_profile: <string>
+          # mac: <string>
+          # qos_policy: <string>
+          # status: <value in [disable, enable]>
+          # type: <string>
+          # vlan_policy: <string>
+          # match_period: <integer>
+          # match_type: <value in [dynamic, override]>
+          # bounce_port_duration: <integer>
+          # poe_reset: <value in [disable, enable]>
+          # match_remove: <value in [link-down, default]>
 '''
 
 RETURN = '''
@@ -285,7 +307,10 @@ def main():
                 'type': {'v_range': [['7.2.1', '']], 'type': 'str'},
                 'vlan-policy': {'v_range': [['7.2.1', '']], 'type': 'str'},
                 'match-period': {'v_range': [['7.4.3', '']], 'type': 'int'},
-                'match-type': {'v_range': [['7.4.3', '']], 'choices': ['dynamic', 'override'], 'type': 'str'}
+                'match-type': {'v_range': [['7.4.3', '']], 'choices': ['dynamic', 'override'], 'type': 'str'},
+                'bounce-port-duration': {'v_range': [['7.6.2', '']], 'type': 'int'},
+                'poe-reset': {'v_range': [['7.6.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'match-remove': {'v_range': [['7.6.3', '']], 'choices': ['link-down', 'default'], 'type': 'str'}
             }
         }
     }

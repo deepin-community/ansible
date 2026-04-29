@@ -131,6 +131,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -146,14 +147,14 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_vlanpolicy:
-          allowed_vlans: <list or string>
-          allowed_vlans_all: <value in [disable, enable]>
-          description: <string>
-          discard_mode: <value in [none, all-untagged, all-tagged]>
-          name: <string>
-          untagged_vlans: <list or string>
-          vlan: <string>
-          fortilink: <list or string>
+          name: "your value" # Required variable, string
+          # allowed_vlans: <list or string>
+          # allowed_vlans_all: <value in [disable, enable]>
+          # description: <string>
+          # discard_mode: <value in [none, all-untagged, all-tagged]>
+          # untagged_vlans: <list or string>
+          # vlan: <string>
+          # fortilink: <list or string>
 '''
 
 RETURN = '''
@@ -221,7 +222,7 @@ def main():
                 'name': {'v_range': [['7.2.1', '']], 'required': True, 'type': 'str'},
                 'untagged-vlans': {'v_range': [['7.2.1', '']], 'type': 'raw'},
                 'vlan': {'v_range': [['7.2.1', '']], 'type': 'str'},
-                'fortilink': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'}
+                'fortilink': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'}
             }
         }
     }

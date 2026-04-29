@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -35,6 +35,7 @@ argument_spec.update(dict(
     bottomLeftCorner=dict(type="dict"),
     bottomRightCorner=dict(type="dict"),
     center=dict(type="dict"),
+    floorNumber=dict(type="float"),
     imageContents=dict(type="str"),
     name=dict(type="str"),
     topLeftCorner=dict(type="dict"),
@@ -59,6 +60,7 @@ class NetworksFloorPlans(object):
             bottomLeftCorner=params.get("bottomLeftCorner"),
             bottomRightCorner=params.get("bottomRightCorner"),
             center=params.get("center"),
+            floorNumber=params.get("floorNumber"),
             imageContents=params.get("imageContents"),
             name=params.get("name"),
             topLeftCorner=params.get("topLeftCorner"),
@@ -95,6 +97,9 @@ class NetworksFloorPlans(object):
         if self.new_object.get('center') is not None or self.new_object.get('center') is not None:
             new_object_params['center'] = self.new_object.get('center') or \
                 self.new_object.get('center')
+        if self.new_object.get('floorNumber') is not None or self.new_object.get('floor_number') is not None:
+            new_object_params['floorNumber'] = self.new_object.get('floorNumber') or \
+                self.new_object.get('floor_number')
         if self.new_object.get('imageContents') is not None or self.new_object.get('image_contents') is not None:
             new_object_params['imageContents'] = self.new_object.get('imageContents') or \
                 self.new_object.get('image_contents')
@@ -133,6 +138,9 @@ class NetworksFloorPlans(object):
         if self.new_object.get('center') is not None or self.new_object.get('center') is not None:
             new_object_params['center'] = self.new_object.get('center') or \
                 self.new_object.get('center')
+        if self.new_object.get('floorNumber') is not None or self.new_object.get('floor_number') is not None:
+            new_object_params['floorNumber'] = self.new_object.get('floorNumber') or \
+                self.new_object.get('floor_number')
         if self.new_object.get('imageContents') is not None or self.new_object.get('image_contents') is not None:
             new_object_params['imageContents'] = self.new_object.get('imageContents') or \
                 self.new_object.get('image_contents')
@@ -225,6 +233,7 @@ class NetworksFloorPlans(object):
             ("bottomLeftCorner", "bottomLeftCorner"),
             ("bottomRightCorner", "bottomRightCorner"),
             ("center", "center"),
+            ("floorNumber", "floorNumber"),
             ("imageContents", "imageContents"),
             ("name", "name"),
             ("topLeftCorner", "topLeftCorner"),
@@ -234,8 +243,8 @@ class NetworksFloorPlans(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (DNAC) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def create(self):

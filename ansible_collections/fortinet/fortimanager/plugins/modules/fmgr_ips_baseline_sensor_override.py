@@ -165,6 +165,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -181,19 +182,18 @@ EXAMPLES = '''
         sensor: <your own value>
         state: present # <value in [present, absent]>
         ips_baseline_sensor_override:
-          action: <value in [pass, block, reset]>
-          exempt_ip:
-            -
-              dst_ip: <string>
-              id: <integer>
-              src_ip: <string>
-          log: <value in [disable, enable]>
-          log_packet: <value in [disable, enable]>
-          quarantine: <value in [none, attacker, both, ...]>
-          quarantine_expiry: <integer>
-          quarantine_log: <value in [disable, enable]>
-          rule_id: <integer>
-          status: <value in [disable, enable]>
+          # action: <value in [pass, block, reset]>
+          # exempt_ip:
+          #   - dst_ip: <string>
+          #     id: <integer>
+          #     src_ip: <string>
+          # log: <value in [disable, enable]>
+          # log_packet: <value in [disable, enable]>
+          # quarantine: <value in [none, attacker, both, ...]>
+          # quarantine_expiry: <integer>
+          # quarantine_log: <value in [disable, enable]>
+          # rule_id: <integer>
+          # status: <value in [disable, enable]>
 '''
 
 RETURN = '''

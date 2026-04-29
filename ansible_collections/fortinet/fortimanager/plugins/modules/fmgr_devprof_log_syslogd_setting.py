@@ -223,12 +223,17 @@ options:
                 aliases: ['source-ip-interface']
                 type: raw
                 description: (list) Source interface of syslog.
+            vrf_select:
+                aliases: ['vrf-select']
+                type: int
+                description: VRF ID used for connection to server.
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -244,29 +249,29 @@ EXAMPLES = '''
         adom: <your own value>
         devprof: <your own value>
         devprof_log_syslogd_setting:
-          certificate: <string>
-          enc_algorithm: <value in [high, low, disable, ...]>
-          facility: <value in [kernel, user, mail, ...]>
-          mode: <value in [udp, legacy-reliable, reliable]>
-          port: <integer>
-          server: <string>
-          ssl_min_proto_version: <value in [default, TLSv1-1, TLSv1-2, ...]>
-          status: <value in [disable, enable]>
-          reliable: <value in [disable, enable]>
-          csv: <value in [disable, enable]>
-          max_log_rate: <integer>
-          priority: <value in [low, default]>
-          interface: <string>
-          interface_select_method: <value in [auto, sdwan, specify]>
-          format: <value in [default, csv, cef, ...]>
-          syslog_type: <integer>
-          custom_field_name:
-            -
-              custom: <string>
-              id: <integer>
-              name: <string>
-          source_ip: <string>
-          source_ip_interface: <list or string>
+          # certificate: <string>
+          # enc_algorithm: <value in [high, low, disable, ...]>
+          # facility: <value in [kernel, user, mail, ...]>
+          # mode: <value in [udp, legacy-reliable, reliable]>
+          # port: <integer>
+          # server: <string>
+          # ssl_min_proto_version: <value in [default, TLSv1-1, TLSv1-2, ...]>
+          # status: <value in [disable, enable]>
+          # reliable: <value in [disable, enable]>
+          # csv: <value in [disable, enable]>
+          # max_log_rate: <integer>
+          # priority: <value in [low, default]>
+          # interface: <string>
+          # interface_select_method: <value in [auto, sdwan, specify]>
+          # format: <value in [default, csv, cef, ...]>
+          # syslog_type: <integer>
+          # custom_field_name:
+          #   - custom: <string>
+          #     id: <integer>
+          #     name: <string>
+          # source_ip: <string>
+          # source_ip_interface: <list or string>
+          # vrf_select: <integer>
 '''
 
 RETURN = '''
@@ -372,8 +377,9 @@ def main():
                     },
                     'elements': 'dict'
                 },
-                'source-ip': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'source-ip-interface': {'v_range': [['7.6.0', '']], 'type': 'raw'}
+                'source-ip': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'source-ip-interface': {'v_range': [['7.6.0', '']], 'type': 'raw'},
+                'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'}
             }
         }
     }

@@ -143,6 +143,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -158,19 +159,17 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         hotspot20_h2qpadviceofcharge:
-          aoc_list:
-            -
-              nai_realm: <string>
-              nai_realm_encoding: <string>
-              name: <string>
-              plan_info:
-                -
-                  currency: <string>
-                  info_file: <string>
-                  lang: <string>
-                  name: <string>
-              type: <value in [time-based, volume-based, time-and-volume-based, ...]>
-          name: <string>
+          name: "your value" # Required variable, string
+          # aoc_list:
+          #   - nai_realm: <string>
+          #     nai_realm_encoding: <string>
+          #     name: <string>
+          #     plan_info:
+          #       - currency: <string>
+          #         info_file: <string>
+          #         lang: <string>
+          #         name: <string>
+          #     type: <value in [time-based, volume-based, time-and-volume-based, ...]>
 '''
 
 RETURN = '''

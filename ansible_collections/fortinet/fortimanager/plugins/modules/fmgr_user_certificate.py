@@ -121,6 +121,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -136,12 +137,12 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         user_certificate:
-          common_name: <string>
-          id: <integer>
-          issuer: <string>
-          name: <string>
-          status: <value in [disable, enable]>
-          type: <value in [single-certificate, trusted-issuer]>
+          id: 0 # Required variable, integer
+          # common_name: <string>
+          # issuer: <string>
+          # name: <string>
+          # status: <value in [disable, enable]>
+          # type: <value in [single-certificate, trusted-issuer]>
 '''
 
 RETURN = '''

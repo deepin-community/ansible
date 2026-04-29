@@ -123,6 +123,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -137,12 +138,12 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         fmg_sasemanager_settings:
-          address: <list or string>
-          profile_group: <list or string>
-          sync_address: <value in [disable, specify, all]>
-          sync_profile_group: <value in [disable, specify, all]>
-          sync_user: <value in [disable, specify, all]>
-          user: <list or string>
+          # address: <list or string>
+          # profile_group: <list or string>
+          # sync_address: <value in [disable, specify, all]>
+          # sync_profile_group: <value in [disable, specify, all]>
+          # sync_user: <value in [disable, specify, all]>
+          # user: <list or string>
 '''
 
 RETURN = '''
@@ -201,14 +202,14 @@ def main():
         'adom': {'required': True, 'type': 'str'},
         'fmg_sasemanager_settings': {
             'type': 'dict',
-            'v_range': [['7.6.0', '']],
+            'v_range': [['7.6.0', '7.6.1']],
             'options': {
-                'address': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'},
-                'profile-group': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'},
-                'sync-address': {'v_range': [['7.6.0', '']], 'choices': ['disable', 'specify', 'all'], 'type': 'str'},
-                'sync-profile-group': {'v_range': [['7.6.0', '']], 'choices': ['disable', 'specify', 'all'], 'type': 'str'},
-                'sync-user': {'v_range': [['7.6.0', '']], 'choices': ['disable', 'specify', 'all'], 'type': 'str'},
-                'user': {'v_range': [['7.6.0', '']], 'type': 'list', 'elements': 'str'}
+                'address': {'v_range': [['7.6.0', '7.6.1']], 'type': 'list', 'elements': 'str'},
+                'profile-group': {'v_range': [['7.6.0', '7.6.1']], 'type': 'list', 'elements': 'str'},
+                'sync-address': {'v_range': [['7.6.0', '7.6.1']], 'choices': ['disable', 'specify', 'all'], 'type': 'str'},
+                'sync-profile-group': {'v_range': [['7.6.0', '7.6.1']], 'choices': ['disable', 'specify', 'all'], 'type': 'str'},
+                'sync-user': {'v_range': [['7.6.0', '7.6.1']], 'choices': ['disable', 'specify', 'all'], 'type': 'str'},
+                'user': {'v_range': [['7.6.0', '7.6.1']], 'type': 'list', 'elements': 'str'}
             }
         }
     }

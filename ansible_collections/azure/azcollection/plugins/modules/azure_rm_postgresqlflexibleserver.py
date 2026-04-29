@@ -80,6 +80,7 @@ options:
             - '14'
             - '15'
             - '16'
+            - '17'
     fully_qualified_domain_name:
         description:
             - The fully qualified domain name of a server.
@@ -132,6 +133,7 @@ options:
                 choices:
                     - Disabled
                     - ZoneRedundant
+                    - SameZone
             standby_availability_zone:
                 description:
                     - Availability zone information of the standby.
@@ -204,6 +206,30 @@ options:
             - Whether to start the Post gresql server.
         type: bool
         default: False
+    auth_config:
+        description:
+            - AuthConfig properties of a server.
+        type: dict
+        version_added: '3.6.0'
+        suboptions:
+            active_directory_auth:
+                description:
+                    - If C(Enabled), Azure Active Directory authentication is enabled.
+                type: str
+                choices:
+                    - Enabled
+                    - Disabled
+            password_auth:
+                description:
+                    - If C(Enabled), Password authentication is enabled.
+                type: str
+                choices:
+                    - Enabled
+                    - Disabled
+            tenant_id:
+                description:
+                    - Tenant id of the server.
+                type: str
     identity:
         description:
             - Identity for the Server.
@@ -217,6 +243,7 @@ options:
                 choices:
                     - UserAssigned
                     - None
+                    - SystemAssigned
                 default: None
                 type: str
             user_assigned_identities:
@@ -523,6 +550,12 @@ servers:
             type: dict
             returned: always
             sample: { tag1: abc }
+        auth_config:
+            description:
+                - AuthConfig properties of a server.
+            type: dict
+            returned: always
+            sample: {"active_directory_auth": "Disabled", "password_auth": "Enabled", "tenant_id": null}
 '''
 
 
@@ -551,7 +584,7 @@ maintenance_window_spec = dict(
 
 
 high_availability_spec = dict(
-    mode=dict(type='str', choices=["Disabled", "ZoneRedundant"]),
+    mode=dict(type='str', choices=["Disabled", "ZoneRedundant", "SameZone"]),
     standby_availability_zone=dict(type='str')
 )
 
@@ -581,7 +614,7 @@ user_assigned_identities_spec = dict(
 
 
 managed_identity_spec = dict(
-    type=dict(type='str', choices=['UserAssigned', 'None'], default='None'),
+    type=dict(type='str', choices=['UserAssigned', 'None', 'SystemAssigned'], default='None'),
     user_assigned_identities=dict(type='dict', options=user_assigned_identities_spec, default={}),
 )
 
@@ -615,7 +648,7 @@ class AzureRMPostgreSqlFlexibleServers(AzureRMModuleBaseExt):
             ),
             version=dict(
                 type='str',
-                choices=['11', '12', '13', '14', '15', '16']
+                choices=['11', '12', '13', '14', '15', '16', '17']
             ),
             fully_qualified_domain_name=dict(
                 type='str',
@@ -666,6 +699,14 @@ class AzureRMPostgreSqlFlexibleServers(AzureRMModuleBaseExt):
                 type='str'
             ),
             identity=dict(type='dict', options=managed_identity_spec),
+            auth_config=dict(
+                type='dict',
+                options=dict(
+                    active_directory_auth=dict(type='str', choices=['Enabled', 'Disabled']),
+                    password_auth=dict(type='str', choices=['Enabled', 'Disabled']),
+                    tenant_id=dict(type='str')
+                )
+            ),
             state=dict(
                 type='str',
                 default='present',
@@ -682,6 +723,7 @@ class AzureRMPostgreSqlFlexibleServers(AzureRMModuleBaseExt):
         self.is_stop = None
         self.is_restart = None
         self.identity = None
+        self.auth_config = None
 
         self.results = dict(changed=False)
         self.state = None
@@ -708,7 +750,8 @@ class AzureRMPostgreSqlFlexibleServers(AzureRMModuleBaseExt):
                 setattr(self, key, kwargs[key])
             elif kwargs[key] is not None:
                 self.parameters[key] = kwargs[key]
-                for key in ['location', 'sku', 'administrator_login_password', 'storage', 'backup', 'high_availability', 'maintenance_window', 'create_mode']:
+                for key in ['location', 'sku', 'administrator_login_password', 'storage', 'backup',
+                            'high_availability', 'maintenance_window', 'create_mode', 'auth_config']:
                     self.update_parameters[key] = kwargs[key]
 
         old_response = None
@@ -791,6 +834,11 @@ class AzureRMPostgreSqlFlexibleServers(AzureRMModuleBaseExt):
                 self.update_parameters['tags'] = new_tags
                 if update_tags:
                     update_flag = True
+
+                if self.auth_config is not None and not self.default_compare({}, self.auth_config, old_response['auth_config'], '', dict(compare=[])):
+                    update_flag = True
+                else:
+                    self.auth_config = old_response['auth_config']
 
                 if update_flag:
                     changed = True
@@ -962,6 +1010,7 @@ class AzureRMPostgreSqlFlexibleServers(AzureRMModuleBaseExt):
             source_server_resource_id=item.source_server_resource_id,
             point_in_time_utc=item.point_in_time_utc,
             availability_zone=item.availability_zone,
+            auth_config=dict()
         )
         if item.sku is not None:
             result['sku']['name'] = item.sku.name
@@ -994,6 +1043,12 @@ class AzureRMPostgreSqlFlexibleServers(AzureRMModuleBaseExt):
             result['identity'] = item.identity.as_dict()
         else:
             result['identity'] = PostgreSQLFlexibleModels.UserAssignedIdentity(type='None').as_dict()
+        if item.auth_config is not None:
+            result['auth_config']['active_directory_auth'] = item.auth_config.active_directory_auth
+            result['auth_config']['password_auth'] = item.auth_config.password_auth
+            result['auth_config']['tenant_id'] = item.auth_config.tenant_id
+        else:
+            result['auth_config'] = None
 
         return result
 

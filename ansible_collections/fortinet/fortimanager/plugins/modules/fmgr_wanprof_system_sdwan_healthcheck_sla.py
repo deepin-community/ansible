@@ -144,6 +144,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -161,19 +162,19 @@ EXAMPLES = '''
         health_check: <your own value>
         state: present # <value in [present, absent]>
         wanprof_system_sdwan_healthcheck_sla:
-          id: <integer>
-          jitter_threshold: <integer>
-          latency_threshold: <integer>
-          link_cost_factor:
-            - "latency"
-            - "jitter"
-            - "packet-loss"
-            - "mos"
-            - "remote"
-          packetloss_threshold: <integer>
-          mos_threshold: <string>
-          priority_in_sla: <integer>
-          priority_out_sla: <integer>
+          id: 0 # Required variable, integer
+          # jitter_threshold: <integer>
+          # latency_threshold: <integer>
+          # link_cost_factor:
+          #   - "latency"
+          #   - "jitter"
+          #   - "packet-loss"
+          #   - "mos"
+          #   - "remote"
+          # packetloss_threshold: <integer>
+          # mos_threshold: <string>
+          # priority_in_sla: <integer>
+          # priority_out_sla: <integer>
 '''
 
 RETURN = '''

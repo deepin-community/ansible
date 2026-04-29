@@ -465,6 +465,35 @@ options:
                         choices:
                             - 'disable'
                             - 'enable'
+                    risk:
+                        description:
+                            - FortiGuard risk level settings.
+                        type: list
+                        elements: dict
+                        suboptions:
+                            action:
+                                description:
+                                    - Action to take for matches.
+                                type: str
+                                choices:
+                                    - 'block'
+                                    - 'monitor'
+                            id:
+                                description:
+                                    - ID number. see <a href='#notes'>Notes</a>.
+                                required: true
+                                type: int
+                            log:
+                                description:
+                                    - Enable/disable logging.
+                                type: str
+                                choices:
+                                    - 'enable'
+                                    - 'disable'
+                            risk_level:
+                                description:
+                                    - Risk level to be examined. Source webfilter.ftgd-risk-level.name.
+                                type: str
             https_replacemsg:
                 description:
                     - Enable replacement messages for HTTPS.
@@ -955,7 +984,7 @@ EXAMPLES = """
                       fortiguard_category: "<your_own_value>"
                       name: "default_name_17"
               ldap: "<your_own_value> (source user.ldap.name)"
-              max_body_len: "65536"
+              max_body_len: "1024"
               status: "enable"
           comment: "Optional comments."
           extended_log: "enable"
@@ -1006,10 +1035,16 @@ EXAMPLES = """
               rate_css_urls: "disable"
               rate_image_urls: "disable"
               rate_javascript_urls: "disable"
+              risk:
+                  -
+                      action: "block"
+                      id: "67"
+                      log: "enable"
+                      risk_level: "<your_own_value> (source webfilter.ftgd-risk-level.name)"
           https_replacemsg: "enable"
           inspection_mode: "proxy"
           log_all_url: "enable"
-          name: "default_name_68"
+          name: "default_name_73"
           options: "activexfilter"
           override:
               ovrd_cookie: "allow"
@@ -1018,10 +1053,10 @@ EXAMPLES = """
               ovrd_scope: "user"
               ovrd_user_group:
                   -
-                      name: "default_name_76 (source user.group.name)"
+                      name: "default_name_81 (source user.group.name)"
               profile:
                   -
-                      name: "default_name_78 (source webfilter.profile.name)"
+                      name: "default_name_83 (source webfilter.profile.name)"
               profile_attribute: "User-Name"
               profile_type: "list"
           ovrd_perm: "bannedword-override"
@@ -1071,12 +1106,12 @@ EXAMPLES = """
           wisp_algorithm: "primary-secondary"
           wisp_servers:
               -
-                  name: "default_name_126 (source web-proxy.wisp.name)"
+                  name: "default_name_131 (source web-proxy.wisp.name)"
           youtube_channel_filter:
               -
                   channel_id: "<your_own_value>"
                   comment: "Comment."
-                  id: "130"
+                  id: "135"
           youtube_channel_status: "disable"
 """
 
@@ -1166,6 +1201,9 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_webfilter_profile_data(json):
@@ -1227,8 +1265,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -1265,24 +1302,25 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def webfilter_profile(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     webfilter_profile_data = data["webfilter_profile"]
 
     filtered_data = filter_webfilter_profile_data(webfilter_profile_data)
@@ -1295,40 +1333,56 @@ def webfilter_profile(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("webfilter", "profile", filtered_data, vdom=vdom)
         current_data = fos.get("webfilter", "profile", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -1354,8 +1408,9 @@ def webfilter_profile(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["webfilter_profile"] = converted_data
+    data_copy["webfilter_profile"] = filtered_data
     fos.do_member_operation(
         "webfilter",
         "profile",
@@ -1386,6 +1441,7 @@ def is_successful_status(resp):
 
 
 def fortios_webfilter(data, fos, check_mode):
+
     if data["webfilter_profile"]:
         resp = webfilter_profile(data, fos, check_mode)
     else:
@@ -1717,6 +1773,29 @@ versioned_schema = {
                     },
                     "v_range": [["v6.0.0", ""]],
                 },
+                "risk": {
+                    "type": "list",
+                    "elements": "dict",
+                    "children": {
+                        "id": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "integer",
+                            "required": True,
+                        },
+                        "risk_level": {"v_range": [["v7.6.1", ""]], "type": "string"},
+                        "action": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                            "options": [{"value": "block"}, {"value": "monitor"}],
+                        },
+                        "log": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                            "options": [{"value": "enable"}, {"value": "disable"}],
+                        },
+                    },
+                    "v_range": [["v7.6.1", ""]],
+                },
                 "quota": {
                     "type": "list",
                     "elements": "dict",
@@ -1871,6 +1950,54 @@ versioned_schema = {
                 "ldap": {"v_range": [["v7.0.0", ""]], "type": "string"},
             },
         },
+        "url_extraction": {
+            "v_range": [["v6.0.0", "v7.0.8"], ["v7.2.0", "v7.2.4"], ["v7.4.3", ""]],
+            "type": "dict",
+            "children": {
+                "status": {
+                    "v_range": [
+                        ["v6.0.0", "v7.0.8"],
+                        ["v7.2.0", "v7.2.4"],
+                        ["v7.4.3", ""],
+                    ],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+                "server_fqdn": {
+                    "v_range": [
+                        ["v6.0.0", "v7.0.8"],
+                        ["v7.2.0", "v7.2.4"],
+                        ["v7.4.3", ""],
+                    ],
+                    "type": "string",
+                },
+                "redirect_header": {
+                    "v_range": [
+                        ["v6.0.0", "v7.0.8"],
+                        ["v7.2.0", "v7.2.4"],
+                        ["v7.4.3", ""],
+                    ],
+                    "type": "string",
+                },
+                "redirect_url": {
+                    "v_range": [
+                        ["v6.0.0", "v7.0.8"],
+                        ["v7.2.0", "v7.2.4"],
+                        ["v7.4.3", ""],
+                    ],
+                    "type": "string",
+                },
+                "redirect_no_content": {
+                    "v_range": [
+                        ["v6.0.0", "v7.0.8"],
+                        ["v7.2.0", "v7.2.4"],
+                        ["v7.4.3", ""],
+                    ],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+            },
+        },
         "wisp": {
             "v_range": [["v6.0.0", ""]],
             "type": "string",
@@ -1991,54 +2118,6 @@ versioned_schema = {
             "v_range": [["v6.4.0", ""]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
-        },
-        "url_extraction": {
-            "v_range": [["v6.0.0", "v7.0.8"], ["v7.2.0", "v7.2.4"], ["v7.4.3", ""]],
-            "type": "dict",
-            "children": {
-                "status": {
-                    "v_range": [
-                        ["v6.0.0", "v7.0.8"],
-                        ["v7.2.0", "v7.2.4"],
-                        ["v7.4.3", ""],
-                    ],
-                    "type": "string",
-                    "options": [{"value": "enable"}, {"value": "disable"}],
-                },
-                "server_fqdn": {
-                    "v_range": [
-                        ["v6.0.0", "v7.0.8"],
-                        ["v7.2.0", "v7.2.4"],
-                        ["v7.4.3", ""],
-                    ],
-                    "type": "string",
-                },
-                "redirect_header": {
-                    "v_range": [
-                        ["v6.0.0", "v7.0.8"],
-                        ["v7.2.0", "v7.2.4"],
-                        ["v7.4.3", ""],
-                    ],
-                    "type": "string",
-                },
-                "redirect_url": {
-                    "v_range": [
-                        ["v6.0.0", "v7.0.8"],
-                        ["v7.2.0", "v7.2.4"],
-                        ["v7.4.3", ""],
-                    ],
-                    "type": "string",
-                },
-                "redirect_no_content": {
-                    "v_range": [
-                        ["v6.0.0", "v7.0.8"],
-                        ["v7.2.0", "v7.2.4"],
-                        ["v7.4.3", ""],
-                    ],
-                    "type": "string",
-                    "options": [{"value": "enable"}, {"value": "disable"}],
-                },
-            },
         },
         "youtube_channel_status": {
             "v_range": [["v6.0.0", "v6.4.4"]],

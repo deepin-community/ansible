@@ -4,7 +4,7 @@
 #
 # Dell OpenManage Ansible Modules
 # Version 9.4.0
-# Copyright (C) 2019-2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright (C) 2019-2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
@@ -1144,6 +1144,7 @@ def main():
 
     module = IdracAnsibleModule(
         argument_spec=specs,
+        required_one_of=[("share_name", "import_buffer")],
         required_if=[
             ["command", "export", ["share_name"]],
             ["command", "export_custom_defaults", ["share_name"]],

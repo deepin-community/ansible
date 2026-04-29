@@ -205,6 +205,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -220,39 +221,38 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         waf_profile_signature:
-          credit_card_detection_threshold: <integer>
-          custom_signature:
-            -
-              action: <value in [allow, block, erase]>
-              case_sensitivity: <value in [disable, enable]>
-              direction: <value in [request, response]>
-              log: <value in [disable, enable]>
-              name: <string>
-              pattern: <string>
-              severity: <value in [low, medium, high]>
-              status: <value in [disable, enable]>
-              target:
-                - "arg"
-                - "arg-name"
-                - "req-body"
-                - "req-cookie"
-                - "req-cookie-name"
-                - "req-filename"
-                - "req-header"
-                - "req-header-name"
-                - "req-raw-uri"
-                - "req-uri"
-                - "resp-body"
-                - "resp-hdr"
-                - "resp-status"
-          disabled_signature: <list or string>
-          disabled_sub_class: <list or string>
-          main_class:
-            action: <value in [allow, block, erase]>
-            id: <integer>
-            log: <value in [disable, enable]>
-            severity: <value in [low, medium, high]>
-            status: <value in [disable, enable]>
+          # credit_card_detection_threshold: <integer>
+          # custom_signature:
+          #   - action: <value in [allow, block, erase]>
+          #     case_sensitivity: <value in [disable, enable]>
+          #     direction: <value in [request, response]>
+          #     log: <value in [disable, enable]>
+          #     name: <string>
+          #     pattern: <string>
+          #     severity: <value in [low, medium, high]>
+          #     status: <value in [disable, enable]>
+          #     target:
+          #       - "arg"
+          #       - "arg-name"
+          #       - "req-body"
+          #       - "req-cookie"
+          #       - "req-cookie-name"
+          #       - "req-filename"
+          #       - "req-header"
+          #       - "req-header-name"
+          #       - "req-raw-uri"
+          #       - "req-uri"
+          #       - "resp-body"
+          #       - "resp-hdr"
+          #       - "resp-status"
+          # disabled_signature: <list or string>
+          # disabled_sub_class: <list or string>
+          # main_class:
+          #   action: <value in [allow, block, erase]>
+          #   id: <integer>
+          #   log: <value in [disable, enable]>
+          #   severity: <value in [low, medium, high]>
+          #   status: <value in [disable, enable]>
 '''
 
 RETURN = '''

@@ -4,7 +4,7 @@
 #
 # Dell OpenManage Ansible Modules
 # Version 9.3.0
-# Copyright (C) 2021-2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright (C) 2021-2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
@@ -352,7 +352,7 @@ def get_all_ips(ip_addresses, module):
                 single_ip = IPAddress(ip)
                 ip_addresses_list.append(single_ip)
         except (AddrFormatError, ValueError):
-            module.fail_json(msg=INVALID_IP_FORMAT.format(ip))
+            module.exit_json(msg=INVALID_IP_FORMAT.format(ip), failed=True)
     return ip_addresses_list
 
 

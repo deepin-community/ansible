@@ -117,6 +117,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -134,9 +135,9 @@ EXAMPLES = '''
         ip_source_guard: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_managedswitch_ipsourceguard_bindingentry:
-          entry_name: <string>
-          ip: <string>
-          mac: <string>
+          # entry_name: <string>
+          # ip: <string>
+          # mac: <string>
 '''
 
 RETURN = '''

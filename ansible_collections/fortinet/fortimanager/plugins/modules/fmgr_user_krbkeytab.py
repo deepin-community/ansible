@@ -119,6 +119,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -134,12 +135,12 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         user_krbkeytab:
-          keytab: <string>
-          ldap_server: <list or string>
-          name: <string>
-          pac_data: <value in [disable, enable]>
-          principal: <string>
-          password: <list or string>
+          name: "your value" # Required variable, string
+          # keytab: <string>
+          # ldap_server: <list or string>
+          # pac_data: <value in [disable, enable]>
+          # principal: <string>
+          # password: <list or string>
 '''
 
 RETURN = '''
@@ -206,7 +207,7 @@ def main():
                 'name': {'v_range': [['6.2.1', '']], 'required': True, 'type': 'str'},
                 'pac-data': {'v_range': [['6.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'principal': {'v_range': [['6.2.1', '']], 'type': 'str'},
-                'password': {'v_range': [['6.2.2', '7.2.0'], ['7.2.5', '7.2.8'], ['7.4.2', '']], 'no_log': True, 'type': 'raw'}
+                'password': {'v_range': [['6.2.2', '7.2.0'], ['7.2.5', '7.2.9'], ['7.4.2', '']], 'no_log': True, 'type': 'raw'}
             }
         }
     }

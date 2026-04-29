@@ -1,7 +1,7 @@
 # !/usr/bin/python
 
 # Copyright: (c) 2024, Dell Technologies
-# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """Ansible module for Gathering information about Dell Technologies (Dell) PowerFlex"""
 
@@ -52,9 +52,12 @@ options:
     - Managed devices - C(managed_device).
     - Deployments - C(deployment).
     - FirmwareRepository - C(firmware_repository).
+    - NVMe host - C(nvme_host)
+    - NVMe Storage Data Target  - C(sdt).
     choices: [vol, storage_pool, protection_domain, sdc, sds,
              snapshot_policy, device, rcg, replication_pair,
-             fault_set, service_template, managed_device, deployment, firmware_repository]
+             fault_set, service_template, managed_device, deployment, firmware_repository,
+             nvme_host, sdt]
     type: list
     elements: str
   filters:
@@ -172,6 +175,8 @@ EXAMPLES = r'''
       - rcg
       - replication_pair
       - fault_set
+      - nvme_host
+      - sdt
 
 - name: Get a subset list of PowerFlex volumes
   dellemc.powerflex.info:
@@ -268,6 +273,28 @@ EXAMPLES = r'''
   ansible.builtin.debug:
     msg: "{{ result_repository_out.FirmwareRepository |
         selectattr('id', 'equalto', '8aaa80788b7') | map(attribute='softwareBundles') | flatten }}"
+
+- name: Get the list of NVMe hosts
+  dellemc.powerflex.info:
+    hostname: "{{ hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    gather_subset:
+      - nvme_host
+    filters:
+      - filter_key: "name"
+        filter_operator: "equal"
+        filter_value: "ansible_test"
+
+- name: Get the list of NVMe Storage Data Target
+  dellemc.powerflex.info:
+    hostname: "{{ hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    gather_subset:
+      - sdt
 '''
 
 RETURN = r'''
@@ -1902,6 +1929,315 @@ FirmwareRepository:
         "jobId": "Job-10d75a23-d801-4fdb-a2d0-7f6389ab75cf",
         "rcmapproved": false
     }]
+NVMe_Hosts:
+    description: Details of all NVMe hosts.
+    returned: always
+    type: list
+    contains:
+        hostOsFullType:
+            description: Full type of the host OS.
+            type: str
+        hostType:
+            description: Type of the host.
+            type: str
+        id:
+            description: ID of the NVMe host.
+            type: str
+        installedSoftwareVersionInfo:
+            description: Installed software version information.
+            type: str
+        kernelBuildNumber:
+            description: Kernel build number.
+            type: str
+        kernelVersion:
+            description: Kernel version.
+            type: str
+        links:
+            description: Links related to the NVMe host.
+            type: list
+            contains:
+                href:
+                    description: Hyperlink reference.
+                    type: str
+                rel:
+                    description: Relation type.
+                    type: str
+        max_num_paths:
+            description: Maximum number of paths per volume. Used to create or modify the NVMe host.
+            type: int
+        max_num_sys_ports:
+            description: Maximum number of ports per protection domain. Used to create or modify the NVMe host.
+            type: int
+        mdmConnectionState:
+            description: MDM connection state.
+            type: str
+        mdmIpAddressesCurrent:
+            description: Current MDM IP addresses.
+            type: list
+        name:
+            description: Name of the NVMe host.
+            type: str
+        nqn:
+            description: NQN of the NVMe host. Used to create, get or modify the NVMe host.
+            type: str
+        osType:
+            description: OS type.
+            type: str
+        peerMdmId:
+            description: Peer MDM ID.
+            type: str
+        perfProfile:
+            description: Performance profile.
+            type: str
+        sdcAgentActive:
+            description: Whether the SDC agent is active.
+            type: bool
+        sdcApproved:
+            description: Whether an SDC has approved access to the system.
+            type: bool
+        sdcApprovedIps:
+            description: SDC approved IPs.
+            type: list
+        sdcGuid:
+            description: SDC GUID.
+            type: str
+        sdcIp:
+            description: SDC IP address.
+            type: str
+        sdcIps:
+            description: SDC IP addresses.
+            type: list
+        sdcType:
+            description: SDC type.
+            type: str
+        sdrId:
+            description: SDR ID.
+            type: str
+        sdtId:
+            description: SDT ID.
+            type: str
+        softwareVersionInfo:
+            description: Software version information.
+            type: str
+        systemId:
+            description: ID of the system.
+            type: str
+        versionInfo:
+            description: Version information.
+            type: str
+    sample: [{
+        "hostOsFullType": "Generic",
+        "systemId": "f4c3b7f5c48cb00f",
+        "sdcApproved": null,
+        "sdcAgentActive": null,
+        "mdmIpAddressesCurrent": null,
+        "sdcIp": null,
+        "sdcIps": null,
+        "osType": null,
+        "perfProfile": null,
+        "peerMdmId": null,
+        "sdtId": null,
+        "mdmConnectionState": null,
+        "softwareVersionInfo": null,
+        "socketAllocationFailure": null,
+        "memoryAllocationFailure": null,
+        "versionInfo": null,
+        "sdcType": null,
+        "nqn": "nqn.org.nvmexpress:uuid",
+        "maxNumPaths": 3,
+        "maxNumSysPorts": 3,
+        "sdcGuid": null,
+        "installedSoftwareVersionInfo": null,
+        "kernelVersion": null,
+        "kernelBuildNumber": null,
+        "sdcApprovedIps": null,
+        "hostType": "NVMeHost",
+        "sdrId": null,
+        "name": "example_nvme_host",
+        "id": "da8f60fd00010000",
+        "links": [
+            {
+                "rel": "self",
+                "href": "/api/instances/Host::da8f60fd00010000"
+            },
+            {
+                "rel": "/api/Host/relationship/Volume",
+                "href": "/api/instances/Host::da8f60fd00010000/relationships/Volume"
+            },
+            {
+                "rel": "/api/Host/relationship/NvmeController",
+                "href": "/api/instances/Host::da8f60fd00010000/relationships/NvmeController"
+            },
+            {
+                "rel": "/api/parent/relationship/systemId",
+                "href": "/api/instances/System::f4c3b7f5c48cb00f"
+            }
+        ]
+    }]
+sdt:
+    description: Details of NVMe storage data targets.
+    returned: when I(gather_subset) is C(sdt)
+    type: list
+    contains:
+        authenticationError:
+            description: The authentication error details of the SDT object.
+            type: str
+        certificateInfo:
+            description: The certificate information of the SDT object.
+            type: str
+        discoveryPort:
+            description: The discovery port number of the SDT object.
+            type: int
+        id:
+            description: The unique identifier of the SDT object.
+            type: str
+        ipList:
+            description: The list of IP addresses of the SDT object.
+            type: list
+            contains:
+                ip:
+                    description: The IP address of the SDT object.
+                    type: str
+                role:
+                    description: The role associated with the IP address of the SDT object.
+                    type: str
+        maintenanceState:
+            description: The maintenance state of the SDT object.
+            type: str
+        mdmConnectionState:
+            description: The MDM connection state of the SDT object.
+            type: str
+        membershipState:
+            description: The membership state of the SDT object.
+            type: str
+        name:
+            description: The name of the SDT object.
+            type: str
+        nvmePort:
+            description: The NVMe port number of the SDT object.
+            type: int
+        nvme_hosts:
+            description: The list of NVMe hosts associated with the SDT object.
+            type: list
+            contains:
+                controllerId:
+                    description: The controller ID.
+                    type: int
+                hostId:
+                    description: The host ID associated with the NVMe controller.
+                    type: str
+                hostIp:
+                    description: The IP address of the host.
+                    type: str
+                id:
+                    description: The unique identifier of the NVMe controller.
+                    type: str
+                isAssigned:
+                    description: Indicates if the NVMe controller is assigned.
+                    type: bool
+                isConnected:
+                    description: Indicates if the NVMe controller is connected.
+                    type: bool
+                links:
+                    description: Hyperlinks related to the NVMe controller.
+                    type: list
+                    contains:
+                        href:
+                            description: The URL of the link.
+                            type: str
+                        rel:
+                            description: The relation type of the link.
+                            type: str
+                name:
+                    description: The name of the NVMe controller. Can be null.
+                    type: str
+                sdtId:
+                    description: The SDT ID associated with the NVMe controller.
+                    type: str
+                subsystem:
+                    description: The subsystem associated with the NVMe controller.
+                    type: str
+                sysPortId:
+                    description: The system port ID.
+                    type: int
+                sysPortIp:
+                    description: The IP address of the system port.
+                    type: str
+        protectionDomainId:
+            description: The Protection Domain ID associated with the SDT object.
+            type: str
+        sdtState:
+            description: The state of the SDT object.
+            type: str
+        softwareVersionInfo:
+            description: The software version information of the SDT object.
+            type: str
+        storagePort:
+            description: The storage port number of the SDT object.
+            type: int
+    sample: [{
+        "authenticationError": "None",
+        "certificateInfo": null,
+        "discoveryPort": 8009,
+        "faultSetId": null,
+        "id": "8bddf18b00000000",
+        "ipList": [
+            {
+                "ip": "10.1.1.1",
+                "role": "HostOnly"
+            },
+            {
+                "ip": "10.1.1.2",
+                "role": "StorageOnly"
+            }
+        ],
+        "links": [
+            {
+                "href": "/api/instances/Sdt::8bddf18b00000000",
+                "rel": "self"
+            },
+            {
+                "href": "/api/instances/Sdt::8bddf18b00000000/relationships/Statistics",
+                "rel": "/api/Sdt/relationship/Statistics"
+            },
+            {
+                "href": "/api/instances/ProtectionDomain::32a39aa600000000",
+                "rel": "/api/parent/relationship/protectionDomainId"
+            }
+        ],
+        "maintenanceState": "NoMaintenance",
+        "mdmConnectionState": "Connected",
+        "membershipState": "Joined",
+        "name": "Sdt-yulan3-pf460-svm-1",
+        "nvmePort": 4420,
+        "nvme_hosts": [
+            {
+                "controllerId": 1,
+                "hostId": "1040d69e00010001",
+                "hostIp": "10.0.1.1",
+                "id": "cc00010001000002",
+                "isAssigned": false,
+                "isConnected": true,
+                "links": [
+                    {
+                        "href": "/api/instances/NvmeController::cc00010001000002",
+                        "rel": "self"
+                    }
+                ],
+                "name": null,
+                "sdtId": "8bddf18b00000000",
+                "subsystem": "Io",
+                "sysPortId": 0,
+                "sysPortIp": "10.1.1.1"
+            }
+        ],
+        "persistentDiscoveryControllersNum": 0,
+        "protectionDomainId": "32a39aa600000000",
+        "sdtState": "Normal",
+        "softwareVersionInfo": "R4_5.2100.0",
+        "storagePort": 12200,
+        "systemId": "264ec85b3855280f"
+    }]
 '''
 
 from ansible.module_utils.basic import AnsibleModule
@@ -2008,10 +2344,34 @@ class PowerFlexInfo(object):
                 sdc = self.powerflex_conn.sdc.get(filter_fields=filter_dict)
             else:
                 sdc = self.powerflex_conn.sdc.get()
+            # filter out NVMe host entities
+            sdc = [obj for obj in sdc if obj.get('hostType') != 'NVMeHost']
             return result_list(sdc)
 
         except Exception as e:
             msg = 'Get SDC list from powerflex array failed with' \
+                  ' error %s' % (str(e))
+            LOG.error(msg)
+            self.module.fail_json(msg=msg)
+
+    def get_nvme_host_list(self, filter_dict=None):
+        """ Get the list of NVMe hosts on a given PowerFlex storage system """
+
+        try:
+            LOG.info('Getting NVMe hosts list ')
+            sdc = self.powerflex_conn.sdc.get()
+            # filter out NVMe host entities
+            hosts = [obj for obj in sdc if obj.get('hostType') == 'NVMeHost']
+            # Add name to NVMe hosts without giving name
+            for host in hosts:
+                if host.get("name") is None:
+                    host["name"] = f"NVMeHost:{host['id']}"
+            if filter_dict:
+                hosts = utils.filter_response(hosts, filter_dict)
+            return result_list(hosts)
+
+        except Exception as e:
+            msg = 'Get NVMe host list from powerflex array failed with' \
                   ' error %s' % (str(e))
             LOG.error(msg)
             self.module.fail_json(msg=msg)
@@ -2265,6 +2625,35 @@ class PowerFlexInfo(object):
             msg = f'Get deployments from PowerFlex Manager failed with error {str(e)}'
             return self.handle_error_exit(msg)
 
+    def get_sdt_list(self, filter_dict=None):
+        """ Get the list of sdt on a given PowerFlex Manager system """
+        try:
+            LOG.info('Getting sdt list ')
+            # Get the list of nvme hosts
+            associated_hosts = []
+            nvme_hosts = self.powerflex_conn.sdc.get(filter_fields={'hostType': "NVMeHost"})
+            for nvme_host in nvme_hosts:
+                controller = self.powerflex_conn.host.get_related(entity_id=nvme_host.get('id'), related='NvmeController')
+                associated_hosts.extend(controller)
+            associated_hosts_map = {controller.get('sdtId'): controller for controller in associated_hosts if controller.get('sdtId') is not None}
+            if filter_dict:
+                sdts = self.powerflex_conn.sdt.get(filter_fields=filter_dict)
+            else:
+                sdts = self.powerflex_conn.sdt.get()
+
+            for sdt in sdts:
+                sdt['nvme_hosts'] = []
+                for host in associated_hosts_map.values():
+                    if host.get('sdtId') == sdt.get('id'):
+                        sdt['nvme_hosts'].append(host)
+
+            return result_list(sdts)
+
+        except Exception as e:
+            msg = f'Get sdt from PowerFlex Manager failed with error {str(e)}'
+            LOG.error(msg)
+            self.module.fail_json(msg=msg)
+
     def get_pagination_params(self):
         """ Get the pagination parameters """
         return {'limit': self.get_param_value('limit'), 'offset': self.get_param_value('offset'),
@@ -2391,70 +2780,60 @@ class PowerFlexInfo(object):
 
         api_version = self.get_api_details()
         array_details = self.get_array_details()
-        sdc = []
-        sds = []
-        storage_pool = []
-        vol = []
-        snapshot_policy = []
-        protection_domain = []
-        device = []
-        rcgs = []
-        replication_pair = []
-        fault_sets = []
-        service_template = []
-        managed_device = []
-        deployment = []
-        firmware_repository = []
-
         subset = self.module.params['gather_subset']
+        subset_result_filter = {}
+        subset_result_wo_param = {}
         self.validate_subset(api_version, subset)
-        if subset is not None:
-            if 'sdc' in subset:
-                sdc = self.get_sdc_list(filter_dict=filter_dict)
-            if 'sds' in subset:
-                sds = self.get_sds_list(filter_dict=filter_dict)
-            if 'protection_domain' in subset:
-                protection_domain = self.get_pd_list(filter_dict=filter_dict)
-            if 'storage_pool' in subset:
-                storage_pool = self.get_storage_pool_list(filter_dict=filter_dict)
-            if 'vol' in subset:
-                vol = self.get_volumes_list(filter_dict=filter_dict)
-            if 'snapshot_policy' in subset:
-                snapshot_policy = self.get_snapshot_policy_list(filter_dict=filter_dict)
-            if 'device' in subset:
-                device = self.get_devices_list(filter_dict=filter_dict)
-            if 'rcg' in subset:
-                rcgs = self.get_replication_consistency_group_list(filter_dict=filter_dict)
-            if 'replication_pair' in subset:
-                replication_pair = self.get_replication_pair_list(filter_dict=filter_dict)
-            if 'fault_set' in subset:
-                fault_sets = self.get_fault_sets_list(filter_dict=filter_dict)
-            if 'managed_device' in subset:
-                managed_device = self.get_managed_devices_list()
-            if 'service_template' in subset:
-                service_template = self.get_service_templates_list()
-            if 'deployment' in subset:
-                deployment = self.get_deployments_list()
-            if 'firmware_repository' in subset:
-                firmware_repository = self.get_firmware_repository_list()
+
+        subset_dict_with_filter = {
+            "sdc": self.get_sdc_list,
+            "sds": self.get_sds_list,
+            "protection_domain": self.get_pd_list,
+            "storage_pool": self.get_storage_pool_list,
+            "vol": self.get_volumes_list,
+            "snapshot_policy": self.get_snapshot_policy_list,
+            "device": self.get_devices_list,
+            "rcg": self.get_replication_consistency_group_list,
+            "replication_pair": self.get_replication_pair_list,
+            "fault_set": self.get_fault_sets_list,
+            "nvme_host": self.get_nvme_host_list,
+            "sdt": self.get_sdt_list,
+        }
+
+        subset_wo_param = {
+            "managed_device": self.get_managed_devices_list,
+            "service_template": self.get_service_templates_list,
+            "deployment": self.get_deployments_list,
+            "firmware_repository": self.get_firmware_repository_list
+        }
+        if subset:
+            subset_result_filter = {key: subset_dict_with_filter[key](
+                filter_dict=filter_dict) for key in subset if key in subset_dict_with_filter}
+            subset_result_wo_param = {key: subset_wo_param[key](
+            ) for key in subset if key in subset_wo_param}
 
         self.module.exit_json(
             Array_Details=array_details,
             API_Version=api_version,
-            SDCs=sdc,
-            SDSs=sds,
-            Storage_Pools=storage_pool,
-            Volumes=vol,
-            Snapshot_Policies=snapshot_policy,
-            Protection_Domains=protection_domain,
-            Devices=device,
-            Replication_Consistency_Groups=rcgs,
-            Replication_Pairs=replication_pair,
-            Fault_Sets=fault_sets,
-            ManagedDevices=managed_device,
-            ServiceTemplates=service_template,
-            Deployments=deployment,
-            FirmwareRepository=firmware_repository
+            SDCs=subset_result_filter.get("sdc", []),
+            SDSs=subset_result_filter.get("sds", []),
+            Storage_Pools=subset_result_filter.get("storage_pool", []),
+            Volumes=subset_result_filter.get("vol", []),
+            Snapshot_Policies=subset_result_filter.get("snapshot_policy", []),
+            Protection_Domains=subset_result_filter.get(
+                "protection_domain", []),
+            Devices=subset_result_filter.get("device", []),
+            Replication_Consistency_Groups=subset_result_filter.get("rcg", []),
+            Replication_Pairs=subset_result_filter.get("replication_pair", []),
+            Fault_Sets=subset_result_filter.get("fault_set", []),
+            SDTs=subset_result_filter.get("sdt", []),
+            ManagedDevices=subset_result_wo_param.get("managed_device", []),
+            ServiceTemplates=subset_result_wo_param.get(
+                "service_template", []),
+            Deployments=subset_result_wo_param.get("deployment", []),
+            FirmwareRepository=subset_result_wo_param.get(
+                "firmware_repository", []),
+            NVMeHosts=subset_result_filter.get("nvme_host", [])
         )
 
 
@@ -2481,7 +2860,7 @@ def get_powerflex_info_parameters():
                            choices=['vol', 'storage_pool',
                                     'protection_domain', 'sdc', 'sds', 'snapshot_policy',
                                     'device', 'rcg', 'replication_pair', 'fault_set',
-                                    'service_template', 'managed_device', 'deployment', 'firmware_repository']),
+                                    'service_template', 'managed_device', 'deployment', 'firmware_repository', 'nvme_host', 'sdt']),
         filters=dict(type='list', required=False, elements='dict',
                      options=dict(filter_key=dict(type='str', required=True, no_log=False),
                                   filter_operator=dict(

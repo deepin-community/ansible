@@ -5,7 +5,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
 # Community SOPS Collection
-[![CI](https://github.com/ansible-collections/community.sops/workflows/CI/badge.svg?event=push)](https://github.com/ansible-collections/community.sops/actions)
+[![Documentation](https://img.shields.io/badge/docs-brightgreen.svg)](https://docs.ansible.com/ansible/devel/collections/community/sops/)
+[![CI](https://github.com/ansible-collections/community.sops/actions/workflows/nox.yml/badge.svg?branch=main)](https://github.com/ansible-collections/community.sops/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/community.sops)](https://codecov.io/gh/ansible-collections/community.sops)
 [![REUSE status](https://api.reuse.software/badge/github.com/ansible-collections/community.sops)](https://api.reuse.software/info/github.com/ansible-collections/community.sops)
 
@@ -21,7 +22,7 @@ The following table shows which versions of SOPS were tested with which versions
 
 |`community.sops` version|SOPS versions|
 |---|---|
-|`main` branch|`3.5.0`, `3.6.0`, `3.6.1`, `3.7.0`, `3.7.3`, `3.8.0`, `3.8.1`, `3.9.0`, `3.9.1`|
+|`main` branch|`3.5.0`, `3.6.0`, `3.6.1`, `3.7.0`, `3.7.3`, `3.8.0`, `3.8.1`, `3.9.0`, `3.9.1`, `3.9.2`, `3.9.3`, `3.10.0`, `3.10.1`, `3.10.2`|
 
 ## Code of Conduct
 
@@ -43,7 +44,7 @@ For more information about communication, see the [Ansible communication guide](
 
 ## Tested with Ansible
 
-Tested with the current ansible-core 2.15, ansible-core 2.16, ansible-core 2.17, and ansible-core 2.18 releases and the current development version of ansible-core. Ansible versions before 2.15.0 are not supported.
+Tested with the current ansible-core 2.15, ansible-core 2.16, ansible-core 2.17, ansible-core 2.18, and ansible-core 2.19 releases and the current development version of ansible-core. Ansible versions before 2.15.0 are not supported.
 
 ## External requirements
 
@@ -69,6 +70,7 @@ If you use the Ansible package and do not update collections independently, use 
 This collection provides:
 
 - a [lookup plugin](https://docs.ansible.com/ansible/latest/user_guide/playbooks_lookups.html#playbooks-lookups) `community.sops.sops` that allows looking up a SOPS-encrypted file content;
+- a [filter plugin](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_filters.html) `community.sops.decrypt` that allows decrypting SOPS-encrypted data;
 - a [vars plugin](https://docs.ansible.com/ansible/latest/plugins/vars.html) `community.sops.sops` that allows loading Ansible vars from SOPS-encrypted files for hosts and groups;
 - an [action plugin](https://docs.ansible.com/ansible/latest/plugins/action.html) `community.sops.load_vars` that allows loading Ansible vars from a SOPS-encrypted file dynamically during a playbook or role;
 - a [module](https://docs.ansible.com/ansible/latest/user_guide/basic_concepts.html#modules) `community.sops.sops_encrypt` which allows to encrypt data with SOPS.
@@ -357,4 +359,4 @@ See [LICENSES/GPL-3.0-or-later.txt](https://github.com/ansible-collections/commu
 
 Parts of the collection are licensed under the [BSD 2-Clause license](https://github.com/ansible-collections/community.sops/blob/main/LICENSES/BSD-2-Clause.txt).
 
-All files have a machine readable `SDPX-License-Identifier:` comment denoting its respective license(s) or an equivalent entry in an accompanying `.license` file. Only changelog fragments (which will not be part of a release) are covered by a blanket statement in `.reuse/dep5`. This conforms to the [REUSE specification](https://reuse.software/spec/).
+All files have a machine readable `SDPX-License-Identifier:` comment denoting its respective license(s) or an equivalent entry in an accompanying `.license` file. Only changelog fragments (which will not be part of a release) are covered by a blanket statement in `REUSE.toml`. This conforms to the [REUSE specification](https://reuse.software/spec/).

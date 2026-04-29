@@ -155,15 +155,15 @@ options:
             - SSL verify peer for SMTP.
             - Can be specified when I(smtp_security=STARTTLS) or I(smtp_security=SSL/TLS)
         default: false
-    content_type:
+    message_format:
         type: "str"
         description:
             - Can be used when I(type=email).
-            - Message format.
         choices:
             - plaintext
             - html
         default: html
+        aliases: ["content_type"]
     message_text_limit:
         type: "str"
         description:
@@ -248,6 +248,7 @@ options:
                     - discovery
                     - autoregistration
                     - internal
+                    - services
             recovery:
                 type: "str"
                 description:
@@ -514,7 +515,8 @@ class MediaTypeModule(ZabbixBase):
                         "triggers": "0",
                         "discovery": "1",
                         "autoregistration": "2",
-                        "internal": "3"}.get(template["eventsource"]),
+                        "internal": "3",
+                        "services": "4"}.get(template["eventsource"]),
                     recovery={
                         "operations": "0",
                         "recovery_operations": "1",
@@ -534,17 +536,20 @@ class MediaTypeModule(ZabbixBase):
                 smtp_authentication=truths.get(str(self._module.params["smtp_authentication"])),
                 smtp_verify_host=truths.get(str(self._module.params["smtp_verify_host"])),
                 smtp_verify_peer=truths.get(str(self._module.params["smtp_verify_peer"])),
-                content_type={"plaintext": "0", "html": "1"}.get(str(self._module.params["content_type"])),
+                message_format={"plaintext": "0", "html": "1"}.get(str(self._module.params["message_format"])),
                 username=self._module.params["username"],
                 passwd=self._module.params["password"]
             ))
+            if LooseVersion(self._zbx_api_version) < LooseVersion("7.0"):
+                parameters["content_type"] = parameters["message_format"]
+                del parameters["message_format"]
             if parameters["smtp_authentication"] == "0":
                 parameters.pop("username")
                 parameters.pop("passwd")
             return parameters
 
         elif self._module.params["type"] == "script":
-            if LooseVersion(self._zbx_api_version) < LooseVersion("6.4"):
+            if LooseVersion(self._zbx_api_version) < LooseVersion("7.0"):
                 if self._module.params["script_params"] is None:
                     _script_params = ""  # ZBX-15706
                 else:
@@ -637,7 +642,7 @@ class MediaTypeModule(ZabbixBase):
             for key in kwargs:
                 # sort list of parameters to prevent mismatch due to reordering
                 if key == "parameters" and (kwargs[key] != [] or existing_mediatype[key] != []):
-                    if LooseVersion(self._zbx_api_version) < LooseVersion("6.4"):
+                    if LooseVersion(self._zbx_api_version) < LooseVersion("7.0"):
                         kwargs[key] = sorted(kwargs[key], key=lambda x: x["name"])
                         existing_mediatype[key] = sorted(existing_mediatype[key], key=lambda x: x["name"])
                     else:
@@ -703,7 +708,7 @@ def main():
         smtp_authentication=dict(type="bool", default=False, required=False),
         smtp_verify_host=dict(type="bool", default=False, required=False),
         smtp_verify_peer=dict(type="bool", default=False, required=False),
-        content_type=dict(type="str", choices=["plaintext", "html"], default="html", required=False),
+        message_format=dict(type="str", choices=["plaintext", "html"], default="html", required=False, aliases=["content_type"]),
         # EZ Text
         message_text_limit=dict(type="str", required=False, choices=["USA", "Canada"]),
         # Webhook
@@ -729,7 +734,7 @@ def main():
             default=[],
             required=False,
             options=dict(
-                eventsource=dict(type="str", choices=["triggers", "discovery", "autoregistration", "internal"]),
+                eventsource=dict(type="str", choices=["triggers", "discovery", "autoregistration", "internal", "services"]),
                 recovery=dict(type="str", choices=["operations", "recovery_operations", "update_operations"]),
                 subject=dict(type="str", default=""),
                 body=dict(type="str", default="")

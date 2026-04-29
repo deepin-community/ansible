@@ -130,6 +130,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -146,13 +147,13 @@ EXAMPLES = '''
         profile: <your own value>
         state: present # <value in [present, absent]>
         webfilter_profile_ftgdwf_quota:
-          category: <list or string>
-          duration: <string>
-          id: <integer>
-          override_replacemsg: <string>
-          type: <value in [time, traffic]>
-          unit: <value in [B, KB, MB, ...]>
-          value: <integer>
+          id: 0 # Required variable, integer
+          # category: <list or string>
+          # duration: <string>
+          # override_replacemsg: <string>
+          # type: <value in [time, traffic]>
+          # unit: <value in [B, KB, MB, ...]>
+          # value: <integer>
 '''
 
 RETURN = '''

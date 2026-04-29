@@ -137,6 +137,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -153,14 +154,14 @@ EXAMPLES = '''
         vlan: <your own value>
         state: present # <value in [present, absent]>
         fsp_vlan_dhcpserver_excluderange:
-          end_ip: <string>
-          id: <integer>
-          start_ip: <string>
-          vci_match: <value in [disable, enable]>
-          vci_string: <list or string>
-          lease_time: <integer>
-          uci_match: <value in [disable, enable]>
-          uci_string: <list or string>
+          id: 0 # Required variable, integer
+          # end_ip: <string>
+          # start_ip: <string>
+          # vci_match: <value in [disable, enable]>
+          # vci_string: <list or string>
+          # lease_time: <integer>
+          # uci_match: <value in [disable, enable]>
+          # uci_string: <list or string>
 '''
 
 RETURN = '''

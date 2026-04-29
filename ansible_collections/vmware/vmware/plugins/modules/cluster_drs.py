@@ -73,7 +73,7 @@ options:
         default: false
 
 extends_documentation_fragment:
-    - vmware.vmware.vmware.documentation
+    - vmware.vmware.base_options
 '''
 
 EXAMPLES = r'''
@@ -112,6 +112,14 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
+cluster:
+    description:
+        - Information about the target cluster
+    returned: On success
+    type: dict
+    sample:
+        moid: cluster-79828,
+        name: test-cluster
 result:
     description:
         - Information about the DRS config update task, if something changed
@@ -135,39 +143,40 @@ except ImportError:
     pass
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware import (
-    PyVmomi,
-    vmware_argument_spec
+from ansible_collections.vmware.vmware.plugins.module_utils._module_pyvmomi_base import (
+    ModulePyvmomiBase
 )
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_tasks import (
+from ansible_collections.vmware.vmware.plugins.module_utils.argument_spec import (
+    base_argument_spec
+)
+from ansible_collections.vmware.vmware.plugins.module_utils._vsphere_tasks import (
     TaskError,
     RunningTaskMonitor
 )
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_facts import (
+from ansible_collections.vmware.vmware.plugins.module_utils._facts import (
     ClusterFacts
 )
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_type_utils import (
-    diff_dict_and_vmodl_options_set
+from ansible_collections.vmware.vmware.plugins.module_utils._advanced_settings import (
+    AdvancedSettings
 )
 from ansible.module_utils._text import to_native
 
 
-class VMwareCluster(PyVmomi):
+class VMwareCluster(ModulePyvmomiBase):
     def __init__(self, module):
         super(VMwareCluster, self).__init__(module)
 
-        datacenter = self.get_datacenter_by_name(self.params.get('datacenter'), fail_on_missing=True)
-        self.cluster = self.get_cluster_by_name(self.params.get('cluster'), fail_on_missing=True, datacenter=datacenter)
+        datacenter = self.get_datacenter_by_name_or_moid(self.params.get('datacenter'), fail_on_missing=True)
+        self.cluster = self.get_cluster_by_name_or_moid(self.params.get('cluster'), fail_on_missing=True, datacenter=datacenter)
 
         self.enable_drs = self.params.get('enable')
         self.drs_enable_vm_behavior_overrides = self.params.get('drs_enable_vm_behavior_overrides')
         self.drs_default_vm_behavior = self.params.get('drs_default_vm_behavior')
         self.predictive_drs = self.params.get('predictive_drs')
 
-        self.changed_advanced_settings = diff_dict_and_vmodl_options_set(
-            self.params.get('advanced_settings'),
-            self.cluster.configurationEx.drsConfig.option
-        )
+        _user_settings = AdvancedSettings.from_py_dict(self.params.get('advanced_settings'), cast_all_values_to_str=True)
+        _live_settings = AdvancedSettings.from_vsphere_config(self.cluster.configurationEx.drsConfig.option)
+        self.changed_advanced_settings = _user_settings.difference(_live_settings)
 
     @property
     def drs_vmotion_rate(self):
@@ -201,7 +210,7 @@ class VMwareCluster(PyVmomi):
         except AttributeError:
             return True
 
-        if self.changed_advanced_settings:
+        if not self.changed_advanced_settings.is_empty():
             return True
 
         return False
@@ -219,8 +228,8 @@ class VMwareCluster(PyVmomi):
         cluster_config_spec.drsConfig.vmotionRate = self.drs_vmotion_rate
         cluster_config_spec.proactiveDrsConfig.enabled = self.predictive_drs
 
-        if self.changed_advanced_settings:
-            cluster_config_spec.drsConfig.option = self.changed_advanced_settings
+        if not self.changed_advanced_settings.is_empty():
+            cluster_config_spec.drsConfig.option = self.changed_advanced_settings.to_vsphere_config()
 
         return cluster_config_spec
 
@@ -246,7 +255,7 @@ class VMwareCluster(PyVmomi):
 def main():
     module = AnsibleModule(
         argument_spec={
-            **vmware_argument_spec(), **dict(
+            **base_argument_spec(), **dict(
                 cluster=dict(type='str', required=True, aliases=['cluster_name']),
                 datacenter=dict(type='str', required=True, aliases=['datacenter_name']),
                 enable=dict(type='bool', default=True),
@@ -266,10 +275,16 @@ def main():
 
     result = dict(
         changed=False,
-        result={}
+        result={},
+        cluster=dict(
+            name="",
+            moid=""
+        )
     )
 
     cluster_drs = VMwareCluster(module)
+    result['cluster']['name'] = cluster_drs.cluster.name
+    result['cluster']['moid'] = cluster_drs.cluster._GetMoId()
 
     config_is_different = cluster_drs.check_drs_config_diff()
     if config_is_different:

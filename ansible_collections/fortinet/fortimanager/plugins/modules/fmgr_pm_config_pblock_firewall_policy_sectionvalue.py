@@ -112,6 +112,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -129,8 +130,8 @@ EXAMPLES = '''
         policy: <your own value>
         state: present # <value in [present, absent]>
         pm_config_pblock_firewall_policy_sectionvalue:
-          attr: <value in [label, global-label]>
-          name: <string>
+          # attr: <value in [label, global-label]>
+          # name: <string>
 '''
 
 RETURN = '''

@@ -12,16 +12,15 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: scaleway_security_group
 short_description: Scaleway Security Group management module
 author: Antoine Barbare (@abarbare)
 description:
-    - "This module manages Security Group on Scaleway account U(https://developer.scaleway.com)."
+  - This module manages Security Group on Scaleway account U(https://developer.scaleway.com).
 extends_documentation_fragment:
-    - community.general.scaleway
-    - community.general.attributes
+  - community.general.scaleway
+  - community.general.attributes
 
 attributes:
   check_mode:
@@ -34,7 +33,7 @@ options:
     description:
       - Indicate desired state of the Security Group.
     type: str
-    choices: [ absent, present ]
+    choices: [absent, present]
     default: present
 
   organization:
@@ -51,12 +50,17 @@ options:
     choices:
       - ams1
       - EMEA-NL-EVS
+      - ams2
+      - ams3
       - par1
       - EMEA-FR-PAR1
       - par2
       - EMEA-FR-PAR2
+      - par3
       - waw1
       - EMEA-PL-WAW1
+      - waw2
+      - waw3
 
   name:
     description:
@@ -79,21 +83,21 @@ options:
     description:
       - Default policy for incoming traffic.
     type: str
-    choices: [ accept, drop ]
+    choices: [accept, drop]
 
   outbound_default_policy:
     description:
       - Default policy for outcoming traffic.
     type: str
-    choices: [ accept, drop ]
+    choices: [accept, drop]
 
   organization_default:
     description:
       - Create security group to be the default one.
     type: bool
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Create a Security Group
   community.general.scaleway_security_group:
     state: present
@@ -106,28 +110,29 @@ EXAMPLES = '''
     outbound_default_policy: accept
     organization_default: false
   register: security_group_creation_task
-'''
+"""
 
-RETURN = '''
+RETURN = r"""
 data:
-    description: This is only present when O(state=present).
-    returned: when O(state=present)
-    type: dict
-    sample: {
-        "scaleway_security_group": {
-            "description": "my security group description",
-            "enable_default_security": true,
-            "id": "0168fb1f-cc46-4f69-b4be-c95d2a19bcae",
-            "inbound_default_policy": "accept",
-            "name": "security_group",
-            "organization": "43a3b6c8-916f-477b-b7ec-ff1898f5fdd9",
-            "organization_default": false,
-            "outbound_default_policy": "accept",
-            "servers": [],
-            "stateful": false
-        }
+  description: This is only present when O(state=present).
+  returned: when O(state=present)
+  type: dict
+  sample:
+    {
+      "scaleway_security_group": {
+        "description": "my security group description",
+        "enable_default_security": true,
+        "id": "0168fb1f-cc46-4f69-b4be-c95d2a19bcae",
+        "inbound_default_policy": "accept",
+        "name": "security_group",
+        "organization": "43a3b6c8-916f-477b-b7ec-ff1898f5fdd9",
+        "organization_default": false,
+        "outbound_default_policy": "accept",
+        "servers": [],
+        "stateful": false
+      }
     }
-'''
+"""
 
 from ansible_collections.community.general.plugins.module_utils.scaleway import SCALEWAY_LOCATION, scaleway_argument_spec, Scaleway
 from ansible.module_utils.basic import AnsibleModule

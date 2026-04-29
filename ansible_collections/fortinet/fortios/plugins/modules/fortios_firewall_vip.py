@@ -104,6 +104,13 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            client_cert:
+                description:
+                    - Enable/disable requesting client certificate.
+                type: str
+                choices:
+                    - 'disable'
+                    - 'enable'
             color:
                 description:
                     - Color of icon on the GUI.
@@ -116,6 +123,14 @@ options:
                 description:
                     - DNS mapping TTL (Set to zero to use TTL in DNS response).
                 type: int
+            empty_cert_action:
+                description:
+                    - Action for an empty client certificate.
+                type: str
+                choices:
+                    - 'accept'
+                    - 'block'
+                    - 'accept-unmanageable'
             extaddr:
                 description:
                     - External FQDN address name.
@@ -1032,6 +1047,13 @@ options:
                     - 'dns-translation'
                     - 'fqdn'
                     - 'access-proxy'
+            user_agent_detect:
+                description:
+                    - Enable/disable detecting device type by HTTP user-agent if no client certificate is provided.
+                type: str
+                choices:
+                    - 'disable'
+                    - 'enable'
             uuid:
                 description:
                     - Universally Unique Identifier (UUID; automatically assigned but can be manually reset).
@@ -1061,12 +1083,14 @@ EXAMPLES = """
       firewall_vip:
           add_nat46_route: "disable"
           arp_reply: "disable"
+          client_cert: "disable"
           color: "0"
           comment: "Comment."
           dns_mapping_ttl: "0"
+          empty_cert_action: "accept"
           extaddr:
               -
-                  name: "default_name_9 (source firewall.address.name firewall.addrgrp.name)"
+                  name: "default_name_11 (source firewall.address.name firewall.addrgrp.name)"
           extintf: "<your_own_value> (source system.interface.name)"
           extip: "<your_own_value>"
           extport: "<your_own_value>"
@@ -1094,7 +1118,7 @@ EXAMPLES = """
           http_redirect: "enable"
           http_supported_max_version: "http1"
           https_cookie_secure: "disable"
-          id: "36"
+          id: "38"
           ipv6_mappedip: "<your_own_value>"
           ipv6_mappedport: "<your_own_value>"
           ldb_method: "static"
@@ -1106,8 +1130,8 @@ EXAMPLES = """
           max_embryonic_connections: "1000"
           monitor:
               -
-                  name: "default_name_46 (source firewall.ldb-monitor.name)"
-          name: "default_name_47"
+                  name: "default_name_48 (source firewall.ldb-monitor.name)"
+          name: "default_name_49"
           nat_source_vip: "disable"
           nat44: "disable"
           nat46: "disable"
@@ -1133,12 +1157,12 @@ EXAMPLES = """
                   healthcheck: "disable"
                   holddown_interval: "300"
                   http_host: "myhostname"
-                  id: "72"
+                  id: "74"
                   ip: "<your_own_value>"
                   max_connections: "0"
                   monitor:
                       -
-                          name: "default_name_76 (source firewall.ldb-monitor.name)"
+                          name: "default_name_78 (source firewall.ldb-monitor.name)"
                   port: "0"
                   status: "active"
                   translate_host: "enable"
@@ -1147,7 +1171,7 @@ EXAMPLES = """
           server_type: "http"
           service:
               -
-                  name: "default_name_84 (source firewall.service.custom.name firewall.service.group.name)"
+                  name: "default_name_86 (source firewall.service.custom.name firewall.service.group.name)"
           src_filter:
               -
                   range: "<your_own_value>"
@@ -1160,7 +1184,7 @@ EXAMPLES = """
           ssl_certificate: "<your_own_value> (source vpn.certificate.local.name)"
           ssl_certificate_dict:
               -
-                  name: "default_name_94 (source vpn.certificate.local.name)"
+                  name: "default_name_96 (source vpn.certificate.local.name)"
           ssl_cipher_suites:
               -
                   cipher: "TLS-AES-128-GCM-SHA256"
@@ -1203,6 +1227,7 @@ EXAMPLES = """
           ssl_server_session_state_type: "disable"
           status: "disable"
           type: "static-nat"
+          user_agent_detect: "disable"
           uuid: "<your_own_value>"
           weblogic_server: "disable"
           websphere_server: "disable"
@@ -1294,15 +1319,20 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_firewall_vip_data(json):
     option_list = [
         "add_nat46_route",
         "arp_reply",
+        "client_cert",
         "color",
         "comment",
         "dns_mapping_ttl",
+        "empty_cert_action",
         "extaddr",
         "extintf",
         "extip",
@@ -1392,6 +1422,7 @@ def filter_firewall_vip_data(json):
         "ssl_server_session_state_type",
         "status",
         "type",
+        "user_agent_detect",
         "uuid",
         "weblogic_server",
         "websphere_server",
@@ -1412,8 +1443,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -1441,16 +1471,18 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def remap_attribute_name(data):
@@ -1478,11 +1510,10 @@ def remap_attribute_names(data):
 
 
 def firewall_vip(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     firewall_vip_data = data["firewall_vip"]
 
     filtered_data = filter_firewall_vip_data(firewall_vip_data)
@@ -1496,40 +1527,56 @@ def firewall_vip(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("firewall", "vip", filtered_data, vdom=vdom)
         current_data = fos.get("firewall", "vip", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -1555,8 +1602,9 @@ def firewall_vip(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["firewall_vip"] = converted_data
+    data_copy["firewall_vip"] = filtered_data
     fos.do_member_operation(
         "firewall",
         "vip",
@@ -1585,6 +1633,7 @@ def is_successful_status(resp):
 
 
 def fortios_firewall(data, fos, check_mode):
+
     if data["firewall_vip"]:
         resp = firewall_vip(data, fos, check_mode)
     else:
@@ -1825,6 +1874,25 @@ versioned_schema = {
             "v_range": [["v6.0.0", ""]],
             "type": "string",
             "options": [{"value": "1-to-1"}, {"value": "m-to-n"}],
+        },
+        "empty_cert_action": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [
+                {"value": "accept"},
+                {"value": "block"},
+                {"value": "accept-unmanageable"},
+            ],
+        },
+        "user_agent_detect": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "disable"}, {"value": "enable"}],
+        },
+        "client_cert": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "disable"}, {"value": "enable"}],
         },
         "realservers": {
             "type": "list",

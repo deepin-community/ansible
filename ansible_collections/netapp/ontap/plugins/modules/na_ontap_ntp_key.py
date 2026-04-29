@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2022-2024, NetApp, Inc
+# (c) 2022-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -13,7 +13,7 @@ short_description: NetApp ONTAP NTP key
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: 21.21.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Create or delete or modify NTP key in ONTAP
 options:
@@ -42,22 +42,23 @@ options:
 """
 
 EXAMPLES = """
-    - name: Create NTP key
-      na_ontap_ntp_key:
-        state: present
-        digest_type: sha1
-        value: "{{ key_value }}"
-        id: 1
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-    - name: Delete NTP key
-      na_ontap_ntp_key:
-        state: absent
-        id: 1
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Create NTP key
+  netapp.ontap.na_ontap_ntp_key:
+    state: present
+    digest_type: sha1
+    value: "{{ key_value }}"
+    id: 1
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+
+- name: Delete NTP key
+  netapp.ontap.na_ontap_ntp_key:
+    state: absent
+    id: 1
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """

@@ -15,7 +15,7 @@ extends_documentation_fragment:
   - amazon.aws.assume_role.plugins
 description:
   - Get inventory hosts from Amazon Web Services EC2.
-  - "The inventory file is a YAML configuration file and must end with C(aws_ec2.{yml|yaml}). Example: C(my_inventory.aws_ec2.yml)."
+  - The inventory file is a YAML configuration file and must end with C(aws_ec2.{yml|yaml}). For example - C(my_inventory.aws_ec2.yml).
 notes:
   - If no credentials are provided and the control node has an associated IAM instance profile then the
     role will be used for authentication.
@@ -25,7 +25,7 @@ options:
   regions:
     description:
       - A list of regions in which to describe EC2 instances.
-      - If empty (the default) default this will include all regions, except possibly restricted ones like us-gov-west-1 and cn-north-1.
+      - If empty (the default) default this will include all regions, except possibly restricted ones like V(us-gov-west-1) and V(cn-north-1).
     type: list
     elements: str
     default: []
@@ -36,6 +36,7 @@ options:
       - Can be one of the options specified in U(http://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html#options).
       - If value provided does not exist in the above options, it will be used as a literal string.
       - To use tags as hostnames use the syntax tag:Name=Value to use the hostname Name_Value, or tag:Name to use the value of the Name tag.
+      - Jinja2 filters can be added to the hostnames string. Added in version 9.2.0.
     type: list
     elements: raw
     default: []
@@ -44,27 +45,27 @@ options:
         description:
           - Name of the host.
         type: str
-        required: True
+        required: true
       prefix:
         description:
-          - Prefix to prepend to I(name). Same options as I(name).
-          - If I(prefix) is specified, final hostname will be I(prefix) +  I(separator) + I(name).
+          - Prefix to prepend to O(hostnames.name). Same options as O(hostnames.name).
+          - If O(hostnames.prefix) is specified, final hostname will be O(hostnames.prefix) + O(hostnames.separator) + O(hostnames.name).
         type: str
         default: ''
-        required: False
+        required: false
       separator:
         description:
-          - Value to separate I(prefix) and I(name) when I(prefix) is specified.
+          - Value to separate O(hostnames.prefix) and O(hostnames.name) when O(hostnames.prefix) is specified.
         type: str
         default: '_'
-        required: False
+        required: false
   allow_duplicated_hosts:
     description:
-      - By default, the first name that matches an entry of the I(hostnames) list is returned.
+      - By default, the first name that matches an entry of the O(hostnames) list is returned.
       - Turn this flag on if you don't mind having duplicated entries in the inventory
         and you want to get all the hostnames that match.
     type: bool
-    default: False
+    default: false
     version_added: 5.0.0
   filters:
     description:
@@ -85,7 +86,7 @@ options:
   exclude_filters:
     description:
       - A list of filters. Any instances matching one of the filters are excluded from the result.
-      - The filters from C(exclude_filters) take priority over the C(include_filters) and C(filters) keys
+      - The filters from O(exclude_filters) take priority over the O(include_filters) and O(filters) keys.
       - Available filters are listed here U(http://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html#options).
       - Every entry in this list triggers a search query. As such, from a performance point of view, it's better to
         keep the list as short as possible.
@@ -98,7 +99,7 @@ options:
       - By default if a 403 (Forbidden) error code is encountered this plugin will fail.
       - You can set this option to False in the inventory config file which will allow 403 errors to be gracefully skipped.
     type: bool
-    default: True
+    default: true
   use_contrib_script_compatible_sanitization:
     description:
       - By default this plugin is using a general group name sanitization to create safe and usable group names for use in Ansible.
@@ -111,13 +112,13 @@ options:
       - This is not the default as such names break certain functionality as not all characters are valid Python identifiers
         which group names end up being used as.
     type: bool
-    default: False
+    default: false
   use_contrib_script_compatible_ec2_tag_keys:
     description:
       - Expose the host tags with ec2_tag_TAGNAME keys like the old ec2.py inventory script.
       - The use of this feature is discouraged and we advise to migrate to the new ``tags`` structure.
     type: bool
-    default: False
+    default: false
     version_added: 1.5.0
   hostvars_prefix:
     description:
@@ -132,12 +133,34 @@ options:
   use_ssm_inventory:
     description:
       - Enables fetching additional EC2 instance information from the AWS Systems Manager (SSM) inventory service into hostvars.
-      - By leveraging the SSM inventory data, the I(use_ssm_inventory) option provides additional details and attributes
+      - By leveraging the SSM inventory data, the O(use_ssm_inventory) option provides additional details and attributes
         about the EC2 instances in your inventory. These details can include operating system information, installed software,
         network configurations, and custom inventory attributes defined in SSM.
     type: bool
-    default: False
+    default: false
     version_added: 6.0.0
+  route53_enabled:
+    description:
+      - Whether or not to use the Route53 DNS as host name.
+      - When set to V(true), Route53 hostnames will be included.
+    type: bool
+    default: false
+    version_added: 10.1.0
+  route53_hostnames:
+    description:
+      - Specifies the Route53 DNS name suffix to consider.
+      - Consider only Route53 zone with name ending with the value specified here.
+    type: list
+    elements: str
+    default: []
+    version_added: 10.1.0
+  route53_excluded_zones:
+    description:
+      - A list of Route53 zones to exclude.
+    type: list
+    elements: str
+    default: []
+    version_added: 10.1.0
 """
 
 EXAMPLES = r"""
@@ -268,6 +291,37 @@ regions:
   - us-east-1
 hostvars_prefix: 'aws_'
 hostvars_suffix: '_ec2'
+
+---
+
+# Define hostnames variables with jinja2 filters.
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+hostnames:
+  - "tag:Name | replace('test', 'prod')"
+
+---
+
+# Define inventory with Route53 enabled and filtering specific route53 host names suffix.
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+route53_enabled: true
+route53_hostnames:
+  - .example.com
+  - .another_example.org
+
+---
+
+# Define inventory with Route53 enabled and excluded zones.
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+route53_enabled: true
+route53_excluded_zones:
+  - ansible.bar.net
+  - ansible.foo.net
 """
 
 import re
@@ -277,10 +331,22 @@ try:
 except ImportError:
     pass  # will be captured by imported HAS_BOTO3
 
+from collections import defaultdict
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Set
+
 from ansible.module_utils._text import to_text
+
+try:
+    from ansible.template import trust_as_template
+except ImportError:
+    trust_as_template = None
 from ansible.module_utils.common.dict_transformations import camel_dict_to_snake_dict
 
 from ansible_collections.amazon.aws.plugins.module_utils.botocore import is_boto3_error_code
+from ansible_collections.amazon.aws.plugins.module_utils.retries import AWSRetry
 from ansible_collections.amazon.aws.plugins.module_utils.tagging import boto3_tag_list_to_ansible_dict
 from ansible_collections.amazon.aws.plugins.module_utils.transformation import ansible_dict_to_boto3_filter_list
 from ansible_collections.amazon.aws.plugins.plugin_utils.inventory import AWSInventoryBase
@@ -390,9 +456,11 @@ instance_data_filter_to_boto_attr = {
 
 def _get_tag_hostname(preference, instance):
     tag_hostnames = preference.split("tag:", 1)[1]
+    expected_single_value = False
     if "," in tag_hostnames:
         tag_hostnames = tag_hostnames.split(",")
     else:
+        expected_single_value = True
         tag_hostnames = [tag_hostnames]
 
     tags = boto3_tag_list_to_ansible_dict(instance.get("Tags", []))
@@ -406,6 +474,8 @@ def _get_tag_hostname(preference, instance):
             tag_value = tags.get(v)
             if tag_value:
                 tag_values.append(to_text(tag_value))
+    if expected_single_value and len(tag_values) > 0:
+        tag_values = tag_values[0]
     return tag_values
 
 
@@ -497,6 +567,40 @@ def _get_ssm_information(client, filters):
     return paginator.paginate(Filters=filters).build_full_result()
 
 
+@AWSRetry.jittered_backoff()
+def _list_hosted_zones(client: Any, **kwargs: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """
+    List all hosted zones using the given boto3 Route53 client.
+
+    :param client: boto3 client for Route53
+    :param kwargs: Additional parameters for the paginator
+    :return: List of hosted zones
+    """
+    paginator = client.get_paginator("list_hosted_zones")
+    return paginator.paginate(**kwargs).build_full_result()["HostedZones"]
+
+
+@AWSRetry.jittered_backoff()
+def _list_resource_record_sets(client: Any, hosted_zone_id: str, **kwargs: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """
+    Retrieve all resource record sets for a specific hosted zone in Route53.
+
+    :param client: A boto3 Route53 client.
+    :param hosted_zone_id: The ID of the hosted zone whose records should be listed.
+    :param kwargs: Optional keyword arguments to pass to the paginator.
+    :return: A list of dictionaries representing resource record sets.
+    """
+    paginator = client.get_paginator("list_resource_record_sets")
+    return paginator.paginate(HostedZoneId=hosted_zone_id, **kwargs).build_full_result()["ResourceRecordSets"]
+
+
+def _remove_trailing_dot(data: str) -> str:
+    """Remove the trailing dot from a string"""
+    if data.endswith("."):
+        return data[:-1]
+    return data
+
+
 class InventoryModule(AWSInventoryBase):
     NAME = "amazon.aws.aws_ec2"
     INVENTORY_FILE_SUFFIXES = ("aws_ec2.yml", "aws_ec2.yaml")
@@ -549,12 +653,44 @@ class InventoryModule(AWSInventoryBase):
         else:
             return to_text(hostname)
 
+    def _get_hostname_with_jinja2_filter(self, instance, preference, return_single_hostname=False):
+        jinja2_filter = None
+        is_template = False
+        if "|" in preference:
+            preference, jinja2_filter = preference.split("|", maxsplit=1)
+            preference = preference.rstrip()
+            is_template = True
+        if preference.startswith("tag:"):
+            hostname = _get_tag_hostname(preference, instance)
+        else:
+            hostname = _get_boto_attr_chain(preference, instance)
+        if is_template:
+            template_var = "{{'%s'|%s}}" % (hostname, jinja2_filter)
+            if isinstance(hostname, list):
+                template_var = "{{%s|%s}}" % (hostname, jinja2_filter)
+            if trust_as_template:
+                template_var = trust_as_template(template_var)
+            hostname = self.templar.template(variable=template_var, disable_lookups=False)
+        if isinstance(hostname, list) and return_single_hostname:
+            hostname = hostname[0] if hostname else None
+        return hostname
+
+    @property
+    def route53_enabled(self) -> bool:
+        return self.get_option("route53_enabled")
+
     def _get_preferred_hostname(self, instance, hostnames):
         """
         :param instance: an instance dict returned by boto3 ec2 describe_instances()
         :param hostnames: a list of hostname destination variables in order of preference
         :return the preferred identifer for the host
         """
+        if self.route53_enabled:
+            route53_hostnames = self._get_instance_route53_hostnames(instance)
+            if route53_hostnames:
+                # This method returns only one hostname
+                return self._sanitize_hostname(sorted(route53_hostnames)[0])
+
         if not hostnames:
             hostnames = ["dns-name", "private-dns-name"]
 
@@ -570,11 +706,8 @@ class InventoryModule(AWSInventoryBase):
                 separator = preference.get("separator", "_")
                 if hostname and hostname_from_prefix and "prefix" in preference:
                     hostname = hostname_from_prefix + separator + hostname
-            elif preference.startswith("tag:"):
-                tags = _get_tag_hostname(preference, instance)
-                hostname = tags[0] if tags else None
             else:
-                hostname = _get_boto_attr_chain(preference, instance)
+                hostname = self._get_hostname_with_jinja2_filter(instance, preference, return_single_hostname=True)
             if hostname:
                 break
         if hostname:
@@ -586,11 +719,14 @@ class InventoryModule(AWSInventoryBase):
         :param hostnames: a list of hostname destination variables
         :return all the candidats matching the expectation
         """
+        hostname_list = []
+        if self.route53_enabled:
+            hostname_list = [self._sanitize_hostname(name) for name in self._get_instance_route53_hostnames(instance)]
+
         if not hostnames:
             hostnames = ["dns-name", "private-dns-name"]
 
         hostname = None
-        hostname_list = []
         for preference in hostnames:
             if isinstance(preference, dict):
                 if "name" not in preference:
@@ -602,10 +738,8 @@ class InventoryModule(AWSInventoryBase):
                 separator = preference.get("separator", "_")
                 if hostname and hostname_from_prefix and "prefix" in preference:
                     hostname = hostname_from_prefix[0] + separator + hostname[0]
-            elif preference.startswith("tag:"):
-                hostname = _get_tag_hostname(preference, instance)
             else:
-                hostname = _get_boto_attr_chain(preference, instance)
+                hostname = self._get_hostname_with_jinja2_filter(instance, preference)
 
             if hostname:
                 if isinstance(hostname, list):
@@ -661,6 +795,37 @@ class InventoryModule(AWSInventoryBase):
                     if content:
                         x["SsmInventory"] = content[0]
                     break
+
+    def _map_route53_records(self) -> Dict[str, Set[str]]:
+        """Get and store the map of resource records to domain names that point to them."""
+        route53_excluded_zones = [_remove_trailing_dot(zone) for zone in self.get_option("route53_excluded_zones")]
+        route53_map = defaultdict(set)
+        for connection, _region in self.all_clients("route53"):
+            for zone in _list_hosted_zones(connection):
+                if _remove_trailing_dot(zone["Name"]) in route53_excluded_zones:
+                    continue
+                for record in _list_resource_record_sets(client=connection, hosted_zone_id=zone["Id"]):
+                    for resource in record.get("ResourceRecords", []):
+                        route53_map[_remove_trailing_dot(resource["Value"])].add(_remove_trailing_dot(record["Name"]))
+        return route53_map
+
+    def _is_matching_route53_hostname(self, hostname: str) -> bool:
+        route53_hostnames = self.get_option("route53_hostnames")
+        result = True
+        if route53_hostnames:
+            result = any((hostname.endswith(name) for name in route53_hostnames))
+        return result
+
+    def _get_instance_route53_hostnames(self, instance: Dict[str, Any]) -> List[str]:
+        """Check if an instance is referenced in the records we have from
+        Route53. If it is, return the list of domain names pointing to that
+        instance. If nothing points to it, return an empty list."""
+
+        hostnames = set()
+        for attr in ("PublicDnsName", "PrivateDnsName", "PublicIpAddress", "PrivateIpAddress"):
+            if (attr_value := instance.get(attr)) and attr_value in self.route53_resource_record_mapping:
+                hostnames.update(self.route53_resource_record_mapping[attr_value])
+        return [name for name in hostnames if self._is_matching_route53_hostname(name)]
 
     def _get_multiple_ssm_inventories(self, connection, instance_ids):
         result = []
@@ -800,6 +965,9 @@ class InventoryModule(AWSInventoryBase):
 
         if not result_was_cached:
             results = self._query(regions, include_filters, exclude_filters, strict_permissions, use_ssm_inventory)
+
+        if self.route53_enabled:
+            self.route53_resource_record_mapping = self._map_route53_records()
 
         self._populate(
             results,

@@ -124,6 +124,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -140,11 +141,11 @@ EXAMPLES = '''
         access_list6: <your own value>
         state: present # <value in [present, absent]>
         router_accesslist6_rule:
-          action: <value in [permit, deny]>
-          exact_match: <value in [disable, enable]>
-          flags: <integer>
-          id: <integer>
-          prefix6: <string>
+          id: 0 # Required variable, integer
+          # action: <value in [permit, deny]>
+          # exact_match: <value in [disable, enable]>
+          # flags: <integer>
+          # prefix6: <string>
 '''
 
 RETURN = '''

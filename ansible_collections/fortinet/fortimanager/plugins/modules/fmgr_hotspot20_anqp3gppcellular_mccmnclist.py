@@ -111,6 +111,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -127,9 +128,9 @@ EXAMPLES = '''
         anqp_3gpp_cellular: <your own value>
         state: present # <value in [present, absent]>
         hotspot20_anqp3gppcellular_mccmnclist:
-          id: <integer>
-          mcc: <string>
-          mnc: <string>
+          id: 0 # Required variable, integer
+          # mcc: <string>
+          # mnc: <string>
 '''
 
 RETURN = '''

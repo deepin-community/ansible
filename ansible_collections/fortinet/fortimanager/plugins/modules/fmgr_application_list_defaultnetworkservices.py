@@ -130,6 +130,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -146,21 +147,21 @@ EXAMPLES = '''
         list: <your own value>
         state: present # <value in [present, absent]>
         application_list_defaultnetworkservices:
-          id: <integer>
-          port: <integer>
-          services:
-            - "http"
-            - "ssh"
-            - "telnet"
-            - "ftp"
-            - "dns"
-            - "smtp"
-            - "pop3"
-            - "imap"
-            - "snmp"
-            - "nntp"
-            - "https"
-          violation_action: <value in [block, monitor, pass]>
+          id: 0 # Required variable, integer
+          # port: <integer>
+          # services:
+          #   - "http"
+          #   - "ssh"
+          #   - "telnet"
+          #   - "ftp"
+          #   - "dns"
+          #   - "smtp"
+          #   - "pop3"
+          #   - "imap"
+          #   - "snmp"
+          #   - "nntp"
+          #   - "https"
+          # violation_action: <value in [block, monitor, pass]>
 '''
 
 RETURN = '''

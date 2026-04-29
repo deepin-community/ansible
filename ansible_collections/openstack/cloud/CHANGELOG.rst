@@ -5,6 +5,98 @@ Ansible OpenStack Collection Release Notes
 .. contents:: Topics
 
 
+v2.4.1
+======
+
+Release Summary
+---------------
+
+Bugfixes and minor changes
+
+Minor Changes
+-------------
+
+- Update tags when changing server
+
+Bugfixes
+--------
+
+- Fix missed client_cert in OpenStackModule
+
+v2.4.0
+======
+
+Release Summary
+---------------
+
+New trait module and minor changes
+
+Major Changes
+-------------
+
+- Add trait module
+
+Minor Changes
+-------------
+
+- Add loadbalancer quota options
+- Allow create instance with tags
+
+New Modules
+-----------
+
+- openstack.cloud.trait - Add or Delete a trait from OpenStack
+
+v2.3.3
+======
+
+Release Summary
+---------------
+
+Bugfixes and minor changes
+
+Minor Changes
+-------------
+
+- Add test to only_ipv4 in inventory
+- add an option to use only IPv4 only for ansible_host and ansible_ssh_host
+
+Bugfixes
+--------
+
+- CI - Fix deprecated ANSIBLE_COLLECTIONS_PATHS variable
+
+v2.3.2
+======
+
+Release Summary
+---------------
+
+Bugfixes and minor changes
+
+Minor Changes
+-------------
+
+- Drop compat implementations for tests
+
+Bugfixes
+--------
+
+- Fix openstack.cloud.port module failure in check mode
+
+v2.3.1
+======
+
+Release Summary
+---------------
+
+Client TLS certificate support
+
+Minor Changes
+-------------
+
+- Add ability to pass client tls certificate
+
 v2.3.0
 ======
 

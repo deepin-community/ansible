@@ -4,6 +4,176 @@ Ansible Windows Release Notes
 
 .. contents:: Topics
 
+v3.2.0
+======
+
+Release Summary
+---------------
+
+Release summary for v3.2.0
+
+Minor Changes
+-------------
+
+- win_find - add support for 'any' to find both directories and files (https://github.com/ansible-collections/ansible.windows/issues/797).
+- win_template - Preserve user-supplied value for ``ansible_managed`` when set on Ansible Core 2.19+.
+
+Bugfixes
+--------
+
+- win_copy - report correct information about symlinks in action plugin.
+- win_service - Fix crash when attempting to create a service with the ``--check`` flag.
+
+v3.1.0
+======
+
+Release Summary
+---------------
+
+Release summary for v3.1.0
+
+Minor Changes
+-------------
+
+- setup - add "CloudStack KVM Hypervisor" for Windows VM in virtual facts (https://github.com/ansible-collections/ansible.windows/pull/785).
+- setup - added ``ansible_product_uuid`` to align with Python facts - https://github.com/ansible-collections/ansible.windows/issues/789
+- win_dns_client - add support for suffixsearchlist (https://github.com/ansible-collections/ansible.windows/issues/656).
+- win_powershell - Add support for running scripts on a Windows host with an active Windows Application Control policy in place. Scripts that are unsigned will be run in Constrained Language Mode while scripts that are signed and trusted by the remote host's WDAC policy will be run in Full Language Mode.
+- win_powershell - Added the ``path`` and ``remote_src`` options which can be used to specify a local or remote PowerShell script to run.
+- win_shell - Add support for running scripts on a Windows host with an active Windows Application Control policy in place. Scripts will always run in Contrained Language Mode as they are executed in memory, use the ``ansible.windows.win_powershell`` module to run signed scripts in Full Language Mode on a WDAC enabled host.
+
+Bugfixes
+--------
+
+- win_package - fail to remove package when no product id is provided with path as an URL (https://github.com/ansible-collections/ansible.windows/issues/667).
+
+v3.0.0
+======
+
+Release Summary
+---------------
+
+Major release of the ansible.windows collection. This release includes fixes for Ansible 2.19 and removes some deprecated modules.
+
+Minor Changes
+-------------
+
+- Set minimum supported Ansible version to 2.16 to align with the versions still supported by Ansible.
+- win_template - Added ``comment_start_string`` and ``comment_end_string`` as options to align with the builtin ``template`` module.
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- win_domain - Removed deprecated module, use ``microsoft.ad.domain`` instead
+- win_domain_controller - Removed deprecated module, use ``microsoft.ad.domain_controller`` instead
+- win_domain_membership - Removed deprecated module, use ``microsoft.ad.membership`` instead
+- win_feature - Removed deprecated return value ``restart_needed`` in ``feature_result``, use ``reboot_required`` instead
+- win_updates - Removed deprecated return value ``filtered_reason``, use ``filtered_reasons`` instead
+
+Bugfixes
+--------
+
+- win_find - allow users case sensitive match the filename (https://github.com/ansible-collections/ansible.windows/issues/473).
+- win_powershell - Handle failure on output conversion when the output object uses a custom adapter set that fails to enumerate the method members. This is seen when using the output from ``Get-WmiObject`` - https://github.com/ansible-collections/ansible.windows/issues/767
+- win_regedit - Handle decimal values with no decimal values which may be the result of a Jinja2 template
+- win_template - Added support for Ansible 2.19 and the introduction of the data tagging feature.
+
+v2.8.0
+======
+
+Release Summary
+---------------
+
+Release summary for v2.8.0
+
+Minor Changes
+-------------
+
+- setup - Remove dependency on shared function loaded by Ansible
+- win_get_url - Added ``checksum`` and ``checksum_algorithm`` to verify the package before installation. Also returns ``checksum`` if ``checksum_algorithm`` is provided - https://github.com/ansible-collections/ansible.windows/issues/596
+
+Bugfixes
+--------
+
+- setup - Add better detection for VMWare base virtualization platforms - https://github.com/ansible-collections/ansible.windows/issues/753
+- win_package - Support check mode with local file path sources
+
+v2.7.0
+======
+
+Release Summary
+---------------
+
+Release summary for v2.7.0
+
+Minor Changes
+-------------
+
+- win_get_url - if checksum is passed and destination file exists with different checksum file is always downloaded (https://github.com/ansible-collections/ansible.windows/issues/717)
+- win_get_url - if checksum is passed and destination file exists with identical checksum no download is done unless force=yes (https://github.com/ansible-collections/ansible.windows/issues/717)
+- win_group - Added ``--diff`` output support.
+- win_group - Added ``members`` option to set the group membership. This is designed to replace the functionality of the ``win_group_membership`` module.
+- win_group - Added ``sid`` return value representing the security identifier of the group when ``state=present``.
+- win_group - Migrate to newer Ansible.Basic fragment for better input validation and testing support.
+
+Bugfixes
+--------
+
+- win_group_membership - Fix bug when input ``members`` contained duplicate members that were not already present in the group - https://github.com/ansible-collections/ansible.windows/issues/736
+
+New Modules
+-----------
+
+- win_audit_policy_system - Used to make changes to the system wide Audit Policy
+- win_audit_rule - Adds an audit rule to files, folders, or registry keys
+- win_auto_logon - Adds or Sets auto logon registry keys.
+- win_computer_description - Set windows description, owner and organization
+- win_credential - Manages Windows Credentials in the Credential Manager
+- win_feature_info - Gather information about Windows features
+- win_file_compression - Alters the compression of files and directories on NTFS partitions.
+- win_http_proxy - Manages proxy settings for WinHTTP
+- win_inet_proxy - Manages proxy settings for WinINet and Internet Explorer
+- win_listen_ports_facts - Recopilates the facts of the listening ports of the machine
+- win_mapped_drive - Map network drives for users
+- win_product_facts - Provides Windows product and license information
+- win_route - Add or remove a static route
+- win_user_profile - Manages the Windows user profiles.
+
+v2.6.0
+======
+
+Release Summary
+---------------
+
+Release summary for v2.6.0. Includes various modules promoted from ``community.windows``.
+
+Minor Changes
+-------------
+
+- Added support for Windows Server 2025
+- setup - Added ``ansible_os_install_date`` as the OS installation date in the ISO 8601 format ``yyyy-MM-ddTHH:mm:ssZ``. This date is represented in the UTC timezone - https://github.com/ansible-collections/ansible.windows/issues/663
+
+Bugfixes
+--------
+
+- ansible.windows.win_powershell - Add extra checks to avoid ``GetType`` error when converting the output object - ttps://github.com/ansible-collections/ansible.windows/issues/708
+- win_powershell - Ensure ``$Ansible.Result = @()`` as an empty array is returned as an empty list and not null - https://github.com/ansible-collections/ansible.windows/issues/686
+- win_updates - Only set the Access control sections on the temporary directory created by the module. This avoids the error when the ``SeSecurityPrivilege`` privilege isn't present.
+
+New Modules
+-----------
+
+- win_certificate_info - Get information on certificates from a Windows Certificate Store
+- win_dhcp_lease - Manage Windows Server DHCP Leases
+- win_dns_record - Manage Windows Server DNS records
+- win_dns_zone - Manage Windows Server DNS Zones
+- win_eventlog - Manage Windows event logs
+- win_firewall - Enable or disable the Windows Firewall
+- win_hosts - Manages hosts file entries on Windows.
+- win_hotfix - Install and uninstalls Windows hotfixes
+- win_region - Set the region and format settings
+- win_timezone - Sets Windows machine timezone
+
 v2.5.0
 ======
 

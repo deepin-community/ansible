@@ -8,12 +8,11 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: stacki_host
 short_description: Add or remove host to stacki front-end
 description:
-  - Use this module to add or remove hosts to a stacki front-end via API.
+  - Use this module to add or remove hosts to a stacki front-end using API.
   - Information on stacki can be found at U(https://github.com/StackIQ/stacki).
 extends_documentation_fragment:
   - community.general.attributes
@@ -30,13 +29,14 @@ options:
     type: str
   stacki_user:
     description:
-      - Username for authenticating with Stacki API, but if not specified, the environment variable E(stacki_user) is used instead.
+      - Username for authenticating with Stacki API, but if not specified, the environment variable E(stacki_user) is used
+        instead.
     required: true
     type: str
   stacki_password:
     description:
-      - Password for authenticating with Stacki API, but if not
-       specified, the environment variable E(stacki_password) is used instead.
+      - Password for authenticating with Stacki API, but if not specified, the environment variable E(stacki_password) is
+        used instead.
     required: true
     type: str
   stacki_endpoint:
@@ -68,7 +68,7 @@ options:
     description:
       - Set value to the desired state for the specified host.
     type: str
-    choices: [ absent, present ]
+    choices: [absent, present]
     default: present
   appliance:
     description:
@@ -96,10 +96,10 @@ options:
     type: str
     default: private
 author:
-- Hugh Ma (@bbyhuy) <Hugh.Ma@flextronics.com>
-'''
+  - Hugh Ma (@bbyhuy) <Hugh.Ma@flextronics.com>
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Add a host named test-1
   community.general.stacki_host:
     name: test-1
@@ -117,27 +117,8 @@ EXAMPLES = '''
     stacki_password: pwd
     stacki_endpoint: url
     state: absent
-'''
+"""
 
-RETURN = '''
-changed:
-  description: response to whether or not the api call completed successfully
-  returned: always
-  type: bool
-  sample: true
-
-stdout:
-  description: the set of responses from the commands
-  returned: always
-  type: list
-  sample: ['...', '...']
-
-stdout_lines:
-  description: the value of stdout split into a list
-  returned: always
-  type: list
-  sample: [['...', '...'], ['...'], ['...']]
-'''
 
 import json
 
@@ -288,7 +269,7 @@ def main():
         for param in ['appliance', 'rack', 'rank', 'prim_intf', 'prim_intf_ip', 'network', 'prim_intf_mac']:
             if not module.params[param]:
                 missing_params.append(param)
-        if len(missing_params) > 0:   # @FIXME replace with required_if
+        if len(missing_params) > 0:
             module.fail_json(msg="missing required arguments: {0}".format(missing_params))
 
         stacki.stack_add(result)

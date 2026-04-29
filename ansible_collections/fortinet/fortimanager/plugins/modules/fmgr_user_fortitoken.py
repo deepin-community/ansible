@@ -119,6 +119,7 @@ options:
 EXAMPLES = '''
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -132,7 +133,7 @@ EXAMPLES = '''
         state: present
         user_fortitoken:
           comments: ansible-comment
-          serial-number: # need a valid FortiToken serial number
+          serial_number: "your_serial_number" # need a valid FortiToken serial number
           status: lock # <value in [lock, active]>
 
 - name: Gathering fortimanager facts

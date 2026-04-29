@@ -113,7 +113,10 @@ class DnacBase():
             self.logger = logging.getLogger('empty_logger')
             self.logger.addHandler(logging.NullHandler())
 
-        self.log('Cisco Catalyst Center parameters: {0}'.format(dnac_params), "DEBUG")
+        masked_config = copy.deepcopy(dnac_params)
+        masked_config = self.get_safe_log_config(masked_config)
+
+        self.log('Cisco Catalyst Center parameters: {0}'.format(masked_config), "DEBUG")
         self.supported_states = ["merged", "deleted", "replaced", "overridden", "gathered", "rendered", "parsed"]
         self.result = {"changed": False, "diff": [], "response": [], "warnings": []}
 
@@ -144,6 +147,26 @@ class DnacBase():
 
         # Versions are equal
         return 0
+
+    def get_safe_log_config(self, config_dict):
+        """
+        Convert the password plain text field to masked field.
+
+        Parameters:
+            self (object): An instance of a class for interacting with Cisco Catalyst Center.
+            config_dict (dict): Dictionary containing the input playbook config.
+
+        Returns:
+            safe_config - Return dict with password masked config
+
+        """
+        safe_config = config_dict.copy()
+
+        for key in ["dnac_password", "enable_password", "secret_password"]:
+            if key in safe_config:
+                safe_config[key] = "****"
+
+        return safe_config
 
     def get_ccc_version(self):
         return self.payload.get("dnac_version")
@@ -793,32 +816,72 @@ class DnacBase():
 
         return mgmt_ip_to_instance_id_map, skipped_devices_list
 
-    def get_site(self, site_name):
+    def get_site(self, site_name, limit=500):
         """
         Retrieve site details from Cisco Catalyst Center based on the provided site name.
         Args:
-            - site_name (str): The name or hierarchy of the site to be retrieved.
+            - site_name (str): The name or hierarchy of the site to be retrieved
+            - limit (int): Default value given as 500, it can be updated.
         Returns:
             - response (dict or None): The response from the API call, typically a dictionary containing site details.
-                                    Returns None if an error occurs or if the response is empty.
+                                       Returns None if an error occurs or if the response is empty.
         Criteria:
-            - This function uses the Cisco Catalyst Center SDK to execute the 'get_sites' function from the 'site_design' family.
+            - This function uses the Cisco Catalyst Center SDK to execute the 'get_sites'
+              function from the 'site_design' family.
             - If the response is empty, a warning is logged.
-            - Any exceptions during the API call are caught, logged as errors, and the function returns None.
+            - Any exceptions during the API call are caught, logged as errors,
+              and the function returns None.
         """
-        self.log("Initiating retrieval of site details for site name: '{0}'.".format(site_name), "DEBUG")
+        self.log("Initiating retrieval of site details for site name: '{0}'.".
+                 format(site_name), "DEBUG")
+        response_all = []
+        offset = 1
+        api_family, api_function, param_key = None, None, None
 
-        # Determine API call based on dnac_version
         if self.dnac_version <= self.version_2_3_5_3:
-            self.log("Using 'get_site' API for Catalyst Center version: '{0}'.".format(self.dnac_version), "DEBUG")
-            get_site_params = {"name": site_name}
-            response = self.execute_get_request("sites", "get_site", get_site_params)
+            self.log("Using 'get_site' API for Catalyst Center version: '{0}'.".
+                     format(self.dnac_version), "DEBUG")
+            api_family, api_function, param_key = "sites", "get_site", "name"
         else:
-            self.log("Using 'get_sites' API for Catalyst Center version: '{0}'.".format(self.dnac_version), "DEBUG")
-            get_sites_params = {"name_hierarchy": site_name}
-            response = self.execute_get_request("site_design", "get_sites", get_sites_params)
+            self.log("Using 'get_sites' API for Catalyst Center version: '{0}'.".
+                     format(self.dnac_version), "DEBUG")
+            api_family, api_function, param_key = "site_design", "get_sites", "name_hierarchy"
 
-        return response
+        request_params = {param_key: site_name, "offset": offset, "limit": limit}
+
+        self.log("Sending initial API request: Family='{0}', Function='{1}', Params={2}".format(
+            api_family, api_function, request_params), "DEBUG")
+
+        while True:
+            response = self.execute_get_request(api_family, api_function, request_params)
+            if not response:
+                self.log("No data received from API (Offset={0}). Exiting pagination.".
+                         format(request_params["offset"]), "DEBUG")
+                break
+
+            self.log("Received {0} site(s) from API (Offset={1}).".format(
+                len(response.get("response")), request_params["offset"]), "DEBUG")
+            response_all.extend(response.get("response"))
+
+            if len(response.get("response")) < limit:
+                self.log("Received less than limit ({0}) results, assuming last page. Exiting pagination.".
+                         format(limit), "DEBUG")
+                break
+
+            offset += limit
+            request_params["offset"] = offset  # Increment offset for pagination
+            self.log("Incrementing offset to {0} for next API request.".format(
+                request_params["offset"]), "DEBUG")
+
+        site_response = None
+        if response_all:
+            self.log("Total {0} site(s) retrieved for site name: '{1}'.".
+                     format(len(response_all), site_name), "DEBUG")
+            site_response = {"response": response_all}
+        else:
+            self.log("No site details found for site name: '{0}'.".format(site_name), "WARNING")
+
+        return site_response
 
     def get_site_id(self, site_name):
         """
@@ -870,12 +933,37 @@ class DnacBase():
             Assigns the specified devices to the site. If the assignment is successful, returns True.
             Otherwise, logs an error and returns False along with error details.
         """
+        self.log("Fetching site details for '{0}'".format(site_name), "DEBUG")
         site_response = self.get_site(site_name)
-        if site_response.get("response") and site_response["response"][0].get("type"):
-            site_type = site_response["response"][0].get("type")
-            if site_type not in ("building", "floor"):
-                self.msg = "Device(s) can only be assigned to building/floor"
-                self.set_operation_result("failed", False, self.msg, "ERROR").check_return_status()
+
+        if not site_response.get("response"):
+            self.msg = "Invalid site response received for site: {0}".format(site_name)
+            self.log(self.msg, "ERROR")
+            self.fail_and_exit(self.msg)
+
+        site_type = site_response["response"][0].get("type")
+        self.log("Site '{0}' found with type: {1}".format(site_name, site_type), "DEBUG")
+
+        if site_type not in ("building", "floor"):
+            self.msg = "Device(s) can only be assigned to building/floor"
+            self.log(self.msg, "ERROR")
+            self.fail_and_exit(self.msg)
+
+        self.log("Retrieving IP addresses for device IDs: {}".format(device_ids), "DEBUG")
+        device_ip = self.get_device_ips_from_device_ids(device_ids)
+        if not device_ip:
+            self.msg = "No valid IP addresses found for device IDs: {0}".format(device_ids)
+            self.log(self.msg, "ERROR")
+            self.fail_and_exit(self.msg)
+
+        ip_address = list(device_ip.values())[0]
+        param = {
+            "device": [
+                {
+                    "ip": ip_address
+                }
+            ]
+        }
 
         if self.get_ccc_version_as_integer() <= self.get_ccc_version_as_int_from_str("2.3.5.3"):
             try:
@@ -885,9 +973,10 @@ class DnacBase():
                     op_modifies=True,
                     params={
                         "site_id": site_id,
-                        "payload": device_ids
+                        "payload": param
                     },
                 )
+                self.log("Received API response: {0}".format(response), "DEBUG")
 
                 self.check_execution_response_status(response, "assign_devices_to_site")
                 if self.status == "success":
@@ -895,7 +984,13 @@ class DnacBase():
                     self.result['msg'] = "Successfully assigned device(s) {0} to site {1}.".format(str(device_ids), site_name)
                     self.result['response'] = response.get("executionId")
                     self.log(self.result['msg'], "INFO")
-                return self
+                    return True
+                else:
+                    self.result["changed"] = False
+                    self.result['msg'] = "Unable to assigned device(s) {0} to site {1}.".format(str(device_ids), site_name)
+                    self.result['response'] = response.get("executionId")
+                    self.log(self.result['msg'], "INFO")
+                    return False
 
             except Exception as e:
                 self.msg = "Error while assigning device(s) to site: {0}, {1}, {2}".format(site_name,
@@ -1403,6 +1498,54 @@ class DnacBase():
         except socket.error:
             return False
 
+    def split_cidr(self, cidr_block):
+        """
+        Splits a given CIDR block into prefix and suffix lengths.
+        Supports both IPv4 and IPv6 formats.
+
+        Parameters:
+            cidr_block (str): The CIDR block to process, e.g., '192.168.1.0/24' or '2001:db8::/64'.
+
+        Returns:
+            dict: A dictionary containing:
+                - 'ip_version': 'IPv4' or 'IPv6'
+                - 'prefix_length': Length of the network prefix
+                - 'suffix_length': Length of the host portion
+                - 'network_prefix': Network address portion of the CIDR
+            None: If the CIDR block is invalid.
+        """
+
+        self.log("Parsing CIDR block: {}".format(cidr_block), "DEBUG")
+        try:
+            network = ipaddress.ip_network(cidr_block, strict=False)
+        except ValueError as e:
+            error_msg = "Invalid CIDR block '{}': {}".format(cidr_block, e)
+            self.msg = error_msg
+            self.log(error_msg, "ERROR")
+            self.set_operation_result("failed", False, error_msg, "ERROR")
+
+        total_bits = 128 if network.version == 6 else 32
+        prefix_length = network.prefixlen
+        suffix_length = total_bits - prefix_length
+
+        self.log(
+            "Parsed CIDR block: {}, IP version: {}, Prefix length: {}, Suffix length: {}, Network prefix: {}".format(
+                cidr_block,
+                "IPv6" if network.version == 6 else "IPv4",
+                prefix_length,
+                suffix_length,
+                network.network_address
+            ),
+            "DEBUG"
+        )
+
+        return {
+            "ip_version": "IPv6" if network.version == 6 else "IPv4",
+            "prefix_length": prefix_length,
+            "suffix_length": suffix_length,
+            "network_prefix": str(network.network_address),
+        }
+
     def is_valid_ipv6(self, ip_address):
         """
         Validates an IPv6 address.
@@ -1765,11 +1908,13 @@ class DnacBase():
             - If data is provided, it will be included in the result dictionary.
         """
         # Update the result attributes with the provided values
+        response = additional_info if additional_info is not None else status_message
+
         self.status = operation_status
         self.result.update({
             "status": operation_status,
             "msg": status_message,
-            "response": additional_info or status_message,
+            "response": response,
             "changed": is_changed,
             "failed": operation_status == "failed"
         })
@@ -2122,6 +2267,161 @@ class DnacBase():
                                              requested_obj.get(ansible_param))
                    for (dnac_param, ansible_param) in obj_params)
 
+    def deduplicate_list_of_dict(self, list_of_dicts):
+        """
+        Removes duplicate dictionaries from a list while preserving order.
+
+        This method logs the initial input list, processes each dictionary to ensure uniqueness
+        based on its key-value pairs, and logs detailed information about each dictionary processed,
+        including whether it was added as unique or skipped as a duplicate. Finally, it logs the
+        summary of the deduplication process along with the resulting list.
+
+        Args:
+            list_of_dicts (list of dict): A list containing dictionaries that may have duplicates.
+
+        Returns:
+            list of dict: A new list containing only unique dictionaries from the input list,
+                        with order preserved based on the first occurrence.
+
+        Description:
+            The method iterates over the input list, converting each dictionary into a frozenset of
+            its items for hashable comparison. It tracks dictionaries that have already been seen,
+            and if a dictionary is unique (not previously seen), it is added to the result list.
+            Logs are generated to track the start of the process, each dictionary's processing result,
+            and the completion of deduplication including original and deduplicated list sizes.
+        """
+
+        self.log(f"Initializing deduplication of list of dictionaries : {list_of_dicts}.", "INFO")
+
+        if not isinstance(list_of_dicts, list):
+            self.log("Invalid input: Expected a list of dictionaries but received a non-list object.", "ERROR")
+            return []
+
+        if not all(isinstance(d, dict) for d in list_of_dicts):
+            self.log("Invalid input: List contains non-dictionary items.", "ERROR")
+            return []
+
+        if not list_of_dicts:
+            self.log("Input list is empty. No deduplication required.", "INFO")
+            return []
+
+        self.log(f"Input list:\n{list_of_dicts}", "INFO")
+        seen_dicts = set()
+        unique_dicts = []
+
+        for index, current_dict in enumerate(list_of_dicts):
+            try:
+                dict_identifier = frozenset(current_dict.items())  # Used only for comparison
+                if dict_identifier not in seen_dicts:
+                    seen_dicts.add(dict_identifier)
+                    unique_dicts.append(current_dict)  # Keep original dict
+                    self.log(f"Added unique dictionary at index {index}: {current_dict}", "INFO")
+                else:
+                    self.log(f"Skipped duplicate dictionary at index {index}: {current_dict}", "INFO")
+            except TypeError as e:
+                self.log(
+                    f"Error processing dictionary at index {index}: {current_dict}. "
+                    f"Skipping this entry. Error: {e}",
+                    "ERROR"
+                )
+                continue  # Skip unhashable dictionaries
+
+        if len(unique_dicts) == len(list_of_dicts):
+            self.log("No duplicates found. All dictionaries are unique.", "INFO")
+        else:
+            self.log(
+                f"Deduplication complete.\nOriginal list length: {len(list_of_dicts)}\n"
+                f"Deduplicated list length: {len(unique_dicts)}",
+                "INFO"
+            )
+
+        self.log(f"Final output (deduplicated list):\n{unique_dicts}", "DEBUG")
+
+        return unique_dicts
+
+    def compare_unordered_lists_of_dicts(self, list1, list2):
+        """
+        Compare two unordered lists of dictionaries for equality.
+
+        Args:
+            list1 (list): First list of dictionaries to compare.
+            list2 (list): Second list of dictionaries to compare.
+
+        Returns:
+            bool: True if both lists contain the same dictionaries (order-independent), False otherwise.
+
+        Description:
+            This function normalizes each dictionary by converting it to a JSON string with sorted keys,
+            then sorts both lists of these strings and compares them to determine equality.
+        """
+        self.log("Starting comparison of two unordered lists of dictionaries", "INFO")
+
+        if not isinstance(list1, list) or not isinstance(list2, list):
+            self.log("Invalid input: Both inputs must be lists.", "ERROR")
+            return False
+
+        if not all(isinstance(d, dict) for d in list1):
+            self.log("Invalid input: First list contains non-dictionary items.", "ERROR")
+            return False
+
+        if not all(isinstance(d, dict) for d in list2):
+            self.log("Invalid input: Second list contains non-dictionary items.", "ERROR")
+            return False
+
+        # Log the lengths of the input lists
+        self.log(f"Length of first list: {len(list1)}", "DEBUG")
+        self.log(f"Length of second list: {len(list2)}", "DEBUG")
+
+        # Convert dicts to JSON strings with sorted keys for consistent comparison
+        def normalize(d):
+            return json.dumps(d, sort_keys=True)
+
+        normalized1 = sorted(normalize(d) for d in list1)
+        normalized2 = sorted(normalize(d) for d in list2)
+        result = normalized1 == normalized2
+        if not result:
+            self.log("Lists are not equal. Differences detected.", "DEBUG")
+            self.log(f"Normalized first list: {normalized1}", "DEBUG")
+            self.log(f"Normalized second list: {normalized2}", "DEBUG")
+        else:
+            self.log("Lists are equal. No differences detected.", "DEBUG")
+
+        return result
+
+    def find_dict_by_key_value(self, data_list, key, value):
+        """
+        Find a dictionary in a list by a matching key-value pair.
+
+        Parameters:
+            data_list (list): List of dictionaries to search.
+            key (str): The key to match in each dictionary.
+            value (any): The value to match against the given key.
+
+        Returns:
+            dict or None: The dictionary that matches the key-value pair, or None if not found.
+
+        Description:
+            Iterates through the list of dictionaries and returns the first dictionary
+            where the specified key has the specified value. If no match is found, returns None.
+        """
+        if not isinstance(data_list, list):
+            self.log("The 'data_list' parameter must be a list.", "ERROR")
+            return None
+
+        if not all(isinstance(item, dict) for item in data_list):
+            self.log("All items in 'data_list' must be dictionaries.", "ERROR")
+            return None
+
+        self.log(f"Searching for key '{key}' with value '{value}' in a list of {len(data_list)} items.", "DEBUG")
+        for idx, item in enumerate(data_list):
+            self.log(f"Checking item at index {idx}: {item}", "DEBUG")
+            if item.get(key) == value:
+                self.log(f"Match found at index {idx}: {item}", "DEBUG")
+                return item
+
+        self.log(f"No matching item found for key '{key}' with value '{value}'.", "DEBUG")
+        return None
+
 
 def is_list_complex(x):
     return isinstance(x[0], dict) or isinstance(x[0], list)
@@ -2161,12 +2461,36 @@ def fn_comp_key(k, dict1, dict2):
     return dnac_compare_equality(dict1.get(k), dict2.get(k))
 
 
+def normalize_ipv6_address(ipv6):
+    """
+    Normalize an IPv6 address for consistent comparison.
+    """
+    if not isinstance(ipv6, str):
+        raise TypeError("Input must be a string representing an IPv6 address.")
+
+    try:
+        normalized_address = str(ipaddress.IPv6Address(ipv6))
+        return normalized_address
+    except ValueError:
+        # self.log("Invalid IPv6 address: {}".format(ipv6))
+        return ipv6  # Return as-is if it's not a valid IPv6 address
+
+
 def dnac_compare_equality(current_value, requested_value):
     # print("dnac_compare_equality", current_value, requested_value)
     if requested_value is None:
         return True
+
     if current_value is None:
         return True
+
+    if isinstance(current_value, str) and isinstance(requested_value, str):
+        if ":" in current_value and ":" in requested_value:  # Possible IPv6 addresses
+            current_value = normalize_ipv6_address(current_value)
+            requested_value = normalize_ipv6_address(requested_value)
+
+        return current_value == requested_value
+
     if isinstance(current_value, dict) and isinstance(requested_value, dict):
         all_dict_params = list(current_value.keys()) + list(requested_value.keys())
         return not any((not fn_comp_key(param, current_value, requested_value) for param in all_dict_params))

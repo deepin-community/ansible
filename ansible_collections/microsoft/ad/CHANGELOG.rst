@@ -4,6 +4,82 @@ Ansible Microsoft Active Directory Release Notes
 
 .. contents:: Topics
 
+v1.9.2
+======
+
+Release Summary
+---------------
+
+Release summary for v1.9.2
+
+Bugfixes
+--------
+
+- microsoft.ad.object_info - Correctly return multivalued attributes with one entry as array with on item (instead of returning a string) - https://github.com/ansible-collections/microsoft.ad/issues/199
+
+v1.9.1
+======
+
+Release Summary
+---------------
+
+Release summary for v1.9.1
+
+Bugfixes
+--------
+
+- microsoft.ad.ldap - Ensure the encrypted LAPS value is marked as unsafe to stop unexpected templating of the raw JSON result value - https://github.com/ansible-collections/microsoft.ad/issues/194
+
+v1.9.0
+======
+
+Release Summary
+---------------
+
+Release summary for v1.9.0
+
+Minor Changes
+-------------
+
+- Set minimum supported Ansible version to 2.16 to align with the versions still supported by Ansible.
+
+Bugfixes
+--------
+
+- ldap inventory - Fix up support for Ansible 2.19.
+
+v1.8.1
+======
+
+Release Summary
+---------------
+
+Minor release for Galaxy/AH documention update
+
+v1.8.0
+======
+
+Release Summary
+---------------
+
+Release summary for v1.8.0
+
+Minor Changes
+-------------
+
+- Added support for Windows Server 2025
+- domain - Added ``replication_source_dc`` to specify the domain controller to use as the replication source for the new domain - https://github.com/ansible-collections/microsoft.ad/issues/159
+- domain_controller - Added ``replication_source_dc`` to specify the domain controller to use as the replication source for the new domain controller - https://github.com/ansible-collections/microsoft.ad/issues/159
+- microsoft.ad.user - Added ``groups.permissions_failure_action`` to control the behaviour when failing to modify the user's groups - (https://github.com/ansible-collections/microsoft.ad/issues/140).
+
+New Plugins
+-----------
+
+Filter
+~~~~~~
+
+- split_dn - Splits an LDAP DistinguishedName.
+
 v1.7.1
 ======
 

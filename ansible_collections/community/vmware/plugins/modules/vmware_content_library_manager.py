@@ -13,6 +13,10 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: vmware_content_library_manager
+deprecated:
+  removed_in: 7.0.0
+  why: This module has been moved to the L(new vmware.vmware collection,https://forum.ansible.com/t/5880)
+  alternative: Use M(vmware.vmware.local_content_library) and M(vmware.vmware.subscribed_content_library) instead.
 short_description: Create, update and delete VMware content library
 description:
 - Module to manage VMware content Library
@@ -160,6 +164,7 @@ import uuid
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.community.vmware.plugins.module_utils.vmware_rest_client import VmwareRestClient
 from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import rest_compatible_argument_spec
 
 HAS_VAUTOMATION_PYTHON_SDK = False
 try:
@@ -410,7 +415,7 @@ class VmwareContentLibCreate(VmwareRestClient):
 
 
 def main():
-    argument_spec = VmwareRestClient.vmware_client_argument_spec()
+    argument_spec = rest_compatible_argument_spec()
     argument_spec.update(
         library_name=dict(type='str', required=True),
         library_description=dict(type='str', required=False),

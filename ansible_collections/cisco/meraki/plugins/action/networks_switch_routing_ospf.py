@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -85,7 +85,8 @@ class NetworksSwitchRoutingOspf(object):
             new_object_params['helloTimerInSeconds'] = self.new_object.get('helloTimerInSeconds') or \
                 self.new_object.get('hello_timer_in_seconds')
         if self.new_object.get('md5AuthenticationEnabled') is not None or self.new_object.get('md5_authentication_enabled') is not None:
-            new_object_params['md5AuthenticationEnabled'] = self.new_object.get('md5AuthenticationEnabled')
+            new_object_params['md5AuthenticationEnabled'] = self.new_object.get(
+                'md5AuthenticationEnabled')
         if self.new_object.get('md5AuthenticationKey') is not None or self.new_object.get('md5_authentication_key') is not None:
             new_object_params['md5AuthenticationKey'] = self.new_object.get('md5AuthenticationKey') or \
                 self.new_object.get('md5_authentication_key')
@@ -126,7 +127,8 @@ class NetworksSwitchRoutingOspf(object):
         prev_obj = None
         id_exists = False
         name_exists = False
-        o_id = self.new_object.get("networkId") or self.new_object.get("network_id")
+        o_id = self.new_object.get(
+            "networkId") or self.new_object.get("network_id")
         name = self.new_object.get("name")
         if o_id:
             prev_obj = self.get_object_by_name(o_id)
@@ -159,8 +161,8 @@ class NetworksSwitchRoutingOspf(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):

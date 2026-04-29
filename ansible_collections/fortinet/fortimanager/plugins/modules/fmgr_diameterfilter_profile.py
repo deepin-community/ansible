@@ -181,6 +181,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -196,18 +197,18 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         diameterfilter_profile:
-          cmd_flags_reserve_set: <value in [block, reset, monitor, ...]>
-          command_code_invalid: <value in [block, reset, monitor, ...]>
-          command_code_range: <string>
-          comment: <string>
-          log_packet: <value in [disable, enable]>
-          message_length_invalid: <value in [block, reset, monitor, ...]>
-          missing_request_action: <value in [block, reset, monitor, ...]>
-          monitor_all_messages: <value in [disable, enable]>
-          name: <string>
-          protocol_version_invalid: <value in [block, reset, monitor, ...]>
-          request_error_flag_set: <value in [block, reset, monitor, ...]>
-          track_requests_answers: <value in [disable, enable]>
+          name: "your value" # Required variable, string
+          # cmd_flags_reserve_set: <value in [block, reset, monitor, ...]>
+          # command_code_invalid: <value in [block, reset, monitor, ...]>
+          # command_code_range: <string>
+          # comment: <string>
+          # log_packet: <value in [disable, enable]>
+          # message_length_invalid: <value in [block, reset, monitor, ...]>
+          # missing_request_action: <value in [block, reset, monitor, ...]>
+          # monitor_all_messages: <value in [disable, enable]>
+          # protocol_version_invalid: <value in [block, reset, monitor, ...]>
+          # request_error_flag_set: <value in [block, reset, monitor, ...]>
+          # track_requests_answers: <value in [disable, enable]>
 '''
 
 RETURN = '''

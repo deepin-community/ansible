@@ -1,3 +1,8 @@
 version=4
-opts=dversionmangle=s/\+dfsg//,repacksuffix=+dfsg,pgpmode=auto \
-https://pypi.debian.net/ansible/ ansible-([0-9]+\.[0-9]+\.[0-9]+).tar.gz
+opts="\
+  dversionmangle=s/\+dfsg//,\
+  repacksuffix=+dfsg,\
+  pgpmode=auto,\
+  uversionmangle=s/((?:a|b|rc)[0-9]+)$/~$1/,\
+" \
+https://pypi.debian.net/ansible/ ansible-(12\.0\.[0-9]+(?:(?:a|b|rc)[0-9]+)?).tar.gz

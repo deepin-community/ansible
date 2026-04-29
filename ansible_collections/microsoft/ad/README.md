@@ -19,11 +19,15 @@ For more information about communication, see the [Ansible communication guide](
 
 ## Ansible version compatibility
 
-This collection has been tested against following Ansible versions: **>=2.15**.
+This collection has been tested against following Ansible versions: **>=2.16**.
 
 Plugins and modules within a collection may be tested with only specific Ansible versions.
 A collection may contain metadata that identifies these versions.
 PEP440 is the schema used to describe the versions of Ansible.
+
+## Changelog
+
+See [CHANGELOG.rst](https://github.com/ansible-collections/microsoft.ad/blob/main/CHANGELOG.rst) for the release history and changes made to this collection.
 
 ## Collection Documentation
 
@@ -105,14 +109,11 @@ The current process for publishing new versions of the Microsoft AD Collection i
 After the version is published, verify it exists on the [Active Directory Galaxy page](https://galaxy.ansible.com/microsoft/ad).
 
 
-## More Information
+## Support
 
-For more information about Ansible's Windows integration, join the `#ansible-windows` channel on [libera.chat](https://libera.chat/) IRC, and browse the resources in the [Windows Working Group](https://github.com/ansible/community/wiki/Windows) Community wiki page.
+As a Red Hat Ansible [Certified Content](https://catalog.redhat.com/software/search?target_platforms=Red%20Hat%20Ansible%20Automation%20Platform), this collection is entitled to [support](https://access.redhat.com/support/) through [Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) (AAP) through the Red Hat Ansible team.
 
-- [Ansible Collection overview](https://github.com/ansible-collections/overview)
-- [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
-- [Ansible Developer guide](https://docs.ansible.com/ansible/latest/dev_guide/index.html)
-- [Ansible Community code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
+If a support case cannot be opened with Red Hat or the collection has been obtained either from [Galaxy](https://galaxy.ansible.com/ui/) or [GitHub](https://github.com/ansible-collections/microsoft.ad), you can open a GitHub issue on this repo but this has no guarantee of support or timeframes for a response.
 
 
 ## License

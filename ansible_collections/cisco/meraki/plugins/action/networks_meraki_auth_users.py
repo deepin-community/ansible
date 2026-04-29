@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -98,7 +98,8 @@ class NetworksMerakiAuthUsers(object):
             new_object_params['email'] = self.new_object.get('email') or \
                 self.new_object.get('email')
         if self.new_object.get('emailPasswordToUser') is not None or self.new_object.get('email_password_to_user') is not None:
-            new_object_params['emailPasswordToUser'] = self.new_object.get('emailPasswordToUser')
+            new_object_params['emailPasswordToUser'] = self.new_object.get(
+                'emailPasswordToUser')
         if self.new_object.get('isAdmin') is not None or self.new_object.get('is_admin') is not None:
             new_object_params['isAdmin'] = self.new_object.get('isAdmin')
         if self.new_object.get('name') is not None or self.new_object.get('name') is not None:
@@ -130,7 +131,8 @@ class NetworksMerakiAuthUsers(object):
             new_object_params['authorizations'] = self.new_object.get('authorizations') or \
                 self.new_object.get('authorizations')
         if self.new_object.get('emailPasswordToUser') is not None or self.new_object.get('email_password_to_user') is not None:
-            new_object_params['emailPasswordToUser'] = self.new_object.get('emailPasswordToUser')
+            new_object_params['emailPasswordToUser'] = self.new_object.get(
+                'emailPasswordToUser')
         if self.new_object.get('name') is not None or self.new_object.get('name') is not None:
             new_object_params['name'] = self.new_object.get('name') or \
                 self.new_object.get('name')
@@ -226,8 +228,8 @@ class NetworksMerakiAuthUsers(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (DNAC) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def create(self):

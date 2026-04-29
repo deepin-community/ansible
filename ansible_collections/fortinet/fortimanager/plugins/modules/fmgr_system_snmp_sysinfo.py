@@ -116,6 +116,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -129,14 +130,14 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_snmp_sysinfo:
-          contact_info: <string>
-          description: <string>
-          engine_id: <string>
-          location: <string>
-          status: <value in [disable, enable]>
-          trap_cpu_high_exclude_nice_threshold: <integer>
-          trap_high_cpu_threshold: <integer>
-          trap_low_memory_threshold: <integer>
+          # contact_info: <string>
+          # description: <string>
+          # engine_id: <string>
+          # location: <string>
+          # status: <value in [disable, enable]>
+          # trap_cpu_high_exclude_nice_threshold: <integer>
+          # trap_high_cpu_threshold: <integer>
+          # trap_low_memory_threshold: <integer>
 '''
 
 RETURN = '''

@@ -4,17 +4,27 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+
 __metaclass__ = type
 
 
 import abc
+import sys
 
+import ansible.module_utils.six.moves.urllib.error as urllib_error  # pylint: disable=import-error
 from ansible.module_utils import six
 from ansible.module_utils.common.text.converters import to_native
 from ansible.module_utils.six import PY3
-from ansible.module_utils.urls import fetch_url, open_url, NoSSLError, ConnectionError
-import ansible.module_utils.six.moves.urllib.error as urllib_error
+from ansible.module_utils.urls import ConnectionError, NoSSLError, fetch_url, open_url
+
+
+if sys.version_info >= (3, 6):
+    import typing
+
+    if typing.TYPE_CHECKING:
+        from ansible.module_utils.basic import AnsibleModule  # pragma: no cover
 
 
 class NetworkError(Exception):
@@ -24,7 +34,14 @@ class NetworkError(Exception):
 @six.add_metaclass(abc.ABCMeta)
 class HTTPHelper(object):
     @abc.abstractmethod
-    def fetch_url(self, url, method='GET', headers=None, data=None, timeout=None):
+    def fetch_url(
+        self,
+        url,  # type: str
+        method='GET',  # type: str
+        headers=None,  # type: dict[str, str] | None
+        data=None,  # type: bytes | None
+        timeout=None,  # type: int | None
+    ):  # type: (...) -> tuple[bytes | None, dict[str, typing.Any]]
         """
         Execute a HTTP request and return a tuple (response_content, info).
 
@@ -33,10 +50,20 @@ class HTTPHelper(object):
 
 
 class ModuleHTTPHelper(HTTPHelper):
-    def __init__(self, module):
-        self.module = module
+    def __init__(
+        self,
+        module,  # type: AnsibleModule
+    ):  # type: (...) -> None
+        self.module = module  # type: AnsibleModule
 
-    def fetch_url(self, url, method='GET', headers=None, data=None, timeout=None):
+    def fetch_url(
+        self,
+        url,  # type: str
+        method='GET',  # type: str
+        headers=None,  # type: dict[str, str] | None
+        data=None,  # type: bytes | None
+        timeout=None,  # type: int | None
+    ):  # type: (...) -> tuple[bytes | None, dict[str, typing.Any]]
         response, info = fetch_url(self.module, url, method=method, headers=headers, data=data, timeout=timeout)
         try:
             # In Python 2, reading from a closed response yields a TypeError.
@@ -50,12 +77,19 @@ class ModuleHTTPHelper(HTTPHelper):
 
 
 class OpenURLHelper(HTTPHelper):
-    def fetch_url(self, url, method='GET', headers=None, data=None, timeout=None):
+    def fetch_url(
+        self,
+        url,  # type: str
+        method='GET',  # type: str
+        headers=None,  # type: dict[str, str] | None
+        data=None,  # type: bytes | None
+        timeout=None,  # type: int | None
+    ):  # type: (...) -> tuple[bytes | None, dict[str, typing.Any]]
         info = {}
         try:
             req = open_url(url, method=method, headers=headers, data=data, timeout=timeout)
             result = req.read()
-            info.update(dict((k.lower(), v) for k, v in req.info().items()))
+            info.update({k.lower(): v for k, v in req.info().items()})
             info['status'] = req.code
             info['url'] = req.geturl()
             req.close()
@@ -65,9 +99,9 @@ class OpenURLHelper(HTTPHelper):
             except AttributeError:
                 result = ''
             try:
-                info.update(dict((k.lower(), v) for k, v in e.info().items()))
-            except Exception:
-                pass
+                info.update({k.lower(): v for k, v in e.info().items()})
+            except Exception:  # pragma: no cover
+                pass  # pragma: no cover
             info['status'] = e.code
         except NoSSLError as e:
             raise NetworkError('Cannot connect via SSL: {0}'.format(to_native(e)))

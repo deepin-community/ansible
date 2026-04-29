@@ -121,6 +121,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -136,12 +137,12 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         firewall_internetservicename:
-          city_id: <integer>
-          country_id: <integer>
-          internet_service_id: <string>
-          name: <string>
-          region_id: <integer>
-          type: <value in [default, location]>
+          name: "your value" # Required variable, string
+          # city_id: <integer>
+          # country_id: <integer>
+          # internet_service_id: <string>
+          # region_id: <integer>
+          # type: <value in [default, location]>
 '''
 
 RETURN = '''

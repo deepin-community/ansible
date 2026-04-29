@@ -24,11 +24,19 @@ description:
   - This module can be used to set up mutual TLS (mTLS) for policy-based replication inter-system communication
     using cluster endpoint certificates (usually system-signed which are exported by the
     M(ibm.storage_virtualize.ibm_sv_manage_ssl_certificate) module).
+  - To create a truststore for flashsystem grid, a root CA certificate has to be created and exported first. It can be
+    achieved via ibm_svctask_command module via command I(chsystemcert -mksystemsigned) and
+    I(chsystemcert -exportrootcacert) currently.
 options:
     clustername:
         description:
             - The hostname or management IP of the Storage Virtualize system.
         required: true
+        type: str
+    domain:
+        description:
+            - Domain for the Storage Virtualize storage system.
+            - Valid when hostname is used for the parameter I(clustername).
         type: str
     username:
         description:
@@ -65,8 +73,8 @@ options:
     name:
         description:
             - Specifies the name of the trust store.
-            - If not specified, the module generates a name automatically with format store_I(remote_clustername).
         type: str
+        required: true
     syslog:
         description:
             - Specifies the certificates to be bundled and provided to rsyslog client for making TLS connections.
@@ -103,11 +111,21 @@ options:
         choices: [ 'on', 'off' ]
         type: str
         version_added: 2.5.0
+    flashgrid:
+        description:
+            - Specifies the certificates in the store are used for the flashsystem grid.
+        choices: [ 'on', 'off' ]
+        type: str
+        version_added: 2.7.0
     remote_clustername:
         description:
             - Specifies the name of the partner remote cluster with which mTLS partnership needs to be setup.
         type: str
-        required: true
+    remote_domain:
+        description:
+            - Domain for the Storage Virtualize storage system.
+            - Valid when hostname is used for the parameter I(remote_clustername).
+        type: str
     remote_username:
         description:
             - Username for remote cluster.
@@ -127,49 +145,55 @@ notes:
 '''
 
 EXAMPLES = '''
-- name: Create truststore
+- name: Create truststore with email settings enabled
   ibm.storage_virtualize.ibm_sv_manage_truststore_for_replication:
-    clustername: "{{clustername}}"
-    username: "{{username}}"
-    password: "{{password}}"
-    name: "{{name}}"
-    remote_clustername: "{{remote_clustername}}"
-    remote_username: "{{remote_username}}"
-    remote_password: "{{remote_password}}"
-    log_path: "{{log_path}}"
+    clustername: "{{ clustername }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    remote_clustername: "{{ remote_clustername }}"
+    remote_username: "{{ remote_username }}"
+    remote_password: "{{ remote_password }}"
+    log_path: "{{ log_path }}"
+    email: "on"
     state: "present"
-- name: Turn-on syslog facility so that certificates are bundled and provide to rsyslog client
+- name: Turn-on syslog facility in existing truststore so that certificates are bundled and provide to rsyslog client
   ibm.storage_virtualize.ibm_sv_manage_truststore_for_replication:
-    clustername: "{{clustername}}"
-    username: "{{username}}"
-    password: "{{password}}"
-    name: "{{name}}"
-    remote_clustername: "{{remote_clustername}}"
-    remote_username: "{{remote_username}}"
-    remote_password: "{{remote_password}}"
-    log_path: "{{log_path}}"
+    clustername: "{{ clustername }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    log_path: "{{ log_path }}"
     syslog: "on"
     state: "present"
-- name: Turn-on restapi flag so that certificates in the store are used for the REST API
+- name: Turn-on restapi flag in existing truststore so that certificates in the store are used for the REST API
   ibm.storage_virtualize.ibm_sv_manage_truststore_for_replication:
-    clustername: "{{clustername}}"
-    username: "{{username}}"
-    password: "{{password}}"
-    name: "{{name}}"
-    remote_clustername: "{{remote_clustername}}"
-    remote_username: "{{remote_username}}"
-    remote_password: "{{remote_password}}"
-    log_path: "{{log_path}}"
+    clustername: "{{ clustername }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    log_path: "{{ log_path }}"
     restapi: "on"
+    state: "present"
+- name: Create truststore for flashsystem grid
+  ibm.storage_virtualize.ibm_sv_manage_truststore_for_replication:
+    clustername: "{{ clustername }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    remote_clustername: "{{ remote_clustername }}"
+    remote_username: "{{ remote_username }}"
+    remote_password: "{{ remote_password }}"
+    log_path: "{{ log_path }}"
+    flashgrid: "on"
     state: "present"
 - name: Delete truststore
   ibm.storage_virtualize.ibm_sv_manage_truststore_for_replication:
-    clustername: "{{clustername}}"
-    username: "{{username}}"
-    password: "{{password}}"
-    name: "{{name}}"
-    remote_clustername: "{{remote_clustername}}"
-    log_path: "{{log_path}}"
+    clustername: "{{ clustername }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    log_path: "{{ log_path }}"
     state: "absent"
 '''
 
@@ -198,7 +222,8 @@ class IBMSVTrustStore:
                     no_log=True
                 ),
                 name=dict(
-                    type='str'
+                    type='str',
+                    required=True
                 ),
                 syslog=dict(
                     type='str',
@@ -224,6 +249,10 @@ class IBMSVTrustStore:
                     type='str',
                     choices=['on', 'off']
                 ),
+                flashgrid=dict(
+                    type='str',
+                    choices=['on', 'off']
+                ),
                 usesshkey=dict(
                     type='str',
                     default='no',
@@ -238,11 +267,13 @@ class IBMSVTrustStore:
                     required=True
                 ),
                 remote_clustername=dict(
-                    type='str',
-                    required=True
+                    type='str'
+                ),
+                remote_domain=dict(
+                    type='str'
                 ),
                 remote_username=dict(
-                    type='str',
+                    type='str'
                 ),
                 remote_password=dict(
                     type='str',
@@ -260,6 +291,7 @@ class IBMSVTrustStore:
         self.log = log.info
 
         # Required parameters
+        self.name = self.module.params['name']
         self.state = self.module.params['state']
         self.remote_clustername = self.module.params['remote_clustername']
 
@@ -268,6 +300,7 @@ class IBMSVTrustStore:
         self.key_filename = self.module.params['key_filename']
 
         # Optional parameters
+        self.domain = self.module.params.get('domain', '')
         self.password = self.module.params.get('password', '')
         self.name = self.module.params.get('name', '')
         self.syslog = self.module.params.get('syslog', '')
@@ -276,11 +309,10 @@ class IBMSVTrustStore:
         self.vasa = self.module.params.get('vasa', '')
         self.email = self.module.params.get('email', '')
         self.snmp = self.module.params.get('snmp', '')
+        self.flashgrid = self.module.params.get('flashgrid', '')
+        self.remote_domain = self.module.params.get('remote_domain', '')
         self.remote_username = self.module.params.get('remote_username', '')
         self.remote_password = self.module.params.get('remote_password', '')
-
-        if not self.name:
-            self.name = 'store_{0}'.format(self.remote_clustername)
 
         if not self.password:
             if self.usesshkey == 'yes':
@@ -307,6 +339,7 @@ class IBMSVTrustStore:
         self.ssh_client = IBMSVCssh(
             module=self.module,
             clustername=self.module.params['clustername'],
+            domain=self.domain,
             username=self.module.params['username'],
             password=self.password,
             look_for_keys=self.look_for_keys,
@@ -315,26 +348,9 @@ class IBMSVTrustStore:
         )
 
     def basic_checks(self):
-        if self.state == 'present':
-            if not self.remote_clustername:
-                self.module.fail_json(
-                    msg='Missing mandatory parameter: remote_clustername'
-                )
-            if not self.remote_username:
-                self.module.fail_json(
-                    msg='Missing mandatory parameter: remote_username'
-                )
-            if not self.remote_password:
-                self.module.fail_json(
-                    msg='Missing mandatory parameter: remote_password'
-                )
-        elif self.state == 'absent':
-            if not self.remote_clustername:
-                self.module.fail_json(
-                    msg='Missing mandatory parameter: remote_clustername'
-                )
-
-            unsupported = ('remote_username', 'remote_password', 'syslog', 'restapi', 'ipsec', 'vasa', 'email', 'snmp')
+        if self.state == 'absent':
+            unsupported = ('remote_clustername', 'remote_username', 'remote_password',
+                           'syslog', 'restapi', 'ipsec', 'vasa', 'email', 'snmp', 'flashgrid')
             unsupported_exists = ', '.join((field for field in unsupported if getattr(self, field)))
             if unsupported_exists:
                 self.module.fail_json(
@@ -350,7 +366,7 @@ class IBMSVTrustStore:
             message = 'Unknown error received.'
             self.module.fail_json(msg=message)
 
-    def is_truststore_exists(self):
+    def is_truststore_present(self):
         merged_result = {}
         cmd = 'lstruststore -json {0}'.format(self.name)
         stdin, stdout, stderr = self.ssh_client.client.exec_command(cmd)
@@ -383,10 +399,15 @@ class IBMSVTrustStore:
         if self.module.check_mode:
             return
 
-        cmd = 'scp -O -o stricthostkeychecking=no -o UserKnownHostsFile=/dev/null {0}@{1}:/dumps/certificate.pem /upgrade/'.format(
-            self.remote_username,
-            self.remote_clustername
-        )
+        self.remote_hostname = f"{self.remote_clustername}.{self.remote_domain}" if self.remote_domain else self.remote_clustername
+        cert_file = "rootcacertificate.pem" if self.flashgrid == "on" else "certificate.pem"
+
+        # Assisted by watsonx Code Assistant
+        cmd = 'scp -O -o stricthostkeychecking=no -o UserKnownHostsFile=/dev/null {0}@{1}:/dumps/{2} /upgrade/'.format(
+              self.remote_username,
+              self.remote_hostname,
+              cert_file)
+
         self.log('Command to be executed: %s', cmd)
         stdin, stdout, stderr = self.ssh_client.client.exec_command(cmd, get_pty=True, timeout=60 * 1.5)
         result = ''
@@ -430,12 +451,26 @@ class IBMSVTrustStore:
         else:
             self.log(result)
 
+    def create_validation(self):
+        # Test missing parameters for creation of truststore
+        mandatory_params = ['remote_clustername', 'remote_username', 'remote_password']
+        missing_params = [param for param in mandatory_params if not getattr(self, param)]
+
+        # Fail if there are any missing parameters
+        if missing_params:
+            self.module.fail_json(
+                msg=f"Missing mandatory parameters: {', '.join(missing_params)}"
+            )
+
     def create_truststore(self):
+        self.create_validation()
         if self.module.check_mode:
             self.changed = True
             return
 
-        cmd = 'mktruststore -name {0} -file {1}'.format(self.name, '/upgrade/certificate.pem')
+        cert_file = "rootcacertificate.pem" if self.flashgrid == "on" else "certificate.pem"
+
+        cmd = 'mktruststore -name {0} -file /upgrade/{1}'.format(self.name, cert_file)
         if self.syslog:
             cmd += ' -syslog {0}'.format(self.syslog)
         if self.restapi:
@@ -448,6 +483,9 @@ class IBMSVTrustStore:
             cmd += ' -email {0}'.format(self.email)
         if self.snmp:
             cmd += ' -snmp {0}'.format(self.snmp)
+        if self.flashgrid:
+            cmd += ' -flashgrid {0}'.format(self.flashgrid)
+
         self.log('Command to be executed: %s', cmd)
         stdin, stdout, stderr = self.ssh_client.client.exec_command(cmd)
         result = stdout.read().decode('utf-8')
@@ -461,7 +499,66 @@ class IBMSVTrustStore:
             self.log(result)
             self.changed = True
 
+    def probe_truststore(self, data):
+        # If truststore exists, change required fields
+        modified_props = {}
+
+        for prop in ['syslog', 'restapi', 'ipsec', 'email', 'snmp', 'vasa']:
+            value = getattr(self, prop, None)
+            if value and value != data.get(prop):
+                modified_props[prop] = value
+        if data.get("flash_grid_references"):
+            if self.flashgrid == "off":
+                self.module.fail_json(msg="Invalid parameter for update: (flashgrid)")
+        elif self.flashgrid:
+            self.module.fail_json(msg="Invalid parameter for update: (flashgrid)")
+        return modified_props
+
+    def update_validation(self):
+        # Test missing parameters for updating truststore
+        if not self.name:
+            self.module.fail_json(msg="Missing mandatory parameter: name")
+        # Even though probe_truststore() throws error for flashgrid attribute,
+        # self.flashgrid has to be checked here for supporting check_mode=True
+        if self.flashgrid:
+            self.log("Flashgrid parameter cannot be modified.")
+            self.module.fail_json(msg="Invalid parameter for update: flashgrid")
+
+    def update_truststore(self, modified_props):
+        self.update_validation()
+        if self.module.check_mode:
+            self.changed = True
+            return
+
+        self.log("Modifying truststore properties: ")
+        # The reason to probe before running update_truststore, is to avoid running a CLI in case of no change
+        cmd = 'chtruststore'
+        for prop in modified_props:
+            if modified_props[prop]:
+                cmd += ' -' + prop + ' ' + str(modified_props[prop])
+
+        cmd += ' {0}'.format(self.name)
+        self.log('Command to be executed: %s', cmd)
+        stdin, stdout, stderr = self.ssh_client.client.exec_command(cmd)
+        result = stdout.read().decode('utf-8')
+        rc = stdout.channel.recv_exit_status()
+
+        if rc > 0:
+            self.log("Error in executing command: %s", cmd)
+            self.raise_error(stderr)
+        else:
+            self.log('Truststore (%s) updated', self.name)
+            self.log(result)
+            self.changed = True
+        return
+
+    def delete_validation(self):
+        # Test missing parameters for updating truststore
+        if not self.name:
+            self.module.fail_json(msg="Missing mandatory parameter: name")
+
     def delete_truststore(self):
+        self.delete_validation()
         if self.module.check_mode:
             self.changed = True
             return
@@ -481,10 +578,16 @@ class IBMSVTrustStore:
             self.changed = True
 
     def apply(self):
-        if self.is_truststore_exists():
+        truststore_data = self.is_truststore_present()
+        if truststore_data:
             self.log("Truststore (%s) exists", self.name)
             if self.state == 'present':
-                self.msg = 'Truststore ({0}) already exist. No modifications done'.format(self.name)
+                modified_props = self.probe_truststore(truststore_data)
+                if modified_props:
+                    self.update_truststore(modified_props)
+                    self.msg = 'Truststore ({0}) updated'.format(self.name)
+                else:
+                    self.msg = 'Truststore ({0}) already exist. No modifications done'.format(self.name)
             else:
                 self.delete_truststore()
                 self.msg = 'Truststore ({0}) deleted.'.format(self.name)

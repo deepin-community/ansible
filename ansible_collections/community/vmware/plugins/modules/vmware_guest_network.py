@@ -75,6 +75,7 @@ options:
   network_name:
     description:
       - Name of network in vSphere.
+      - Work faster then o(vlan_id) for big infrastructure with many networks.
     type: str
   device_type:
     default: vmxnet3
@@ -289,7 +290,8 @@ except ImportError:
 import copy
 from ansible.module_utils._text import to_native
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi, TaskError, vmware_argument_spec, wait_for_task
+from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi, TaskError, wait_for_task
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 from ansible_collections.community.vmware.plugins.module_utils.vm_device_helper import PyVmomiDeviceHelper
 
 
@@ -318,6 +320,17 @@ class PyVmomiHelper(PyVmomi):
 
         for pg in vm_obj.runtime.host.config.network.portgroup:
             pg_lookup[pg.spec.name] = {'switch': pg.spec.vswitchName, 'vlan_id': pg.spec.vlanId}
+
+        if network_name:
+            networks = self.find_network_by_name(network_name)
+            for network in networks:
+                if network in compute_resource.network:
+                    if isinstance(network, vim.dvs.DistributedVirtualPortgroup):
+                        dvs = network.config.distributedVirtualSwitch
+                        if (switch_name and dvs.config.name == switch_name) or not switch_name:
+                            return network
+                    elif isinstance(network, vim.Network):
+                        return network
 
         if compute_resource:
             for network in compute_resource.network:
@@ -757,7 +770,7 @@ class PyVmomiHelper(PyVmomi):
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(
         name=dict(type='str'),
         uuid=dict(type='str'),

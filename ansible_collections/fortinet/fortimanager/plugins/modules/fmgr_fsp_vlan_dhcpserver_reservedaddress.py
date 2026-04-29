@@ -147,6 +147,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -163,16 +164,16 @@ EXAMPLES = '''
         vlan: <your own value>
         state: present # <value in [present, absent]>
         fsp_vlan_dhcpserver_reservedaddress:
-          action: <value in [assign, block, reserved]>
-          circuit_id: <string>
-          circuit_id_type: <value in [hex, string]>
-          description: <string>
-          id: <integer>
-          ip: <string>
-          mac: <string>
-          remote_id: <string>
-          remote_id_type: <value in [hex, string]>
-          type: <value in [mac, option82]>
+          id: 0 # Required variable, integer
+          # action: <value in [assign, block, reserved]>
+          # circuit_id: <string>
+          # circuit_id_type: <value in [hex, string]>
+          # description: <string>
+          # ip: <string>
+          # mac: <string>
+          # remote_id: <string>
+          # remote_id_type: <value in [hex, string]>
+          # type: <value in [mac, option82]>
 '''
 
 RETURN = '''

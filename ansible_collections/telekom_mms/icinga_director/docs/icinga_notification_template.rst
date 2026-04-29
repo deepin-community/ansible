@@ -92,8 +92,12 @@ Parameters
     Required if :emphasis:`state` is :literal:`present`.
 
 
+  vars (optional, dict, {})
+    Custom properties of the notification.
+
+
   url (True, str, None)
-    HTTP, HTTPS, or FTP URL in the form (http|https|ftp)://[user[:pass]]@host.domain[:port]/path
+    HTTP, HTTPS, or FTP URL in the form (http\|https\|ftp)://[user[:pass]]@host.domain[:port]/path
 
 
   force (optional, bool, False)
@@ -152,6 +156,10 @@ Parameters
     NTLM authentication is :literal:`not` supported even if the GSSAPI mech for NTLM has been installed.
 
 
+  api_timeout (optional, int, 10)
+    Default timeout to wait for transaction to finish in seconds.
+
+
 
 
 
@@ -191,6 +199,8 @@ Examples
           - "rb"
         user_groups:
           - "OnCall"
+        vars:
+          foo: bar
         zone: "foozone"
 
     - name: Update notification template
@@ -201,6 +211,8 @@ Examples
         url_password: "{{ icinga_pass }}"
         object_name: foonotificationtemplate
         notification_interval: '0'
+        vars:
+          foo: bar
         append: true
 
 

@@ -270,6 +270,7 @@ options:
                         choices:
                             - 'drop'
                             - 'trap-to-host'
+                            - 'allow'
                     unknproto_minlen_err:
                         aliases: ['unknproto-minlen-err']
                         type: str
@@ -553,6 +554,7 @@ options:
                         choices:
                             - 'drop'
                             - 'trap-to-host'
+                            - 'allow'
                     nvgre_minlen_err:
                         aliases: ['nvgre-minlen-err']
                         type: str
@@ -1902,6 +1904,13 @@ options:
                             name:
                                 type: str
                                 description: Scheduler name.
+                    custom_etype_lookup:
+                        aliases: ['custom-etype-lookup']
+                        type: str
+                        description: Enable/Disable np-queue lookup for custom Ethernet Types.
+                        choices:
+                            - 'disable'
+                            - 'enable'
             udp_timeout_profile:
                 aliases: ['udp-timeout-profile']
                 type: list
@@ -3913,12 +3922,38 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            ipsec_ordering:
+                aliases: ['ipsec-ordering']
+                type: str
+                description: Enable/disable IPsec ordering.
+                choices:
+                    - 'disable'
+                    - 'enable'
+            sw_np_pause:
+                aliases: ['sw-np-pause']
+                type: str
+                description: Enable SP5 tx pause and marvell rx receive pause, for sw uplink only.
+                choices:
+                    - 'disable'
+                    - 'enable'
+            sw_np_rate:
+                aliases: ['sw-np-rate']
+                type: int
+                description: Bandwidth from switch to NP, for sw uplink port.
+            sw_np_rate_unit:
+                aliases: ['sw-np-rate-unit']
+                type: str
+                description: Unit for bandwidth from switch to NP, for sw uplink port.
+                choices:
+                    - 'mbps'
+                    - 'pps'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -3933,600 +3968,593 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         system_npu:
-          capwap_offload: <value in [disable, enable]>
-          dedicated_management_affinity: <string>
-          dedicated_management_cpu: <value in [disable, enable]>
-          fastpath: <value in [disable, enable]>
-          fp_anomaly:
-            esp_minlen_err: <value in [drop, trap-to-host]>
-            icmp_csum_err: <value in [drop, trap-to-host]>
-            icmp_minlen_err: <value in [drop, trap-to-host]>
-            ipv4_csum_err: <value in [drop, trap-to-host]>
-            ipv4_ihl_err: <value in [drop, trap-to-host]>
-            ipv4_len_err: <value in [drop, trap-to-host]>
-            ipv4_opt_err: <value in [drop, trap-to-host]>
-            ipv4_ttlzero_err: <value in [drop, trap-to-host]>
-            ipv4_ver_err: <value in [drop, trap-to-host]>
-            ipv6_exthdr_len_err: <value in [drop, trap-to-host]>
-            ipv6_exthdr_order_err: <value in [drop, trap-to-host]>
-            ipv6_ihl_err: <value in [drop, trap-to-host]>
-            ipv6_plen_zero: <value in [drop, trap-to-host]>
-            ipv6_ver_err: <value in [drop, trap-to-host]>
-            tcp_csum_err: <value in [drop, trap-to-host]>
-            tcp_hlen_err: <value in [drop, trap-to-host]>
-            tcp_plen_err: <value in [drop, trap-to-host]>
-            udp_csum_err: <value in [drop, trap-to-host]>
-            udp_hlen_err: <value in [drop, trap-to-host]>
-            udp_len_err: <value in [drop, trap-to-host]>
-            udp_plen_err: <value in [drop, trap-to-host]>
-            udplite_cover_err: <value in [drop, trap-to-host]>
-            udplite_csum_err: <value in [drop, trap-to-host]>
-            unknproto_minlen_err: <value in [drop, trap-to-host]>
-            tcp_fin_only: <value in [allow, drop, trap-to-host]>
-            ipv4_optsecurity: <value in [allow, drop, trap-to-host]>
-            ipv6_optralert: <value in [allow, drop, trap-to-host]>
-            tcp_syn_fin: <value in [allow, drop, trap-to-host]>
-            ipv4_proto_err: <value in [allow, drop, trap-to-host]>
-            ipv6_saddr_err: <value in [allow, drop, trap-to-host]>
-            icmp_frag: <value in [allow, drop, trap-to-host]>
-            ipv4_optssrr: <value in [allow, drop, trap-to-host]>
-            ipv6_opthomeaddr: <value in [allow, drop, trap-to-host]>
-            udp_land: <value in [allow, drop, trap-to-host]>
-            ipv6_optinvld: <value in [allow, drop, trap-to-host]>
-            tcp_fin_noack: <value in [allow, drop, trap-to-host]>
-            ipv6_proto_err: <value in [allow, drop, trap-to-host]>
-            tcp_land: <value in [allow, drop, trap-to-host]>
-            ipv4_unknopt: <value in [allow, drop, trap-to-host]>
-            ipv4_optstream: <value in [allow, drop, trap-to-host]>
-            ipv6_optjumbo: <value in [allow, drop, trap-to-host]>
-            icmp_land: <value in [allow, drop, trap-to-host]>
-            tcp_winnuke: <value in [allow, drop, trap-to-host]>
-            ipv6_daddr_err: <value in [allow, drop, trap-to-host]>
-            ipv4_land: <value in [allow, drop, trap-to-host]>
-            ipv6_opttunnel: <value in [allow, drop, trap-to-host]>
-            tcp_no_flag: <value in [allow, drop, trap-to-host]>
-            ipv6_land: <value in [allow, drop, trap-to-host]>
-            ipv4_optlsrr: <value in [allow, drop, trap-to-host]>
-            ipv4_opttimestamp: <value in [allow, drop, trap-to-host]>
-            ipv4_optrr: <value in [allow, drop, trap-to-host]>
-            ipv6_optnsap: <value in [allow, drop, trap-to-host]>
-            ipv6_unknopt: <value in [allow, drop, trap-to-host]>
-            tcp_syn_data: <value in [allow, drop, trap-to-host]>
-            ipv6_optendpid: <value in [allow, drop, trap-to-host]>
-            gtpu_plen_err: <value in [drop, trap-to-host]>
-            vxlan_minlen_err: <value in [drop, trap-to-host]>
-            capwap_minlen_err: <value in [drop, trap-to-host]>
-            gre_csum_err: <value in [drop, trap-to-host]>
-            nvgre_minlen_err: <value in [drop, trap-to-host]>
-            sctp_l4len_err: <value in [drop, trap-to-host]>
-            tcp_hlenvsl4len_err: <value in [drop, trap-to-host]>
-            sctp_crc_err: <value in [drop, trap-to-host]>
-            sctp_clen_err: <value in [drop, trap-to-host]>
-            uesp_minlen_err: <value in [drop, trap-to-host]>
-            sctp_csum_err: <value in [allow, drop, trap-to-host]>
-          gtp_enhanced_cpu_range: <value in [0, 1, 2]>
-          gtp_enhanced_mode: <value in [disable, enable]>
-          host_shortcut_mode: <value in [bi-directional, host-shortcut]>
-          htx_gtse_quota: <value in [100Mbps, 200Mbps, 300Mbps, ...]>
-          intf_shaping_offload: <value in [disable, enable]>
-          iph_rsvd_re_cksum: <value in [disable, enable]>
-          ipsec_dec_subengine_mask: <string>
-          ipsec_enc_subengine_mask: <string>
-          ipsec_inbound_cache: <value in [disable, enable]>
-          ipsec_mtu_override: <value in [disable, enable]>
-          ipsec_over_vlink: <value in [disable, enable]>
-          isf_np_queues:
-            cos0: <string>
-            cos1: <string>
-            cos2: <string>
-            cos3: <string>
-            cos4: <string>
-            cos5: <string>
-            cos6: <string>
-            cos7: <string>
-          lag_out_port_select: <value in [disable, enable]>
-          mcast_session_accounting: <value in [disable, session-based, tpe-based]>
-          np6_cps_optimization_mode: <value in [disable, enable]>
-          per_session_accounting: <value in [enable, disable, enable-by-log, ...]>
-          port_cpu_map:
-            -
-              cpu_core: <string>
-              interface: <string>
-          port_npu_map:
-            -
-              interface: <string>
-              npu_group_index: <integer>
-          priority_protocol:
-            bfd: <value in [disable, enable]>
-            bgp: <value in [disable, enable]>
-            slbc: <value in [disable, enable]>
-          qos_mode: <value in [disable, priority, round-robin]>
-          rdp_offload: <value in [disable, enable]>
-          recover_np6_link: <value in [disable, enable]>
-          session_denied_offload: <value in [disable, enable]>
-          sse_backpressure: <value in [disable, enable]>
-          strip_clear_text_padding: <value in [disable, enable]>
-          strip_esp_padding: <value in [disable, enable]>
-          sw_eh_hash:
-            computation: <value in [xor16, xor8, xor4, ...]>
-            destination_ip_lower_16: <value in [include, exclude]>
-            destination_ip_upper_16: <value in [include, exclude]>
-            destination_port: <value in [include, exclude]>
-            ip_protocol: <value in [include, exclude]>
-            netmask_length: <integer>
-            source_ip_lower_16: <value in [include, exclude]>
-            source_ip_upper_16: <value in [include, exclude]>
-            source_port: <value in [include, exclude]>
-          sw_np_bandwidth: <value in [0G, 2G, 4G, ...]>
-          switch_np_hash: <value in [src-ip, dst-ip, src-dst-ip]>
-          uesp_offload: <value in [disable, enable]>
-          np_queues:
-            ethernet_type:
-              -
-                name: <string>
-                queue: <integer>
-                type: <integer>
-                weight: <integer>
-            ip_protocol:
-              -
-                name: <string>
-                protocol: <integer>
-                queue: <integer>
-                weight: <integer>
-            ip_service:
-              -
-                dport: <integer>
-                name: <string>
-                protocol: <integer>
-                queue: <integer>
-                sport: <integer>
-                weight: <integer>
-            profile:
-              -
-                cos0: <value in [queue0, queue1, queue2, ...]>
-                cos1: <value in [queue0, queue1, queue2, ...]>
-                cos2: <value in [queue0, queue1, queue2, ...]>
-                cos3: <value in [queue0, queue1, queue2, ...]>
-                cos4: <value in [queue0, queue1, queue2, ...]>
-                cos5: <value in [queue0, queue1, queue2, ...]>
-                cos6: <value in [queue0, queue1, queue2, ...]>
-                cos7: <value in [queue0, queue1, queue2, ...]>
-                dscp0: <value in [queue0, queue1, queue2, ...]>
-                dscp1: <value in [queue0, queue1, queue2, ...]>
-                dscp10: <value in [queue0, queue1, queue2, ...]>
-                dscp11: <value in [queue0, queue1, queue2, ...]>
-                dscp12: <value in [queue0, queue1, queue2, ...]>
-                dscp13: <value in [queue0, queue1, queue2, ...]>
-                dscp14: <value in [queue0, queue1, queue2, ...]>
-                dscp15: <value in [queue0, queue1, queue2, ...]>
-                dscp16: <value in [queue0, queue1, queue2, ...]>
-                dscp17: <value in [queue0, queue1, queue2, ...]>
-                dscp18: <value in [queue0, queue1, queue2, ...]>
-                dscp19: <value in [queue0, queue1, queue2, ...]>
-                dscp2: <value in [queue0, queue1, queue2, ...]>
-                dscp20: <value in [queue0, queue1, queue2, ...]>
-                dscp21: <value in [queue0, queue1, queue2, ...]>
-                dscp22: <value in [queue0, queue1, queue2, ...]>
-                dscp23: <value in [queue0, queue1, queue2, ...]>
-                dscp24: <value in [queue0, queue1, queue2, ...]>
-                dscp25: <value in [queue0, queue1, queue2, ...]>
-                dscp26: <value in [queue0, queue1, queue2, ...]>
-                dscp27: <value in [queue0, queue1, queue2, ...]>
-                dscp28: <value in [queue0, queue1, queue2, ...]>
-                dscp29: <value in [queue0, queue1, queue2, ...]>
-                dscp3: <value in [queue0, queue1, queue2, ...]>
-                dscp30: <value in [queue0, queue1, queue2, ...]>
-                dscp31: <value in [queue0, queue1, queue2, ...]>
-                dscp32: <value in [queue0, queue1, queue2, ...]>
-                dscp33: <value in [queue0, queue1, queue2, ...]>
-                dscp34: <value in [queue0, queue1, queue2, ...]>
-                dscp35: <value in [queue0, queue1, queue2, ...]>
-                dscp36: <value in [queue0, queue1, queue2, ...]>
-                dscp37: <value in [queue0, queue1, queue2, ...]>
-                dscp38: <value in [queue0, queue1, queue2, ...]>
-                dscp39: <value in [queue0, queue1, queue2, ...]>
-                dscp4: <value in [queue0, queue1, queue2, ...]>
-                dscp40: <value in [queue0, queue1, queue2, ...]>
-                dscp41: <value in [queue0, queue1, queue2, ...]>
-                dscp42: <value in [queue0, queue1, queue2, ...]>
-                dscp43: <value in [queue0, queue1, queue2, ...]>
-                dscp44: <value in [queue0, queue1, queue2, ...]>
-                dscp45: <value in [queue0, queue1, queue2, ...]>
-                dscp46: <value in [queue0, queue1, queue2, ...]>
-                dscp47: <value in [queue0, queue1, queue2, ...]>
-                dscp48: <value in [queue0, queue1, queue2, ...]>
-                dscp49: <value in [queue0, queue1, queue2, ...]>
-                dscp5: <value in [queue0, queue1, queue2, ...]>
-                dscp50: <value in [queue0, queue1, queue2, ...]>
-                dscp51: <value in [queue0, queue1, queue2, ...]>
-                dscp52: <value in [queue0, queue1, queue2, ...]>
-                dscp53: <value in [queue0, queue1, queue2, ...]>
-                dscp54: <value in [queue0, queue1, queue2, ...]>
-                dscp55: <value in [queue0, queue1, queue2, ...]>
-                dscp56: <value in [queue0, queue1, queue2, ...]>
-                dscp57: <value in [queue0, queue1, queue2, ...]>
-                dscp58: <value in [queue0, queue1, queue2, ...]>
-                dscp59: <value in [queue0, queue1, queue2, ...]>
-                dscp6: <value in [queue0, queue1, queue2, ...]>
-                dscp60: <value in [queue0, queue1, queue2, ...]>
-                dscp61: <value in [queue0, queue1, queue2, ...]>
-                dscp62: <value in [queue0, queue1, queue2, ...]>
-                dscp63: <value in [queue0, queue1, queue2, ...]>
-                dscp7: <value in [queue0, queue1, queue2, ...]>
-                dscp8: <value in [queue0, queue1, queue2, ...]>
-                dscp9: <value in [queue0, queue1, queue2, ...]>
-                id: <integer>
-                type: <value in [cos, dscp]>
-                weight: <integer>
-            scheduler:
-              -
-                mode: <value in [none, priority, round-robin]>
-                name: <string>
-          udp_timeout_profile:
-            -
-              id: <integer>
-              udp_idle: <integer>
-          qtm_buf_mode: <value in [6ch, 4ch]>
-          default_qos_type: <value in [policing, shaping, policing-enhanced]>
-          tcp_rst_timeout: <integer>
-          ipsec_local_uesp_port: <integer>
-          htab_dedi_queue_nr: <integer>
-          double_level_mcast_offload: <value in [disable, enable]>
-          dse_timeout: <integer>
-          ippool_overload_low: <integer>
-          pba_eim: <value in [disallow, allow]>
-          policy_offload_level: <value in [disable, dos-offload, full-offload]>
-          max_session_timeout: <integer>
-          port_path_option:
-            ports_using_npu: <list or string>
-          vlan_lookup_cache: <value in [disable, enable]>
-          dos_options:
-            npu_dos_meter_mode: <value in [local, global]>
-            npu_dos_synproxy_mode: <value in [synack2ack, pass-synack]>
-            npu_dos_tpe_mode: <value in [disable, enable]>
-          hash_tbl_spread: <value in [disable, enable]>
-          tcp_timeout_profile:
-            -
-              close_wait: <integer>
-              fin_wait: <integer>
-              id: <integer>
-              syn_sent: <integer>
-              syn_wait: <integer>
-              tcp_idle: <integer>
-              time_wait: <integer>
-          ip_reassembly:
-            max_timeout: <integer>
-            min_timeout: <integer>
-            status: <value in [disable, enable]>
-          gtp_support: <value in [disable, enable]>
-          htx_icmp_csum_chk: <value in [pass, drop]>
-          hpe:
-            all_protocol: <integer>
-            arp_max: <integer>
-            enable_shaper: <value in [disable, enable]>
-            esp_max: <integer>
-            high_priority: <integer>
-            icmp_max: <integer>
-            ip_frag_max: <integer>
-            ip_others_max: <integer>
-            l2_others_max: <integer>
-            pri_type_max: <integer>
-            sctp_max: <integer>
-            tcp_max: <integer>
-            tcpfin_rst_max: <integer>
-            tcpsyn_ack_max: <integer>
-            tcpsyn_max: <integer>
-            udp_max: <integer>
-            enable_queue_shaper: <value in [disable, enable]>
-            exception_code: <integer>
-            fragment_with_sess: <integer>
-            fragment_without_session: <integer>
-            queue_shaper_max: <integer>
-          dsw_dts_profile:
-            -
-              action: <value in [wait, drop, drop_tmr_0, ...]>
-              min_limit: <integer>
-              profile_id: <integer>
-              step: <integer>
-          hash_config: <value in [5-tuple, src-ip, src-dst-ip]>
-          ipsec_ob_np_sel: <value in [RR, rr, Packet, ...]>
-          napi_break_interval: <integer>
-          background_sse_scan:
-            scan: <value in [disable, enable]>
-            stats_update_interval: <integer>
-            udp_keepalive_interval: <integer>
-            scan_stale: <integer>
-            scan_vt: <integer>
-            stats_qual_access: <integer>
-            stats_qual_duration: <integer>
-            udp_qual_access: <integer>
-            udp_qual_duration: <integer>
-          inbound_dscp_copy_port: <list or string>
-          session_acct_interval: <integer>
-          htab_msg_queue: <value in [idle, data, dedicated]>
-          dsw_queue_dts_profile:
-            -
-              iport: <value in [EIF0, eif0, EIF1, ...]>
-              name: <string>
-              oport: <value in [EIF0, eif0, EIF1, ...]>
-              profile_id: <integer>
-              queue_select: <integer>
-          hw_ha_scan_interval: <integer>
-          ippool_overload_high: <integer>
-          nat46_force_ipv4_packet_forwarding: <value in [disable, enable]>
-          prp_port_out: <list or string>
-          isf_np_rx_tr_distr: <value in [port-flow, round-robin, randomized]>
-          mcast_session_counting6: <value in [disable, enable, session-based, ...]>
-          prp_port_in: <list or string>
-          rps_mode: <value in [disable, enable]>
-          per_policy_accounting: <value in [disable, enable]>
-          mcast_session_counting: <value in [disable, enable, session-based, ...]>
-          inbound_dscp_copy: <value in [disable, enable]>
-          ipsec_host_dfclr: <value in [disable, enable]>
-          process_icmp_by_host: <value in [disable, enable]>
-          dedicated_tx_npu: <value in [disable, enable]>
-          ull_port_mode: <value in [10G, 25G]>
-          sse_ha_scan:
-            gap: <integer>
-            max_session_cnt: <integer>
-            min_duration: <integer>
-          hash_ipv6_sel: <integer>
-          ip_fragment_offload: <value in [disable, enable]>
-          ple_non_syn_tcp_action: <value in [forward, drop]>
-          npu_group_effective_scope: <integer>
-          ipsec_STS_timeout: <value in [1, 2, 3, ...]>
-          ipsec_throughput_msg_frequency: <value in [disable, 32KB, 64KB, ...]>
-          ipt_STS_timeout: <value in [1, 2, 3, ...]>
-          ipt_throughput_msg_frequency: <value in [disable, 32KB, 64KB, ...]>
-          default_tcp_refresh_dir: <value in [both, outgoing, incoming]>
-          default_udp_refresh_dir: <value in [both, outgoing, incoming]>
-          nss_threads_option: <value in [4t-eif, 4t-noeif, 2t]>
-          prp_session_clear_mode: <value in [blocking, non-blocking, do-not-clear]>
-          shaping_stats: <value in [disable, enable]>
-          sw_tr_hash:
-            draco15: <value in [disable, enable]>
-            tcp_udp_port: <value in [include, exclude]>
-          pba_port_select_mode: <value in [random, direct]>
-          spa_port_select_mode: <value in [random, direct]>
-          split_ipsec_engines: <value in [disable, enable]>
-          tunnel_over_vlink: <value in [disable, enable]>
-          max_receive_unit: <integer>
-          npu_tcam:
-            -
-              data:
-                df: <value in [disable, enable]>
-                dstip: <string>
-                dstipv6: <string>
-                dstmac: <string>
-                dstport: <integer>
-                ethertype: <string>
-                ext_tag: <value in [disable, enable]>
-                frag_off: <integer>
-                gen_buf_cnt: <integer>
-                gen_iv: <value in [invalid, valid]>
-                gen_l3_flags: <integer>
-                gen_l4_flags: <integer>
-                gen_pkt_ctrl: <integer>
-                gen_pri: <integer>
-                gen_pri_v: <value in [invalid, valid]>
-                gen_tv: <value in [invalid, valid]>
-                ihl: <integer>
-                ip4_id: <integer>
-                ip6_fl: <integer>
-                ipver: <integer>
-                l4_wd10: <integer>
-                l4_wd11: <integer>
-                l4_wd8: <integer>
-                l4_wd9: <integer>
-                mf: <value in [disable, enable]>
-                protocol: <integer>
-                slink: <integer>
-                smac_change: <value in [disable, enable]>
-                sp: <integer>
-                src_cfi: <value in [disable, enable]>
-                src_prio: <integer>
-                src_updt: <value in [disable, enable]>
-                srcip: <string>
-                srcipv6: <string>
-                srcmac: <string>
-                srcport: <integer>
-                svid: <integer>
-                tcp_ack: <value in [disable, enable]>
-                tcp_cwr: <value in [disable, enable]>
-                tcp_ece: <value in [disable, enable]>
-                tcp_fin: <value in [disable, enable]>
-                tcp_push: <value in [disable, enable]>
-                tcp_rst: <value in [disable, enable]>
-                tcp_syn: <value in [disable, enable]>
-                tcp_urg: <value in [disable, enable]>
-                tgt_cfi: <value in [disable, enable]>
-                tgt_prio: <integer>
-                tgt_updt: <value in [disable, enable]>
-                tgt_v: <value in [invalid, valid]>
-                tos: <integer>
-                tp: <integer>
-                ttl: <integer>
-                tvid: <integer>
-                vdid: <integer>
-              dbg_dump: <integer>
-              mask:
-                df: <value in [disable, enable]>
-                dstip: <string>
-                dstipv6: <string>
-                dstmac: <string>
-                dstport: <integer>
-                ethertype: <string>
-                ext_tag: <value in [disable, enable]>
-                frag_off: <integer>
-                gen_buf_cnt: <integer>
-                gen_iv: <value in [invalid, valid]>
-                gen_l3_flags: <integer>
-                gen_l4_flags: <integer>
-                gen_pkt_ctrl: <integer>
-                gen_pri: <integer>
-                gen_pri_v: <value in [invalid, valid]>
-                gen_tv: <value in [invalid, valid]>
-                ihl: <integer>
-                ip4_id: <integer>
-                ip6_fl: <integer>
-                ipver: <integer>
-                l4_wd10: <integer>
-                l4_wd11: <integer>
-                l4_wd8: <integer>
-                l4_wd9: <integer>
-                mf: <value in [disable, enable]>
-                protocol: <integer>
-                slink: <integer>
-                smac_change: <value in [disable, enable]>
-                sp: <integer>
-                src_cfi: <value in [disable, enable]>
-                src_prio: <integer>
-                src_updt: <value in [disable, enable]>
-                srcip: <string>
-                srcipv6: <string>
-                srcmac: <string>
-                srcport: <integer>
-                svid: <integer>
-                tcp_ack: <value in [disable, enable]>
-                tcp_cwr: <value in [disable, enable]>
-                tcp_ece: <value in [disable, enable]>
-                tcp_fin: <value in [disable, enable]>
-                tcp_push: <value in [disable, enable]>
-                tcp_rst: <value in [disable, enable]>
-                tcp_syn: <value in [disable, enable]>
-                tcp_urg: <value in [disable, enable]>
-                tgt_cfi: <value in [disable, enable]>
-                tgt_prio: <integer>
-                tgt_updt: <value in [disable, enable]>
-                tgt_v: <value in [invalid, valid]>
-                tos: <integer>
-                tp: <integer>
-                ttl: <integer>
-                tvid: <integer>
-                vdid: <integer>
-              mir_act:
-                vlif: <integer>
-              name: <string>
-              oid: <integer>
-              pri_act:
-                priority: <integer>
-                weight: <integer>
-              sact:
-                act: <integer>
-                act_v: <value in [disable, enable]>
-                bmproc: <integer>
-                bmproc_v: <value in [disable, enable]>
-                df_lif: <integer>
-                df_lif_v: <value in [disable, enable]>
-                dfr: <integer>
-                dfr_v: <value in [disable, enable]>
-                dmac_skip: <integer>
-                dmac_skip_v: <value in [disable, enable]>
-                dosen: <integer>
-                dosen_v: <value in [disable, enable]>
-                espff_proc: <integer>
-                espff_proc_v: <value in [disable, enable]>
-                etype_pid: <integer>
-                etype_pid_v: <value in [disable, enable]>
-                frag_proc: <integer>
-                frag_proc_v: <value in [disable, enable]>
-                fwd: <integer>
-                fwd_lif: <integer>
-                fwd_lif_v: <value in [disable, enable]>
-                fwd_tvid: <integer>
-                fwd_tvid_v: <value in [disable, enable]>
-                fwd_v: <value in [disable, enable]>
-                icpen: <integer>
-                icpen_v: <value in [disable, enable]>
-                igmp_mld_snp: <integer>
-                igmp_mld_snp_v: <value in [disable, enable]>
-                learn: <integer>
-                learn_v: <value in [disable, enable]>
-                m_srh_ctrl: <integer>
-                m_srh_ctrl_v: <value in [disable, enable]>
-                mac_id: <integer>
-                mac_id_v: <value in [disable, enable]>
-                mss: <integer>
-                mss_v: <value in [disable, enable]>
-                pleen: <integer>
-                pleen_v: <value in [disable, enable]>
-                prio_pid: <integer>
-                prio_pid_v: <value in [disable, enable]>
-                promis: <integer>
-                promis_v: <value in [disable, enable]>
-                rfsh: <integer>
-                rfsh_v: <value in [disable, enable]>
-                smac_skip: <integer>
-                smac_skip_v: <value in [disable, enable]>
-                tp_smchk_v: <value in [disable, enable]>
-                tp_smchk: <integer>
-                tpe_id: <integer>
-                tpe_id_v: <value in [disable, enable]>
-                vdm: <integer>
-                vdm_v: <value in [disable, enable]>
-                vdom_id: <integer>
-                vdom_id_v: <value in [disable, enable]>
-                x_mode: <integer>
-                x_mode_v: <value in [disable, enable]>
-              tact:
-                act: <integer>
-                act_v: <value in [disable, enable]>
-                fmtuv4_s: <integer>
-                fmtuv4_s_v: <value in [disable, enable]>
-                fmtuv6_s: <integer>
-                fmtuv6_s_v: <value in [disable, enable]>
-                lnkid: <integer>
-                lnkid_v: <value in [disable, enable]>
-                mac_id: <integer>
-                mac_id_v: <value in [disable, enable]>
-                mss_t: <integer>
-                mss_t_v: <value in [disable, enable]>
-                mtuv4: <integer>
-                mtuv4_v: <value in [disable, enable]>
-                mtuv6: <integer>
-                mtuv6_v: <value in [disable, enable]>
-                slif_act: <integer>
-                slif_act_v: <value in [disable, enable]>
-                sublnkid: <integer>
-                sublnkid_v: <value in [disable, enable]>
-                tgtv_act: <integer>
-                tgtv_act_v: <value in [disable, enable]>
-                tlif_act: <integer>
-                tlif_act_v: <value in [disable, enable]>
-                tpeid: <integer>
-                tpeid_v: <value in [disable, enable]>
-                v6fe: <integer>
-                v6fe_v: <value in [disable, enable]>
-                vep_en_v: <value in [disable, enable]>
-                vep_slid: <integer>
-                vep_slid_v: <value in [disable, enable]>
-                vep_en: <integer>
-                xlt_lif: <integer>
-                xlt_lif_v: <value in [disable, enable]>
-                xlt_vid: <integer>
-                xlt_vid_v: <value in [disable, enable]>
-              type: <value in [L2_src_tc, L2_tgt_tc, L2_src_mir, ...]>
-              vid: <integer>
-          icmp_rate_ctrl:
-            icmp_v4_bucket_size: <integer>
-            icmp_v4_rate: <integer>
-            icmp_v6_bucket_size: <integer>
-            icmp_v6_rate: <integer>
-          vxlan_offload: <value in [disable, enable]>
-          icmp_error_rate_ctrl:
-            icmpv4_error_bucket_size: <integer>
-            icmpv4_error_rate: <integer>
-            icmpv4_error_rate_limit: <value in [disable, enable]>
-            icmpv6_error_bucket_size: <integer>
-            icmpv6_error_rate: <integer>
-            icmpv6_error_rate_limit: <value in [disable, enable]>
-          ipv4_session_quota: <value in [disable, enable]>
-          ipv4_session_quota_high: <integer>
-          ipv4_session_quota_low: <integer>
-          ipv6_prefix_session_quota: <value in [disable, enable]>
-          ipv6_prefix_session_quota_high: <integer>
-          ipv6_prefix_session_quota_low: <integer>
-          dedicated_lacp_queue: <value in [disable, enable]>
+          # capwap_offload: <value in [disable, enable]>
+          # dedicated_management_affinity: <string>
+          # dedicated_management_cpu: <value in [disable, enable]>
+          # fastpath: <value in [disable, enable]>
+          # fp_anomaly:
+          #   esp_minlen_err: <value in [drop, trap-to-host]>
+          #   icmp_csum_err: <value in [drop, trap-to-host]>
+          #   icmp_minlen_err: <value in [drop, trap-to-host]>
+          #   ipv4_csum_err: <value in [drop, trap-to-host]>
+          #   ipv4_ihl_err: <value in [drop, trap-to-host]>
+          #   ipv4_len_err: <value in [drop, trap-to-host]>
+          #   ipv4_opt_err: <value in [drop, trap-to-host]>
+          #   ipv4_ttlzero_err: <value in [drop, trap-to-host]>
+          #   ipv4_ver_err: <value in [drop, trap-to-host]>
+          #   ipv6_exthdr_len_err: <value in [drop, trap-to-host]>
+          #   ipv6_exthdr_order_err: <value in [drop, trap-to-host]>
+          #   ipv6_ihl_err: <value in [drop, trap-to-host]>
+          #   ipv6_plen_zero: <value in [drop, trap-to-host]>
+          #   ipv6_ver_err: <value in [drop, trap-to-host]>
+          #   tcp_csum_err: <value in [drop, trap-to-host]>
+          #   tcp_hlen_err: <value in [drop, trap-to-host]>
+          #   tcp_plen_err: <value in [drop, trap-to-host]>
+          #   udp_csum_err: <value in [drop, trap-to-host]>
+          #   udp_hlen_err: <value in [drop, trap-to-host]>
+          #   udp_len_err: <value in [drop, trap-to-host]>
+          #   udp_plen_err: <value in [drop, trap-to-host]>
+          #   udplite_cover_err: <value in [drop, trap-to-host]>
+          #   udplite_csum_err: <value in [drop, trap-to-host, allow]>
+          #   unknproto_minlen_err: <value in [drop, trap-to-host]>
+          #   tcp_fin_only: <value in [allow, drop, trap-to-host]>
+          #   ipv4_optsecurity: <value in [allow, drop, trap-to-host]>
+          #   ipv6_optralert: <value in [allow, drop, trap-to-host]>
+          #   tcp_syn_fin: <value in [allow, drop, trap-to-host]>
+          #   ipv4_proto_err: <value in [allow, drop, trap-to-host]>
+          #   ipv6_saddr_err: <value in [allow, drop, trap-to-host]>
+          #   icmp_frag: <value in [allow, drop, trap-to-host]>
+          #   ipv4_optssrr: <value in [allow, drop, trap-to-host]>
+          #   ipv6_opthomeaddr: <value in [allow, drop, trap-to-host]>
+          #   udp_land: <value in [allow, drop, trap-to-host]>
+          #   ipv6_optinvld: <value in [allow, drop, trap-to-host]>
+          #   tcp_fin_noack: <value in [allow, drop, trap-to-host]>
+          #   ipv6_proto_err: <value in [allow, drop, trap-to-host]>
+          #   tcp_land: <value in [allow, drop, trap-to-host]>
+          #   ipv4_unknopt: <value in [allow, drop, trap-to-host]>
+          #   ipv4_optstream: <value in [allow, drop, trap-to-host]>
+          #   ipv6_optjumbo: <value in [allow, drop, trap-to-host]>
+          #   icmp_land: <value in [allow, drop, trap-to-host]>
+          #   tcp_winnuke: <value in [allow, drop, trap-to-host]>
+          #   ipv6_daddr_err: <value in [allow, drop, trap-to-host]>
+          #   ipv4_land: <value in [allow, drop, trap-to-host]>
+          #   ipv6_opttunnel: <value in [allow, drop, trap-to-host]>
+          #   tcp_no_flag: <value in [allow, drop, trap-to-host]>
+          #   ipv6_land: <value in [allow, drop, trap-to-host]>
+          #   ipv4_optlsrr: <value in [allow, drop, trap-to-host]>
+          #   ipv4_opttimestamp: <value in [allow, drop, trap-to-host]>
+          #   ipv4_optrr: <value in [allow, drop, trap-to-host]>
+          #   ipv6_optnsap: <value in [allow, drop, trap-to-host]>
+          #   ipv6_unknopt: <value in [allow, drop, trap-to-host]>
+          #   tcp_syn_data: <value in [allow, drop, trap-to-host]>
+          #   ipv6_optendpid: <value in [allow, drop, trap-to-host]>
+          #   gtpu_plen_err: <value in [drop, trap-to-host]>
+          #   vxlan_minlen_err: <value in [drop, trap-to-host]>
+          #   capwap_minlen_err: <value in [drop, trap-to-host]>
+          #   gre_csum_err: <value in [drop, trap-to-host, allow]>
+          #   nvgre_minlen_err: <value in [drop, trap-to-host]>
+          #   sctp_l4len_err: <value in [drop, trap-to-host]>
+          #   tcp_hlenvsl4len_err: <value in [drop, trap-to-host]>
+          #   sctp_crc_err: <value in [drop, trap-to-host]>
+          #   sctp_clen_err: <value in [drop, trap-to-host]>
+          #   uesp_minlen_err: <value in [drop, trap-to-host]>
+          #   sctp_csum_err: <value in [allow, drop, trap-to-host]>
+          # gtp_enhanced_cpu_range: <value in [0, 1, 2]>
+          # gtp_enhanced_mode: <value in [disable, enable]>
+          # host_shortcut_mode: <value in [bi-directional, host-shortcut]>
+          # htx_gtse_quota: <value in [100Mbps, 200Mbps, 300Mbps, ...]>
+          # intf_shaping_offload: <value in [disable, enable]>
+          # iph_rsvd_re_cksum: <value in [disable, enable]>
+          # ipsec_dec_subengine_mask: <string>
+          # ipsec_enc_subengine_mask: <string>
+          # ipsec_inbound_cache: <value in [disable, enable]>
+          # ipsec_mtu_override: <value in [disable, enable]>
+          # ipsec_over_vlink: <value in [disable, enable]>
+          # isf_np_queues:
+          #   cos0: <string>
+          #   cos1: <string>
+          #   cos2: <string>
+          #   cos3: <string>
+          #   cos4: <string>
+          #   cos5: <string>
+          #   cos6: <string>
+          #   cos7: <string>
+          # lag_out_port_select: <value in [disable, enable]>
+          # mcast_session_accounting: <value in [disable, session-based, tpe-based]>
+          # np6_cps_optimization_mode: <value in [disable, enable]>
+          # per_session_accounting: <value in [enable, disable, enable-by-log, ...]>
+          # port_cpu_map:
+          #   - cpu_core: <string>
+          #     interface: <string>
+          # port_npu_map:
+          #   - interface: <string>
+          #     npu_group_index: <integer>
+          # priority_protocol:
+          #   bfd: <value in [disable, enable]>
+          #   bgp: <value in [disable, enable]>
+          #   slbc: <value in [disable, enable]>
+          # qos_mode: <value in [disable, priority, round-robin]>
+          # rdp_offload: <value in [disable, enable]>
+          # recover_np6_link: <value in [disable, enable]>
+          # session_denied_offload: <value in [disable, enable]>
+          # sse_backpressure: <value in [disable, enable]>
+          # strip_clear_text_padding: <value in [disable, enable]>
+          # strip_esp_padding: <value in [disable, enable]>
+          # sw_eh_hash:
+          #   computation: <value in [xor16, xor8, xor4, ...]>
+          #   destination_ip_lower_16: <value in [include, exclude]>
+          #   destination_ip_upper_16: <value in [include, exclude]>
+          #   destination_port: <value in [include, exclude]>
+          #   ip_protocol: <value in [include, exclude]>
+          #   netmask_length: <integer>
+          #   source_ip_lower_16: <value in [include, exclude]>
+          #   source_ip_upper_16: <value in [include, exclude]>
+          #   source_port: <value in [include, exclude]>
+          # sw_np_bandwidth: <value in [0G, 2G, 4G, ...]>
+          # switch_np_hash: <value in [src-ip, dst-ip, src-dst-ip]>
+          # uesp_offload: <value in [disable, enable]>
+          # np_queues:
+          #   ethernet_type:
+          #     - name: <string>
+          #       queue: <integer>
+          #       type: <integer>
+          #       weight: <integer>
+          #   ip_protocol:
+          #     - name: <string>
+          #       protocol: <integer>
+          #       queue: <integer>
+          #       weight: <integer>
+          #   ip_service:
+          #     - dport: <integer>
+          #       name: <string>
+          #       protocol: <integer>
+          #       queue: <integer>
+          #       sport: <integer>
+          #       weight: <integer>
+          #   profile:
+          #     - cos0: <value in [queue0, queue1, queue2, ...]>
+          #       cos1: <value in [queue0, queue1, queue2, ...]>
+          #       cos2: <value in [queue0, queue1, queue2, ...]>
+          #       cos3: <value in [queue0, queue1, queue2, ...]>
+          #       cos4: <value in [queue0, queue1, queue2, ...]>
+          #       cos5: <value in [queue0, queue1, queue2, ...]>
+          #       cos6: <value in [queue0, queue1, queue2, ...]>
+          #       cos7: <value in [queue0, queue1, queue2, ...]>
+          #       dscp0: <value in [queue0, queue1, queue2, ...]>
+          #       dscp1: <value in [queue0, queue1, queue2, ...]>
+          #       dscp10: <value in [queue0, queue1, queue2, ...]>
+          #       dscp11: <value in [queue0, queue1, queue2, ...]>
+          #       dscp12: <value in [queue0, queue1, queue2, ...]>
+          #       dscp13: <value in [queue0, queue1, queue2, ...]>
+          #       dscp14: <value in [queue0, queue1, queue2, ...]>
+          #       dscp15: <value in [queue0, queue1, queue2, ...]>
+          #       dscp16: <value in [queue0, queue1, queue2, ...]>
+          #       dscp17: <value in [queue0, queue1, queue2, ...]>
+          #       dscp18: <value in [queue0, queue1, queue2, ...]>
+          #       dscp19: <value in [queue0, queue1, queue2, ...]>
+          #       dscp2: <value in [queue0, queue1, queue2, ...]>
+          #       dscp20: <value in [queue0, queue1, queue2, ...]>
+          #       dscp21: <value in [queue0, queue1, queue2, ...]>
+          #       dscp22: <value in [queue0, queue1, queue2, ...]>
+          #       dscp23: <value in [queue0, queue1, queue2, ...]>
+          #       dscp24: <value in [queue0, queue1, queue2, ...]>
+          #       dscp25: <value in [queue0, queue1, queue2, ...]>
+          #       dscp26: <value in [queue0, queue1, queue2, ...]>
+          #       dscp27: <value in [queue0, queue1, queue2, ...]>
+          #       dscp28: <value in [queue0, queue1, queue2, ...]>
+          #       dscp29: <value in [queue0, queue1, queue2, ...]>
+          #       dscp3: <value in [queue0, queue1, queue2, ...]>
+          #       dscp30: <value in [queue0, queue1, queue2, ...]>
+          #       dscp31: <value in [queue0, queue1, queue2, ...]>
+          #       dscp32: <value in [queue0, queue1, queue2, ...]>
+          #       dscp33: <value in [queue0, queue1, queue2, ...]>
+          #       dscp34: <value in [queue0, queue1, queue2, ...]>
+          #       dscp35: <value in [queue0, queue1, queue2, ...]>
+          #       dscp36: <value in [queue0, queue1, queue2, ...]>
+          #       dscp37: <value in [queue0, queue1, queue2, ...]>
+          #       dscp38: <value in [queue0, queue1, queue2, ...]>
+          #       dscp39: <value in [queue0, queue1, queue2, ...]>
+          #       dscp4: <value in [queue0, queue1, queue2, ...]>
+          #       dscp40: <value in [queue0, queue1, queue2, ...]>
+          #       dscp41: <value in [queue0, queue1, queue2, ...]>
+          #       dscp42: <value in [queue0, queue1, queue2, ...]>
+          #       dscp43: <value in [queue0, queue1, queue2, ...]>
+          #       dscp44: <value in [queue0, queue1, queue2, ...]>
+          #       dscp45: <value in [queue0, queue1, queue2, ...]>
+          #       dscp46: <value in [queue0, queue1, queue2, ...]>
+          #       dscp47: <value in [queue0, queue1, queue2, ...]>
+          #       dscp48: <value in [queue0, queue1, queue2, ...]>
+          #       dscp49: <value in [queue0, queue1, queue2, ...]>
+          #       dscp5: <value in [queue0, queue1, queue2, ...]>
+          #       dscp50: <value in [queue0, queue1, queue2, ...]>
+          #       dscp51: <value in [queue0, queue1, queue2, ...]>
+          #       dscp52: <value in [queue0, queue1, queue2, ...]>
+          #       dscp53: <value in [queue0, queue1, queue2, ...]>
+          #       dscp54: <value in [queue0, queue1, queue2, ...]>
+          #       dscp55: <value in [queue0, queue1, queue2, ...]>
+          #       dscp56: <value in [queue0, queue1, queue2, ...]>
+          #       dscp57: <value in [queue0, queue1, queue2, ...]>
+          #       dscp58: <value in [queue0, queue1, queue2, ...]>
+          #       dscp59: <value in [queue0, queue1, queue2, ...]>
+          #       dscp6: <value in [queue0, queue1, queue2, ...]>
+          #       dscp60: <value in [queue0, queue1, queue2, ...]>
+          #       dscp61: <value in [queue0, queue1, queue2, ...]>
+          #       dscp62: <value in [queue0, queue1, queue2, ...]>
+          #       dscp63: <value in [queue0, queue1, queue2, ...]>
+          #       dscp7: <value in [queue0, queue1, queue2, ...]>
+          #       dscp8: <value in [queue0, queue1, queue2, ...]>
+          #       dscp9: <value in [queue0, queue1, queue2, ...]>
+          #       id: <integer>
+          #       type: <value in [cos, dscp]>
+          #       weight: <integer>
+          #   scheduler:
+          #     - mode: <value in [none, priority, round-robin]>
+          #       name: <string>
+          #   custom_etype_lookup: <value in [disable, enable]>
+          # udp_timeout_profile:
+          #   - id: <integer>
+          #     udp_idle: <integer>
+          # qtm_buf_mode: <value in [6ch, 4ch]>
+          # default_qos_type: <value in [policing, shaping, policing-enhanced]>
+          # tcp_rst_timeout: <integer>
+          # ipsec_local_uesp_port: <integer>
+          # htab_dedi_queue_nr: <integer>
+          # double_level_mcast_offload: <value in [disable, enable]>
+          # dse_timeout: <integer>
+          # ippool_overload_low: <integer>
+          # pba_eim: <value in [disallow, allow]>
+          # policy_offload_level: <value in [disable, dos-offload, full-offload]>
+          # max_session_timeout: <integer>
+          # port_path_option:
+          #   ports_using_npu: <list or string>
+          # vlan_lookup_cache: <value in [disable, enable]>
+          # dos_options:
+          #   npu_dos_meter_mode: <value in [local, global]>
+          #   npu_dos_synproxy_mode: <value in [synack2ack, pass-synack]>
+          #   npu_dos_tpe_mode: <value in [disable, enable]>
+          # hash_tbl_spread: <value in [disable, enable]>
+          # tcp_timeout_profile:
+          #   - close_wait: <integer>
+          #     fin_wait: <integer>
+          #     id: <integer>
+          #     syn_sent: <integer>
+          #     syn_wait: <integer>
+          #     tcp_idle: <integer>
+          #     time_wait: <integer>
+          # ip_reassembly:
+          #   max_timeout: <integer>
+          #   min_timeout: <integer>
+          #   status: <value in [disable, enable]>
+          # gtp_support: <value in [disable, enable]>
+          # htx_icmp_csum_chk: <value in [pass, drop]>
+          # hpe:
+          #   all_protocol: <integer>
+          #   arp_max: <integer>
+          #   enable_shaper: <value in [disable, enable]>
+          #   esp_max: <integer>
+          #   high_priority: <integer>
+          #   icmp_max: <integer>
+          #   ip_frag_max: <integer>
+          #   ip_others_max: <integer>
+          #   l2_others_max: <integer>
+          #   pri_type_max: <integer>
+          #   sctp_max: <integer>
+          #   tcp_max: <integer>
+          #   tcpfin_rst_max: <integer>
+          #   tcpsyn_ack_max: <integer>
+          #   tcpsyn_max: <integer>
+          #   udp_max: <integer>
+          #   enable_queue_shaper: <value in [disable, enable]>
+          #   exception_code: <integer>
+          #   fragment_with_sess: <integer>
+          #   fragment_without_session: <integer>
+          #   queue_shaper_max: <integer>
+          # dsw_dts_profile:
+          #   - action: <value in [wait, drop, drop_tmr_0, ...]>
+          #     min_limit: <integer>
+          #     profile_id: <integer>
+          #     step: <integer>
+          # hash_config: <value in [5-tuple, src-ip, src-dst-ip]>
+          # ipsec_ob_np_sel: <value in [RR, rr, Packet, ...]>
+          # napi_break_interval: <integer>
+          # background_sse_scan:
+          #   scan: <value in [disable, enable]>
+          #   stats_update_interval: <integer>
+          #   udp_keepalive_interval: <integer>
+          #   scan_stale: <integer>
+          #   scan_vt: <integer>
+          #   stats_qual_access: <integer>
+          #   stats_qual_duration: <integer>
+          #   udp_qual_access: <integer>
+          #   udp_qual_duration: <integer>
+          # inbound_dscp_copy_port: <list or string>
+          # session_acct_interval: <integer>
+          # htab_msg_queue: <value in [idle, data, dedicated]>
+          # dsw_queue_dts_profile:
+          #   - iport: <value in [EIF0, eif0, EIF1, ...]>
+          #     name: <string>
+          #     oport: <value in [EIF0, eif0, EIF1, ...]>
+          #     profile_id: <integer>
+          #     queue_select: <integer>
+          # hw_ha_scan_interval: <integer>
+          # ippool_overload_high: <integer>
+          # nat46_force_ipv4_packet_forwarding: <value in [disable, enable]>
+          # prp_port_out: <list or string>
+          # isf_np_rx_tr_distr: <value in [port-flow, round-robin, randomized]>
+          # mcast_session_counting6: <value in [disable, enable, session-based, ...]>
+          # prp_port_in: <list or string>
+          # rps_mode: <value in [disable, enable]>
+          # per_policy_accounting: <value in [disable, enable]>
+          # mcast_session_counting: <value in [disable, enable, session-based, ...]>
+          # inbound_dscp_copy: <value in [disable, enable]>
+          # ipsec_host_dfclr: <value in [disable, enable]>
+          # process_icmp_by_host: <value in [disable, enable]>
+          # dedicated_tx_npu: <value in [disable, enable]>
+          # ull_port_mode: <value in [10G, 25G]>
+          # sse_ha_scan:
+          #   gap: <integer>
+          #   max_session_cnt: <integer>
+          #   min_duration: <integer>
+          # hash_ipv6_sel: <integer>
+          # ip_fragment_offload: <value in [disable, enable]>
+          # ple_non_syn_tcp_action: <value in [forward, drop]>
+          # npu_group_effective_scope: <integer>
+          # ipsec_STS_timeout: <value in [1, 2, 3, ...]>
+          # ipsec_throughput_msg_frequency: <value in [disable, 32KB, 64KB, ...]>
+          # ipt_STS_timeout: <value in [1, 2, 3, ...]>
+          # ipt_throughput_msg_frequency: <value in [disable, 32KB, 64KB, ...]>
+          # default_tcp_refresh_dir: <value in [both, outgoing, incoming]>
+          # default_udp_refresh_dir: <value in [both, outgoing, incoming]>
+          # nss_threads_option: <value in [4t-eif, 4t-noeif, 2t]>
+          # prp_session_clear_mode: <value in [blocking, non-blocking, do-not-clear]>
+          # shaping_stats: <value in [disable, enable]>
+          # sw_tr_hash:
+          #   draco15: <value in [disable, enable]>
+          #   tcp_udp_port: <value in [include, exclude]>
+          # pba_port_select_mode: <value in [random, direct]>
+          # spa_port_select_mode: <value in [random, direct]>
+          # split_ipsec_engines: <value in [disable, enable]>
+          # tunnel_over_vlink: <value in [disable, enable]>
+          # max_receive_unit: <integer>
+          # npu_tcam:
+          #   - data:
+          #       df: <value in [disable, enable]>
+          #       dstip: <string>
+          #       dstipv6: <string>
+          #       dstmac: <string>
+          #       dstport: <integer>
+          #       ethertype: <string>
+          #       ext_tag: <value in [disable, enable]>
+          #       frag_off: <integer>
+          #       gen_buf_cnt: <integer>
+          #       gen_iv: <value in [invalid, valid]>
+          #       gen_l3_flags: <integer>
+          #       gen_l4_flags: <integer>
+          #       gen_pkt_ctrl: <integer>
+          #       gen_pri: <integer>
+          #       gen_pri_v: <value in [invalid, valid]>
+          #       gen_tv: <value in [invalid, valid]>
+          #       ihl: <integer>
+          #       ip4_id: <integer>
+          #       ip6_fl: <integer>
+          #       ipver: <integer>
+          #       l4_wd10: <integer>
+          #       l4_wd11: <integer>
+          #       l4_wd8: <integer>
+          #       l4_wd9: <integer>
+          #       mf: <value in [disable, enable]>
+          #       protocol: <integer>
+          #       slink: <integer>
+          #       smac_change: <value in [disable, enable]>
+          #       sp: <integer>
+          #       src_cfi: <value in [disable, enable]>
+          #       src_prio: <integer>
+          #       src_updt: <value in [disable, enable]>
+          #       srcip: <string>
+          #       srcipv6: <string>
+          #       srcmac: <string>
+          #       srcport: <integer>
+          #       svid: <integer>
+          #       tcp_ack: <value in [disable, enable]>
+          #       tcp_cwr: <value in [disable, enable]>
+          #       tcp_ece: <value in [disable, enable]>
+          #       tcp_fin: <value in [disable, enable]>
+          #       tcp_push: <value in [disable, enable]>
+          #       tcp_rst: <value in [disable, enable]>
+          #       tcp_syn: <value in [disable, enable]>
+          #       tcp_urg: <value in [disable, enable]>
+          #       tgt_cfi: <value in [disable, enable]>
+          #       tgt_prio: <integer>
+          #       tgt_updt: <value in [disable, enable]>
+          #       tgt_v: <value in [invalid, valid]>
+          #       tos: <integer>
+          #       tp: <integer>
+          #       ttl: <integer>
+          #       tvid: <integer>
+          #       vdid: <integer>
+          #     dbg_dump: <integer>
+          #     mask:
+          #       df: <value in [disable, enable]>
+          #       dstip: <string>
+          #       dstipv6: <string>
+          #       dstmac: <string>
+          #       dstport: <integer>
+          #       ethertype: <string>
+          #       ext_tag: <value in [disable, enable]>
+          #       frag_off: <integer>
+          #       gen_buf_cnt: <integer>
+          #       gen_iv: <value in [invalid, valid]>
+          #       gen_l3_flags: <integer>
+          #       gen_l4_flags: <integer>
+          #       gen_pkt_ctrl: <integer>
+          #       gen_pri: <integer>
+          #       gen_pri_v: <value in [invalid, valid]>
+          #       gen_tv: <value in [invalid, valid]>
+          #       ihl: <integer>
+          #       ip4_id: <integer>
+          #       ip6_fl: <integer>
+          #       ipver: <integer>
+          #       l4_wd10: <integer>
+          #       l4_wd11: <integer>
+          #       l4_wd8: <integer>
+          #       l4_wd9: <integer>
+          #       mf: <value in [disable, enable]>
+          #       protocol: <integer>
+          #       slink: <integer>
+          #       smac_change: <value in [disable, enable]>
+          #       sp: <integer>
+          #       src_cfi: <value in [disable, enable]>
+          #       src_prio: <integer>
+          #       src_updt: <value in [disable, enable]>
+          #       srcip: <string>
+          #       srcipv6: <string>
+          #       srcmac: <string>
+          #       srcport: <integer>
+          #       svid: <integer>
+          #       tcp_ack: <value in [disable, enable]>
+          #       tcp_cwr: <value in [disable, enable]>
+          #       tcp_ece: <value in [disable, enable]>
+          #       tcp_fin: <value in [disable, enable]>
+          #       tcp_push: <value in [disable, enable]>
+          #       tcp_rst: <value in [disable, enable]>
+          #       tcp_syn: <value in [disable, enable]>
+          #       tcp_urg: <value in [disable, enable]>
+          #       tgt_cfi: <value in [disable, enable]>
+          #       tgt_prio: <integer>
+          #       tgt_updt: <value in [disable, enable]>
+          #       tgt_v: <value in [invalid, valid]>
+          #       tos: <integer>
+          #       tp: <integer>
+          #       ttl: <integer>
+          #       tvid: <integer>
+          #       vdid: <integer>
+          #     mir_act:
+          #       vlif: <integer>
+          #     name: <string>
+          #     oid: <integer>
+          #     pri_act:
+          #       priority: <integer>
+          #       weight: <integer>
+          #     sact:
+          #       act: <integer>
+          #       act_v: <value in [disable, enable]>
+          #       bmproc: <integer>
+          #       bmproc_v: <value in [disable, enable]>
+          #       df_lif: <integer>
+          #       df_lif_v: <value in [disable, enable]>
+          #       dfr: <integer>
+          #       dfr_v: <value in [disable, enable]>
+          #       dmac_skip: <integer>
+          #       dmac_skip_v: <value in [disable, enable]>
+          #       dosen: <integer>
+          #       dosen_v: <value in [disable, enable]>
+          #       espff_proc: <integer>
+          #       espff_proc_v: <value in [disable, enable]>
+          #       etype_pid: <integer>
+          #       etype_pid_v: <value in [disable, enable]>
+          #       frag_proc: <integer>
+          #       frag_proc_v: <value in [disable, enable]>
+          #       fwd: <integer>
+          #       fwd_lif: <integer>
+          #       fwd_lif_v: <value in [disable, enable]>
+          #       fwd_tvid: <integer>
+          #       fwd_tvid_v: <value in [disable, enable]>
+          #       fwd_v: <value in [disable, enable]>
+          #       icpen: <integer>
+          #       icpen_v: <value in [disable, enable]>
+          #       igmp_mld_snp: <integer>
+          #       igmp_mld_snp_v: <value in [disable, enable]>
+          #       learn: <integer>
+          #       learn_v: <value in [disable, enable]>
+          #       m_srh_ctrl: <integer>
+          #       m_srh_ctrl_v: <value in [disable, enable]>
+          #       mac_id: <integer>
+          #       mac_id_v: <value in [disable, enable]>
+          #       mss: <integer>
+          #       mss_v: <value in [disable, enable]>
+          #       pleen: <integer>
+          #       pleen_v: <value in [disable, enable]>
+          #       prio_pid: <integer>
+          #       prio_pid_v: <value in [disable, enable]>
+          #       promis: <integer>
+          #       promis_v: <value in [disable, enable]>
+          #       rfsh: <integer>
+          #       rfsh_v: <value in [disable, enable]>
+          #       smac_skip: <integer>
+          #       smac_skip_v: <value in [disable, enable]>
+          #       tp_smchk_v: <value in [disable, enable]>
+          #       tp_smchk: <integer>
+          #       tpe_id: <integer>
+          #       tpe_id_v: <value in [disable, enable]>
+          #       vdm: <integer>
+          #       vdm_v: <value in [disable, enable]>
+          #       vdom_id: <integer>
+          #       vdom_id_v: <value in [disable, enable]>
+          #       x_mode: <integer>
+          #       x_mode_v: <value in [disable, enable]>
+          #     tact:
+          #       act: <integer>
+          #       act_v: <value in [disable, enable]>
+          #       fmtuv4_s: <integer>
+          #       fmtuv4_s_v: <value in [disable, enable]>
+          #       fmtuv6_s: <integer>
+          #       fmtuv6_s_v: <value in [disable, enable]>
+          #       lnkid: <integer>
+          #       lnkid_v: <value in [disable, enable]>
+          #       mac_id: <integer>
+          #       mac_id_v: <value in [disable, enable]>
+          #       mss_t: <integer>
+          #       mss_t_v: <value in [disable, enable]>
+          #       mtuv4: <integer>
+          #       mtuv4_v: <value in [disable, enable]>
+          #       mtuv6: <integer>
+          #       mtuv6_v: <value in [disable, enable]>
+          #       slif_act: <integer>
+          #       slif_act_v: <value in [disable, enable]>
+          #       sublnkid: <integer>
+          #       sublnkid_v: <value in [disable, enable]>
+          #       tgtv_act: <integer>
+          #       tgtv_act_v: <value in [disable, enable]>
+          #       tlif_act: <integer>
+          #       tlif_act_v: <value in [disable, enable]>
+          #       tpeid: <integer>
+          #       tpeid_v: <value in [disable, enable]>
+          #       v6fe: <integer>
+          #       v6fe_v: <value in [disable, enable]>
+          #       vep_en_v: <value in [disable, enable]>
+          #       vep_slid: <integer>
+          #       vep_slid_v: <value in [disable, enable]>
+          #       vep_en: <integer>
+          #       xlt_lif: <integer>
+          #       xlt_lif_v: <value in [disable, enable]>
+          #       xlt_vid: <integer>
+          #       xlt_vid_v: <value in [disable, enable]>
+          #     type: <value in [L2_src_tc, L2_tgt_tc, L2_src_mir, ...]>
+          #     vid: <integer>
+          # icmp_rate_ctrl:
+          #   icmp_v4_bucket_size: <integer>
+          #   icmp_v4_rate: <integer>
+          #   icmp_v6_bucket_size: <integer>
+          #   icmp_v6_rate: <integer>
+          # vxlan_offload: <value in [disable, enable]>
+          # icmp_error_rate_ctrl:
+          #   icmpv4_error_bucket_size: <integer>
+          #   icmpv4_error_rate: <integer>
+          #   icmpv4_error_rate_limit: <value in [disable, enable]>
+          #   icmpv6_error_bucket_size: <integer>
+          #   icmpv6_error_rate: <integer>
+          #   icmpv6_error_rate_limit: <value in [disable, enable]>
+          # ipv4_session_quota: <value in [disable, enable]>
+          # ipv4_session_quota_high: <integer>
+          # ipv4_session_quota_low: <integer>
+          # ipv6_prefix_session_quota: <value in [disable, enable]>
+          # ipv6_prefix_session_quota_high: <integer>
+          # ipv6_prefix_session_quota_low: <integer>
+          # dedicated_lacp_queue: <value in [disable, enable]>
+          # ipsec_ordering: <value in [disable, enable]>
+          # sw_np_pause: <value in [disable, enable]>
+          # sw_np_rate: <integer>
+          # sw_np_rate_unit: <value in [mbps, pps]>
 '''
 
 RETURN = '''
@@ -4617,7 +4645,7 @@ def main():
                         'udp-len-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
                         'udp-plen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
                         'udplite-cover-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'udplite-csum-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
+                        'udplite-csum-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host', 'allow'], 'type': 'str'},
                         'unknproto-minlen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
                         'tcp-fin-only': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['allow', 'drop', 'trap-to-host'], 'type': 'str'},
                         'ipv4-optsecurity': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['allow', 'drop', 'trap-to-host'], 'type': 'str'},
@@ -4654,17 +4682,17 @@ def main():
                         'ipv6-unknopt': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['allow', 'drop', 'trap-to-host'], 'type': 'str'},
                         'tcp-syn-data': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['allow', 'drop', 'trap-to-host'], 'type': 'str'},
                         'ipv6-optendpid': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['allow', 'drop', 'trap-to-host'], 'type': 'str'},
-                        'gtpu-plen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'vxlan-minlen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'capwap-minlen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'gre-csum-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'nvgre-minlen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'sctp-l4len-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'tcp-hlenvsl4len-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'sctp-crc-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'sctp-clen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'uesp-minlen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
-                        'sctp-csum-err': {'v_range': [['7.2.5', '7.2.8'], ['7.4.3', '']], 'choices': ['allow', 'drop', 'trap-to-host'], 'type': 'str'}
+                        'gtpu-plen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
+                        'vxlan-minlen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
+                        'capwap-minlen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
+                        'gre-csum-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['drop', 'trap-to-host', 'allow'], 'type': 'str'},
+                        'nvgre-minlen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
+                        'sctp-l4len-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
+                        'tcp-hlenvsl4len-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
+                        'sctp-crc-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
+                        'sctp-clen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
+                        'uesp-minlen-err': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['drop', 'trap-to-host'], 'type': 'str'},
+                        'sctp-csum-err': {'v_range': [['7.2.5', '7.2.9'], ['7.4.3', '']], 'choices': ['allow', 'drop', 'trap-to-host'], 'type': 'str'}
                     }
                 },
                 'gtp-enhanced-cpu-range': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['0', '1', '2'], 'type': 'str'},
@@ -5184,7 +5212,8 @@ def main():
                                 'name': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'type': 'str'}
                             },
                             'elements': 'dict'
-                        }
+                        },
+                        'custom-etype-lookup': {'v_range': [['7.4.7', '7.4.7']], 'choices': ['disable', 'enable'], 'type': 'str'}
                     }
                 },
                 'udp-timeout-profile': {
@@ -5281,14 +5310,14 @@ def main():
                         'tcpsyn-max': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'type': 'int'},
                         'udp-max': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'type': 'int'},
                         'enable-queue-shaper': {
-                            'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']],
+                            'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']],
                             'choices': ['disable', 'enable'],
                             'type': 'str'
                         },
-                        'exception-code': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']], 'type': 'int'},
-                        'fragment-with-sess': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']], 'type': 'int'},
-                        'fragment-without-session': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']], 'type': 'int'},
-                        'queue-shaper-max': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']], 'type': 'int'}
+                        'exception-code': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']], 'type': 'int'},
+                        'fragment-with-sess': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']], 'type': 'int'},
+                        'fragment-without-session': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']], 'type': 'int'},
+                        'queue-shaper-max': {'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']], 'type': 'int'}
                     }
                 },
                 'dsw-dts-profile': {
@@ -5316,12 +5345,12 @@ def main():
                         'scan': {'v_range': [['6.4.8', '6.4.15'], ['7.0.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                         'stats-update-interval': {'v_range': [['6.4.8', '6.4.15'], ['7.0.3', '']], 'type': 'int'},
                         'udp-keepalive-interval': {'v_range': [['6.4.8', '6.4.15'], ['7.0.3', '']], 'type': 'int'},
-                        'scan-stale': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                        'scan-vt': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                        'stats-qual-access': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                        'stats-qual-duration': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                        'udp-qual-access': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                        'udp-qual-duration': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'}
+                        'scan-stale': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                        'scan-vt': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                        'stats-qual-access': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                        'stats-qual-duration': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                        'udp-qual-access': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                        'udp-qual-duration': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'}
                     }
                 },
                 'inbound-dscp-copy-port': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'type': 'raw'},
@@ -5377,11 +5406,11 @@ def main():
                 'rps-mode': {'v_range': [['6.4.8', '6.4.15'], ['7.0.4', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'per-policy-accounting': {'v_range': [['6.4.8', '6.4.15'], ['7.0.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'mcast-session-counting': {
-                    'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']],
+                    'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']],
                     'choices': ['disable', 'enable', 'session-based', 'tpe-based'],
                     'type': 'str'
                 },
-                'inbound-dscp-copy': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'inbound-dscp-copy': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'ipsec-host-dfclr': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.2.1']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'process-icmp-by-host': {'v_range': [['6.4.7', '6.4.15'], ['7.0.1', '7.2.1']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'dedicated-tx-npu': {'v_range': [['6.4.7', '6.4.15']], 'choices': ['disable', 'enable'], 'type': 'str'},
@@ -5400,12 +5429,12 @@ def main():
                 'ple-non-syn-tcp-action': {'v_range': [['7.0.5', '7.0.13'], ['7.2.2', '']], 'choices': ['forward', 'drop'], 'type': 'str'},
                 'npu-group-effective-scope': {'v_range': [['7.0.6', '7.0.13'], ['7.2.2', '']], 'type': 'int'},
                 'ipsec-STS-timeout': {
-                    'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']],
+                    'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']],
                     'choices': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
                     'type': 'str'
                 },
                 'ipsec-throughput-msg-frequency': {
-                    'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']],
+                    'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']],
                     'choices': [
                         'disable', '32KB', '64KB', '128KB', '256KB', '512KB', '1MB', '2MB', '4MB', '8MB', '16MB', '32MB', '64MB', '128MB', '256MB',
                         '512MB', '1GB'
@@ -5413,12 +5442,12 @@ def main():
                     'type': 'str'
                 },
                 'ipt-STS-timeout': {
-                    'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']],
+                    'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']],
                     'choices': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
                     'type': 'str'
                 },
                 'ipt-throughput-msg-frequency': {
-                    'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.8'], ['7.4.2', '']],
+                    'v_range': [['7.0.9', '7.0.13'], ['7.2.4', '7.2.9'], ['7.4.2', '']],
                     'choices': [
                         'disable', '32KB', '64KB', '128KB', '256KB', '512KB', '1MB', '2MB', '4MB', '8MB', '16MB', '32MB', '64MB', '128MB', '256MB',
                         '512MB', '1GB'
@@ -5426,17 +5455,17 @@ def main():
                     'type': 'str'
                 },
                 'default-tcp-refresh-dir': {
-                    'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']],
+                    'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']],
                     'choices': ['both', 'outgoing', 'incoming'],
                     'type': 'str'
                 },
                 'default-udp-refresh-dir': {
-                    'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']],
+                    'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']],
                     'choices': ['both', 'outgoing', 'incoming'],
                     'type': 'str'
                 },
                 'nss-threads-option': {
-                    'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.2', '']],
+                    'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.2', '']],
                     'choices': ['4t-eif', '4t-noeif', '2t'],
                     'type': 'str'
                 },
@@ -5450,10 +5479,10 @@ def main():
                         'tcp-udp-port': {'v_range': [['7.2.4', '']], 'choices': ['include', 'exclude'], 'type': 'str'}
                     }
                 },
-                'pba-port-select-mode': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'choices': ['random', 'direct'], 'type': 'str'},
-                'spa-port-select-mode': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'choices': ['random', 'direct'], 'type': 'str'},
-                'split-ipsec-engines': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'tunnel-over-vlink': {'v_range': [['7.2.5', '7.2.8'], ['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'pba-port-select-mode': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'choices': ['random', 'direct'], 'type': 'str'},
+                'spa-port-select-mode': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'choices': ['random', 'direct'], 'type': 'str'},
+                'split-ipsec-engines': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'tunnel-over-vlink': {'v_range': [['7.2.5', '7.2.9'], ['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'max-receive-unit': {'v_range': [['7.4.2', '']], 'type': 'int'},
                 'npu-tcam': {
                     'v_range': [['7.4.2', '']],
@@ -5734,7 +5763,11 @@ def main():
                 'ipv6-prefix-session-quota': {'v_range': [['7.6.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'ipv6-prefix-session-quota-high': {'v_range': [['7.6.0', '']], 'type': 'int'},
                 'ipv6-prefix-session-quota-low': {'v_range': [['7.6.0', '']], 'type': 'int'},
-                'dedicated-lacp-queue': {'v_range': [['7.4.4', '7.4.5']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'dedicated-lacp-queue': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'ipsec-ordering': {'v_range': [['7.4.7', '7.4.7']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'sw-np-pause': {'v_range': [['7.4.7', '7.4.7'], ['7.6.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'sw-np-rate': {'v_range': [['7.4.7', '7.4.7'], ['7.6.3', '']], 'type': 'int'},
+                'sw-np-rate-unit': {'v_range': [['7.4.7', '7.4.7'], ['7.6.3', '']], 'choices': ['mbps', 'pps'], 'type': 'str'}
             }
         }
     }

@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "cisco",
   "name": "dnac",
-  "version": "6.25.0",
+  "version": "6.39.0",
   "authors": [
    "Rafael Campos <rcampos@altus.cr>",
    "William Astorga <wastorga@altus.cr>",
@@ -24,7 +24,8 @@
    "A Mohamed Rafeek <mabdulk2@cisco.com>",
    "Trupti A Shetty <trashett@cisco.com>",
    "Sonali Deepthi Kesali <skesali@cisco.com>",
-   "Megha Kandari <mekandar@cisco.com>"
+   "Megha Kandari <mekandar@cisco.com>",
+   "Archit Soni <arcsoni@cisco.com>"
   ],
   "readme": "README.md",
   "tags": [
@@ -39,7 +40,7 @@
   "license": [],
   "license_file": "LICENSE",
   "dependencies": {
-   "ansible.utils": ">=2.0.0,<6.0"
+   "ansible.utils": ">=2.0.0,<7.0"
   },
   "repository": "https://github.com/cisco-en-programmability/dnacenter-ansible",
   "documentation": "https://cisco-en-programmability.github.io/dnacenter-ansible/",
@@ -50,7 +51,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "eca6f352b04e6d28d3d967fd35cfefe0e9d192707e3c5e4cb9c1755ba5797943",
+  "chksum_sha256": "b96ea4210d9d481446f19240352951a37fc87393db2ccaad756f5cccb283ad31",
   "format": 1
  },
  "format": 1

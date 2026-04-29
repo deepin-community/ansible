@@ -103,6 +103,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -118,8 +119,8 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         system_npu_udptimeoutprofile:
-          id: <integer>
-          udp_idle: <integer>
+          id: 0 # Required variable, integer
+          # udp_idle: <integer>
 '''
 
 RETURN = '''

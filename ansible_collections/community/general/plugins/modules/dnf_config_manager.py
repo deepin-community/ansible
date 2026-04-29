@@ -7,8 +7,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-DOCUMENTATION = r'''
----
+DOCUMENTATION = r"""
 module: dnf_config_manager
 short_description: Enable or disable dnf repositories using config-manager
 version_added: 8.2.0
@@ -40,12 +39,14 @@ options:
     required: false
     type: str
     choices: [enabled, disabled]
+notes:
+  - Does not work with C(dnf5).
 seealso:
   - module: ansible.builtin.dnf
   - module: ansible.builtin.yum_repository
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 - name: Ensure the crb repository is enabled
   community.general.dnf_config_manager:
     name: crb
@@ -57,9 +58,9 @@ EXAMPLES = r'''
       - appstream
       - zfs
     state: disabled
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 repo_states_pre:
   description: Repo IDs before action taken.
   returned: success
@@ -115,12 +116,12 @@ repo_states_post:
       - crb-debug
       - crb-source
 changed_repos:
-    description: Repositories changed.
-    returned: success
-    type: list
-    elements: str
-    sample: [ 'crb' ]
-'''
+  description: Repositories changed.
+  returned: success
+  type: list
+  elements: str
+  sample: ["crb"]
+"""
 
 from ansible.module_utils.basic import AnsibleModule
 import os
@@ -174,8 +175,8 @@ def pack_repo_states_for_return(states):
 
 def main():
     module_args = dict(
-        name=dict(type='list', elements='str', required=False, default=[]),
-        state=dict(type='str', required=False, choices=['enabled', 'disabled'], default='enabled')
+        name=dict(type='list', elements='str', default=[]),
+        state=dict(type='str', choices=['enabled', 'disabled'], default='enabled')
     )
 
     result = dict(

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2020-2024, NetApp, Inc
+# (c) 2020-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # This module implements the operations for ONTAP MCC Mediator.
@@ -25,7 +25,7 @@ short_description: NetApp ONTAP Add and Remove MetroCluster Mediator
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: 20.9.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Add and remove ONTAP MCC Mediator
 options:
@@ -57,28 +57,27 @@ options:
 '''
 
 EXAMPLES = """
-    - name: Add ONTAP MCCIP Mediator
-      na_ontap_mcc_mediator:
-        state: present
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        mediator_address: mediator_ip
-        mediator_user: metrocluster_admin
-        mediator_password: netapp1!
+- name: Add ONTAP MCCIP Mediator
+  netapp.ontap.na_ontap_mcc_mediator:
+    state: present
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    mediator_address: mediator_ip
+    mediator_user: metrocluster_admin
+    mediator_password: metrocluster_password
 
-    - name: Delete ONTAP MCCIP Mediator
-      na_ontap_mcc_mediator:
-        state: absent
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        mediator_user: metrocluster_admin
-        mediator_password: netapp1!
+- name: Delete ONTAP MCCIP Mediator
+  netapp.ontap.na_ontap_mcc_mediator:
+    state: absent
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    mediator_user: metrocluster_admin
+    mediator_password: metrocluster_password
 """
 
 RETURN = """
-
 """
 
 from ansible.module_utils.basic import AnsibleModule

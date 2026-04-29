@@ -1,9 +1,6 @@
 ---
 - name: Create Dashboard from URL | check mode | dashboard does not exist
   community.grafana.grafana_dashboard:
-    grafana_url: "{{ grafana_url }}"
-    grafana_user: "{{ grafana_username }}"
-    grafana_password: "{{ grafana_password }}"
     state: present
     commit_message: Updated by ansible
     dashboard_url: https://grafana.com/api/dashboards/6098/revisions/1/download
@@ -19,9 +16,6 @@
 
 - name: Create Dashboard from URL | run mode | dashboard does not exist
   community.grafana.grafana_dashboard:
-    grafana_url: "{{ grafana_url }}"
-    grafana_user: "{{ grafana_username }}"
-    grafana_password: "{{ grafana_password }}"
     state: present
     commit_message: Updated by ansible
     dashboard_url: https://grafana.com/api/dashboards/6098/revisions/1/download
@@ -33,14 +27,11 @@
       - dfu_result2.failed == false
       - dfu_result2.changed == true
       - dfu_result2.uid is defined
-      - dfu_result2.uid | type_debug == "AnsibleUnsafeText"
+      - dfu_result2.uid is string
       - dfu_result2.msg == 'Dashboard Zabbix Host Status created'
 
 - name: Create Dashboard from URL | check mode | dashboard exists
   community.grafana.grafana_dashboard:
-    grafana_url: "{{ grafana_url }}"
-    grafana_user: "{{ grafana_username }}"
-    grafana_password: "{{ grafana_password }}"
     state: present
     commit_message: Updated by ansible
     dashboard_url: https://grafana.com/api/dashboards/6098/revisions/1/download
@@ -52,14 +43,11 @@
       - dfu_result3.failed == false
       - dfu_result3.changed == false
       - dfu_result3.uid is defined
-      - dfu_result3.uid | type_debug == "AnsibleUnsafeText"
+      - dfu_result3.uid is string
       - dfu_result3.msg == 'Dashboard Zabbix Host Status unchanged.'
 
 - name: Create Dashboard from URL | run mode | dashboard exists
   community.grafana.grafana_dashboard:
-    grafana_url: "{{ grafana_url }}"
-    grafana_user: "{{ grafana_username }}"
-    grafana_password: "{{ grafana_password }}"
     state: present
     commit_message: Updated by ansible
     dashboard_url: https://grafana.com/api/dashboards/6098/revisions/1/download
@@ -71,7 +59,7 @@
       - dfu_result4.failed == false
       - dfu_result4.changed == false
       - dfu_result4.uid is defined
-      - dfu_result4.uid | type_debug == "AnsibleUnsafeText"
+      - dfu_result4.uid is string
       - dfu_result4.msg == 'Dashboard Zabbix Host Status unchanged.'
 
 - ansible.builtin.include_tasks:

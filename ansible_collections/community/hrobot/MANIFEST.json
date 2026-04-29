@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "community",
   "name": "hrobot",
-  "version": "2.0.2",
+  "version": "2.5.0",
   "authors": [
    "Felix Fontein (github.com/felixfontein)"
   ],
@@ -32,7 +32,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "035941dcf8d52bfb0ee4aa059d7623621f3c8b6ae2fb5ad3416770cfa0da2e5c",
+  "chksum_sha256": "779cd7b3ef3305a7c328bbe2b3bde8b71b0b136f314dc1d902b6bf8c22411fae",
   "format": 1
  },
  "format": 1

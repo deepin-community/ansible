@@ -11,8 +11,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: scaleway_function_namespace
 short_description: Scaleway Function namespace management
 version_added: 6.0.0
@@ -80,13 +79,13 @@ options:
   secret_environment_variables:
     description:
       - Secret environment variables of the function namespace.
-      - Updating those values will not output a C(changed) state in Ansible.
+      - Updating those values does not output a C(changed) state in Ansible.
       - Injected in functions at runtime.
     type: dict
     default: {}
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Create a function namespace
   community.general.scaleway_function_namespace:
     project_id: '{{ scw_project }}'
@@ -105,9 +104,9 @@ EXAMPLES = '''
     state: absent
     region: fr-par
     name: my-awesome-function-namespace
-'''
+"""
 
-RETURN = '''
+RETURN = r"""
 function_namespace:
   description: The function namespace information.
   returned: when O(state=present)
@@ -116,7 +115,7 @@ function_namespace:
     description: ""
     environment_variables:
       MY_VAR: my_value
-    error_message: null
+    error_message:
     id: 531a1fd7-98d2-4a74-ad77-d398324304b8
     name: my-awesome-function-namespace
     organization_id: e04e3bdc-015c-4514-afde-9389e9be24b0
@@ -128,7 +127,7 @@ function_namespace:
       - key: MY_SECRET_VAR
         value: $argon2id$v=19$m=65536,t=1,p=2$tb6UwSPWx/rH5Vyxt9Ujfw$5ZlvaIjWwNDPxD9Rdght3NarJz4IETKjpvAU3mMSmFg
     status: pending
-'''
+"""
 
 from copy import deepcopy
 

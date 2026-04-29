@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2021, NetApp, Inc
+# (c) 2021-2025, NetApp, Inc
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -15,7 +15,7 @@ short_description: NetApp ONTAP Sets the snaplock compliance clock.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: '21.4.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Sets the Snaplock compliance clock on NetApp ONTAP.
 
@@ -29,13 +29,12 @@ options:
 '''
 
 EXAMPLES = """
-    - name: Set node compliance clock
-      netapp.ontap.na_ontap_snaplock_clock:
-        node: cluster1-01
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-
+- name: Set node compliance clock
+  netapp.ontap.na_ontap_snaplock_clock:
+    node: cluster1-01
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """

@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "cisco",
   "name": "intersight",
-  "version": "2.0.20",
+  "version": "2.2.0",
   "authors": [
    "David Soper (@dsoper2)"
   ],
@@ -27,7 +27,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "50de69a2bc63d66e60dfe0e6c4819a7cd8ad22879d93a50c8c5d3f88581e5388",
+  "chksum_sha256": "d928a3a51478dead7c8078b9fed36d608e3bd51dee51fc6b6588207a9bed79fe",
   "format": 1
  },
  "format": 1

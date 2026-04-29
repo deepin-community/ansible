@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -107,6 +108,14 @@ options:
                 choices:
                     - 'enable'
                     - 'disable'
+            login_lockout_upon_downgrade:
+                description:
+                    - Enable/disable administrative user login lockout upon downgrade (defaut = disable). If enabled, downgrading the FortiOS firmware to a
+                       lower version where safer passwords are unsupported will lock out administrative users.
+                type: str
+                choices:
+                    - 'enable'
+                    - 'disable'
             min_change_characters:
                 description:
                     - Minimum number of unique characters in new password which do not exist in old password (0 - 128).
@@ -160,6 +169,7 @@ EXAMPLES = """
           change_4_characters: "enable"
           expire_day: "90"
           expire_status: "enable"
+          login_lockout_upon_downgrade: "enable"
           min_change_characters: "0"
           min_lower_case_letter: "0"
           min_non_alphanumeric: "0"
@@ -248,6 +258,18 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_system_password_policy_data(json):
@@ -256,6 +278,7 @@ def filter_system_password_policy_data(json):
         "change_4_characters",
         "expire_day",
         "expire_status",
+        "login_lockout_upon_downgrade",
         "min_change_characters",
         "min_lower_case_letter",
         "min_non_alphanumeric",
@@ -282,8 +305,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -310,30 +332,115 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def system_password_policy(data, fos, check_mode=False):
 
-def system_password_policy(data, fos):
     state = None
     vdom = data["vdom"]
+    state = data.get("state", None)
     system_password_policy_data = data["system_password_policy"]
 
     filtered_data = filter_system_password_policy_data(system_password_policy_data)
     filtered_data = flatten_multilists_attributes(filtered_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("system", "password-policy", filtered_data, vdom=vdom)
+        current_data = fos.get("system", "password-policy", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["system_password_policy"] = converted_data
+    data_copy["system_password_policy"] = filtered_data
     fos.do_member_operation(
         "system",
         "password-policy",
@@ -355,12 +462,14 @@ def is_successful_status(resp):
     )
 
 
-def fortios_system(data, fos):
+def fortios_system(data, fos, check_mode):
+
     if data["system_password_policy"]:
-        resp = system_password_policy(data, fos)
+        resp = system_password_policy(data, fos, check_mode)
     else:
         fos._module.fail_json(msg="missing task body: %s" % ("system_password_policy"))
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -404,6 +513,11 @@ versioned_schema = {
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "reuse_password_limit": {"v_range": [["v7.6.0", ""]], "type": "integer"},
+        "login_lockout_upon_downgrade": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "enable"}, {"value": "disable"}],
+        },
         "change_4_characters": {
             "v_range": [["v6.0.0", "v6.4.4"]],
             "type": "string",
@@ -443,7 +557,7 @@ def main():
                 "required"
             ] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -466,7 +580,9 @@ def main():
             fos, versioned_schema, "system_password_policy"
         )
 
-        is_error, has_changed, result, diff = fortios_system(module.params, fos)
+        is_error, has_changed, result, diff = fortios_system(
+            module.params, fos, module.check_mode
+        )
 
     else:
         module.fail_json(**FAIL_SOCKET_MSG)

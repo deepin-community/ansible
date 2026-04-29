@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2021-2022, NetApp, Inc
+# (c) 2021-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -13,7 +13,7 @@ short_description: NetApp Ontap - Add or remove CIFS local group member
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: '21.2.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Add or remove CIFS local group member
 options:
@@ -49,31 +49,31 @@ notes:
 """
 
 EXAMPLES = """
-    - name: Add member to CIFS local group
-      netapp.ontap.na_ontap_cifs_local_group_member:
-        state: present
-        vserver: svm1
-        group: BUILTIN\\administrators
-        member: DOMAIN\\Domain Admins
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        ontapi: "{{ ontap_facts.ontap_version }}"
-        https: true
-        validate_certs: false
+- name: Add member to CIFS local group
+  netapp.ontap.na_ontap_cifs_local_group_member:
+    state: present
+    vserver: svm1
+    group: BUILTIN\\administrators
+    member: DOMAIN\\Domain Admins
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
+    ontapi: "{{ ontap_facts.ontap_version }}"
+    https: true
+    validate_certs: false
 
-    - name: Remove member from CIFS local group
-      netapp.ontap.na_ontap_cifs_local_group_member:
-        state: absent
-        vserver: svm1
-        group: BUILTIN\\administrators
-        member: DOMAIN\\Domain Admins
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        ontapi: "{{ ontap_facts.ontap_version }}"
-        https: true
-        validate_certs: false
+- name: Remove member from CIFS local group
+  netapp.ontap.na_ontap_cifs_local_group_member:
+    state: absent
+    vserver: svm1
+    group: BUILTIN\\administrators
+    member: DOMAIN\\Domain Admins
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
+    ontapi: "{{ ontap_facts.ontap_version }}"
+    https: true
+    validate_certs: false
 """
 
 RETURN = """

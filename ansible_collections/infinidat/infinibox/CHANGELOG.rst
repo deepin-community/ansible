@@ -3,6 +3,34 @@ Change Log
 ==========
 
 -------------------
+v1.6.0 (2024-09-04)
+-------------------
+
+^^^^^^^^^^^^^^^^^^^^
+Project Enhancements
+^^^^^^^^^^^^^^^^^^^^
+* psdev-1352: Add state search_iboxes to infini_infinimetrics module. Allows one to find the Infiniboxes registered with an Infinimetrics.
+
+-------------------
+v1.5.0 (2024-07-10)
+-------------------
+
+^^^^^^^^^^^^^^^^^^^^
+Project Enhancements
+^^^^^^^^^^^^^^^^^^^^
+* psdev-1330: Support serializing session data to disk to reduce log in/out events and to improve performance. Credentials will be saved to a file named '/tmp/infinibox_pickle_<IBOX>'. The collection uses the Python pickle module to save the API session data to file. The next Infinidat module executed is then able to load the session data. An optional parameter name 'stay_logged_in' has been added.  It defaults to False.  If True, session pickle files will be loaded if available when modules starts. When modules complete, session data will be persisted to this file and the module will not log out from the Infinibox. If False, modules will not use persistent sessions.
+* psdev-1341: Add API pagination support to metadata search (GET).
+
+-------------------
+v1.4.6 (2024-04-26)
+-------------------
+
+^^^^^^^^^^^^^^^^^^^^
+Project Enhancements
+^^^^^^^^^^^^^^^^^^^^
+* Add test_create_resources_demo and test_remove_resources_demo playbooks.
+
+-------------------
 v1.4.5 (2024-04-11)
 -------------------
 

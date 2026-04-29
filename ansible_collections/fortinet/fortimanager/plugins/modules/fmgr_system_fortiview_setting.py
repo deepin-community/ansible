@@ -108,12 +108,20 @@ options:
                     - 'auto'
                     - 'cache-only'
                     - 'log-and-cache'
+            query_run_mode:
+                aliases: ['query-run-mode']
+                type: str
+                description: Query run mode.
+                choices:
+                    - 'auto'
+                    - 'boost'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -127,9 +135,10 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_fortiview_setting:
-          not_scanned_apps: <value in [exclude, include]>
-          resolve_ip: <value in [disable, enable]>
-          data_source: <value in [auto, cache-only, log-and-cache]>
+          # not_scanned_apps: <value in [exclude, include]>
+          # resolve_ip: <value in [disable, enable]>
+          # data_source: <value in [auto, cache-only, log-and-cache]>
+          # query_run_mode: <value in [auto, boost]>
 '''
 
 RETURN = '''
@@ -190,7 +199,8 @@ def main():
             'options': {
                 'not-scanned-apps': {'choices': ['exclude', 'include'], 'type': 'str'},
                 'resolve-ip': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'data-source': {'v_range': [['6.4.8', '6.4.15'], ['7.0.3', '']], 'choices': ['auto', 'cache-only', 'log-and-cache'], 'type': 'str'}
+                'data-source': {'v_range': [['6.4.8', '6.4.15'], ['7.0.3', '']], 'choices': ['auto', 'cache-only', 'log-and-cache'], 'type': 'str'},
+                'query-run-mode': {'v_range': [['7.6.2', '']], 'choices': ['auto', 'boost'], 'type': 'str'}
             }
         }
     }

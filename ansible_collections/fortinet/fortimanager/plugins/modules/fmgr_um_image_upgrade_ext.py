@@ -104,6 +104,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -117,14 +118,13 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         um_image_upgrade_ext:
-          create_task: <string>
-          device:
-            -
-              name: <string>
-              vdom: <string>
-          flags: <value in [f_boot_alt_partition, f_skip_retrieve, f_skip_multi_steps, ...]>
-          image: <string>
-          schedule_time: <string>
+          # create_task: <string>
+          # device:
+          #   - name: <string>
+          #     vdom: <string>
+          # flags: <value in [f_boot_alt_partition, f_skip_retrieve, f_skip_multi_steps, ...]>
+          # image: <string>
+          # schedule_time: <string>
 '''
 
 RETURN = '''

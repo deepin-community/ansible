@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2023, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -14,7 +14,7 @@ short_description: NetApp ONTAP Adaptive Quality of Service policy group.
 extends_documentation_fragment:
   - netapp.ontap.netapp.na_ontap_zapi
 version_added: 2.9.0
-author: NetApp Ansible Team (@joshedmonds) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@joshedmonds) <ng-ansible-team@netapp.com>
 
 description:
   - Create, destroy, modify, or rename an Adaptive QoS policy group on NetApp ONTAP. Module is based on the standard QoS policy group module.
@@ -74,54 +74,53 @@ options:
 '''
 
 EXAMPLES = """
-    - name: create adaptive qos policy group
-      netapp.ontap.na_ontap_qos_adaptive_policy_group:
-        state: present
-        name: aq_policy_1
-        vserver: policy_vserver
-        absolute_min_iops: 70IOPS
-        expected_iops: 100IOPS/TB
-        peak_iops: 250IOPS/TB
-        peak_iops_allocation: allocated_space
-        hostname: 10.193.78.30
-        username: admin
-        password: netapp1!
+- name: Create adaptive qos policy group
+  netapp.ontap.na_ontap_qos_adaptive_policy_group:
+    state: present
+    name: aq_policy_1
+    vserver: policy_vserver
+    absolute_min_iops: 70IOPS
+    expected_iops: 100IOPS/TB
+    peak_iops: 250IOPS/TB
+    peak_iops_allocation: allocated_space
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: modify adaptive qos policy group expected iops
-      netapp.ontap.na_ontap_qos_adaptive_policy_group:
-        state: present
-        name: aq_policy_1
-        vserver: policy_vserver
-        absolute_min_iops: 70IOPS
-        expected_iops: 125IOPS/TB
-        peak_iops: 250IOPS/TB
-        peak_iops_allocation: allocated_space
-        hostname: 10.193.78.30
-        username: admin
-        password: netapp1!
+- name: Modify adaptive qos policy group expected iops
+  netapp.ontap.na_ontap_qos_adaptive_policy_group:
+    state: present
+    name: aq_policy_1
+    vserver: policy_vserver
+    absolute_min_iops: 70IOPS
+    expected_iops: 125IOPS/TB
+    peak_iops: 250IOPS/TB
+    peak_iops_allocation: allocated_space
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: modify adaptive qos policy group peak iops allocation
-      netapp.ontap.na_ontap_qos_adaptive_policy_group:
-        state: present
-        name: aq_policy_1
-        vserver: policy_vserver
-        absolute_min_iops: 70IOPS
-        expected_iops: 125IOPS/TB
-        peak_iops: 250IOPS/TB
-        peak_iops_allocation: used_space
-        hostname: 10.193.78.30
-        username: admin
-        password: netapp1!
+- name: Modify adaptive qos policy group peak iops allocation
+  netapp.ontap.na_ontap_qos_adaptive_policy_group:
+    state: present
+    name: aq_policy_1
+    vserver: policy_vserver
+    absolute_min_iops: 70IOPS
+    expected_iops: 125IOPS/TB
+    peak_iops: 250IOPS/TB
+    peak_iops_allocation: used_space
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: delete qos policy group
-      netapp.ontap.na_ontap_qos_adaptive_policy_group:
-        state: absent
-        name: aq_policy_1
-        vserver: policy_vserver
-        hostname: 10.193.78.30
-        username: admin
-        password: netapp1!
-
+- name: Delete qos policy group
+  netapp.ontap.na_ontap_qos_adaptive_policy_group:
+    state: absent
+    name: aq_policy_1
+    vserver: policy_vserver
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """

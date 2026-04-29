@@ -20,8 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
-    get_dict_result,
+    meraki_compare_equality2,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
     InconsistentParameters,
@@ -33,6 +32,7 @@ argument_spec = meraki_argument_spec()
 argument_spec.update(dict(
     state=dict(type="str", default="present", choices=["present"]),
     simFailover=dict(type="dict"),
+    simOrdering=dict(type="list"),
     sims=dict(type="list"),
     serial=dict(type="str"),
 ))
@@ -50,6 +50,7 @@ class DevicesCellularSims(object):
         self.meraki = meraki
         self.new_object = dict(
             simFailover=params.get("simFailover"),
+            simOrdering=params.get("simOrdering"),
             sims=params.get("sims"),
             serial=params.get("serial"),
         )
@@ -65,6 +66,9 @@ class DevicesCellularSims(object):
         if self.new_object.get('simFailover') is not None or self.new_object.get('sim_failover') is not None:
             new_object_params['simFailover'] = self.new_object.get('simFailover') or \
                 self.new_object.get('sim_failover')
+        if self.new_object.get('simOrdering') is not None or self.new_object.get('sim_ordering') is not None:
+            new_object_params['simOrdering'] = self.new_object.get('simOrdering') or \
+                self.new_object.get('sim_ordering')
         if self.new_object.get('sims') is not None or self.new_object.get('sims') is not None:
             new_object_params['sims'] = self.new_object.get('sims') or \
                 self.new_object.get('sims')
@@ -82,12 +86,7 @@ class DevicesCellularSims(object):
                 function="getDeviceCellularSims",
                 params=self.get_all_params(name=name),
             )
-            if isinstance(items, dict):
-                if 'sims' in items:
-                    items = items.get('sims')
-            result = get_dict_result(items, 'name', name)
-            if result is None:
-                result = items
+            result = items
         except Exception as e:
             print("Error: ", e)
             result = None
@@ -125,13 +124,14 @@ class DevicesCellularSims(object):
 
         obj_params = [
             ("simFailover", "simFailover"),
+            ("simOrdering", "simOrdering"),
             ("sims", "sims"),
             ("serial", "serial"),
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (ISE) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def update(self):

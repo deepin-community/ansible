@@ -124,6 +124,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -138,15 +139,15 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         system_npu_backgroundssescan:
-          scan: <value in [disable, enable]>
-          stats_update_interval: <integer>
-          udp_keepalive_interval: <integer>
-          scan_stale: <integer>
-          scan_vt: <integer>
-          stats_qual_access: <integer>
-          stats_qual_duration: <integer>
-          udp_qual_access: <integer>
-          udp_qual_duration: <integer>
+          # scan: <value in [disable, enable]>
+          # stats_update_interval: <integer>
+          # udp_keepalive_interval: <integer>
+          # scan_stale: <integer>
+          # scan_vt: <integer>
+          # stats_qual_access: <integer>
+          # stats_qual_duration: <integer>
+          # udp_qual_access: <integer>
+          # udp_qual_duration: <integer>
 '''
 
 RETURN = '''
@@ -210,12 +211,12 @@ def main():
                 'scan': {'v_range': [['6.4.8', '6.4.15'], ['7.0.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'stats-update-interval': {'v_range': [['6.4.8', '6.4.15'], ['7.0.3', '']], 'type': 'int'},
                 'udp-keepalive-interval': {'v_range': [['6.4.8', '6.4.15'], ['7.0.3', '']], 'type': 'int'},
-                'scan-stale': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                'scan-vt': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                'stats-qual-access': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                'stats-qual-duration': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                'udp-qual-access': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'},
-                'udp-qual-duration': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.8'], ['7.4.1', '']], 'type': 'int'}
+                'scan-stale': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                'scan-vt': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                'stats-qual-access': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                'stats-qual-duration': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                'udp-qual-access': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'},
+                'udp-qual-duration': {'v_range': [['7.0.12', '7.0.13'], ['7.2.6', '7.2.9'], ['7.4.1', '']], 'type': 'int'}
             }
         }
     }

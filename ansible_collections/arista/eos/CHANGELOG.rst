@@ -4,6 +4,69 @@ Arista Eos Collection Release Notes
 
 .. contents:: Topics
 
+v12.0.0
+=======
+
+Release Summary
+---------------
+
+With this release, the minimum required version of `ansible.netcommon` for this collection is `>=8.1.0`. The last version known to be compatible with `ansible-core<=2.18.x` is ansible.netcommon `v8.0.1` and arista.eos `v11.0.0`.
+
+Major Changes
+-------------
+
+- Bumping `dependencies` of ansible.netcommon to `>=8.1.0`, since previous versions of the dependency had compatibility issues with `ansible-core>=2.19`.
+
+Bugfixes
+--------
+
+- Add unit and integration tests to verify the change
+- Fix regex in route_map module to support match community with or without exact-match
+- Update the ACL module to support using protocol names for source port
+- arista.eos.eos_interfaces - Improved handling of the `enabled` state to prevent incorrect `shutdown` or `no shutdown` commands during configuration changes
+
+v11.0.1
+=======
+
+Bugfixes
+--------
+
+- Fix route map community handling to include missing community_attributes level in the dictionary
+- Fixed idempotency regarding logging port in differing versions of EOS
+- Fixed idempotency when using `replaced` state on host with multiple ACLs present.
+- Fixed parsing of relative route-map metric adjustments in when extracting settings from device output.
+- Support colon-delimited format in BGP community strings
+- Update route_maps to correctly handle ipv6 next-hop address
+
+v11.0.0
+=======
+
+Release Summary
+---------------
+
+With this release, the minimum required version of `ansible-core` for this collection is `2.16.0`. The last version known to be compatible with `ansible-core` versions below `2.16` is v10.1.1.
+
+Major Changes
+-------------
+
+- Bumping `requires_ansible` to `>=2.16.0`, since previous ansible-core versions are EoL now.
+
+v10.1.1
+=======
+
+Minor Changes
+-------------
+
+- Adds a new module `eos_vrf_global` in favor of `eos_vrf` legacy module to manage VRF global configurations on Arista EOS devices.
+
+Bugfixes
+--------
+
+- Fixed an issue in the `compare_configs` method where unnecessary negate commands were generated for ACL entries already present in both `have` and `want` configurations.
+- Improved validation logic for ACL sequence numbers and content matching to ensure idempotency.
+- Prevented redundant configuration updates for Access Control Lists.
+- fix facts gathering for ebgp-multihop attribute.
+
 v10.0.1
 =======
 

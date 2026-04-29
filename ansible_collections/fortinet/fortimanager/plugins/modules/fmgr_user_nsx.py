@@ -163,6 +163,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -178,24 +179,23 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         user_nsx:
-          fmgip: <string>
-          fmguser: <string>
-          name: <string>
-          password: <list or string>
-          server: <string>
-          status: <value in [disable, enable]>
-          user: <string>
-          fmgpasswd: <list or string>
-          service_id: <list or string>
-          if_allgroup: <value in [disable, enable]>
-          service:
-            -
-              id: <string>
-              integration: <value in [east-west, north-south]>
-              name: <string>
-              ref_id: <string>
-          service_manager_id: <string>
-          service_manager_rev: <integer>
+          name: "your value" # Required variable, string
+          # fmgip: <string>
+          # fmguser: <string>
+          # password: <list or string>
+          # server: <string>
+          # status: <value in [disable, enable]>
+          # user: <string>
+          # fmgpasswd: <list or string>
+          # service_id: <list or string>
+          # if_allgroup: <value in [disable, enable]>
+          # service:
+          #   - id: <string>
+          #     integration: <value in [east-west, north-south]>
+          #     name: <string>
+          #     ref_id: <string>
+          # service_manager_id: <string>
+          # service_manager_rev: <integer>
 '''
 
 RETURN = '''

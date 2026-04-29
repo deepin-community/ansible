@@ -20,7 +20,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: fortios_dlp_settings
-short_description: Designate logical storage for DLP fingerprint database in Fortinet's FortiOS and FortiGate.
+short_description: Configure settings for DLP in Fortinet's FortiOS and FortiGate.
 description:
     - This module is able to configure a FortiGate or FortiOS (FOS) device by allowing the
       user to set and modify dlp feature and settings category.
@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -77,21 +78,25 @@ options:
 
     dlp_settings:
         description:
-            - Designate logical storage for DLP fingerprint database.
+            - Configure settings for DLP.
         default: null
         type: dict
         suboptions:
             cache_mem_percent:
                 description:
-                    - Maximum percentage of available memory allocated to caching (1 - 15).
+                    - Maximum percentage of available memory allocated to caching DLP fingerprints (1 - 15).
                 type: int
             chunk_size:
                 description:
                     - Maximum fingerprint chunk size. Caution, changing this setting will flush the entire database.
                 type: int
+            config_builder_timeout:
+                description:
+                    - Maximum time allowed for building a single DLP profile .
+                type: int
             db_mode:
                 description:
-                    - Behavior when the maximum size is reached.
+                    - Behavior when the maximum size is reached in the DLP fingerprint database.
                 type: str
                 choices:
                     - 'stop-adding'
@@ -99,7 +104,7 @@ options:
                     - 'remove-oldest'
             size:
                 description:
-                    - Maximum total size of files within the storage (MB).
+                    - Maximum total size of files within the DLP fingerprint database (MB).
                 type: int
             storage_device:
                 description:
@@ -108,12 +113,13 @@ options:
 """
 
 EXAMPLES = """
-- name: Designate logical storage for DLP fingerprint database.
+- name: Configure settings for DLP.
   fortinet.fortios.fortios_dlp_settings:
       vdom: "{{ vdom }}"
       dlp_settings:
           cache_mem_percent: "2"
           chunk_size: "2800"
+          config_builder_timeout: "60"
           db_mode: "stop-adding"
           size: "16"
           storage_device: "<your_own_value> (source system.storage.name)"
@@ -196,12 +202,25 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_dlp_settings_data(json):
     option_list = [
         "cache_mem_percent",
         "chunk_size",
+        "config_builder_timeout",
         "db_mode",
         "size",
         "storage_device",
@@ -218,29 +237,114 @@ def filter_dlp_settings_data(json):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def dlp_settings(data, fos, check_mode=False):
 
-def dlp_settings(data, fos):
     state = None
     vdom = data["vdom"]
+    state = data.get("state", None)
     dlp_settings_data = data["dlp_settings"]
 
     filtered_data = filter_dlp_settings_data(dlp_settings_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("dlp", "settings", filtered_data, vdom=vdom)
+        current_data = fos.get("dlp", "settings", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["dlp_settings"] = converted_data
+    data_copy["dlp_settings"] = filtered_data
     fos.do_member_operation(
         "dlp",
         "settings",
@@ -262,12 +366,14 @@ def is_successful_status(resp):
     )
 
 
-def fortios_dlp(data, fos):
+def fortios_dlp(data, fos, check_mode):
+
     if data["dlp_settings"]:
-        resp = dlp_settings(data, fos)
+        resp = dlp_settings(data, fos, check_mode)
     else:
         fos._module.fail_json(msg="missing task body: %s" % ("dlp_settings"))
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -294,6 +400,7 @@ versioned_schema = {
         },
         "cache_mem_percent": {"v_range": [["v6.0.0", ""]], "type": "integer"},
         "chunk_size": {"v_range": [["v6.0.0", ""]], "type": "integer"},
+        "config_builder_timeout": {"v_range": [["v7.6.1", ""]], "type": "integer"},
     },
 }
 
@@ -325,7 +432,7 @@ def main():
         if mkeyname and mkeyname == attribute_name:
             fields["dlp_settings"]["options"][attribute_name]["required"] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -348,7 +455,9 @@ def main():
             fos, versioned_schema, "dlp_settings"
         )
 
-        is_error, has_changed, result, diff = fortios_dlp(module.params, fos)
+        is_error, has_changed, result, diff = fortios_dlp(
+            module.params, fos, module.check_mode
+        )
 
     else:
         module.fail_json(**FAIL_SOCKET_MSG)

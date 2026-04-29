@@ -128,6 +128,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -143,14 +144,14 @@ EXAMPLES = '''
         adom: <your own value>
         vip: <your own value>
         firewall_vip_quic:
-          ack_delay_exponent: <integer>
-          active_connection_id_limit: <integer>
-          active_migration: <value in [disable, enable]>
-          grease_quic_bit: <value in [disable, enable]>
-          max_ack_delay: <integer>
-          max_datagram_frame_size: <integer>
-          max_idle_timeout: <integer>
-          max_udp_payload_size: <integer>
+          # ack_delay_exponent: <integer>
+          # active_connection_id_limit: <integer>
+          # active_migration: <value in [disable, enable]>
+          # grease_quic_bit: <value in [disable, enable]>
+          # max_ack_delay: <integer>
+          # max_datagram_frame_size: <integer>
+          # max_idle_timeout: <integer>
+          # max_udp_payload_size: <integer>
 '''
 
 RETURN = '''

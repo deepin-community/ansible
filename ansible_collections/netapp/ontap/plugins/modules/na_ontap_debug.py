@@ -3,7 +3,7 @@
 create Debug module to diagnose netapp-lib import and connection
 """
 
-# (c) 2020-2022, NetApp, Inc
+# (c) 2020-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -20,7 +20,7 @@ short_description: NetApp ONTAP Debug netapp-lib import and connection.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: 21.1.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Display issues related to importing netapp-lib and connection with diagnose
 options:
@@ -31,11 +31,11 @@ options:
     type: str
 '''
 EXAMPLES = """
-    - name: Check import netapp-lib
-      na_ontap_debug:
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Check import netapp-lib
+  netapp.ontap.na_ontap_debug:
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """

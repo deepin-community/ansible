@@ -14,81 +14,80 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: homebrew
 author:
-    - "Indrajit Raychaudhuri (@indrajitr)"
-    - "Daniel Jaouen (@danieljaouen)"
-    - "Andrew Dunham (@andrew-d)"
+  - "Indrajit Raychaudhuri (@indrajitr)"
+  - "Daniel Jaouen (@danieljaouen)"
+  - "Andrew Dunham (@andrew-d)"
 requirements:
-    - homebrew must already be installed on the target system
+  - homebrew must already be installed on the target system
 short_description: Package manager for Homebrew
 description:
-    - Manages Homebrew packages
+  - Manages Homebrew packages.
 extends_documentation_fragment:
-    - community.general.attributes
+  - community.general.attributes
 attributes:
-    check_mode:
-        support: full
-    diff_mode:
-        support: none
+  check_mode:
+    support: full
+  diff_mode:
+    support: none
 options:
-    name:
-        description:
-            - A list of names of packages to install/remove.
-        aliases: [ 'formula', 'package', 'pkg' ]
-        type: list
-        elements: str
-    path:
-        description:
-            - "A V(:) separated list of paths to search for C(brew) executable.
-              Since a package (I(formula) in homebrew parlance) location is prefixed relative to the actual path of C(brew) command,
-              providing an alternative C(brew) path enables managing different set of packages in an alternative location in the system."
-        default: '/usr/local/bin:/opt/homebrew/bin:/home/linuxbrew/.linuxbrew/bin'
-        type: path
-    state:
-        description:
-            - state of the package.
-        choices: [ 'absent', 'head', 'installed', 'latest', 'linked', 'present', 'removed', 'uninstalled', 'unlinked', 'upgraded' ]
-        default: present
-        type: str
-    update_homebrew:
-        description:
-            - update homebrew itself first.
-        type: bool
-        default: false
-    upgrade_all:
-        description:
-            - upgrade all homebrew packages.
-        type: bool
-        default: false
-        aliases: ['upgrade']
-    install_options:
-        description:
-            - options flags to install a package.
-        aliases: ['options']
-        type: list
-        elements: str
-    upgrade_options:
-        description:
-            - Option flags to upgrade.
-        type: list
-        elements: str
-        version_added: '0.2.0'
-    force_formula:
-        description:
-            - Force the package(s) to be treated as a formula (equivalent to C(brew --formula)).
-            - To install a cask, use the M(community.general.homebrew_cask) module.
-        type: bool
-        default: false
-        version_added: 9.0.0
+  name:
+    description:
+      - A list of names of packages to install/remove.
+    aliases: ['formula', 'package', 'pkg']
+    type: list
+    elements: str
+  path:
+    description:
+      - A V(:) separated list of paths to search for C(brew) executable. Since a package (I(formula) in homebrew parlance)
+        location is prefixed relative to the actual path of C(brew) command, providing an alternative C(brew) path enables
+        managing different set of packages in an alternative location in the system.
+    default: '/usr/local/bin:/opt/homebrew/bin:/home/linuxbrew/.linuxbrew/bin'
+    type: path
+  state:
+    description:
+      - State of the package.
+    choices: ['absent', 'head', 'installed', 'latest', 'linked', 'present', 'removed', 'uninstalled', 'unlinked', 'upgraded']
+    default: present
+    type: str
+  update_homebrew:
+    description:
+      - Update homebrew itself first.
+    type: bool
+    default: false
+  upgrade_all:
+    description:
+      - Upgrade all homebrew packages.
+    type: bool
+    default: false
+    aliases: ['upgrade']
+  install_options:
+    description:
+      - Options flags to install a package.
+    aliases: ['options']
+    type: list
+    elements: str
+  upgrade_options:
+    description:
+      - Option flags to upgrade.
+    type: list
+    elements: str
+    version_added: '0.2.0'
+  force_formula:
+    description:
+      - Force the package(s) to be treated as a formula (equivalent to C(brew --formula)).
+      - To install a cask, use the M(community.general.homebrew_cask) module.
+    type: bool
+    default: false
+    version_added: 9.0.0
 notes:
-  - When used with a C(loop:) each package will be processed individually,
-    it is much more efficient to pass the list directly to the O(name) option.
-'''
+  - When used with a C(loop:) each package is processed individually, it is much more efficient to pass the list directly
+    to the O(name) option.
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 # Install formula foo with 'brew' in default path
 - community.general.homebrew:
     name: foo
@@ -154,29 +153,29 @@ EXAMPLES = '''
     name: ambiguous_formula
     state: present
     force_formula: true
-'''
+"""
 
-RETURN = '''
+RETURN = r"""
 msg:
-    description: if the cache was updated or not
-    returned: always
-    type: str
-    sample: "Changed: 0, Unchanged: 2"
+  description: If the cache was updated or not.
+  returned: always
+  type: str
+  sample: "Changed: 0, Unchanged: 2"
 unchanged_pkgs:
-    description:
-    - List of package names which are unchanged after module run
-    returned: success
-    type: list
-    sample: ["awscli", "ag"]
-    version_added: '0.2.0'
+  description:
+    - List of package names which are unchanged after module run.
+  returned: success
+  type: list
+  sample: ["awscli", "ag"]
+  version_added: '0.2.0'
 changed_pkgs:
-    description:
-    - List of package names which are changed after module run
-    returned: success
-    type: list
-    sample: ['git', 'git-cola']
-    version_added: '0.2.0'
-'''
+  description:
+    - List of package names which are changed after module run.
+  returned: success
+  type: list
+  sample: ["git", "git-cola"]
+  version_added: '0.2.0'
+"""
 
 import json
 import re
@@ -379,6 +378,47 @@ class Homebrew(object):
             )
             raise HomebrewException(self.message)
 
+    def _save_package_info(self, package_detail, package_name):
+        if bool(package_detail.get("installed")):
+            self.installed_packages.add(package_name)
+        if bool(package_detail.get("outdated")):
+            self.outdated_packages.add(package_name)
+
+    def _extract_package_name(self, package_detail, is_cask):
+        # "brew info" can lookup by name, full_name, token, full_token, or aliases
+        # In addition, any name can be prefixed by the tap.
+        # Any of these can be supplied by the user as the package name.  In case
+        # of ambiguity, where a given name might match multiple packages,
+        # formulae are preferred over casks. For all other ambiguities, the
+        # results are an error.  Note that in the homebrew/core and
+        # homebrew/cask taps, there are no "other" ambiguities.
+        if is_cask:  # according to brew info
+            name = package_detail["token"]
+            full_name = package_detail["full_token"]
+        else:
+            name = package_detail["name"]
+            full_name = package_detail["full_name"]
+
+        # Issue https://github.com/ansible-collections/community.general/issues/9803:
+        # name can include the tap as a prefix, in order to disambiguate,
+        # e.g. casks from identically named formulae.
+        #
+        # Issue https://github.com/ansible-collections/community.general/issues/10012:
+        # package_detail["tap"] is None if package is no longer available.
+        tapped_name = [package_detail["tap"] + "/" + name] if package_detail["tap"] else []
+        aliases = package_detail.get("aliases", [])
+        package_names = set([name, full_name] + tapped_name + aliases)
+
+        # Finally, identify which of all those package names was the one supplied by the user.
+        package_names = package_names & set(self.packages)
+        if len(package_names) != 1:
+            self.failed = True
+            self.message = "Package names are missing or ambiguous: " + ", ".join(str(p) for p in package_names)
+            raise HomebrewException(self.message)
+
+        # Then make sure the user provided name resurface.
+        return package_names.pop()
+
     def _get_packages_info(self):
         cmd = [
             "{brew_path}".format(brew_path=self.brew_path),
@@ -397,16 +437,13 @@ class Homebrew(object):
 
         data = json.loads(out)
         for package_detail in data.get("formulae", []):
-            if bool(package_detail.get("installed")):
-                self.installed_packages.add(package_detail["name"])
-            if bool(package_detail.get("outdated")):
-                self.outdated_packages.add(package_detail["name"])
+            package_name = self._extract_package_name(package_detail, is_cask=False)
+            self._save_package_info(package_detail, package_name)
 
         for package_detail in data.get("casks", []):
-            if bool(package_detail.get("installed")):
-                self.installed_packages.add(package_detail["token"])
-            if bool(package_detail.get("outdated")):
-                self.outdated_packages.add(package_detail["token"])
+            package_name = self._extract_package_name(package_detail, is_cask=True)
+            self._save_package_info(package_detail, package_name)
+
     # /prep -------------------------------------------------------- }}}
 
     def run(self):
@@ -770,13 +807,11 @@ def main():
         argument_spec=dict(
             name=dict(
                 aliases=["pkg", "package", "formula"],
-                required=False,
                 type='list',
                 elements='str',
             ),
             path=dict(
                 default="/usr/local/bin:/opt/homebrew/bin:/home/linuxbrew/.linuxbrew/bin",
-                required=False,
                 type='path',
             ),
             state=dict(
@@ -798,13 +833,11 @@ def main():
                 type='bool',
             ),
             install_options=dict(
-                default=None,
                 aliases=['options'],
                 type='list',
                 elements='str',
             ),
             upgrade_options=dict(
-                default=None,
                 type='list',
                 elements='str',
             ),
@@ -821,7 +854,7 @@ def main():
     p = module.params
 
     if p['name']:
-        packages = p['name']
+        packages = [package_name.lower() for package_name in p['name']]
     else:
         packages = None
 

@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -108,11 +109,101 @@ options:
                             - Domain list separated by space.
                         required: true
                         type: str
+            input_attributes:
+                description:
+                    - SaaS application input attributes.
+                type: list
+                elements: dict
+                suboptions:
+                    attr_type:
+                        description:
+                            - CASB attribute type.
+                        type: str
+                        choices:
+                            - 'tenant'
+                    default:
+                        description:
+                            - CASB attribute default value.
+                        type: str
+                        choices:
+                            - 'string'
+                            - 'string-list'
+                    description:
+                        description:
+                            - CASB attribute description.
+                        type: str
+                    fallback_input:
+                        description:
+                            - CASB attribute legacy input.
+                        type: str
+                        choices:
+                            - 'enable'
+                            - 'disable'
+                    name:
+                        description:
+                            - CASB attribute name.
+                        required: true
+                        type: str
+                    required:
+                        description:
+                            - CASB attribute required.
+                        type: str
+                        choices:
+                            - 'enable'
+                            - 'disable'
+                    type:
+                        description:
+                            - CASB attribute format type.
+                        type: str
+                        choices:
+                            - 'string'
+                            - 'string-list'
+                            - 'integer'
+                            - 'integer-list'
+                            - 'boolean'
             name:
                 description:
                     - SaaS application name.
                 required: true
                 type: str
+            output_attributes:
+                description:
+                    - SaaS application output attributes.
+                type: list
+                elements: dict
+                suboptions:
+                    attr_type:
+                        description:
+                            - CASB attribute type.
+                        type: str
+                        choices:
+                            - 'tenant'
+                    description:
+                        description:
+                            - CASB attribute description.
+                        type: str
+                    name:
+                        description:
+                            - CASB attribute name.
+                        required: true
+                        type: str
+                    required:
+                        description:
+                            - CASB attribute required.
+                        type: str
+                        choices:
+                            - 'enable'
+                            - 'disable'
+                    type:
+                        description:
+                            - CASB attribute format type.
+                        type: str
+                        choices:
+                            - 'string'
+                            - 'string-list'
+                            - 'integer'
+                            - 'integer-list'
+                            - 'boolean'
             status:
                 description:
                     - Enable/disable setting.
@@ -145,7 +236,23 @@ EXAMPLES = """
           domains:
               -
                   domain: "<your_own_value>"
-          name: "default_name_7"
+          input_attributes:
+              -
+                  attr_type: "tenant"
+                  default: "string"
+                  description: "<your_own_value>"
+                  fallback_input: "enable"
+                  name: "default_name_12"
+                  required: "enable"
+                  type: "string"
+          name: "default_name_15"
+          output_attributes:
+              -
+                  attr_type: "tenant"
+                  description: "<your_own_value>"
+                  name: "default_name_19"
+                  required: "enable"
+                  type: "string"
           status: "enable"
           type: "built-in"
           uuid: "<your_own_value>"
@@ -228,6 +335,18 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_casb_saas_application_data(json):
@@ -235,7 +354,9 @@ def filter_casb_saas_application_data(json):
         "casb_name",
         "description",
         "domains",
+        "input_attributes",
         "name",
+        "output_attributes",
         "status",
         "type",
         "uuid",
@@ -252,32 +373,114 @@ def filter_casb_saas_application_data(json):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def casb_saas_application(data, fos, check_mode=False):
 
-def casb_saas_application(data, fos):
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     casb_saas_application_data = data["casb_saas_application"]
 
     filtered_data = filter_casb_saas_application_data(casb_saas_application_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("casb", "saas-application", filtered_data, vdom=vdom)
+        current_data = fos.get("casb", "saas-application", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["casb_saas_application"] = converted_data
+    data_copy["casb_saas_application"] = filtered_data
     fos.do_member_operation(
         "casb",
         "saas-application",
@@ -307,12 +510,14 @@ def is_successful_status(resp):
     )
 
 
-def fortios_casb(data, fos):
+def fortios_casb(data, fos, check_mode):
+
     if data["casb_saas_application"]:
-        resp = casb_saas_application(data, fos)
+        resp = casb_saas_application(data, fos, check_mode)
     else:
         fos._module.fail_json(msg="missing task body: %s" % ("casb_saas_application"))
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -352,6 +557,84 @@ versioned_schema = {
             },
             "v_range": [["v7.4.1", ""]],
         },
+        "output_attributes": {
+            "type": "list",
+            "elements": "dict",
+            "children": {
+                "name": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "required": True,
+                },
+                "attr_type": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "tenant"}],
+                },
+                "description": {"v_range": [["v7.6.1", ""]], "type": "string"},
+                "type": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [
+                        {"value": "string"},
+                        {"value": "string-list"},
+                        {"value": "integer"},
+                        {"value": "integer-list"},
+                        {"value": "boolean"},
+                    ],
+                },
+                "required": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+            },
+            "v_range": [["v7.6.1", ""]],
+        },
+        "input_attributes": {
+            "type": "list",
+            "elements": "dict",
+            "children": {
+                "name": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "required": True,
+                },
+                "attr_type": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "tenant"}],
+                },
+                "description": {"v_range": [["v7.6.1", ""]], "type": "string"},
+                "type": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [
+                        {"value": "string"},
+                        {"value": "string-list"},
+                        {"value": "integer"},
+                        {"value": "integer-list"},
+                        {"value": "boolean"},
+                    ],
+                },
+                "required": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+                "default": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "string"}, {"value": "string-list"}],
+                },
+                "fallback_input": {
+                    "v_range": [["v7.6.1", ""]],
+                    "type": "string",
+                    "options": [{"value": "enable"}, {"value": "disable"}],
+                },
+            },
+            "v_range": [["v7.6.1", ""]],
+        },
     },
     "v_range": [["v7.4.1", ""]],
 }
@@ -387,7 +670,7 @@ def main():
                 "required"
             ] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -410,7 +693,9 @@ def main():
             fos, versioned_schema, "casb_saas_application"
         )
 
-        is_error, has_changed, result, diff = fortios_casb(module.params, fos)
+        is_error, has_changed, result, diff = fortios_casb(
+            module.params, fos, module.check_mode
+        )
 
     else:
         module.fail_json(**FAIL_SOCKET_MSG)

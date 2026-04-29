@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "ansible",
   "name": "windows",
-  "version": "2.5.0",
+  "version": "3.2.0",
   "authors": [
    "Jordan Borean @jborean93",
    "Matt Davis @nitzmahone"
@@ -24,7 +24,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "feef5856e9e23148ca33a4687dc4df5f4269c2fe16efa4ebce465c2bd13897bc",
+  "chksum_sha256": "3f4861b741be1e483e482e85ae080d81ff8c320b27a36cc1792115b1d2c5a322",
   "format": 1
  },
  "format": 1

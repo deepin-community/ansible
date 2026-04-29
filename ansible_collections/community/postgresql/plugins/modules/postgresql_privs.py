@@ -19,14 +19,15 @@ description:
   PostgreSQL's GRANT and REVOKE statements with detection of changes
   (GRANT/REVOKE I(privs) ON I(type) I(objs) TO/FROM I(roles)).
 options:
-  database:
+  login_db:
     description:
     - Name of database to connect to.
+    - The V(db) and V(database) aliases are deprecated and will be removed in version 5.0.0.
     required: true
     type: str
     aliases:
     - db
-    - login_db
+    - database
   state:
     description:
     - If C(present), the specified privileges are granted, if C(absent) they are revoked.
@@ -114,14 +115,6 @@ options:
     type: bool
     aliases:
     - admin_option
-  password:
-    description:
-    - The password to authenticate with.
-    - This option has been B(deprecated) and will be removed in community.postgresql 4.0.0,
-      use the I(login_password) option instead.
-    - Mutually exclusive with I(login_password).
-    type: str
-    default: ''
   trust_input:
     description:
     - If C(false), check whether values of parameters I(roles), I(target_roles), I(session_role),
@@ -176,7 +169,7 @@ EXAMPLES = r'''
 # TO librarian, reader WITH GRANT OPTION
 - name: Grant privs to librarian and reader on database library
   community.postgresql.postgresql_privs:
-    database: library
+    login_db: library
     state: present
     privs: SELECT,INSERT,UPDATE
     type: table
@@ -187,7 +180,7 @@ EXAMPLES = r'''
 
 - name: Same as above leveraging default values
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     privs: SELECT,INSERT,UPDATE
     objs: books,authors
     roles: librarian,reader
@@ -198,7 +191,7 @@ EXAMPLES = r'''
 # isn't already the case (since state: present).
 - name: Revoke privs from reader
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     state: present
     priv: INSERT
     obj: books
@@ -208,7 +201,7 @@ EXAMPLES = r'''
 # "public" is the default schema. This also works for PostgreSQL 8.x.
 - name: REVOKE INSERT, UPDATE ON ALL TABLES IN SCHEMA public FROM reader
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     state: absent
     privs: INSERT,UPDATE
     objs: ALL_IN_SCHEMA
@@ -216,7 +209,7 @@ EXAMPLES = r'''
 
 - name: GRANT ALL PRIVILEGES ON SCHEMA public, math TO librarian
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     privs: ALL
     type: schema
     objs: public,math
@@ -225,7 +218,7 @@ EXAMPLES = r'''
 # Note the separation of arguments with colons.
 - name: GRANT ALL PRIVILEGES ON FUNCTION math.add(int, int) TO librarian, reader
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     privs: ALL
     type: function
     obj: add(int:int)
@@ -236,7 +229,7 @@ EXAMPLES = r'''
 # restricted to database "library" here.
 - name: GRANT librarian, reader TO alice, bob WITH ADMIN OPTION
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     type: group
     objs: librarian,reader
     roles: alice,bob
@@ -246,7 +239,7 @@ EXAMPLES = r'''
 # database to grant privileges on (which is specified via the "objs" param)
 - name: GRANT ALL PRIVILEGES ON DATABASE library TO librarian
   community.postgresql.postgresql_privs:
-    db: postgres
+    login_db: postgres
     privs: ALL
     type: database
     obj: library
@@ -256,7 +249,7 @@ EXAMPLES = r'''
 # to which the connection is established
 - name: GRANT ALL PRIVILEGES ON DATABASE library TO librarian
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     privs: ALL
     type: database
     role: librarian
@@ -267,7 +260,7 @@ EXAMPLES = r'''
 # For specific
 - name: ALTER DEFAULT PRIVILEGES ON DATABASE library TO librarian
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     objs: ALL_DEFAULT
     privs: ALL
     type: default_privs
@@ -280,7 +273,7 @@ EXAMPLES = r'''
 # For specific
 - name: ALTER DEFAULT PRIVILEGES ON DATABASE library TO reader, step 1
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     objs: TABLES,SEQUENCES
     privs: SELECT
     type: default_privs
@@ -288,7 +281,7 @@ EXAMPLES = r'''
 
 - name: ALTER DEFAULT PRIVILEGES ON DATABASE library TO reader, step 2
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     objs: TYPES
     privs: USAGE
     type: default_privs
@@ -297,7 +290,7 @@ EXAMPLES = r'''
 # Available since version 2.8
 - name: GRANT ALL PRIVILEGES ON FOREIGN DATA WRAPPER fdw TO reader
   community.postgresql.postgresql_privs:
-    db: test
+    login_db: library
     objs: fdw
     privs: ALL
     type: foreign_data_wrapper
@@ -306,7 +299,7 @@ EXAMPLES = r'''
 # Available since community.postgresql 0.2.0
 - name: GRANT ALL PRIVILEGES ON TYPE customtype TO reader
   community.postgresql.postgresql_privs:
-    db: test
+    login_db: library
     objs: customtype
     privs: ALL
     type: type
@@ -315,7 +308,7 @@ EXAMPLES = r'''
 # Available since version 2.8
 - name: GRANT ALL PRIVILEGES ON FOREIGN SERVER fdw_server TO reader
   community.postgresql.postgresql_privs:
-    db: test
+    login_db: test
     objs: fdw_server
     privs: ALL
     type: foreign_server
@@ -351,7 +344,7 @@ EXAMPLES = r'''
 # For specific
 - name: ALTER privs
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     schema: library
     objs: TABLES
     privs: SELECT
@@ -366,7 +359,7 @@ EXAMPLES = r'''
 # For specific
 - name: ALTER privs
   community.postgresql.postgresql_privs:
-    db: library
+    login_db: library
     state: absent
     schema: library
     objs: TABLES
@@ -383,11 +376,11 @@ EXAMPLES = r'''
     privs: ALL
     objs: numeric
     schema: pg_catalog
-    db: acme
+    login_db: acme
 
 - name: Alter default privileges grant usage on schemas to datascience
   community.postgresql.postgresql_privs:
-    database: test
+    login_db: test
     type: default_privs
     privs: usage
     objs: schemas
@@ -397,7 +390,7 @@ EXAMPLES = r'''
 # Needs PostgreSQL 15 or higher
 - name: GRANT SET ON PARAMETER log_destination,log_line_prefix TO logtest
   community.postgresql.postgresql_privs:
-    database: logtest
+    login_db: logtest
     state: present
     privs: SET
     type: parameter
@@ -406,7 +399,7 @@ EXAMPLES = r'''
 
 - name: GRANT ALTER SYSTEM ON PARAMETER primary_conninfo,synchronous_standby_names TO replicamgr
   community.postgresql.postgresql_privs:
-    database: replicamgr
+    login_db: replicamgr
     state: present
     privs: ALTER_SYSTEM
     type: parameter
@@ -487,7 +480,7 @@ class Connection(object):
     """Wrapper around a psycopg connection with some convenience methods"""
 
     def __init__(self, params, module):
-        self.database = params.database
+        self.database = params.login_db
         self.module = module
 
         # Ensure psycopg libraries are available before connecting to DB:
@@ -658,7 +651,7 @@ class Connection(object):
         else:
             query = ("SELECT proacl::text FROM pg_catalog.pg_proc WHERE proname = ANY (%s) "
                      "ORDER BY proname, proargtypes")
-            self.execute(query)
+            self.execute(query, (funcnames))
         return [t["proacl"] for t in self.cursor.fetchall()]
 
     def get_schema_acls(self, schemas):
@@ -990,7 +983,18 @@ class QueryBuilder(object):
 def main():
     argument_spec = postgres_common_argument_spec()
     argument_spec.update(
-        database=dict(required=True, aliases=['db', 'login_db']),
+        login_db=dict(type='str', required=True, aliases=['db', 'database'], deprecated_aliases=[
+            {
+                'name': 'db',
+                'version': '5.0.0',
+                'collection_name': 'community.postgresql',
+            },
+            {
+                'name': 'database',
+                'version': '5.0.0',
+                'collection_name': 'community.postgresql',
+            }],
+        ),
         state=dict(default='present', choices=['present', 'absent']),
         privs=dict(required=False, aliases=['priv']),
         type=dict(default='table',
@@ -1015,11 +1019,6 @@ def main():
         target_roles=dict(required=False),
         grant_option=dict(required=False, type='bool',
                           aliases=['admin_option']),
-        # WARNING: password is deprecated and will  be removed in community.postgresql 4.0.0,
-        # login_password should be used instead
-        password=dict(default='', no_log=True,
-                      removed_in_version='4.0.0',
-                      removed_from_collection='community.postgreql'),
         fail_on_role=dict(type='bool', default=True),
         trust_input=dict(type='bool', default=True),
     )
@@ -1033,15 +1032,6 @@ def main():
 
     # Create type object as namespace for module params
     p = type('Params', (), module.params)
-
-    # WARNING: password is deprecated and will  be removed in community.postgresql 4.0.0,
-    # login_password should be used instead
-    # https://github.com/ansible-collections/community.postgresql/issues/406
-    if p.password:
-        if p.login_password:
-            module.fail_json(msg='Use the "password" or "login_password" option but not both '
-                                 'to pass a password to log in with.')
-        p.login_password = p.password
 
     # param "schema": default, allowed depends on param "type"
     if p.type in ['table', 'sequence', 'function', 'procedure', 'type', 'default_privs']:
@@ -1062,7 +1052,7 @@ def main():
 
     # param "objs": default, required depends on param "type"
     if p.type == 'database':
-        p.objs = p.objs or p.database
+        p.objs = p.objs or p.login_db
     elif not p.objs:
         module.fail_json(msg='Argument "objs" is required '
                              'for type "%s".' % p.type)

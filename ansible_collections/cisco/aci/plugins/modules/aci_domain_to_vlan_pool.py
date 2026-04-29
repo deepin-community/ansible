@@ -53,7 +53,7 @@ options:
     - Support for Kubernetes was added in ACI v3.0.
     - Support for CloudFoundry, OpenShift and Red Hat was added in ACI v3.1.
     type: str
-    choices: [ cloudfoundry, kubernetes, microsoft, openshift, openstack, redhat, vmware ]
+    choices: [ cloudfoundry, kubernetes, microsoft, openshift, openstack, redhat, vmware, nutanix]
 extends_documentation_fragment:
 - cisco.aci.aci
 - cisco.aci.annotation
@@ -265,7 +265,7 @@ def main():
         pool=dict(type="str", aliases=["pool_name", "vlan_pool"]),  # Not required for querying all objects
         pool_allocation_mode=dict(type="str", required=True, aliases=["allocation_mode", "mode"], choices=["dynamic", "static"]),
         state=dict(type="str", default="present", choices=["absent", "present", "query"]),
-        vm_provider=dict(type="str", choices=list(VM_PROVIDER_MAPPING.keys())),
+        vm_provider=dict(type="str", choices=list(VM_PROVIDER_MAPPING)),
     )
 
     module = AnsibleModule(
@@ -330,21 +330,23 @@ def main():
             module_object=domain_mo,
             target_filter={"name": domain},
         ),
-        child_classes=["infraRsVlanNs"],
+        subclass_1=dict(
+            aci_class="infraRsVlanNs",
+            aci_rn="rsvlanNs",
+            module_object=aci_mo if pool_name else None,
+            target_filter={"tDn": aci_mo} if pool_name else {},
+        ),
     )
 
     aci.get_existing()
 
     if state == "present":
         aci.payload(
-            aci_class=domain_class,
-            class_config=dict(name=domain),
-            child_configs=[
-                {"infraRsVlanNs": {"attributes": {"tDn": aci_mo}}},
-            ],
+            aci_class="infraRsVlanNs",
+            class_config=dict(tDn=aci_mo),
         )
 
-        aci.get_diff(aci_class=domain_class)
+        aci.get_diff(aci_class="infraRsVlanNs")
 
         aci.post_config()
 

@@ -632,6 +632,13 @@ options:
                         choices:
                             - 'block'
                             - 'allow'
+                    udp_not_quic:
+                        aliases: ['udp-not-quic']
+                        type: str
+                        description: Action to be taken when matched UDP packet is not QUIC.
+                        choices:
+                            - 'block'
+                            - 'allow'
             imaps:
                 type: dict
                 description: Imaps.
@@ -1422,6 +1429,13 @@ options:
                             - 'bypass'
                             - 'block'
                             - 'inspect'
+                    udp_not_quic:
+                        aliases: ['udp-not-quic']
+                        type: str
+                        description: Action to be taken when matched UDP packet is not QUIC.
+                        choices:
+                            - 'block'
+                            - 'allow'
             supported_alpn:
                 aliases: ['supported-alpn']
                 type: str
@@ -1483,6 +1497,7 @@ options:
 EXAMPLES = '''
 - name: Example playbook
   hosts: fortimanagers
+  gather_facts: false
   connection: httpapi
   vars:
     ansible_httpapi_use_ssl: true
@@ -1602,14 +1617,14 @@ def main():
                 'ssl-server': {
                     'type': 'list',
                     'options': {
-                        'ftps-client-cert-request': {'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'https-client-cert-request': {'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
+                        'ftps-client-cert-request': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
+                        'https-client-cert-request': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
                         'id': {'type': 'int'},
-                        'imaps-client-cert-request': {'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
+                        'imaps-client-cert-request': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
                         'ip': {'type': 'str'},
-                        'pop3s-client-cert-request': {'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'smtps-client-cert-request': {'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'ssl-other-client-cert-request': {'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
+                        'pop3s-client-cert-request': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
+                        'smtps-client-cert-request': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
+                        'ssl-other-client-cert-request': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
                         'ftps-client-certificate': {'v_range': [['6.4.0', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
                         'https-client-certificate': {'v_range': [['6.4.0', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
                         'imaps-client-certificate': {'v_range': [['6.4.0', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
@@ -1645,9 +1660,17 @@ def main():
                         'unsupported-ssl-cipher': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'unsupported-ssl-negotiation': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'untrusted-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block', 'ignore'], 'type': 'str'},
-                        'unsupported-ssl': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'client-cert-request': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
+                        'unsupported-ssl': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'client-cert-request': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'allow-invalid-server-cert': {
                             'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.2.1']],
                             'choices': ['disable', 'enable'],
@@ -1686,9 +1709,17 @@ def main():
                         'unsupported-ssl-cipher': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'unsupported-ssl-negotiation': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'untrusted-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block', 'ignore'], 'type': 'str'},
-                        'unsupported-ssl': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'client-cert-request': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
+                        'unsupported-ssl': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'client-cert-request': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'allow-invalid-server-cert': {
                             'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.2.1']],
                             'choices': ['disable', 'enable'],
@@ -1703,7 +1734,8 @@ def main():
                         },
                         'unsupported-ssl-version': {'v_range': [['7.0.1', '']], 'choices': ['block', 'allow', 'inspect'], 'type': 'str'},
                         'quic': {'v_range': [['7.4.1', '']], 'choices': ['disable', 'enable', 'bypass', 'block', 'inspect'], 'type': 'str'},
-                        'encrypted-client-hello': {'v_range': [['7.4.3', '']], 'choices': ['block', 'allow'], 'type': 'str'}
+                        'encrypted-client-hello': {'v_range': [['7.4.3', '']], 'choices': ['block', 'allow'], 'type': 'str'},
+                        'udp-not-quic': {'v_range': [['7.6.2', '']], 'choices': ['block', 'allow'], 'type': 'str'}
                     }
                 },
                 'imaps': {
@@ -1726,9 +1758,17 @@ def main():
                         'unsupported-ssl-cipher': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'unsupported-ssl-negotiation': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'untrusted-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block', 'ignore'], 'type': 'str'},
-                        'unsupported-ssl': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'client-cert-request': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
+                        'unsupported-ssl': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'client-cert-request': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'allow-invalid-server-cert': {
                             'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.2.1']],
                             'choices': ['disable', 'enable'],
@@ -1763,9 +1803,17 @@ def main():
                         'unsupported-ssl-cipher': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'unsupported-ssl-negotiation': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'untrusted-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block', 'ignore'], 'type': 'str'},
-                        'unsupported-ssl': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'client-cert-request': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
+                        'unsupported-ssl': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'client-cert-request': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'allow-invalid-server-cert': {
                             'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.2.1']],
                             'choices': ['disable', 'enable'],
@@ -1800,9 +1848,17 @@ def main():
                         'unsupported-ssl-cipher': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'unsupported-ssl-negotiation': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'untrusted-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block', 'ignore'], 'type': 'str'},
-                        'unsupported-ssl': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'client-cert-request': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
+                        'unsupported-ssl': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'client-cert-request': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'allow-invalid-server-cert': {
                             'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.2.1']],
                             'choices': ['disable', 'enable'],
@@ -1865,9 +1921,17 @@ def main():
                         'unsupported-ssl-cipher': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'unsupported-ssl-negotiation': {'v_range': [['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'untrusted-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block', 'ignore'], 'type': 'str'},
-                        'unsupported-ssl': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'client-cert-request': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['bypass', 'inspect', 'block'], 'type': 'str'},
-                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '']], 'choices': ['allow', 'block'], 'type': 'str'},
+                        'unsupported-ssl': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'client-cert-request': {
+                            'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']],
+                            'choices': ['bypass', 'inspect', 'block'],
+                            'type': 'str'
+                        },
+                        'invalid-server-cert': {'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.6.2']], 'choices': ['allow', 'block'], 'type': 'str'},
                         'allow-invalid-server-cert': {
                             'v_range': [['6.2.8', '6.2.13'], ['6.4.5', '7.2.1']],
                             'choices': ['disable', 'enable'],
@@ -1907,7 +1971,8 @@ def main():
                             'choices': ['ssl-3.0', 'tls-1.0', 'tls-1.1', 'tls-1.2', 'tls-1.3'],
                             'type': 'str'
                         },
-                        'quic': {'v_range': [['7.4.1', '']], 'choices': ['disable', 'enable', 'bypass', 'block', 'inspect'], 'type': 'str'}
+                        'quic': {'v_range': [['7.4.1', '']], 'choices': ['disable', 'enable', 'bypass', 'block', 'inspect'], 'type': 'str'},
+                        'udp-not-quic': {'v_range': [['7.6.2', '']], 'choices': ['block', 'allow'], 'type': 'str'}
                     }
                 },
                 'supported-alpn': {'v_range': [['7.0.0', '']], 'choices': ['none', 'http1-1', 'http2', 'all'], 'type': 'str'},

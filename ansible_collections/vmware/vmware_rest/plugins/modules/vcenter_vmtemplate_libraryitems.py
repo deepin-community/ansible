@@ -348,24 +348,6 @@ EXAMPLES = r"""
     memory:
       hot_add_enabled: true
       size_MiB: 1024
-    disks:
-    - type: SATA
-      backing:
-        type: VMDK_FILE
-        vmdk_file: '[local] test_vm1/{{ disk_name }}.vmdk'
-    - type: SATA
-      new_vmdk:
-        name: second_disk
-        capacity: 32000000000
-    cdroms:
-    - type: SATA
-      sata:
-        bus: 0
-        unit: 2
-    nics:
-    - backing:
-        type: STANDARD_PORTGROUP
-        network: "{{ lookup('vmware.vmware_rest.network_moid', '/my_dc/network/VM Network') }}"
   register: my_vm
 
 - name: Create a content library based on a DataStore
@@ -392,20 +374,11 @@ EXAMPLES = r"""
       resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/my_dc/host/my_cluster/Resources') }}"
   register: mylib_item
 
-- name: Get the list of items of the NFS library
-  vmware.vmware_rest.content_library_item_info:
-    library_id: '{{ nfs_lib.id }}'
-  register: lib_items
-
-- name: Use the name to identify the item
-  set_fact:
-    my_template_item: "{{ lib_items.value | selectattr('name', 'equalto', 'golden-template')|first }}"
-
 - name: Deploy a new VM based on the template
   vmware.vmware_rest.vcenter_vmtemplate_libraryitems:
     name: vm-from-template
     library: '{{ nfs_lib.id }}'
-    template_library_item: '{{ my_template_item.id }}'
+    template_library_item: '{{ mylib_item.id }}'
     placement:
       cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/my_dc/host/my_cluster') }}"
       folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/my_dc/vm') }}"
@@ -429,24 +402,16 @@ value:
       count: 1
     disks:
       '16000':
-        capacity: 16106127360
-        disk_storage:
-          datastore: datastore-1122
-      '16001':
         capacity: 32000000000
         disk_storage:
-          datastore: datastore-1122
+          datastore: datastore-3036
     guest_OS: RHEL_7_64
     memory:
       size_MiB: 1024
-    nics:
-      '4000':
-        backing_type: STANDARD_PORTGROUP
-        mac_type: ASSIGNED
-        network: network-1123
+    nics: {}
     vm_home_storage:
-      datastore: datastore-1122
-    vm_template: vm-1132
+      datastore: datastore-3036
+    vm_template: vm-77006
   type: dict
 """
 
@@ -485,18 +450,20 @@ PAYLOAD_FORMAT = {
 }  # pylint: disable=line-too-long
 
 from ansible.module_utils.basic import env_fallback
+import os
 
-try:
-    from ansible_collections.cloud.common.plugins.module_utils.turbo.exceptions import (
-        EmbeddedModuleFailure,
-    )
-    from ansible_collections.cloud.common.plugins.module_utils.turbo.module import (
-        AnsibleTurboModule as AnsibleModule,
-    )
+if os.getenv("VMWARE_ENABLE_TURBO", False):
+    try:
+        from ansible_collections.cloud.common.plugins.module_utils.turbo.module import (
+            AnsibleTurboModule as AnsibleModule,
+        )
 
-    AnsibleModule.collection_name = "vmware.vmware_rest"
-except ImportError:
+        AnsibleModule.collection_name = "vmware.vmware_rest"
+    except ImportError:
+        from ansible.module_utils.basic import AnsibleModule
+else:
     from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.vmware.vmware_rest.plugins.module_utils.vmware_rest import (
     exists,
     gen_args,
@@ -587,8 +554,11 @@ async def main():
             validate_certs=module.params["vcenter_validate_certs"],
             log_file=module.params["vcenter_rest_log_file"],
         )
-    except EmbeddedModuleFailure as err:
-        module.fail_json(err.get_message())
+    except Exception as err:
+        if hasattr(err, "get_message"):
+            module.fail_json(err.get_message())
+        else:
+            module.fail_json(str(err))
     result = await entry_point(module, session)
     module.exit_json(**result)
 
@@ -668,9 +638,7 @@ async def _create(params, session):
     async with session.post(_url, json=payload, **session_timeout(params)) as resp:
         if resp.status == 500:
             text = await resp.text()
-            raise EmbeddedModuleFailure(
-                f"Request has failed: status={resp.status}, {text}"
-            )
+            raise Exception(f"Request has failed: status={resp.status}, {text}")
         try:
             if resp.headers["Content-Type"] == "application/json":
                 _json = await resp.json()

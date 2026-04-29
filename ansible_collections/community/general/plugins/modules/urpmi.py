@@ -11,12 +11,11 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: urpmi
 short_description: Urpmi manager
 description:
-  - Manages packages with C(urpmi) (such as for Mageia or Mandriva)
+  - Manages packages with C(urpmi) (such as for Mageia or Mandriva).
 extends_documentation_fragment:
   - community.general.attributes
 attributes:
@@ -29,13 +28,13 @@ options:
     description:
       - A list of package names to install, upgrade or remove.
     required: true
-    aliases: [ package, pkg ]
+    aliases: [package, pkg]
     type: list
     elements: str
   state:
     description:
       - Indicates the desired package state.
-    choices: [ absent, present, installed, removed ]
+    choices: [absent, present, installed, removed]
     default: present
     type: str
   update_cache:
@@ -50,21 +49,20 @@ options:
     default: true
   force:
     description:
-      - Assume "yes" is the answer to any question urpmi has to ask.
-        Corresponds to the C(--force) option for C(urpmi).
+      - Assume "yes" is the answer to any question urpmi has to ask. Corresponds to the C(--force) option for C(urpmi).
     type: bool
     default: true
   root:
     description:
-      - Specifies an alternative install root, relative to which all packages will be installed.
-        Corresponds to the C(--root) option for C(urpmi).
-    aliases: [ installroot ]
+      - Specifies an alternative install root, relative to which all packages are installed. Corresponds to the C(--root)
+        option for C(urpmi).
+    aliases: [installroot]
     type: str
 author:
-- Philippe Makowski (@pmakowski)
-'''
+  - Philippe Makowski (@pmakowski)
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Install package foo
   community.general.urpmi:
     pkg: foo
@@ -85,7 +83,7 @@ EXAMPLES = '''
     name: bar
     state: present
     update_cache: true
-'''
+"""
 
 
 from ansible.module_utils.basic import AnsibleModule
@@ -95,7 +93,7 @@ def query_package(module, name, root):
     # rpm -q returns 0 if the package is installed,
     # 1 if it is not installed
     rpm_path = module.get_bin_path("rpm", True)
-    cmd = "%s -q %s %s" % (rpm_path, name, root_option(root))
+    cmd = [rpm_path, "-q", name] + root_option(root)
     rc, stdout, stderr = module.run_command(cmd, check_rc=False)
     if rc == 0:
         return True
@@ -107,7 +105,7 @@ def query_package_provides(module, name, root):
     # rpm -q returns 0 if the package is installed,
     # 1 if it is not installed
     rpm_path = module.get_bin_path("rpm", True)
-    cmd = "%s -q --whatprovides %s %s" % (rpm_path, name, root_option(root))
+    cmd = [rpm_path, "-q", "--whatprovides", name] + root_option(root)
     rc, stdout, stderr = module.run_command(cmd, check_rc=False)
     return rc == 0
 
@@ -115,7 +113,7 @@ def query_package_provides(module, name, root):
 def update_package_db(module):
 
     urpmiupdate_path = module.get_bin_path("urpmi.update", True)
-    cmd = "%s -a -q" % (urpmiupdate_path,)
+    cmd = [urpmiupdate_path, "-a", "-q"]
     rc, stdout, stderr = module.run_command(cmd, check_rc=False)
     if rc != 0:
         module.fail_json(msg="could not update package db")
@@ -131,7 +129,7 @@ def remove_packages(module, packages, root):
             continue
 
         urpme_path = module.get_bin_path("urpme", True)
-        cmd = "%s --auto %s %s" % (urpme_path, root_option(root), package)
+        cmd = [urpme_path, "--auto"] + root_option(root) + [package]
         rc, stdout, stderr = module.run_command(cmd, check_rc=False)
 
         if rc != 0:
@@ -155,20 +153,17 @@ def install_packages(module, pkgspec, root, force=True, no_recommends=True):
 
     if len(packages) != 0:
         if no_recommends:
-            no_recommends_yes = '--no-recommends'
+            no_recommends_yes = ['--no-recommends']
         else:
-            no_recommends_yes = ''
+            no_recommends_yes = []
 
         if force:
-            force_yes = '--force'
+            force_yes = ['--force']
         else:
-            force_yes = ''
+            force_yes = []
 
         urpmi_path = module.get_bin_path("urpmi", True)
-        cmd = ("%s --auto %s --quiet %s %s %s" % (urpmi_path, force_yes,
-                                                  no_recommends_yes,
-                                                  root_option(root),
-                                                  packages))
+        cmd = [urpmi_path, "--auto"] + force_yes + ["--quiet"] + no_recommends_yes + root_option(root) + packages
 
         rc, out, err = module.run_command(cmd)
 
@@ -186,10 +181,10 @@ def install_packages(module, pkgspec, root, force=True, no_recommends=True):
 
 
 def root_option(root):
-    if (root):
-        return "--root=%s" % (root)
+    if root:
+        return ["--root=%s" % (root)]
     else:
-        return ""
+        return []
 
 
 def main():

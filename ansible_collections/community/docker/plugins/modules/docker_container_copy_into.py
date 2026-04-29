@@ -8,8 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: docker_container_copy_into
 
 short_description: Copy a file into a Docker container
@@ -19,9 +18,8 @@ version_added: 3.4.0
 description:
   - Copy a file into a Docker container.
   - Similar to C(docker cp).
-  - To copy files in a non-running container, you must provide the O(owner_id) and O(group_id) options.
-    This is also necessary if the container does not contain a C(/bin/sh) shell with an C(id) tool.
-
+  - To copy files in a non-running container, you must provide the O(owner_id) and O(group_id) options. This is also necessary
+    if the container does not contain a C(/bin/sh) shell with an C(id) tool.
 attributes:
   check_mode:
     support: full
@@ -29,8 +27,12 @@ attributes:
     support: full
     details:
       - Additional data will need to be transferred to compute diffs.
-      - The module uses R(the MAX_FILE_SIZE_FOR_DIFF ansible-core configuration,MAX_FILE_SIZE_FOR_DIFF)
-        to determine for how large files diffs should be computed.
+      - The module uses R(the MAX_FILE_SIZE_FOR_DIFF ansible-core configuration,MAX_FILE_SIZE_FOR_DIFF) to determine for how
+        large files diffs should be computed.
+  idempotent:
+    support: partial
+    details:
+      - If O(force=true) the module is not idempotent.
 
 options:
   container:
@@ -51,11 +53,9 @@ options:
     type: str
   content_is_b64:
     description:
-      - If set to V(true), the content in O(content) is assumed to be Base64 encoded and
-        will be decoded before being used.
-      - To use binary O(content), it is better to keep it Base64 encoded and let it
-        be decoded by this option. Otherwise you risk the data to be interpreted as
-        UTF-8 and corrupted.
+      - If set to V(true), the content in O(content) is assumed to be Base64 encoded and will be decoded before being used.
+      - To use binary O(content), it is better to keep it Base64 encoded and let it be decoded by this option. Otherwise you
+        risk the data to be interpreted as UTF-8 and corrupted.
     type: bool
     default: false
   container_path:
@@ -71,35 +71,55 @@ options:
     default: false
   local_follow:
     description:
-      - This flag indicates that filesystem links in the source tree (where the module is executed), if they exist, should be followed.
+      - This flag indicates that filesystem links in the source tree (where the module is executed), if they exist, should
+        be followed.
     type: bool
     default: true
   owner_id:
     description:
       - The owner ID to use when writing the file to disk.
       - If provided, O(group_id) must also be provided.
-      - If not provided, the module will try to determine the user and group ID for the current user in the container.
-        This will only work if C(/bin/sh) is present in the container and the C(id) binary or shell builtin is available.
-        Also the container must be running.
+      - If not provided, the module will try to determine the user and group ID for the current user in the container. This
+        will only work if C(/bin/sh) is present in the container and the C(id) binary or shell builtin is available. Also
+        the container must be running.
     type: int
   group_id:
     description:
       - The group ID to use when writing the file to disk.
       - If provided, O(owner_id) must also be provided.
-      - If not provided, the module will try to determine the user and group ID for the current user in the container.
-        This will only work if C(/bin/sh) is present in the container and the C(id) binary or shell builtin is available.
-        Also the container must be running.
+      - If not provided, the module will try to determine the user and group ID for the current user in the container. This
+        will only work if C(/bin/sh) is present in the container and the C(id) binary or shell builtin is available. Also
+        the container must be running.
     type: int
   mode:
     description:
       - The file mode to use when writing the file to disk.
       - Will use the file's mode from the source system if this option is not provided.
-    type: int
+      - This option is parsed depending on how O(mode_parse) is set.
+    type: raw
+  mode_parse:
+    description:
+      - Determines how to parse the O(mode) parameter.
+    type: str
+    choices:
+      legacy:
+        - Parses the value of O(mode) as an integer.
+        - Note that if you provide an octal number as a string to O(mode), it will be parsed as a B(decimal) number.
+          If you provide an octal integer directly, though, it will work as expected.
+        - This has been the default behavior of the module since it was added to community.docker.
+      modern:
+        - Parses the value of O(mode) as an octal string, or takes the integer value if an integer has been provided.
+        - This is how M(ansible.builtin.copy) treats its O(ansible.builtin.copy#module:mode) option.
+      octal_string_only:
+        - Rejects everything that is not a string that can be parsed as an octal number.
+        - Use this value to ensure that no accidental conversion to integers happen.
+    default: legacy
+    version_added: 4.6.0
   force:
     description:
       - If set to V(true), force writing the file (without performing any idempotency checks).
-      - If set to V(false), only write the file if it does not exist on the target. If a filesystem object exists at
-        the destination, the module will not do any change.
+      - If set to V(false), only write the file if it does not exist on the target. If a filesystem object exists at the destination,
+        the module will not do any change.
       - If this option is not specified, the module will be idempotent. To verify idempotency, it will try to get information
         on the filesystem object in the container, and if everything seems to match will download the file from the container
         to compare it to the file to upload.
@@ -115,9 +135,10 @@ author:
 
 requirements:
   - "Docker API >= 1.25"
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
+---
 - name: Copy a file into the container
   community.docker.docker_container_copy_into:
     container: mydata
@@ -129,19 +150,20 @@ EXAMPLES = '''
     container: mydata
     path: /home/user/bin/runme.o
     container_path: /bin/runme
-    owner_id: 0  # root
-    group_id: 0  # root
-    mode: 0755  # readable and executable by all users, writable by root
-'''
+    owner_id: 0 # root
+    group_id: 0 # root
+    mode: "0755" # readable and executable by all users, writable by root
+    mode_parse: modern # ensure that strings passed for 'mode' are passed as octal numbers
+"""
 
-RETURN = '''
+RETURN = r"""
 container_path:
   description:
     - The actual path in the container.
     - Can only be different from O(container_path) when O(follow=true).
   type: str
   returned: success
-'''
+"""
 
 import base64
 import io
@@ -150,6 +172,8 @@ import stat
 import traceback
 
 from ansible.module_utils._text import to_bytes, to_native, to_text
+from ansible.module_utils.common.validation import check_type_int
+from ansible.module_utils.six import integer_types, string_types
 
 from ansible_collections.community.docker.plugins.module_utils._api.errors import APIError, DockerException, NotFound
 
@@ -371,7 +395,7 @@ def is_binary(content):
     if b'\x00' in content:
         return True
     # TODO: better detection
-    # (ansible-core also just checks for 0x00, and even just sticks to the first 8k, so this isn't too bad...)
+    # (ansible-core also just checks for 0x00, and even just sticks to the first 8k, so this is not too bad...)
     return False
 
 
@@ -450,7 +474,7 @@ def is_file_idempotent(client, container, managed_path, container_path, follow_l
                 diff['after_header'] = managed_path
                 diff['after'] = to_text(content)
 
-    # When forcing and we're not following links in the container, go!
+    # When forcing and we are not following links in the container, go!
     if force and not follow_links:
         retrieve_diff(client, container, container_path, follow_links, diff, max_file_size_for_diff)
         return container_path, mode, False
@@ -467,7 +491,7 @@ def is_file_idempotent(client, container, managed_path, container_path, follow_l
     if follow_links:
         container_path = real_container_path
 
-    # If the file wasn't found, continue
+    # If the file was not found, continue
     if regular_stat is None:
         if diff is not None:
             diff['before_header'] = container_path
@@ -617,7 +641,7 @@ def is_content_idempotent(client, container, content, container_path, follow_lin
             diff['after_header'] = 'dynamically generated'
             diff['after'] = to_text(content)
 
-    # When forcing and we're not following links in the container, go!
+    # When forcing and we are not following links in the container, go!
     if force and not follow_links:
         retrieve_diff(client, container, container_path, follow_links, diff, max_file_size_for_diff)
         return container_path, mode, False
@@ -634,7 +658,7 @@ def is_content_idempotent(client, container, content, container_path, follow_lin
     if follow_links:
         container_path = real_container_path
 
-    # If the file wasn't found, continue
+    # If the file was not found, continue
     if regular_stat is None:
         if diff is not None:
             diff['before_header'] = container_path
@@ -758,6 +782,20 @@ def copy_content_into_container(client, container, content, container_path, foll
     client.module.exit_json(**result)
 
 
+def parse_modern(mode):
+    if isinstance(mode, string_types):
+        return int(to_native(mode), 8)
+    if isinstance(mode, integer_types):
+        return mode
+    raise TypeError('must be an octal string or an integer, got {mode!r}'.format(mode=mode))
+
+
+def parse_octal_string_only(mode):
+    if isinstance(mode, string_types):
+        return int(to_native(mode), 8)
+    raise TypeError('must be an octal string, got {mode!r}'.format(mode=mode))
+
+
 def main():
     argument_spec = dict(
         container=dict(type='str', required=True),
@@ -767,7 +805,8 @@ def main():
         local_follow=dict(type='bool', default=True),
         owner_id=dict(type='int'),
         group_id=dict(type='int'),
-        mode=dict(type='int'),
+        mode=dict(type='raw'),
+        mode_parse=dict(type='str', choices=['legacy', 'modern', 'octal_string_only'], default='legacy'),
         force=dict(type='bool'),
         content=dict(type='str', no_log=True),
         content_is_b64=dict(type='bool', default=False),
@@ -798,6 +837,20 @@ def main():
     force = client.module.params['force']
     content = client.module.params['content']
     max_file_size_for_diff = client.module.params['_max_file_size_for_diff'] or 1
+
+    if mode is not None:
+        mode_parse = client.module.params['mode_parse']
+        try:
+            if mode_parse == 'legacy':
+                mode = check_type_int(mode)
+            elif mode_parse == 'modern':
+                mode = parse_modern(mode)
+            elif mode_parse == 'octal_string_only':
+                mode = parse_octal_string_only(mode)
+        except (TypeError, ValueError) as e:
+            client.fail("Error while parsing 'mode': {error}".format(error=e))
+        if mode < 0:
+            client.fail("'mode' must not be negative; got {mode}".format(mode=mode))
 
     if content is not None:
         if client.module.params['content_is_b64']:

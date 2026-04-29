@@ -181,6 +181,10 @@ options:
                         aliases: ['status-ttl']
                         type: int
                         description: Time for which server reachability is cached so that when a server is unreachable, it will not be retried for at l...
+                    vrf_select:
+                        aliases: ['vrf-select']
+                        type: int
+                        description: VRF ID used for connection to server.
             key:
                 type: raw
                 description: (list) Key to access the primary server.
@@ -229,12 +233,17 @@ options:
                 aliases: ['status-ttl']
                 type: int
                 description: Time for which server reachability is cached so that when a server is unreachable, it will not be retried for at least thi...
+            vrf_select:
+                aliases: ['vrf-select']
+                type: int
+                description: VRF ID used for connection to server.
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -250,39 +259,39 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         user_tacacs:
-          authen_type: <value in [auto, ascii, pap, ...]>
-          authorization: <value in [disable, enable]>
-          dynamic_mapping:
-            -
-              _scope:
-                -
-                  name: <string>
-                  vdom: <string>
-              authen_type: <value in [auto, ascii, pap, ...]>
-              authorization: <value in [disable, enable]>
-              key: <list or string>
-              port: <integer>
-              secondary_key: <list or string>
-              secondary_server: <string>
-              server: <string>
-              source_ip: <string>
-              tertiary_key: <list or string>
-              tertiary_server: <string>
-              interface: <string>
-              interface_select_method: <value in [auto, sdwan, specify]>
-              status_ttl: <integer>
-          key: <list or string>
-          name: <string>
-          port: <integer>
-          secondary_key: <list or string>
-          secondary_server: <string>
-          server: <string>
-          source_ip: <string>
-          tertiary_key: <list or string>
-          tertiary_server: <string>
-          interface: <string>
-          interface_select_method: <value in [auto, sdwan, specify]>
-          status_ttl: <integer>
+          name: "your value" # Required variable, string
+          # authen_type: <value in [auto, ascii, pap, ...]>
+          # authorization: <value in [disable, enable]>
+          # dynamic_mapping:
+          #   - _scope:
+          #       - name: <string>
+          #         vdom: <string>
+          #     authen_type: <value in [auto, ascii, pap, ...]>
+          #     authorization: <value in [disable, enable]>
+          #     key: <list or string>
+          #     port: <integer>
+          #     secondary_key: <list or string>
+          #     secondary_server: <string>
+          #     server: <string>
+          #     source_ip: <string>
+          #     tertiary_key: <list or string>
+          #     tertiary_server: <string>
+          #     interface: <string>
+          #     interface_select_method: <value in [auto, sdwan, specify]>
+          #     status_ttl: <integer>
+          #     vrf_select: <integer>
+          # key: <list or string>
+          # port: <integer>
+          # secondary_key: <list or string>
+          # secondary_server: <string>
+          # server: <string>
+          # source_ip: <string>
+          # tertiary_key: <list or string>
+          # tertiary_server: <string>
+          # interface: <string>
+          # interface_select_method: <value in [auto, sdwan, specify]>
+          # status_ttl: <integer>
+          # vrf_select: <integer>
 '''
 
 RETURN = '''
@@ -365,7 +374,8 @@ def main():
                             'choices': ['auto', 'sdwan', 'specify'],
                             'type': 'str'
                         },
-                        'status-ttl': {'v_range': [['7.4.3', '']], 'type': 'int'}
+                        'status-ttl': {'v_range': [['7.4.3', '']], 'type': 'int'},
+                        'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'}
                     },
                     'elements': 'dict'
                 },
@@ -380,7 +390,8 @@ def main():
                 'tertiary-server': {'type': 'str'},
                 'interface': {'v_range': [['6.2.5', '6.2.13'], ['6.4.1', '']], 'type': 'str'},
                 'interface-select-method': {'v_range': [['6.2.5', '6.2.13'], ['6.4.1', '']], 'choices': ['auto', 'sdwan', 'specify'], 'type': 'str'},
-                'status-ttl': {'v_range': [['7.4.3', '']], 'type': 'int'}
+                'status-ttl': {'v_range': [['7.4.3', '']], 'type': 'int'},
+                'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'}
             }
         }
     }

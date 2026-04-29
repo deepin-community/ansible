@@ -75,20 +75,20 @@ EXAMPLES = r'''
 '''
 try:
     from pyVmomi import vim, vmodl
-    HAS_PYVMOMI = True
 except ImportError:
-    HAS_PYVMOMI = False
+    pass
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.community.vmware.plugins.module_utils.vmware import (
-    vmware_argument_spec, find_dvs_by_name, find_hostsystem_by_name,
-    connect_to_api, find_dvspg_by_name)
+    find_dvs_by_name, find_hostsystem_by_name,
+    PyVmomi, find_dvspg_by_name)
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 
 
-class VMwareMigrateVmk(object):
+class VMwareMigrateVmk(PyVmomi):
 
     def __init__(self, module):
-        self.module = module
+        super(VMwareMigrateVmk, self).__init__(module)
         self.host_system = None
         self.migrate_switch_name = self.module.params['migrate_switch_name']
         self.migrate_portgroup_name = self.module.params['migrate_portgroup_name']
@@ -97,7 +97,6 @@ class VMwareMigrateVmk(object):
         self.esxi_hostname = self.module.params['esxi_hostname']
         self.current_portgroup_name = self.module.params['current_portgroup_name']
         self.current_switch_name = self.module.params['current_switch_name']
-        self.content = connect_to_api(module)
 
     def process_state(self):
         try:
@@ -207,7 +206,7 @@ class VMwareMigrateVmk(object):
 
 def main():
 
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(dict(esxi_hostname=dict(required=True, type='str'),
                               device=dict(required=True, type='str'),
                               current_switch_name=dict(required=True, type='str'),
@@ -217,9 +216,6 @@ def main():
                               migrate_vlan_id=dict(required=False, type='int')))
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
-
-    if not HAS_PYVMOMI:
-        module.fail_json(msg='pyvmomi required for this module')
 
     vmware_migrate_vmk = VMwareMigrateVmk(module)
     vmware_migrate_vmk.process_state()

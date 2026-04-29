@@ -116,12 +116,34 @@ options:
                         type: list
                         elements: str
                         description: CASB custom control user input.
+            attribute_filter:
+                aliases: ['attribute-filter']
+                type: list
+                elements: dict
+                description: Attribute filter.
+                suboptions:
+                    action:
+                        type: str
+                        description: CASB access rule tenant control action.
+                        choices:
+                            - 'block'
+                            - 'monitor'
+                            - 'bypass'
+                    attribute_match:
+                        aliases: ['attribute-match']
+                        type: list
+                        elements: str
+                        description: CASB access rule tenant match.
+                    id:
+                        type: int
+                        description: CASB tenant control ID.
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -139,11 +161,14 @@ EXAMPLES = '''
         saas_application: <your own value>
         state: present # <value in [present, absent]>
         casb_profile_saasapplication_customcontrol:
-          name: <string>
-          option:
-            -
-              name: <string>
-              user_input: <list or string>
+          name: "your value" # Required variable, string
+          # option:
+          #   - name: <string>
+          #     user_input: <list or string>
+          # attribute_filter:
+          #   - action: <value in [block, monitor, bypass]>
+          #     attribute_match: <list or string>
+          #     id: <integer>
 '''
 
 RETURN = '''
@@ -214,6 +239,16 @@ def main():
                     'options': {
                         'name': {'v_range': [['7.4.1', '']], 'type': 'str'},
                         'user-input': {'v_range': [['7.4.1', '']], 'type': 'list', 'elements': 'str'}
+                    },
+                    'elements': 'dict'
+                },
+                'attribute-filter': {
+                    'v_range': [['7.6.2', '']],
+                    'type': 'list',
+                    'options': {
+                        'action': {'v_range': [['7.6.2', '']], 'choices': ['block', 'monitor', 'bypass'], 'type': 'str'},
+                        'attribute-match': {'v_range': [['7.6.2', '']], 'type': 'list', 'elements': 'str'},
+                        'id': {'v_range': [['7.6.2', '']], 'type': 'int'}
                     },
                     'elements': 'dict'
                 }

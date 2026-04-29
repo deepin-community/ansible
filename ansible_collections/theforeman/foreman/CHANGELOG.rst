@@ -6,6 +6,92 @@ theforeman.foreman Release Notes
 
 This changelog describes changes after version 0.8.1.
 
+v5.5.0
+======
+
+Minor Changes
+-------------
+
+- content_view - add ``rolling``-flag to create a Rolling Content View
+
+Bugfixes
+--------
+
+- activation_key - ensure LCE and CV are always sent together when updating one of them
+- hostgroup - fix idempotency of hostgroup module when assigning Ansible roles to a hostgroup with a parent hostgroup (https://github.com/theforeman/foreman-ansible-modules/issues/1865)
+
+New Modules
+-----------
+
+- theforeman.foreman.flatpak_remote - Manage Flatpak Remotes
+- theforeman.foreman.flatpak_remote_repository_mirror - Mirror a Flatpak Remote Repository
+- theforeman.foreman.flatpak_remote_scan - Scan a Flatpak Remote
+
+v5.4.0
+======
+
+Minor Changes
+-------------
+
+- repository - add ``rhel-10`` to os version filter choices
+- repository - add support for the ``retain_package_versions_count`` parameter
+
+Bugfixes
+--------
+
+- content_upload - lower chunk size to 1MB to avoid generating too big requests (https://github.com/theforeman/foreman-ansible-modules/issues/1862)
+- host - ensure LCE and CV are always sent together when updating one of them
+
+v5.3.0
+======
+
+Minor Changes
+-------------
+
+- Support Kerberos/GSSAPI authentication by passing ``use_gssapi: true`` instead of ``username`` and ``password``.
+- Support setting a specific CA file for certificate validation
+- activation_keys, content_credentials, content_view_publish, content_views, lifecycle_environments, repositories, sync_plans roles - Allow specifying the organization for each item individually (https://github.com/theforeman/foreman-ansible-modules/issues/1653)
+
+v5.2.0
+======
+
+Minor Changes
+-------------
+
+- snapshot - add ``quiesce`` option (https://github.com/theforeman/foreman-ansible-modules/pull/1810)
+
+Bugfixes
+--------
+
+- callback plugin - fix another exception when serializing secrets (https://github.com/theforeman/foreman-ansible-modules/pull/1819)
+
+v5.1.0
+======
+
+Minor Changes
+-------------
+
+- templates_import - Support configuring HTTP Proxy behaviour for template import
+
+Bugfixes
+--------
+
+- inventory - Drop fallback to Host API when Reports API fails, as this leads to possibly wrong data being used
+
+v5.0.0
+======
+
+Minor Changes
+-------------
+
+- host, hostgroup, domain, operatingsystem, subnet, organization, location - support setting hidden parameters
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Drop support for Ansible 2.9.
+- Drop support for Python 2.7 and 3.5.
+
 v4.2.0
 ======
 

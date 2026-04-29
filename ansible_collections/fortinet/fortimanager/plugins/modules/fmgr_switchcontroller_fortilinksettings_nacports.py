@@ -126,6 +126,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -141,13 +142,13 @@ EXAMPLES = '''
         adom: <your own value>
         fortilink_settings: <your own value>
         switchcontroller_fortilinksettings_nacports:
-          lan_segment: <value in [disabled, enabled]>
-          member_change: <integer>
-          nac_lan_interface: <string>
-          nac_segment_vlans: <list or string>
-          onboarding_vlan: <string>
-          parent_key: <string>
-          bounce_nac_port: <value in [disable, enable]>
+          # lan_segment: <value in [disabled, enabled]>
+          # member_change: <integer>
+          # nac_lan_interface: <string>
+          # nac_segment_vlans: <list or string>
+          # onboarding_vlan: <string>
+          # parent_key: <string>
+          # bounce_nac_port: <value in [disable, enable]>
 '''
 
 RETURN = '''

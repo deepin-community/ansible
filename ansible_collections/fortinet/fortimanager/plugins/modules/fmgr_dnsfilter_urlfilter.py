@@ -136,6 +136,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -151,16 +152,15 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         dnsfilter_urlfilter:
-          comment: <string>
-          entries:
-            -
-              action: <value in [allow, monitor, block]>
-              id: <integer>
-              status: <value in [disable, enable]>
-              type: <value in [wildcard, regex, simple]>
-              url: <string>
-          id: <integer>
-          name: <string>
+          id: 0 # Required variable, integer
+          # comment: <string>
+          # entries:
+          #   - action: <value in [allow, monitor, block]>
+          #     id: <integer>
+          #     status: <value in [disable, enable]>
+          #     type: <value in [wildcard, regex, simple]>
+          #     url: <string>
+          # name: <string>
 '''
 
 RETURN = '''

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -16,7 +16,7 @@ short_description: NetApp ONTAP manage broadcast domain ports
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_zapi
 version_added: 2.6.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Add or remove ONTAP broadcast domain ports.  Existing ports that are not listed are kept.
 options:
@@ -45,22 +45,23 @@ options:
 '''
 
 EXAMPLES = """
-    - name: create broadcast domain ports
-      na_ontap_broadcast_domain_ports:
-        state=present
-        username={{ netapp_username }}
-        password={{ netapp_password }}
-        hostname={{ netapp_hostname }}
-        broadcast_domain=123kevin
-        ports=khutton-vsim1:e0d-13
-    - name: delete broadcast domain ports
-      na_ontap_broadcast_domain_ports:
-        state=absent
-        username={{ netapp_username }}
-        password={{ netapp_password }}
-        hostname={{ netapp_hostname }}
-        broadcast_domain=123kevin
-        ports=khutton-vsim1:e0d-13
+- name: Create broadcast-domain ports
+  netapp.ontap.na_ontap_broadcast_domain_ports:
+    state: present
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    broadcast_domain: 123kevin
+    ports: khutton-vsim1:e0d-13
+
+- name: Delete broadcast-domain ports
+  netapp.ontap.na_ontap_broadcast_domain_ports:
+    state: absent
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    broadcast_domain: 123kevin
+    ports: khutton-vsim1:e0d-13
 """
 
 RETURN = """

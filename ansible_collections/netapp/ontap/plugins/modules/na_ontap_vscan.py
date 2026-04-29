@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2019, NetApp Inc.
+# (c) 2018-2025, NetApp Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 '''
@@ -21,7 +21,7 @@ short_description: NetApp ONTAP Vscan enable/disable.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: 2.9.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 notes:
 - on demand task, on_access_policy and scanner_pools must be set up before running this module
 description:
@@ -41,21 +41,21 @@ options:
 '''
 
 EXAMPLES = """
-    - name: Enable Vscan
-      na_ontap_vscan:
-        enable: True
-        username: '{{ netapp_username }}'
-        password: '{{ netapp_password }}'
-        hostname: '{{ netapp_hostname }}'
-        vserver: trident_svm
+- name: Enable Vscan
+  netapp.ontap.na_ontap_vscan:
+    enable: true
+    username: '{{ netapp_username }}'
+    password: '{{ netapp_password }}'
+    hostname: '{{ netapp_hostname }}'
+    vserver: ansibleSVM
 
-    - name: Disable Vscan
-      na_ontap_vscan:
-        enable: False
-        username: '{{ netapp_username }}'
-        password: '{{ netapp_password }}'
-        hostname: '{{ netapp_hostname }}'
-        vserver: trident_svm
+- name: Disable Vscan
+  netapp.ontap.na_ontap_vscan:
+    enable: false
+    username: '{{ netapp_username }}'
+    password: '{{ netapp_password }}'
+    hostname: '{{ netapp_hostname }}'
+    vserver: ansibleSVM
 """
 
 RETURN = """

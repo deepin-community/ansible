@@ -203,6 +203,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -216,22 +217,22 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_docker:
-          fortiportal: <value in [disable, enable]>
-          fortiwlm: <value in [disable, enable]>
-          sdwancontroller: <value in [disable, enable]>
-          status: <value in [disable, enable, qa, ...]>
-          cpu: <integer>
-          default_address_pool_base: <string>
-          default_address_pool_size: <integer>
-          fortiauthenticator: <value in [disable, enable]>
-          fortisigconverter: <value in [disable, enable]>
-          mem: <integer>
-          docker_user_login_max: <integer>
-          fortisoar: <value in [disable, enable]>
-          fortiaiops: <value in [disable, enable]>
-          policyanalyzer: <value in [disable, enable]>
-          universalconnector: <value in [disable, enable]>
-          fsmcollector: <value in [disable, enable]>
+          # fortiportal: <value in [disable, enable]>
+          # fortiwlm: <value in [disable, enable]>
+          # sdwancontroller: <value in [disable, enable]>
+          # status: <value in [disable, enable, qa, ...]>
+          # cpu: <integer>
+          # default_address_pool_base: <string>
+          # default_address_pool_size: <integer>
+          # fortiauthenticator: <value in [disable, enable]>
+          # fortisigconverter: <value in [disable, enable]>
+          # mem: <integer>
+          # docker_user_login_max: <integer>
+          # fortisoar: <value in [disable, enable]>
+          # fortiaiops: <value in [disable, enable]>
+          # policyanalyzer: <value in [disable, enable]>
+          # universalconnector: <value in [disable, enable]>
+          # fsmcollector: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -291,7 +292,7 @@ def main():
             'v_range': [['6.4.0', '']],
             'options': {
                 'fortiportal': {'v_range': [['6.4.0', '7.2.4'], ['7.4.0', '7.4.0']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'fortiwlm': {'v_range': [['6.4.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'fortiwlm': {'v_range': [['6.4.0', '7.4.6'], ['7.6.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'sdwancontroller': {'v_range': [['6.4.0', '7.0.13']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'status': {'v_range': [['6.4.0', '']], 'choices': ['disable', 'enable', 'qa', 'dev'], 'type': 'str'},
                 'cpu': {'v_range': [['6.4.5', '']], 'type': 'int'},
@@ -301,9 +302,9 @@ def main():
                 'fortisigconverter': {'v_range': [['6.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'mem': {'v_range': [['6.4.5', '']], 'type': 'int'},
                 'docker-user-login-max': {'v_range': [['6.4.6', '']], 'type': 'int'},
-                'fortisoar': {'v_range': [['7.0.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'fortiaiops': {'v_range': [['7.0.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'policyanalyzer': {'v_range': [['7.0.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'fortisoar': {'v_range': [['7.0.0', '7.4.6'], ['7.6.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'fortiaiops': {'v_range': [['7.0.1', '7.4.6'], ['7.6.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'policyanalyzer': {'v_range': [['7.0.2', '7.4.6'], ['7.6.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'universalconnector': {'v_range': [['7.0.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'fsmcollector': {'v_range': [['7.0.1', '7.0.1']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }

@@ -136,6 +136,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -152,16 +153,16 @@ EXAMPLES = '''
         profile: <your own value>
         state: present # <value in [present, absent]>
         emailfilter_profile_filefilter_entries:
-          action: <value in [log, block]>
-          comment: <string>
-          encryption: <value in [any, yes]>
-          file_type: <list or string>
-          filter: <string>
-          password_protected: <value in [any, yes]>
-          protocol:
-            - "smtp"
-            - "imap"
-            - "pop3"
+          # action: <value in [log, block]>
+          # comment: <string>
+          # encryption: <value in [any, yes]>
+          # file_type: <list or string>
+          # filter: <string>
+          # password_protected: <value in [any, yes]>
+          # protocol:
+          #   - "smtp"
+          #   - "imap"
+          #   - "pop3"
 '''
 
 RETURN = '''
@@ -221,15 +222,15 @@ def main():
         'profile': {'required': True, 'type': 'str'},
         'emailfilter_profile_filefilter_entries': {
             'type': 'dict',
-            'v_range': [['6.2.0', '']],
+            'v_range': [['6.2.0', '7.6.2']],
             'options': {
-                'action': {'v_range': [['6.2.0', '']], 'choices': ['log', 'block'], 'type': 'str'},
-                'comment': {'v_range': [['6.2.0', '']], 'type': 'str'},
+                'action': {'v_range': [['6.2.0', '7.6.2']], 'choices': ['log', 'block'], 'type': 'str'},
+                'comment': {'v_range': [['6.2.0', '7.6.2']], 'type': 'str'},
                 'encryption': {'v_range': [['6.2.0', '7.2.0']], 'choices': ['any', 'yes'], 'type': 'str'},
-                'file-type': {'v_range': [['6.2.0', '']], 'type': 'raw'},
-                'filter': {'v_range': [['6.2.0', '']], 'type': 'str'},
-                'password-protected': {'v_range': [['6.2.1', '']], 'choices': ['any', 'yes'], 'type': 'str'},
-                'protocol': {'v_range': [['6.2.0', '']], 'type': 'list', 'choices': ['smtp', 'imap', 'pop3'], 'elements': 'str'}
+                'file-type': {'v_range': [['6.2.0', '7.6.2']], 'type': 'raw'},
+                'filter': {'v_range': [['6.2.0', '7.6.2']], 'type': 'str'},
+                'password-protected': {'v_range': [['6.2.1', '7.6.2']], 'choices': ['any', 'yes'], 'type': 'str'},
+                'protocol': {'v_range': [['6.2.0', '7.6.2']], 'type': 'list', 'choices': ['smtp', 'imap', 'pop3'], 'elements': 'str'}
             }
         }
     }

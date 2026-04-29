@@ -174,6 +174,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -191,23 +192,22 @@ EXAMPLES = '''
         dynamic_mapping: <your own value>
         state: present # <value in [present, absent]>
         fsp_vlan_dynamicmapping_interface_vrrp:
-          accept_mode: <value in [disable, enable]>
-          adv_interval: <integer>
-          ignore_default_route: <value in [disable, enable]>
-          preempt: <value in [disable, enable]>
-          priority: <integer>
-          proxy_arp:
-            -
-              id: <integer>
-              ip: <string>
-          start_time: <integer>
-          status: <value in [disable, enable]>
-          version: <value in [2, 3]>
-          vrdst: <list or string>
-          vrdst_priority: <integer>
-          vrgrp: <integer>
-          vrid: <integer>
-          vrip: <string>
+          # accept_mode: <value in [disable, enable]>
+          # adv_interval: <integer>
+          # ignore_default_route: <value in [disable, enable]>
+          # preempt: <value in [disable, enable]>
+          # priority: <integer>
+          # proxy_arp:
+          #   - id: <integer>
+          #     ip: <string>
+          # start_time: <integer>
+          # status: <value in [disable, enable]>
+          # version: <value in [2, 3]>
+          # vrdst: <list or string>
+          # vrdst_priority: <integer>
+          # vrgrp: <integer>
+          # vrid: <integer>
+          # vrip: <string>
 '''
 
 RETURN = '''

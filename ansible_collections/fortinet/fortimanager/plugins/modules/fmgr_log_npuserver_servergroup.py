@@ -147,6 +147,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -162,15 +163,15 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         log_npuserver_servergroup:
-          group_name: <string>
-          log_format: <value in [syslog, netflow]>
-          log_mode: <value in [per-session, per-nat-mapping, per-session-ending]>
-          log_tx_mode: <value in [multicast, roundrobin]>
-          server_number: <integer>
-          server_start_id: <integer>
-          sw_log_flags: <integer or string> <value in [tcp-udp-only, enable-all-log, disable-all-log]>
-          log_gen_event: <value in [disable, enable]>
-          log_user_info: <value in [disable, enable]>
+          # group_name: <string>
+          # log_format: <value in [syslog, netflow]>
+          # log_mode: <value in [per-session, per-nat-mapping, per-session-ending]>
+          # log_tx_mode: <value in [multicast, roundrobin]>
+          # server_number: <integer>
+          # server_start_id: <integer>
+          # sw_log_flags: <value in [tcp-udp-only, enable-all-log, disable-all-log]>
+          # log_gen_event: <value in [disable, enable]>
+          # log_user_info: <value in [disable, enable]>
 '''
 
 RETURN = '''

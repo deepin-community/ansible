@@ -40,6 +40,10 @@ Parameters
     Disabled objects will not be deployed.
 
 
+  zone (optional, str, None)
+    Set the zone.
+
+
   append (optional, bool, None)
     Do not overwrite the whole object but instead append the defined properties.
 
@@ -49,7 +53,7 @@ Parameters
 
 
   url (True, str, None)
-    HTTP, HTTPS, or FTP URL in the form (http|https|ftp)://[user[:pass]]@host.domain[:port]/path
+    HTTP, HTTPS, or FTP URL in the form (http\|https\|ftp)://[user[:pass]]@host.domain[:port]/path
 
 
   force (optional, bool, False)
@@ -108,6 +112,10 @@ Parameters
     NTLM authentication is :literal:`not` supported even if the GSSAPI mech for NTLM has been installed.
 
 
+  api_timeout (optional, int, 10)
+    Default timeout to wait for transaction to finish in seconds.
+
+
 
 
 
@@ -134,6 +142,7 @@ Examples
         url_password: "{{ icinga_pass }}"
         object_name: "onCall"
         disabled: false
+        zone: "foozone"
 
     - name: Update user group
       telekom_mms.icinga_director.icinga_user_group:

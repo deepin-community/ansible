@@ -128,6 +128,7 @@ options:
                     - 'encrypted'
                     - 'none'
                     - 'mip'
+                    - 'label'
             id:
                 type: int
                 description: ID.
@@ -184,6 +185,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -200,31 +202,31 @@ EXAMPLES = '''
         profile: <your own value>
         state: present # <value in [present, absent]>
         dlp_profile_rule:
-          action: <value in [log-only, block, quarantine-ip, ...]>
-          archive: <value in [disable, enable]>
-          expiry: <string>
-          file_size: <integer>
-          file_type: <string>
-          filter_by: <value in [fingerprint, sensor, encrypted, ...]>
-          id: <integer>
-          label: <string>
-          match_percentage: <integer>
-          name: <string>
-          proto:
-            - "smtp"
-            - "pop3"
-            - "imap"
-            - "http-post"
-            - "http-get"
-            - "ftp"
-            - "nntp"
-            - "mapi"
-            - "ssh"
-            - "cifs"
-          sensitivity: <list or string>
-          sensor: <list or string>
-          severity: <value in [info, low, medium, ...]>
-          type: <value in [file, message]>
+          id: 0 # Required variable, integer
+          # action: <value in [log-only, block, quarantine-ip, ...]>
+          # archive: <value in [disable, enable]>
+          # expiry: <string>
+          # file_size: <integer>
+          # file_type: <string>
+          # filter_by: <value in [fingerprint, sensor, encrypted, ...]>
+          # label: <string>
+          # match_percentage: <integer>
+          # name: <string>
+          # proto:
+          #   - "smtp"
+          #   - "pop3"
+          #   - "imap"
+          #   - "http-post"
+          #   - "http-get"
+          #   - "ftp"
+          #   - "nntp"
+          #   - "mapi"
+          #   - "ssh"
+          #   - "cifs"
+          # sensitivity: <list or string>
+          # sensor: <list or string>
+          # severity: <value in [info, low, medium, ...]>
+          # type: <value in [file, message]>
 '''
 
 RETURN = '''
@@ -291,7 +293,7 @@ def main():
                 'expiry': {'v_range': [['7.2.0', '']], 'type': 'str'},
                 'file-size': {'v_range': [['7.2.0', '']], 'type': 'int'},
                 'file-type': {'v_range': [['7.2.0', '']], 'type': 'str'},
-                'filter-by': {'v_range': [['7.2.0', '']], 'choices': ['fingerprint', 'sensor', 'encrypted', 'none', 'mip'], 'type': 'str'},
+                'filter-by': {'v_range': [['7.2.0', '']], 'choices': ['fingerprint', 'sensor', 'encrypted', 'none', 'mip', 'label'], 'type': 'str'},
                 'id': {'v_range': [['7.2.0', '']], 'required': True, 'type': 'int'},
                 'label': {'v_range': [['7.2.0', '']], 'type': 'str'},
                 'match-percentage': {'v_range': [['7.2.0', '']], 'type': 'int'},

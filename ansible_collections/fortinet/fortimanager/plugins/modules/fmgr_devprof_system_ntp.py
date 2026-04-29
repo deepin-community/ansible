@@ -141,6 +141,10 @@ options:
                             - 'SHA1'
                             - 'SHA256'
                             - 'MD5'
+                    vrf_select:
+                        aliases: ['vrf-select']
+                        type: int
+                        description: VRF ID used for connection to server.
             ntpsync:
                 type: str
                 description: Enable/disable setting the FortiGate system time by synchronizing with an NTP Server.
@@ -206,6 +210,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -221,29 +226,29 @@ EXAMPLES = '''
         adom: <your own value>
         devprof: <your own value>
         devprof_system_ntp:
-          ntpserver:
-            -
-              authentication: <value in [disable, enable]>
-              id: <integer>
-              key: <list or string>
-              key_id: <integer>
-              ntpv3: <value in [disable, enable]>
-              server: <string>
-              interface: <string>
-              interface_select_method: <value in [auto, sdwan, specify]>
-              ip_type: <value in [IPv6, IPv4, Both]>
-              key_type: <value in [SHA1, SHA256, MD5]>
-          ntpsync: <value in [disable, enable]>
-          source_ip6: <string>
-          syncinterval: <integer>
-          type: <value in [fortiguard, custom]>
-          authentication: <value in [disable, enable]>
-          key: <list or string>
-          key_id: <integer>
-          key_type: <value in [MD5, SHA1, SHA256]>
-          interface: <list or string>
-          server_mode: <value in [disable, enable]>
-          source_ip: <string>
+          # ntpserver:
+          #   - authentication: <value in [disable, enable]>
+          #     id: <integer>
+          #     key: <list or string>
+          #     key_id: <integer>
+          #     ntpv3: <value in [disable, enable]>
+          #     server: <string>
+          #     interface: <string>
+          #     interface_select_method: <value in [auto, sdwan, specify]>
+          #     ip_type: <value in [IPv6, IPv4, Both]>
+          #     key_type: <value in [SHA1, SHA256, MD5]>
+          #     vrf_select: <integer>
+          # ntpsync: <value in [disable, enable]>
+          # source_ip6: <string>
+          # syncinterval: <integer>
+          # type: <value in [fortiguard, custom]>
+          # authentication: <value in [disable, enable]>
+          # key: <list or string>
+          # key_id: <integer>
+          # key_type: <value in [MD5, SHA1, SHA256]>
+          # interface: <list or string>
+          # server_mode: <value in [disable, enable]>
+          # source_ip: <string>
 '''
 
 RETURN = '''
@@ -318,14 +323,15 @@ def main():
                         'key-id': {'v_range': [['6.0.0', '6.2.5'], ['6.2.7', '6.4.1'], ['6.4.3', '']], 'no_log': True, 'type': 'int'},
                         'ntpv3': {'v_range': [['6.0.0', '6.2.5'], ['6.2.7', '6.4.1'], ['6.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                         'server': {'v_range': [['6.0.0', '6.2.5'], ['6.2.7', '6.4.1'], ['6.4.3', '']], 'type': 'str'},
-                        'interface': {'v_range': [['6.2.7', '6.2.13'], ['6.4.3', '7.0.2'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
+                        'interface': {'v_range': [['6.2.7', '6.2.13'], ['6.4.3', '7.0.2'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
                         'interface-select-method': {
-                            'v_range': [['6.2.7', '6.2.13'], ['6.4.3', '7.0.2'], ['7.2.6', '7.2.8'], ['7.4.3', '']],
+                            'v_range': [['6.2.7', '6.2.13'], ['6.4.3', '7.0.2'], ['7.2.6', '7.2.9'], ['7.4.3', '']],
                             'choices': ['auto', 'sdwan', 'specify'],
                             'type': 'str'
                         },
                         'ip-type': {'v_range': [['7.4.2', '']], 'choices': ['IPv6', 'IPv4', 'Both'], 'type': 'str'},
-                        'key-type': {'v_range': [['7.4.3', '']], 'choices': ['SHA1', 'SHA256', 'MD5'], 'type': 'str'}
+                        'key-type': {'v_range': [['7.4.3', '']], 'choices': ['SHA1', 'SHA256', 'MD5'], 'type': 'str'},
+                        'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'}
                     },
                     'elements': 'dict'
                 },
@@ -337,9 +343,9 @@ def main():
                 'key': {'v_range': [['6.2.0', '6.2.5'], ['6.2.7', '6.4.1'], ['6.4.3', '']], 'no_log': True, 'type': 'raw'},
                 'key-id': {'v_range': [['6.2.0', '6.2.5'], ['6.2.7', '6.4.1'], ['6.4.3', '']], 'no_log': True, 'type': 'int'},
                 'key-type': {'v_range': [['6.2.0', '6.2.5'], ['6.2.7', '6.4.1'], ['6.4.3', '']], 'choices': ['MD5', 'SHA1', 'SHA256'], 'type': 'str'},
-                'interface': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'server-mode': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'source-ip': {'v_range': [['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'}
+                'interface': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'server-mode': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'source-ip': {'v_range': [['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'}
             }
         }
     }

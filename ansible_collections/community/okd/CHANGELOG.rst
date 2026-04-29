@@ -4,6 +4,46 @@ OKD Collection Release Notes
 
 .. contents:: Topics
 
+v5.0.0
+======
+
+Release Summary
+---------------
+
+This release drops support for ansible-lint < 25.1.2 and removes deprecated openshift inventory plugin.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Remove openshift inventory plugin deprecated in 3.0.0 (https://github.com/openshift/community.okd/pull/252).
+
+Minor Changes
+-------------
+
+- Bump version of ansible-lint to 25.1.2 (https://github.com/openshift/community.okd/pull/255).
+- Bump version of ansible-lint to minimum 24.7.0 (https://github.com/openshift/community.okd/pull/240).
+
+v4.0.2
+======
+
+Release Summary
+---------------
+
+This patch updates the k8s dependency version to the 5.x range and modifies tests to handle the manual creation of service account tokens.
+
+v4.0.1
+======
+
+Release Summary
+---------------
+
+This is a bug fix release
+
+Minor Changes
+-------------
+
+- openshift_auth - fix issue where openshift_auth module sometimes does not delete the auth token. Based on stale PR (https://github.com/openshift/community.okd/pull/194).
+
 v4.0.0
 ======
 

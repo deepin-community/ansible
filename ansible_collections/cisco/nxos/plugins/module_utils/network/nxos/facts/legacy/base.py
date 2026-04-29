@@ -169,6 +169,10 @@ class Hardware(FactsBase):
             self.facts["cpu_utilization"] = self.parse_cpu_utilization(data)
 
     def parse_cpu_utilization(self, data):
+        onemin = data.get("onemin_percent", ["0"])
+        if not isinstance(onemin, list):
+            onemin = [str(onemin)]
+        onemin_value = onemin[0]
         return {
             "core": {
                 "five_minutes": int(data.get("fivemin_percent", 0)),
@@ -178,7 +182,7 @@ class Hardware(FactsBase):
                 "five_seconds_interrupt": int(
                     data.get("fivesec_intr_percent", 0),
                 ),
-                "one_minute": int(data.get("onemin_percent", 0)),
+                "one_minute": int(onemin_value),
             },
         }
 
@@ -249,6 +253,7 @@ class Interfaces(FactsBase):
         self.facts["neighbors"] = {}
         data = None
 
+        # Gets the interface data
         data = self.run("show interface", output="json")
 
         if data:
@@ -259,7 +264,7 @@ class Interfaces(FactsBase):
                 self.facts["interfaces"] = self.populate_interfaces(interfaces)
 
         if self.ipv6_structure_op_supported():
-            data = self.run("show ipv6 interface", output="json")
+            data = self.run("show ipv6 interface vrf all", output="json")
         else:
             data = None
         if data:

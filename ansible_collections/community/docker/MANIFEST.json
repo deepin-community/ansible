@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "community",
   "name": "docker",
-  "version": "4.1.0",
+  "version": "4.7.0",
   "authors": [
    "Ansible Docker Working Group"
   ],
@@ -28,7 +28,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "42409d67f4156cadeb22e6692a9cf4f45e33871c9cd9d0c658c119b0a3ac9905",
+  "chksum_sha256": "0a52900060658c965e90e99297accc21508495a723455379ce595138905ad2b9",
   "format": 1
  },
  "format": 1

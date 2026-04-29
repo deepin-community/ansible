@@ -128,6 +128,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -143,16 +144,16 @@ EXAMPLES = '''
         adom: <your own value>
         profile_protocol_options: <your own value>
         firewall_profileprotocoloptions_mapi:
-          options:
-            - "fragmail"
-            - "oversize"
-            - "no-content-summary"
-          oversize_limit: <integer>
-          ports: <list or integer>
-          scan_bzip2: <value in [disable, enable]>
-          status: <value in [disable, enable]>
-          uncompressed_nest_limit: <integer>
-          uncompressed_oversize_limit: <integer>
+          # options:
+          #   - "fragmail"
+          #   - "oversize"
+          #   - "no-content-summary"
+          # oversize_limit: <integer>
+          # ports: <list or integer>
+          # scan_bzip2: <value in [disable, enable]>
+          # status: <value in [disable, enable]>
+          # uncompressed_nest_limit: <integer>
+          # uncompressed_oversize_limit: <integer>
 '''
 
 RETURN = '''

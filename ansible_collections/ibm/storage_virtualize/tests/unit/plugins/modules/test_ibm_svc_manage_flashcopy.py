@@ -418,7 +418,7 @@ class TestIBMSVCFlashcopy(unittest.TestCase):
         obj = IBMSVCFlashcopy()
         data = obj.fcmap_probe(data_arg)
         self.assertEqual('test_consistgrp', data['consistgrp'])
-        self.assertEqual('50', data['copyrate'])
+        self.assertEqual(50, data['copyrate'])
 
     @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
            'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
@@ -506,6 +506,7 @@ class TestIBMSVCFlashcopy(unittest.TestCase):
             'mdiskgrp': 'test_mdiskgrp',
             'consistgrp': 'test_consistgrp',
             'copyrate': 50,
+            'cleanrate': 60,
             'grainsize': 64,
         })
         sdata = {
@@ -604,6 +605,7 @@ class TestIBMSVCFlashcopy(unittest.TestCase):
             'mdiskgrp': 'test_mdiskgrp',
             'consistgrp': 'test_consistgrp',
             'copyrate': 50,
+            'cleanrate': 60,
             'grainsize': 64,
         })
         fdata = {
@@ -775,6 +777,47 @@ class TestIBMSVCFlashcopy(unittest.TestCase):
            'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
     @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
            'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_deleting_fcmap_invalid_params(self, svc_authorize_mock, svc_run_command_mock, gd):
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'absent',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_name',
+            'copytype': 'snapshot',
+            'source': 'Ans_n7',
+            'target': 'target_vdisk',
+            'mdiskgrp': 'pool_0',
+            'consistgrp': 'new_consistgrp',
+            'copyrate': 50,
+            'cleanrate': 50,
+            'grainsize': 64
+        })
+        fdata = {
+            "id": "45", "name": "test_name", "source_vdisk_id": "320", "source_vdisk_name": "Ans_n7",
+            "target_vdisk_id": "323", "target_vdisk_name": "target_vdisk", "group_id": "1", "group_name": "new_consistgrp",
+            "status": "idle_or_copied", "progress": "0", "copy_rate": "100", "start_time": "",
+            "dependent_mappings": "0", "autodelete": "off", "clean_progress": "100", "clean_rate": "0",
+            "incremental": "off", "difference": "100", "grain_size": "64", "IO_group_id": "0",
+            "IO_group_name": "io_grp_name", "partner_FC_id": "43", "partner_FC_name": "test_fcmap",
+            "restoring": "no", "rc_controlled": "no", "keep_target": "no", "type": "generic",
+            "restore_progress": "0", "fc_controlled": "no", "owner_id": "", "owner_name": ""
+        }
+        gd.return_value = [fdata, None, None, []]
+        with pytest.raises(AnsibleFailJson) as exc:
+            obj = IBMSVCFlashcopy()
+            data = obj.apply()
+        self.assertTrue(exc.value.args[0]['failed'])
+        failure_msg = "state=absent but following parameters have been passed: copytype, source, target, mdiskgrp, consistgrp, copyrate, cleanrate, grainsize"
+        self.assertEqual(exc.value.args[0]['msg'], failure_msg)
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.modules.'
+           'ibm_svc_manage_flashcopy.IBMSVCFlashcopy.gather_data')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
     def test_deleting_non_existing_fcmap(self, svc_authorize_mock, svc_run_command_mock, gd):
         set_module_args({
             'clustername': 'clustername',
@@ -800,7 +843,7 @@ class TestIBMSVCFlashcopy(unittest.TestCase):
             'state': 'present',
             'username': 'username',
             'password': 'password',
-            'name': 'test_name',
+            'name': 'test_name'
         })
         with pytest.raises(AnsibleFailJson) as exc:
             obj = IBMSVCFlashcopy()
@@ -824,13 +867,64 @@ class TestIBMSVCFlashcopy(unittest.TestCase):
             'mdiskgrp': 'test_mdiskgrp',
             'consistgrp': 'test_consistgrp',
             'copyrate': 500,
-            'grainsize': 64,
+            'grainsize': 64
         })
         with pytest.raises(AnsibleFailJson) as exc:
             obj = IBMSVCFlashcopy()
             data = obj.apply()
 
         self.assertEqual(True, exc.value.args[0]['failed'])
+
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.modules.'
+           'ibm_svc_manage_flashcopy.IBMSVCFlashcopy.fcmap_create')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.modules.'
+           'ibm_svc_manage_flashcopy.IBMSVCFlashcopy.gather_data')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi.svc_run_command')
+    @patch('ansible_collections.ibm.storage_virtualize.plugins.module_utils.'
+           'ibm_svc_utils.IBMSVCRestApi._svc_authorize')
+    def test_create_fcmap_with_existing_target_volume(self, svc_authorize_mock, svc_run_command_mock, gd, fcm):
+        set_module_args({
+            'clustername': 'clustername',
+            'domain': 'domain',
+            'state': 'present',
+            'username': 'username',
+            'password': 'password',
+            'name': 'test_name',
+            'copytype': 'clone',
+            'source': 'test_source',
+            'target': 'test_target',
+            'consistgrp': 'test_consistgrp',
+            'copyrate': 50,
+            'grainsize': 64
+        })
+        sdata = {
+            "id": "500", "name": "test_source", "IO_group_id": "0", "IO_group_name": "io_grp0",
+            "status": "online", "mdisk_grp_id": "1", "mdisk_grp_name": "AnsibleMaster",
+            "capacity": "10737418240", "type": "striped", "FC_id": "", "FC_name": "", "RC_id": "500",
+            "RC_name": "rcopy_8", "vdisk_UID": "60050768108101C7C0000000000009D0", "fc_map_count": "0",
+            "copy_count": "1", "fast_write_state": "not_empty", "se_copy_count": "1", "RC_change": "no",
+            "compressed_copy_count": "0", "parent_mdisk_grp_id": "1", "parent_mdisk_grp_name": "AnsibleMaster",
+            "owner_id": "", "owner_name": "", "formatting": "no", "encrypt": "no", "volume_id": "500",
+            "volume_name": "master_vol_8", "function": "master", "protocol": ""
+        }
+        tdata = {
+            "id": "501", "name": "test_target", "IO_group_id": "0", "IO_group_name": "io_grp0",
+            "status": "online", "mdisk_grp_id": "1", "mdisk_grp_name": "AnsibleMaster",
+            "capacity": "10737418240", "type": "striped", "FC_id": "", "FC_name": "", "RC_id": "500",
+            "RC_name": "rcopy_8", "vdisk_UID": "60050768108101C7C0000000000009D0", "fc_map_count": "0",
+            "copy_count": "1", "fast_write_state": "not_empty", "se_copy_count": "1", "RC_change": "no",
+            "compressed_copy_count": "0", "parent_mdisk_grp_id": "1", "parent_mdisk_grp_name": "AnsibleMaster",
+            "owner_id": "", "owner_name": "", "formatting": "no", "encrypt": "no", "volume_id": "500",
+            "volume_name": "master_vol_8", "function": "master", "protocol": ""
+        }
+        gd.return_value = ({}, [sdata], [tdata], [])
+        svc_run_command_mock.return_value = {"Success"}
+        with pytest.raises(AnsibleExitJson) as exc:
+            obj = IBMSVCFlashcopy()
+            data = obj.apply()
+
+        self.assertEqual(False, exc.value.args[0]["changed"])
 
 
 if __name__ == "__main__":

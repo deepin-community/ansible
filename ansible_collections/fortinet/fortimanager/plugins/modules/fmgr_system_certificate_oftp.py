@@ -118,6 +118,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -131,13 +132,13 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_certificate_oftp:
-          certificate: <list or string>
-          comment: <string>
-          custom: <value in [disable, enable]>
-          password: <list or string>
-          private_key: <list or string>
-          local: <string>
-          mode: <value in [default, custom, local]>
+          # certificate: <list or string>
+          # comment: <string>
+          # custom: <value in [disable, enable]>
+          # password: <list or string>
+          # private_key: <list or string>
+          # local: <string>
+          # mode: <value in [default, custom, local]>
 '''
 
 RETURN = '''

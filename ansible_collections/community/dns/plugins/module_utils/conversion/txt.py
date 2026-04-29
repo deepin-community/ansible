@@ -4,7 +4,9 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+
 __metaclass__ = type
 
 
@@ -12,7 +14,6 @@ import sys
 import warnings
 
 from ansible.module_utils.common.text.converters import to_bytes, to_text
-
 from ansible_collections.community.dns.plugins.module_utils.conversion.base import (
     DNSConversionError,
 )
@@ -134,7 +135,7 @@ def _get_utf8_length(first_byte_value):
         return 3
     if first_byte_value & 0xF8 == 0xF0:
         return 4
-    # Shouldn't happen
+    # Should not happen
     return 1
 
 
@@ -183,14 +184,14 @@ def encode_txt_value(value, always_quote=False, use_character_encoding=_SENTINEL
 
         # Add letter
         if letter in (b'"', b'\\'):
-            # Make sure that we don't split up an escape sequence over multiple TXT strings
+            # Make sure that we do not split up an escape sequence over multiple TXT strings
             if len(buffer) + 2 > 255:
                 append(buffer[:255])
                 buffer = buffer[255:]
             buffer.append(b'\\')
             buffer.append(letter)
-        elif use_character_encoding and not (0x20 <= ord(letter) < 0x7F):
-            # Make sure that we don't split up a decimal sequence over multiple TXT strings
+        elif use_character_encoding and not 0x20 <= ord(letter) < 0x7F:
+            # Make sure that we do not split up a decimal sequence over multiple TXT strings
             if len(buffer) + 4 > 255:
                 append(buffer[:255])
                 buffer = buffer[255:]
@@ -209,7 +210,7 @@ def encode_txt_value(value, always_quote=False, use_character_encoding=_SENTINEL
             buffer.append(_DECIMAL_DIGITS[v0:v0 + 1])
         elif not use_character_encoding and (ord(letter) & 0x80) != 0:
             utf8_length = min(_get_utf8_length(ord(letter)), length - index + 1)
-            # Make sure that we don't split up a UTF-8 letter over multiple TXT strings
+            # Make sure that we do not split up a UTF-8 letter over multiple TXT strings
             if len(buffer) + utf8_length > 255:
                 append(buffer[:255])
                 buffer = buffer[255:]

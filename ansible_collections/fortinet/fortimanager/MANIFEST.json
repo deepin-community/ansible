@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "fortinet",
   "name": "fortimanager",
-  "version": "2.8.2",
+  "version": "2.10.0",
   "authors": [
    "Xinwei Du (@dux-fortinet)",
    "Xing Li (@lix-fortinet)",
@@ -21,7 +21,7 @@
   ],
   "description": "The FortiManager Ansible Collection.",
   "license": [
-   "GPL-2.0-or-later"
+   "GPL-3.0-or-later"
   ],
   "license_file": null,
   "dependencies": {
@@ -36,7 +36,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "86674d96b8ad7340230595fb8a82e6bc4514beee25bd44cf898b775df5646bfc",
+  "chksum_sha256": "3b4e40a8d12561e8c1a169d19dfe507c4b50f0de467eb3698f0c0c4e2e3ecd47",
   "format": 1
  },
  "format": 1

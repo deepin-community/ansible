@@ -788,3 +788,73 @@ releases:
     - 548-update-docs-for-vm-harware-disk.yml
     - 549-deprecate-content_library_item_info.yml
     release_date: '2024-11-26'
+  4.4.0:
+    changes:
+      bugfixes:
+      - vcenter_ovf_libraryitem - Update documentation to mention the metadata cannot
+        be updated via conventional means. Added example showing workaround (https://github.com/ansible-collections/vmware.vmware_rest/issues/385)
+    fragments:
+    - 560-update-vcenter-ovf-libraryitem-docs.yml
+    release_date: '2024-12-19'
+  4.5.0:
+    changes:
+      bugfixes:
+      - module_utils - fixed return value for vmware.vmware_rest.vcenter_vm_guest_filesystem_directories
+        module
+      minor_changes:
+      - info - changed relative links in README.md to absolute links
+    fragments:
+    - 570-bugfix-relative-links.yml
+    - 573-restrict-prepare_lab-runs.yml
+    - 576-bugfix-report-changes-in-filesysten_directories.yml
+    release_date: '2025-01-17'
+  4.6.0:
+    fragments:
+    - 580-update-libraryitems-examples.yml
+    release_date: '2025-02-17'
+  4.7.0:
+    changes:
+      minor_changes:
+      - Deprecated modules with redundant functionality in vmware.vmware. The next
+        major release is currently not planned, so no removal date is provided. See
+        https://github.com/ansible-collections/vmware.vmware_rest/issues/589
+    fragments:
+    - 587-update-customization-docs.yml
+    - 588-add-maintainer-docs.yml
+    - 591-deprecate-redundant-modules.yml
+    release_date: '2025-04-02'
+  4.8.0:
+    changes:
+      deprecated_features:
+      - lookup plugins - Deprecate all lookup plugins in favor of vmware.vmware.moid_from_path
+        (https://github.com/ansible-collections/vmware.vmware_rest/pull/608)
+      major_changes:
+      - modules - disable turbo mode for module execution by default. Make it optional
+        to enable it using an environment variable (https://github.com/ansible-collections/vmware.vmware_rest/issues/499)
+      minor_changes:
+      - change cloud.common dependency to 4.1 to support anisble 2.19
+    fragments:
+    - 598-bump-cloud-common-dep.yml
+    - 600-disable-turbo-mode.yml
+    - 606-remove-broken-test.yml
+    - 608-deprecate-lookup-plugins.yml
+    - 609-test-with-219.yml
+    release_date: '2025-07-03'
+  4.8.1:
+    changes:
+      bugfixes:
+      - Allow cloud.common 5.0.0 and later again (https://github.com/ansible-collections/vmware.vmware_rest/pull/614).
+    fragments:
+    - 614-cloud.common.yml
+    release_date: '2025-07-07'
+  4.9.0:
+    changes:
+      known_issues:
+      - The lookup plugins use ``cloud.common``, but this collection does not support
+        ansible-core 2.19 or higher (https://github.com/ansible-collections/vmware.vmware_rest/pull/621).
+      major_changes:
+      - Remove ``cloud.common`` as a dependency, so it will not be installed automatically
+        anymore (https://github.com/ansible-collections/vmware.vmware_rest/pull/621).
+    fragments:
+    - 619-drop-cloud.common-requirement.yml
+    release_date: '2025-08-29'

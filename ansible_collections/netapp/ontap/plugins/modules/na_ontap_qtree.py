@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2024, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 '''
@@ -19,7 +19,7 @@ short_description: NetApp ONTAP manage qtrees
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: 2.6.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 
 description:
   - Create/Modify/Delete Qtrees.
@@ -140,7 +140,7 @@ EXAMPLES = """
     export_policy: policyName
     security_style: mixed
     oplocks: disabled
-    unix_permissions: 0777
+    unix_permissions: 777
     vserver: ansibleVServer
     unix_user: user1
     unix_group: group1
@@ -324,7 +324,7 @@ class NetAppOntapQTree:
         """
         if self.use_rest:
             api = "storage/qtrees/%s" % self.volume_uuid
-            query = {'return_timeout': 3}
+            query = {'return_timeout': 120}
             response, error = rest_generic.delete_async(self.rest_api, api, self.qid, query)
             if self.parameters['wait_for_completion']:
                 dummy, error = rrh.check_for_error_and_job_results(api, response, error, self.rest_api)

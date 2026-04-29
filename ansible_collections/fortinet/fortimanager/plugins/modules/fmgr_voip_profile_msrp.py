@@ -116,6 +116,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -131,10 +132,10 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         voip_profile_msrp:
-          log_violations: <value in [disable, enable]>
-          max_msg_size: <integer>
-          max_msg_size_action: <value in [pass, block, reset, ...]>
-          status: <value in [disable, enable]>
+          # log_violations: <value in [disable, enable]>
+          # max_msg_size: <integer>
+          # max_msg_size_action: <value in [pass, block, reset, ...]>
+          # status: <value in [disable, enable]>
 '''
 
 RETURN = '''

@@ -3,45 +3,48 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+
 __metaclass__ = type
 
+# These imports are needed so patching below works
+import ansible_collections.community.dns.plugins.module_utils.http  # noqa: F401, pylint: disable=unused-import
 import pytest
-
+from ansible_collections.community.dns.plugins.modules import hosttech_dns_record_set
+from ansible_collections.community.internal_test_tools.tests.unit.plugins.modules.utils import (
+    extract_warnings_texts,
+)
 from ansible_collections.community.internal_test_tools.tests.unit.utils.fetch_url_module_framework import (
     BaseTestModule,
     FetchUrlCall,
 )
 
-from ansible_collections.community.dns.plugins.modules import hosttech_dns_record_set
-
-# These imports are needed so patching below works
-import ansible_collections.community.dns.plugins.module_utils.http  # noqa: F401, pylint: disable=unused-import
-
 from .hosttech import (
-    expect_wsdl_authentication,
-    expect_wsdl_value,
-    validate_wsdl_call,
-    validate_wsdl_add_request,
-    validate_wsdl_update_request,
-    validate_wsdl_del_request,
-    create_wsdl_add_result,
-    create_wsdl_update_result,
-    create_wsdl_del_result,
-    HOSTTECH_WSDL_DEFAULT_ENTRIES,
-    HOSTTECH_WSDL_DEFAULT_ZONE_RESULT,
-    HOSTTECH_WSDL_ZONE_NOT_FOUND,
     HOSTTECH_JSON_DEFAULT_ENTRIES,
     HOSTTECH_JSON_ZONE_GET_RESULT,
     HOSTTECH_JSON_ZONE_LIST_RESULT,
     HOSTTECH_JSON_ZONE_RECORDS_GET_RESULT,
+    HOSTTECH_WSDL_DEFAULT_ENTRIES,
+    HOSTTECH_WSDL_DEFAULT_ZONE_RESULT,
+    HOSTTECH_WSDL_ZONE_NOT_FOUND,
+    create_wsdl_add_result,
+    create_wsdl_del_result,
+    create_wsdl_update_result,
+    expect_wsdl_authentication,
+    expect_wsdl_value,
+    validate_wsdl_add_request,
+    validate_wsdl_call,
+    validate_wsdl_del_request,
+    validate_wsdl_update_request,
 )
+
 
 try:
     import lxml.etree
     HAS_LXML_ETREE = True
-except ImportError:
-    HAS_LXML_ETREE = False
+except ImportError:  # pragma: no cover
+    HAS_LXML_ETREE = False  # pragma: no cover
 
 
 @pytest.mark.skipif(not HAS_LXML_ETREE, reason="Need lxml.etree for WSDL tests")
@@ -538,7 +541,7 @@ class TestHosttechDNSRecordJSON(BaseTestModule):
             .expect_header('authorization', 'Bearer foo')
             .expect_url('https://api.ns1.hosttech.eu/api/user/v1/zones/23')
             .return_header('Content-Type', 'application/json')
-            .result_json(dict(message="")),
+            .result_json({'message': ''}),
         ])
 
         assert result['msg'] == 'Zone not found'
@@ -563,7 +566,7 @@ class TestHosttechDNSRecordJSON(BaseTestModule):
             .expect_url('https://api.ns1.hosttech.eu/api/user/v1/zones/23/records', without_query=True)
             .expect_query_values('type', 'MX')
             .return_header('Content-Type', 'application/json')
-            .result_json(dict(message="")),
+            .result_json({'message': ''}),
         ])
 
         assert result['msg'] == 'Zone not found'
@@ -610,7 +613,7 @@ class TestHosttechDNSRecordJSON(BaseTestModule):
             .expect_header('accept', 'application/json')
             .expect_header('authorization', 'Bearer foo')
             .expect_url('https://api.ns1.hosttech.eu/api/user/v1/zones/23')
-            .result_json(dict(message="")),
+            .result_json({'message': ''}),
         ])
 
         assert result['msg'] == 'Cannot authenticate: Forbidden: you do not have access to this resource (HTTP status 403)'
@@ -854,7 +857,7 @@ class TestHosttechDNSRecordJSON(BaseTestModule):
 
         assert result['changed'] is False
         assert result['zone_id'] == 42
-        assert 'warnings' not in result
+        assert extract_warnings_texts(result) == []  # pylint: disable=use-implicit-booleaness-not-comparison
 
     def test_idempotency_absent_record_warn(self, mocker):
         result = self.run_module_success(mocker, hosttech_dns_record_set, {
@@ -888,7 +891,7 @@ class TestHosttechDNSRecordJSON(BaseTestModule):
 
         assert result['changed'] is False
         assert result['zone_id'] == 42
-        assert list(result['warnings']) == ["Record already exists with different value. Set on_existing=replace to remove it"]
+        assert extract_warnings_texts(result) == ["Record already exists with different value. Set on_existing=replace to remove it"]
 
     def test_idempotency_absent_record_fail(self, mocker):
         result = self.run_module_failed(mocker, hosttech_dns_record_set, {
@@ -1443,7 +1446,7 @@ class TestHosttechDNSRecordJSON(BaseTestModule):
             'value': ['ns1.hostserv.eu', 'ns2.hostserv.eu', 'ns3.hostserv.eu'],
         }
         assert result['diff']['after'] == result['diff']['before']
-        assert list(result['warnings']) == ["Record already exists with different value. Set on_existing=replace to replace it"]
+        assert extract_warnings_texts(result) == ["Record already exists with different value. Set on_existing=replace to replace it"]
 
     def test_change_modify_list_keep(self, mocker):
         result = self.run_module_success(mocker, hosttech_dns_record_set, {
@@ -1477,7 +1480,7 @@ class TestHosttechDNSRecordJSON(BaseTestModule):
             .result_json(HOSTTECH_JSON_ZONE_GET_RESULT),
         ])
 
-        assert 'warnings' not in result
+        assert extract_warnings_texts(result) == []  # pylint: disable=use-implicit-booleaness-not-comparison
         assert result['changed'] is False
         assert result['zone_id'] == 42
         assert 'diff' in result

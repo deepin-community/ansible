@@ -136,6 +136,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -152,16 +153,16 @@ EXAMPLES = '''
         pkg: <your own value>
         state: present # <value in [present, absent]>
         pkg_firewall_acl6:
-          comments: <string>
-          dstaddr: <list or string>
-          interface: <string>
-          name: <string>
-          policyid: <integer>
-          service: <list or string>
-          srcaddr: <list or string>
-          status: <value in [disable, enable]>
-          uuid: <string>
-          fragment: <value in [pass, drop]>
+          policyid: 0 # Required variable, integer
+          # comments: <string>
+          # dstaddr: <list or string>
+          # interface: <string>
+          # name: <string>
+          # service: <list or string>
+          # srcaddr: <list or string>
+          # status: <value in [disable, enable]>
+          # uuid: <string>
+          # fragment: <value in [pass, drop]>
 '''
 
 RETURN = '''
@@ -220,16 +221,16 @@ def main():
         'pkg': {'required': True, 'type': 'str'},
         'pkg_firewall_acl6': {
             'type': 'dict',
-            'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.8'], ['7.4.3', '']],
+            'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.9'], ['7.4.3', '']],
             'options': {
-                'comments': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'dstaddr': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'interface': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'name': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'str'},
-                'policyid': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'required': True, 'type': 'int'},
-                'service': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'srcaddr': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'type': 'raw'},
-                'status': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.8'], ['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'comments': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'dstaddr': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'interface': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'name': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'str'},
+                'policyid': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'required': True, 'type': 'int'},
+                'service': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'srcaddr': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'type': 'raw'},
+                'status': {'v_range': [['7.2.0', '7.2.0'], ['7.2.6', '7.2.9'], ['7.4.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'uuid': {'v_range': [['7.2.0', '7.2.0']], 'type': 'str'},
                 'fragment': {'v_range': [['7.4.3', '']], 'choices': ['pass', 'drop'], 'type': 'str'}
             }

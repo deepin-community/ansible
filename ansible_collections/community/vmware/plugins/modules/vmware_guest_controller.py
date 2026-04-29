@@ -246,7 +246,8 @@ except ImportError:
 import time
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
-from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi, vmware_argument_spec, wait_for_task, TaskError
+from ansible_collections.community.vmware.plugins.module_utils.vmware import PyVmomi, wait_for_task, TaskError
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 from ansible_collections.community.vmware.plugins.module_utils.vm_device_helper import PyVmomiDeviceHelper
 
 
@@ -344,7 +345,7 @@ class PyVmomiHelper(PyVmomi):
         for device in self.current_vm_obj.config.hardware.device:
             ctl_facts_dict = dict()
             if isinstance(device, tuple(self.controller_types.values())):
-                ctl_facts_dict[device.busNumber] = dict(
+                ctl_facts_dict[str(device.busNumber)] = dict(
                     controller_summary=device.deviceInfo.summary,
                     controller_label=device.deviceInfo.label,
                     controller_busnumber=device.busNumber,
@@ -354,7 +355,7 @@ class PyVmomiHelper(PyVmomi):
                     controller_disks_devicekey=device.device,
                 )
                 if hasattr(device, 'sharedBus'):
-                    ctl_facts_dict[device.busNumber]['controller_bus_sharing'] = device.sharedBus
+                    ctl_facts_dict[str(device.busNumber)]['controller_bus_sharing'] = device.sharedBus
                 if isinstance(device, tuple(self.device_helper.scsi_device_type.values())):
                     disk_ctl_facts['scsi'].update(ctl_facts_dict)
                 if isinstance(device, self.device_helper.nvme_device_type):
@@ -489,7 +490,7 @@ class PyVmomiHelper(PyVmomi):
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(
         name=dict(type='str'),
         uuid=dict(type='str'),

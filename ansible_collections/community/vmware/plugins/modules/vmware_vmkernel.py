@@ -65,16 +65,16 @@ options:
         ip_address:
             type: str
             description:
-            - Static IP address.
-            - Required if O(network.type=static).
+            - Static IPv4 address.
+            - Required if O(network.type=static) and O(state=present).
         subnet_mask:
             type: str
             description:
-            - Static netmask required.
-            - Required if O(network.type=static).
+            - Static IPv4 netmask.
+            - Required if O(network.type=static) and O(state=present).
         default_gateway:
             type: str
-            description: Default gateway (Override default gateway for this adapter).
+            description: Default IPv4 gateway (Override default gateway for this adapter).
         tcpip_stack:
             type: str
             description:
@@ -281,9 +281,9 @@ except ImportError:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.community.vmware.plugins.module_utils.vmware import (
-    PyVmomi, TaskError, vmware_argument_spec, wait_for_task,
-    find_dvspg_by_name, find_dvs_by_name, get_all_objs
+    PyVmomi, TaskError, wait_for_task, find_dvspg_by_name, find_dvs_by_name, get_all_objs
 )
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 from ansible.module_utils._text import to_native
 
 
@@ -1090,7 +1090,7 @@ class PyVmomiHelper(PyVmomi):
 
 def main():
     """Main"""
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(dict(
         esxi_hostname=dict(required=True, type='str'),
         portgroup_name=dict(required=True, type='str', aliases=['portgroup']),

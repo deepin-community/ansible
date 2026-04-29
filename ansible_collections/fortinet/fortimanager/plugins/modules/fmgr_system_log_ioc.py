@@ -122,6 +122,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -135,12 +136,12 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_log_ioc:
-          notification: <value in [disable, enable]>
-          notification_throttle: <integer>
-          rescan_max_runner: <integer>
-          rescan_run_at: <integer>
-          rescan_status: <value in [disable, enable]>
-          status: <value in [disable, enable]>
+          # notification: <value in [disable, enable]>
+          # notification_throttle: <integer>
+          # rescan_max_runner: <integer>
+          # rescan_run_at: <integer>
+          # rescan_status: <value in [disable, enable]>
+          # status: <value in [disable, enable]>
 '''
 
 RETURN = '''

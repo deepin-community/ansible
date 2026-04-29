@@ -232,12 +232,20 @@ options:
                 aliases: ['scim-client']
                 type: raw
                 description: (list) SCIM client name.
+            scim_group_attr_type:
+                aliases: ['scim-group-attr-type']
+                type: str
+                description: Group attribute type used to match SCIM groups
+                choices:
+                    - 'display-name'
+                    - 'external-id'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -254,29 +262,29 @@ EXAMPLES = '''
         saml: <your own value>
         state: present # <value in [present, absent]>
         user_saml_dynamicmapping:
-          _scope:
-            -
-              name: <string>
-              vdom: <string>
-          adfs_claim: <value in [disable, enable]>
-          cert: <string>
-          clock_tolerance: <integer>
-          digest_method: <value in [sha1, sha256]>
-          entity_id: <string>
-          group_claim_type: <value in [email, given-name, name, ...]>
-          group_name: <string>
-          idp_cert: <string>
-          idp_entity_id: <string>
-          idp_single_logout_url: <string>
-          idp_single_sign_on_url: <string>
-          limit_relaystate: <value in [disable, enable]>
-          single_logout_url: <string>
-          single_sign_on_url: <string>
-          user_claim_type: <value in [email, given-name, name, ...]>
-          user_name: <string>
-          auth_url: <string>
-          reauth: <value in [disable, enable]>
-          scim_client: <list or string>
+          # _scope:
+          #   - name: <string>
+          #     vdom: <string>
+          # adfs_claim: <value in [disable, enable]>
+          # cert: <string>
+          # clock_tolerance: <integer>
+          # digest_method: <value in [sha1, sha256]>
+          # entity_id: <string>
+          # group_claim_type: <value in [email, given-name, name, ...]>
+          # group_name: <string>
+          # idp_cert: <string>
+          # idp_entity_id: <string>
+          # idp_single_logout_url: <string>
+          # idp_single_sign_on_url: <string>
+          # limit_relaystate: <value in [disable, enable]>
+          # single_logout_url: <string>
+          # single_sign_on_url: <string>
+          # user_claim_type: <value in [email, given-name, name, ...]>
+          # user_name: <string>
+          # auth_url: <string>
+          # reauth: <value in [disable, enable]>
+          # scim_client: <list or string>
+          # scim_group_attr_type: <value in [display-name, external-id]>
 '''
 
 RETURN = '''
@@ -381,7 +389,8 @@ def main():
                 'user-name': {'v_range': [['7.0.5', '7.0.13'], ['7.2.1', '']], 'type': 'str'},
                 'auth-url': {'v_range': [['7.2.1', '']], 'type': 'str'},
                 'reauth': {'v_range': [['7.4.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'scim-client': {'v_range': [['7.6.0', '']], 'type': 'raw'}
+                'scim-client': {'v_range': [['7.6.0', '']], 'type': 'raw'},
+                'scim-group-attr-type': {'v_range': [['7.6.3', '']], 'choices': ['display-name', 'external-id'], 'type': 'str'}
             }
         }
     }

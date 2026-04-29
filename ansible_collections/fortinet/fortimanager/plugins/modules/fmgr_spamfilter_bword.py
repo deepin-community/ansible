@@ -157,6 +157,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -172,19 +173,18 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         spamfilter_bword:
-          comment: <string>
-          entries:
-            -
-              action: <value in [spam, clear]>
-              id: <integer>
-              language: <value in [western, simch, trach, ...]>
-              pattern: <string>
-              pattern_type: <value in [wildcard, regexp]>
-              score: <integer>
-              status: <value in [disable, enable]>
-              where: <value in [subject, body, all]>
-          id: <integer>
-          name: <string>
+          id: 0 # Required variable, integer
+          # comment: <string>
+          # entries:
+          #   - action: <value in [spam, clear]>
+          #     id: <integer>
+          #     language: <value in [western, simch, trach, ...]>
+          #     pattern: <string>
+          #     pattern_type: <value in [wildcard, regexp]>
+          #     score: <integer>
+          #     status: <value in [disable, enable]>
+          #     where: <value in [subject, body, all]>
+          # name: <string>
 '''
 
 RETURN = '''

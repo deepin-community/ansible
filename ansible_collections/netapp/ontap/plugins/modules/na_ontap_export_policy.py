@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2023, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 '''
@@ -17,7 +17,7 @@ short_description: NetApp ONTAP manage export-policy
 extends_documentation_fragment:
   - netapp.ontap.netapp.na_ontap
 version_added: 2.6.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Create or destroy or rename export-policies on ONTAP
 options:
@@ -45,31 +45,33 @@ options:
 '''
 
 EXAMPLES = """
-    - name: Create Export Policy
-      netapp.ontap.na_ontap_export_policy:
-        state: present
-        name: ansiblePolicyName
-        vserver: vs_hack
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-    - name: Rename Export Policy
-      netapp.ontap.na_ontap_export_policy:
-        state: present
-        from_name: ansiblePolicyName
-        vserver: vs_hack
-        name: newPolicyName
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-    - name: Delete Export Policy
-      netapp.ontap.na_ontap_export_policy:
-        state: absent
-        name: ansiblePolicyName
-        vserver: vs_hack
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Create Export Policy
+  netapp.ontap.na_ontap_export_policy:
+    state: present
+    name: ansiblePolicyName
+    vserver: vs_hack
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+
+- name: Rename Export Policy
+  netapp.ontap.na_ontap_export_policy:
+    state: present
+    from_name: ansiblePolicyName
+    vserver: vs_hack
+    name: newPolicyName
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+
+- name: Delete Export Policy
+  netapp.ontap.na_ontap_export_policy:
+    state: absent
+    name: ansiblePolicyName
+    vserver: vs_hack
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """

@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import absolute_import, division, print_function
+
+
 __metaclass__ = type
 
 import traceback
@@ -12,11 +14,13 @@ import traceback
 from ansible.module_utils.basic import missing_required_lib
 from ansible.module_utils.common.text.converters import to_native, to_text
 
+
 try:
     import dns
     import dns.exception
-    import dns.name
+    import dns.inet
     import dns.message
+    import dns.name
     import dns.query
     import dns.rcode
     import dns.rdatatype
@@ -24,13 +28,17 @@ try:
 except ImportError:
     DNSPYTHON_IMPORTERROR = traceback.format_exc()
 else:
-    DNSPYTHON_IMPORTERROR = None
+    DNSPYTHON_IMPORTERROR = None  # type: ignore  # TODO
 
 
 _EDNS_SIZE = 1232  # equals dns.message.DEFAULT_EDNS_PAYLOAD; larger values cause problems with Route53 nameservers for me
 
 
 class ResolverError(Exception):
+    pass
+
+
+class InvalidInput(ResolverError):
     pass
 
 
@@ -170,6 +178,12 @@ class ResolveDirectlyFromNameServers(_Resolve):
         if not nameserver_ips:
             raise ResolverError('Have neither nameservers nor nameserver IPs')
 
+        # Sanity check: do we have a valid nameserver IP?
+        try:
+            dns.inet.af_for_address(nameserver_ips[0])
+        except ValueError:
+            raise InvalidInput("Invalid nameserver IP address {0}".format(nameserver_ips[0]))
+
         query = dns.message.make_query(target, dns.rdatatype.NS)
         retry = 0
         while True:
@@ -301,6 +315,14 @@ def guarded_run(runner, module, server=None, generate_additional_results=None):
     kwargs = {}
     try:
         return runner()
+    except InvalidInput as e:
+        if generate_additional_results is not None:
+            kwargs = generate_additional_results()
+        module.fail_json(
+            msg='Invalid input{0}: {1}'.format(suffix, to_native(e)),
+            exception=traceback.format_exc(),
+            **kwargs
+        )
     except ResolverError as e:
         if generate_additional_results is not None:
             kwargs = generate_additional_results()

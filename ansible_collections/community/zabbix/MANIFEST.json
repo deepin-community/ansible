@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "community",
   "name": "zabbix",
-  "version": "3.2.0",
+  "version": "4.1.0",
   "authors": [
    "Dusan Matejka (@D3DeFi)",
    "sky-joker (@sky-joker)",
@@ -35,7 +35,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "20f7d63106a7c424b1014bded53d4c9584ac6bff8ef3e169b1fe722f137cbfbe",
+  "chksum_sha256": "3539f4676918be78b7770e058279cbcae0dc6a88537b6634191ba3855602146d",
   "format": 1
  },
  "format": 1

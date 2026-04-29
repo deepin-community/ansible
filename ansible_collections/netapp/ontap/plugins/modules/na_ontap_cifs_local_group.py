@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2022-2024, NetApp, Inc
+# (c) 2022-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -12,7 +12,7 @@ short_description: NetApp Ontap - create, delete or modify CIFS local group.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: '22.1.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Create, delete or modify CIFS local group.
 options:
@@ -48,51 +48,51 @@ options:
 """
 
 EXAMPLES = """
-    - name: create CIFS local group
-      netapp.ontap.na_ontap_cifs_local_group:
-        state: present
-        vserver: svm1
-        name: BUILTIN\\administrators
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        https: true
-        validate_certs: false
+- name: Create CIFS local group
+  netapp.ontap.na_ontap_cifs_local_group:
+    state: present
+    vserver: svm1
+    name: BUILTIN\\administrators
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
+    https: true
+    validate_certs: false
 
-    - name: Delete CIFS local group
-      netapp.ontap.na_ontap_cifs_local_group:
-        state: absent
-        vserver: svm1
-        name: BUILTIN\\administrators
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        https: true
-        validate_certs: false
+- name: Delete CIFS local group
+  netapp.ontap.na_ontap_cifs_local_group:
+    state: absent
+    vserver: svm1
+    name: BUILTIN\\administrators
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
+    https: true
+    validate_certs: false
 
-    - name: Modify CIFS local group description
-      netapp.ontap.na_ontap_cifs_local_group:
-        state: present
-        vserver: svm1
-        name: BUILTIN\\administrators
-        descrition: 'CIFS local group'
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        https: true
-        validate_certs: false
+- name: Modify CIFS local group description
+  netapp.ontap.na_ontap_cifs_local_group:
+    state: present
+    vserver: svm1
+    name: BUILTIN\\administrators
+    descrition: 'CIFS local group'
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
+    https: true
+    validate_certs: false
 
-    - name: Rename CIFS local group description
-      netapp.ontap.na_ontap_cifs_local_group:
-        state: present
-        vserver: svm1
-        name: ANSIBLE_CIFS\\test_users
-        descrition: 'CIFS local group'
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        https: true
-        validate_certs: false
+- name: Rename CIFS local group description
+  netapp.ontap.na_ontap_cifs_local_group:
+    state: present
+    vserver: svm1
+    name: ANSIBLE_CIFS\\test_users
+    descrition: 'CIFS local group'
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
+    https: true
+    validate_certs: false
 """
 
 RETURN = """

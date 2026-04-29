@@ -110,6 +110,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -125,10 +126,10 @@ EXAMPLES = '''
         adom: <your own value>
         devprof: <your own value>
         devprof_device_profile_fortianalyzer:
-          managed_sn: <string>
-          target: <value in [none, this-fmg, managed, ...]>
-          target_ip: <string>
-          target_sn: <list or string>
+          # managed_sn: <string>
+          # target: <value in [none, this-fmg, managed, ...]>
+          # target_ip: <string>
+          # target_sn: <list or string>
 '''
 
 RETURN = '''

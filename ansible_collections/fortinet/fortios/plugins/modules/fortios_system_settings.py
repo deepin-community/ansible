@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -250,6 +251,10 @@ options:
                     - 'auto'
                     - 'sdwan'
                     - 'specify'
+            dhcp_proxy_vrf_select:
+                description:
+                    - VRF ID used for connection to server.
+                type: int
             dhcp_server_ip:
                 description:
                     - DHCP Server IPv4 address.
@@ -403,6 +408,13 @@ options:
             gui_dlp:
                 description:
                     - Enable/disable DLP on the GUI.
+                type: str
+                choices:
+                    - 'enable'
+                    - 'disable'
+            gui_dlp_advanced:
+                description:
+                    - Enable/disable Show advanced DLP expressions on the GUI.
                 type: str
                 choices:
                     - 'enable'
@@ -869,6 +881,13 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            intree_ses_best_route:
+                description:
+                    - Force the intree session to always use the best route.
+                type: str
+                choices:
+                    - 'force'
+                    - 'disable'
             ip:
                 description:
                     - IP address and netmask.
@@ -1004,6 +1023,13 @@ options:
             sctp_session_without_init:
                 description:
                     - Enable/disable SCTP session creation without SCTP INIT.
+                type: str
+                choices:
+                    - 'enable'
+                    - 'disable'
+            ses_denied_multicast_traffic:
+                description:
+                    - Enable/disable including denied multicast session in the session table.
                 type: str
                 choices:
                     - 'enable'
@@ -1162,6 +1188,7 @@ EXAMPLES = """
           dhcp_proxy: "enable"
           dhcp_proxy_interface: "<your_own_value> (source system.interface.name)"
           dhcp_proxy_interface_select_method: "auto"
+          dhcp_proxy_vrf_select: "0"
           dhcp_server_ip: "<your_own_value>"
           dhcp6_server_ip: "<your_own_value>"
           discovered_device_timeout: "28"
@@ -1185,9 +1212,10 @@ EXAMPLES = """
           gui_casb: "enable"
           gui_default_policy_columns:
               -
-                  name: "default_name_52"
+                  name: "default_name_53"
           gui_dhcp_advanced: "enable"
           gui_dlp: "enable"
+          gui_dlp_advanced: "enable"
           gui_dlp_profile: "enable"
           gui_dns_database: "enable"
           gui_dnsfilter: "enable"
@@ -1250,11 +1278,12 @@ EXAMPLES = """
           ike_port: "500"
           ike_quick_crash_detect: "enable"
           ike_session_resume: "enable"
-          ike_tcp_port: "4500"
+          ike_tcp_port: "443"
           implicit_allow_dns: "enable"
           inspection_mode: "proxy"
           internet_service_app_ctrl_size: "32768"
           internet_service_database_cache: "disable"
+          intree_ses_best_route: "force"
           ip: "<your_own_value>"
           ip6: "<your_own_value>"
           lan_extension_controller_addr: "<your_own_value>"
@@ -1278,6 +1307,7 @@ EXAMPLES = """
           prp_trailer_action: "enable"
           sccp_port: "2000"
           sctp_session_without_init: "enable"
+          ses_denied_multicast_traffic: "enable"
           ses_denied_traffic: "enable"
           sip_expectation: "enable"
           sip_helper: "enable"
@@ -1375,6 +1405,18 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_system_settings_data(json):
@@ -1406,6 +1448,7 @@ def filter_system_settings_data(json):
         "dhcp_proxy",
         "dhcp_proxy_interface",
         "dhcp_proxy_interface_select_method",
+        "dhcp_proxy_vrf_select",
         "dhcp_server_ip",
         "dhcp6_server_ip",
         "discovered_device_timeout",
@@ -1430,6 +1473,7 @@ def filter_system_settings_data(json):
         "gui_default_policy_columns",
         "gui_dhcp_advanced",
         "gui_dlp",
+        "gui_dlp_advanced",
         "gui_dlp_profile",
         "gui_dns_database",
         "gui_dnsfilter",
@@ -1497,6 +1541,7 @@ def filter_system_settings_data(json):
         "inspection_mode",
         "internet_service_app_ctrl_size",
         "internet_service_database_cache",
+        "intree_ses_best_route",
         "ip",
         "ip6",
         "lan_extension_controller_addr",
@@ -1520,6 +1565,7 @@ def filter_system_settings_data(json):
         "prp_trailer_action",
         "sccp_port",
         "sctp_session_without_init",
+        "ses_denied_multicast_traffic",
         "ses_denied_traffic",
         "sip_expectation",
         "sip_helper",
@@ -1555,8 +1601,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -1587,30 +1632,115 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def system_settings(data, fos, check_mode=False):
 
-def system_settings(data, fos):
     state = None
     vdom = data["vdom"]
+    state = data.get("state", None)
     system_settings_data = data["system_settings"]
 
     filtered_data = filter_system_settings_data(system_settings_data)
     filtered_data = flatten_multilists_attributes(filtered_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("system", "settings", filtered_data, vdom=vdom)
+        current_data = fos.get("system", "settings", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["system_settings"] = converted_data
+    data_copy["system_settings"] = filtered_data
     fos.do_member_operation(
         "system",
         "settings",
@@ -1632,12 +1762,14 @@ def is_successful_status(resp):
     )
 
 
-def fortios_system(data, fos):
+def fortios_system(data, fos, check_mode):
+
     if data["system_settings"]:
-        resp = system_settings(data, fos)
+        resp = system_settings(data, fos, check_mode)
     else:
         fos._module.fail_json(msg="missing task body: %s" % ("system_settings"))
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -1772,6 +1904,7 @@ versioned_schema = {
             "v_range": [["v6.2.0", "v6.2.0"], ["v6.2.5", "v6.4.0"], ["v6.4.4", ""]],
             "type": "string",
         },
+        "dhcp_proxy_vrf_select": {"v_range": [["v7.6.1", ""]], "type": "integer"},
         "dhcp_server_ip": {
             "v_range": [["v6.0.0", ""]],
             "type": "list",
@@ -1836,6 +1969,11 @@ versioned_schema = {
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
+        "intree_ses_best_route": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "force"}, {"value": "disable"}],
+        },
         "auxiliary_session": {
             "v_range": [["v6.2.0", ""]],
             "type": "string",
@@ -1858,6 +1996,11 @@ versioned_schema = {
         },
         "ses_denied_traffic": {
             "v_range": [["v6.0.0", ""]],
+            "type": "string",
+            "options": [{"value": "enable"}, {"value": "disable"}],
+        },
+        "ses_denied_multicast_traffic": {
+            "v_range": [["v7.6.1", ""]],
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
@@ -2155,6 +2298,11 @@ versioned_schema = {
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
+        "gui_dlp_advanced": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "enable"}, {"value": "disable"}],
+        },
         "gui_virtual_patch_profile": {
             "v_range": [["v7.4.1", ""]],
             "type": "string",
@@ -2248,10 +2396,20 @@ versioned_schema = {
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
-        "application_bandwidth_tracking": {
-            "v_range": [["v7.0.0", ""]],
+        "gtp_asym_fgsp": {
+            "v_range": [["v6.2.0", "v7.0.8"], ["v7.2.0", "v7.2.4"], ["v7.4.3", ""]],
             "type": "string",
             "options": [{"value": "disable"}, {"value": "enable"}],
+        },
+        "gtp_monitor_mode": {
+            "v_range": [["v6.2.0", "v7.0.8"], ["v7.2.0", "v7.2.4"], ["v7.4.3", ""]],
+            "type": "string",
+            "options": [{"value": "enable"}, {"value": "disable"}],
+        },
+        "pfcp_monitor_mode": {
+            "v_range": [["v7.0.1", "v7.0.8"], ["v7.2.0", "v7.2.4"], ["v7.4.3", ""]],
+            "type": "string",
+            "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "fqdn_session_check": {
             "v_range": [["v7.2.1", ""]],
@@ -2287,20 +2445,10 @@ versioned_schema = {
             "v_range": [["v7.4.4", ""]],
             "type": "integer",
         },
-        "gtp_asym_fgsp": {
-            "v_range": [["v6.2.0", "v7.0.8"], ["v7.2.0", "v7.2.4"], ["v7.4.3", ""]],
+        "application_bandwidth_tracking": {
+            "v_range": [["v7.0.0", "v7.6.0"]],
             "type": "string",
             "options": [{"value": "disable"}, {"value": "enable"}],
-        },
-        "gtp_monitor_mode": {
-            "v_range": [["v6.2.0", "v7.0.8"], ["v7.2.0", "v7.2.4"], ["v7.4.3", ""]],
-            "type": "string",
-            "options": [{"value": "enable"}, {"value": "disable"}],
-        },
-        "pfcp_monitor_mode": {
-            "v_range": [["v7.0.1", "v7.0.8"], ["v7.2.0", "v7.2.4"], ["v7.4.3", ""]],
-            "type": "string",
-            "options": [{"value": "enable"}, {"value": "disable"}],
         },
         "gui_proxy_inspection": {
             "v_range": [["v7.2.4", "v7.4.4"]],
@@ -2424,7 +2572,7 @@ def main():
         if mkeyname and mkeyname == attribute_name:
             fields["system_settings"]["options"][attribute_name]["required"] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -2447,7 +2595,9 @@ def main():
             fos, versioned_schema, "system_settings"
         )
 
-        is_error, has_changed, result, diff = fortios_system(module.params, fos)
+        is_error, has_changed, result, diff = fortios_system(
+            module.params, fos, module.check_mode
+        )
 
     else:
         module.fail_json(**FAIL_SOCKET_MSG)

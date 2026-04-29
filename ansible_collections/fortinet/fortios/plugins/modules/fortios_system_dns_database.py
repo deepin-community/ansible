@@ -174,6 +174,18 @@ options:
                 description:
                     - Forwarder IPv6 address.
                 type: str
+            interface:
+                description:
+                    - Specify outgoing interface to reach server. Source system.interface.name.
+                type: str
+            interface_select_method:
+                description:
+                    - Specify how to select outgoing interface to reach server.
+                type: str
+                choices:
+                    - 'auto'
+                    - 'sdwan'
+                    - 'specify'
             ip_master:
                 description:
                     - IP address of master DNS server. Entries in this master DNS server and imported into the DNS zone.
@@ -236,6 +248,10 @@ options:
                     - 'public'
                     - 'shadow-ztna'
                     - 'proxy'
+            vrf_select:
+                description:
+                    - VRF ID used for connection to server.
+                type: int
 """
 
 EXAMPLES = """
@@ -262,9 +278,11 @@ EXAMPLES = """
           domain: "<your_own_value>"
           forwarder: "<your_own_value>"
           forwarder6: "<your_own_value>"
+          interface: "<your_own_value> (source system.interface.name)"
+          interface_select_method: "auto"
           ip_master: "<your_own_value>"
           ip_primary: "<your_own_value>"
-          name: "default_name_21"
+          name: "default_name_23"
           primary_name: "<your_own_value>"
           rr_max: "16384"
           source_ip: "84.230.14.43"
@@ -274,6 +292,7 @@ EXAMPLES = """
           ttl: "86400"
           type: "primary"
           view: "shadow"
+          vrf_select: "0"
 """
 
 RETURN = """
@@ -362,6 +381,9 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_system_dns_database_data(json):
@@ -373,6 +395,8 @@ def filter_system_dns_database_data(json):
         "domain",
         "forwarder",
         "forwarder6",
+        "interface",
+        "interface_select_method",
         "ip_master",
         "ip_primary",
         "name",
@@ -385,6 +409,7 @@ def filter_system_dns_database_data(json):
         "ttl",
         "type",
         "view",
+        "vrf_select",
     ]
 
     json = remove_invalid_fields(json)
@@ -402,8 +427,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -431,24 +455,25 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def system_dns_database(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     system_dns_database_data = data["system_dns_database"]
 
     filtered_data = filter_system_dns_database_data(system_dns_database_data)
@@ -461,40 +486,56 @@ def system_dns_database(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("system", "dns-database", filtered_data, vdom=vdom)
         current_data = fos.get("system", "dns-database", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -520,8 +561,9 @@ def system_dns_database(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["system_dns_database"] = converted_data
+    data_copy["system_dns_database"] = filtered_data
     fos.do_member_operation(
         "system",
         "dns-database",
@@ -552,6 +594,7 @@ def is_successful_status(resp):
 
 
 def fortios_system(data, fos, check_mode):
+
     if data["system_dns_database"]:
         resp = system_dns_database(data, fos, check_mode)
     else:
@@ -660,6 +703,13 @@ versioned_schema = {
             },
             "v_range": [["v6.0.0", ""]],
         },
+        "interface_select_method": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "auto"}, {"value": "sdwan"}, {"value": "specify"}],
+        },
+        "interface": {"v_range": [["v7.6.1", ""]], "type": "string"},
+        "vrf_select": {"v_range": [["v7.6.1", ""]], "type": "integer"},
         "ip_master": {"v_range": [["v6.0.0", "v6.4.4"]], "type": "string"},
     },
     "v_range": [["v6.0.0", ""]],

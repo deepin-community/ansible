@@ -6,11 +6,12 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-from ansible_collections.community.routeros.tests.unit.compat.mock import patch, MagicMock
+from ansible_collections.community.internal_test_tools.tests.unit.compat.mock import patch, MagicMock
+from ansible_collections.community.internal_test_tools.tests.unit.plugins.modules.utils import set_module_args, AnsibleExitJson, AnsibleFailJson, ModuleTestCase
+
 from ansible_collections.community.routeros.tests.unit.plugins.modules.fake_api import (
     FAKE_ROS_VERSION, FakeLibRouterosError, fake_ros_api, massage_expected_result_data, create_fake_path,
 )
-from ansible_collections.community.routeros.tests.unit.plugins.modules.utils import set_module_args, AnsibleExitJson, AnsibleFailJson, ModuleTestCase
 from ansible_collections.community.routeros.plugins.modules import api_modify
 
 
@@ -318,8 +319,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
 
     def test_module_fail_when_required_args_missing(self):
         with self.assertRaises(AnsibleFailJson) as exc:
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -331,8 +332,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'path': 'something invalid',
                 'data': [],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -348,8 +349,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     'foo': 'bar',
                 }],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -366,8 +367,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     '!comment': None,
                 }],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -383,8 +384,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     '!disabled': None,
                 }],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -400,8 +401,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     '!comment': 'foo',
                 }],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -416,8 +417,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     'name': None,
                 }],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -432,8 +433,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     'interface': 'eth0',
                 }],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -448,8 +449,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     'address': '192.168.88.1',
                 }],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -466,8 +467,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     'address': '192.168.88.1',
                 }],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['failed'], True)
@@ -498,8 +499,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     },
                 ],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -533,8 +534,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_absent_entries': 'remove',
                 'handle_entries_content': 'remove',
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -556,8 +557,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     },
                 ],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -591,8 +592,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     },
                 ],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -656,8 +657,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     },
                 ],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -722,8 +723,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 ],
                 '_ansible_check_mode': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -785,8 +786,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_absent_entries': 'remove',
                 'handle_entries_content': 'remove',
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -844,8 +845,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 '_ansible_check_mode': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -903,8 +904,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_absent_entries': 'remove',
                 'handle_entries_content': 'remove',
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -963,8 +964,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 '_ansible_check_mode': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1017,8 +1018,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_absent_entries': 'remove',
                 'handle_entries_content': 'remove',
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1077,8 +1078,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 '_ansible_check_mode': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1128,8 +1129,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_absent_entries': 'remove',
                 'handle_entries_content': 'remove',
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1164,8 +1165,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 '_ansible_check_mode': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1212,8 +1213,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 'ensure_order': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1285,8 +1286,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'ensure_order': True,
                 '_ansible_check_mode': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1340,8 +1341,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     },
                 ],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -1363,8 +1364,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 ],
                 'handle_entries_content': 'remove',
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -1386,8 +1387,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     },
                 ],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1426,8 +1427,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 ],
                 '_ansible_check_mode': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1466,8 +1467,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 ],
                 'handle_entries_content': 'remove',
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1507,8 +1508,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 '_ansible_check_mode': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1551,8 +1552,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                     },
                 ],
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -1587,8 +1588,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_absent_entries': 'remove',
                 'handle_entries_content': 'remove',
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -1621,8 +1622,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_absent_entries': 'remove',
                 'handle_entries_content': 'remove',
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1676,8 +1677,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 '_ansible_check_mode': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1729,8 +1730,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 'ensure_order': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1785,8 +1786,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'ensure_order': True,
                 '_ansible_check_mode': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1847,8 +1848,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 'ensure_order': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -1879,8 +1880,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 'ensure_order': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -1911,8 +1912,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_entries_content': 'remove',
                 'ensure_order': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], True)
@@ -1969,8 +1970,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_absent_entries': 'remove',
                 'ensure_order': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)
@@ -2005,8 +2006,8 @@ class TestRouterosApiModifyModule(ModuleTestCase):
                 'handle_absent_entries': 'remove',
                 'ensure_order': True,
             })
-            set_module_args(args)
-            self.module.main()
+            with set_module_args(args):
+                self.module.main()
 
         result = exc.exception.args[0]
         self.assertEqual(result['changed'], False)

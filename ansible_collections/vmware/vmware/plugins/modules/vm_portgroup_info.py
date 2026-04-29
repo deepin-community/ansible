@@ -29,7 +29,8 @@ options:
         type: list
         elements: str
 extends_documentation_fragment:
-    - vmware.vmware.vmware_rest_client.documentation
+    - vmware.vmware.base_options
+    - vmware.vmware.additional_rest_options
 '''
 
 EXAMPLES = r'''
@@ -65,19 +66,20 @@ vm_portgroup_info:
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware import PyVmomi
-from ansible_collections.vmware.vmware.plugins.module_utils import _vmware_network as vmware_network
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_rest_client import VmwareRestClient
+from ansible_collections.vmware.vmware.plugins.module_utils._module_pyvmomi_base import ModulePyvmomiBase
+from ansible_collections.vmware.vmware.plugins.module_utils import _network as vmware_network
+from ansible_collections.vmware.vmware.plugins.module_utils._module_rest_base import ModuleRestBase
+from ansible_collections.vmware.vmware.plugins.module_utils.argument_spec import rest_compatible_argument_spec
 
 
-class PortgroupInfo(PyVmomi):
+class PortgroupInfo(ModulePyvmomiBase):
     def __init__(self, module):
         super(PortgroupInfo, self).__init__(module)
-        self.vmware_client = VmwareRestClient(module)
+        self.vmware_client = ModuleRestBase(module)
         self.vms = self.params['vm_names']
 
     def get_dvs_portgroup_detailed(self, pg_id):
-        dvs_pg = self.get_dvs_portgroup(pg_id)
+        dvs_pg = self.get_dvs_portgroup_by_name_or_moid(pg_id)
         pg = {'portgroup_name': dvs_pg.name, 'vswitch_name': dvs_pg.config.distributedVirtualSwitch.name,
               'type': 'DISTRIBUTED_PORTGROUP', 'port_id': pg_id,
               'port_binding': vmware_network.get_dvs_port_allocation(dvs_pg.config.type),
@@ -98,7 +100,7 @@ class PortgroupInfo(PyVmomi):
         return pg
 
     def get_standard_portgroup_detailed(self, pg_id):
-        pg = self.get_standard_portgroup(pg_id)
+        pg = self.get_standard_portgroup_by_name_or_moid(pg_id)
         pg_name = str(pg.summary.name)
         ret_pg = vmware_network.get_standard_portgroup_vlan_vswitch(pg, pg_name)
         ret_pg['port_id'] = pg_id
@@ -143,7 +145,7 @@ class PortgroupInfo(PyVmomi):
 
 
 def main():
-    argument_spec = VmwareRestClient.vmware_client_argument_spec()
+    argument_spec = rest_compatible_argument_spec()
     argument_spec.update(
         dict(
             vm_names=dict(type='list', elements='str', required=True)

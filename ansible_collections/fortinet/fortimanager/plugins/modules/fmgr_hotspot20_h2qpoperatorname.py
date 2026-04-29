@@ -114,6 +114,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -129,12 +130,11 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         hotspot20_h2qpoperatorname:
-          name: <string>
-          value_list:
-            -
-              index: <integer>
-              lang: <string>
-              value: <string>
+          name: "your value" # Required variable, string
+          # value_list:
+          #   - index: <integer>
+          #     lang: <string>
+          #     value: <string>
 '''
 
 RETURN = '''

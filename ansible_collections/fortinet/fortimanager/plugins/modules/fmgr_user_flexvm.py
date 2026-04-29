@@ -120,6 +120,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -135,13 +136,13 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         user_flexvm:
-          config: <string>
-          folder: <string>
-          name: <string>
-          password: <string>
-          program: <string>
-          status: <value in [disable, enable]>
-          user: <string>
+          name: "your value" # Required variable, string
+          # config: <string>
+          # folder: <string>
+          # password: <string>
+          # program: <string>
+          # status: <value in [disable, enable]>
+          # user: <string>
 '''
 
 RETURN = '''

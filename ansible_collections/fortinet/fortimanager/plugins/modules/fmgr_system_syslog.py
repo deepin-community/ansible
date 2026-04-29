@@ -146,6 +146,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -160,14 +161,14 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         state: present # <value in [present, absent]>
         system_syslog:
-          ip: <string>
-          name: <string>
-          port: <integer>
-          local_cert: <string>
-          peer_cert_cn: <string>
-          reliable: <value in [disable, enable]>
-          secure_connection: <value in [disable, enable]>
-          ssl_protocol: <value in [follow-global-ssl-protocol, sslv3, tlsv1.0, ...]>
+          name: "your value" # Required variable, string
+          # ip: <string>
+          # port: <integer>
+          # local_cert: <string>
+          # peer_cert_cn: <string>
+          # reliable: <value in [disable, enable]>
+          # secure_connection: <value in [disable, enable]>
+          # ssl_protocol: <value in [follow-global-ssl-protocol, sslv3, tlsv1.0, ...]>
 '''
 
 RETURN = '''
@@ -234,7 +235,7 @@ def main():
                 'reliable': {'v_range': [['6.4.8', '6.4.15'], ['7.0.4', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'secure-connection': {'v_range': [['6.4.8', '6.4.15'], ['7.0.4', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'ssl-protocol': {
-                    'v_range': [['7.4.4', '7.4.5']],
+                    'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']],
                     'choices': ['follow-global-ssl-protocol', 'sslv3', 'tlsv1.0', 'tlsv1.1', 'tlsv1.2', 'tlsv1.3'],
                     'type': 'str'
                 }

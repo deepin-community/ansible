@@ -112,6 +112,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -129,8 +130,8 @@ EXAMPLES = '''
         policy: <your own value>
         state: present # <value in [present, absent]>
         pkg_firewall_consolidated_policy_sectionvalue:
-          attr: <value in [label, global-label]>
-          name: <string>
+          # attr: <value in [label, global-label]>
+          # name: <string>
 '''
 
 RETURN = '''
@@ -190,10 +191,10 @@ def main():
         'policy': {'required': True, 'type': 'str'},
         'pkg_firewall_consolidated_policy_sectionvalue': {
             'type': 'dict',
-            'v_range': [['6.2.5', '']],
+            'v_range': [['6.2.5', '7.6.2']],
             'options': {
-                'attr': {'v_range': [['6.2.5', '']], 'choices': ['label', 'global-label'], 'type': 'str'},
-                'name': {'v_range': [['6.2.5', '']], 'type': 'str'}
+                'attr': {'v_range': [['6.2.5', '7.6.2']], 'choices': ['label', 'global-label'], 'type': 'str'},
+                'name': {'v_range': [['6.2.5', '7.6.2']], 'type': 'str'}
             }
         }
     }

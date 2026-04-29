@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -104,6 +105,10 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            vrf_select:
+                description:
+                    - VRF ID used for connection to server.
+                type: int
 """
 
 EXAMPLES = """
@@ -115,6 +120,7 @@ EXAMPLES = """
           interface_select_method: "auto"
           source_ip: "84.230.14.43"
           status: "disable"
+          vrf_select: "0"
 """
 
 RETURN = """
@@ -194,10 +200,28 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_system_fortindr_data(json):
-    option_list = ["interface", "interface_select_method", "source_ip", "status"]
+    option_list = [
+        "interface",
+        "interface_select_method",
+        "source_ip",
+        "status",
+        "vrf_select",
+    ]
 
     json = remove_invalid_fields(json)
     dictionary = {}
@@ -210,29 +234,114 @@ def filter_system_fortindr_data(json):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
+    else:
+        return data
+    return new_data
 
-    return data
 
+def system_fortindr(data, fos, check_mode=False):
 
-def system_fortindr(data, fos):
     state = None
     vdom = data["vdom"]
+    state = data.get("state", None)
     system_fortindr_data = data["system_fortindr"]
 
     filtered_data = filter_system_fortindr_data(system_fortindr_data)
     converted_data = underscore_to_hyphen(filtered_data)
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey("system", "fortindr", filtered_data, vdom=vdom)
+        current_data = fos.get("system", "fortindr", vdom=vdom, mkey=mkey)
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["system_fortindr"] = converted_data
+    data_copy["system_fortindr"] = filtered_data
     fos.do_member_operation(
         "system",
         "fortindr",
@@ -254,12 +363,14 @@ def is_successful_status(resp):
     )
 
 
-def fortios_system(data, fos):
+def fortios_system(data, fos, check_mode):
+
     if data["system_fortindr"]:
-        resp = system_fortindr(data, fos)
+        resp = system_fortindr(data, fos, check_mode)
     else:
         fos._module.fail_json(msg="missing task body: %s" % ("system_fortindr"))
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -285,6 +396,7 @@ versioned_schema = {
             "options": [{"value": "auto"}, {"value": "sdwan"}, {"value": "specify"}],
         },
         "interface": {"v_range": [["v7.0.8", ""]], "type": "string"},
+        "vrf_select": {"v_range": [["v7.6.1", ""]], "type": "integer"},
     },
 }
 
@@ -316,7 +428,7 @@ def main():
         if mkeyname and mkeyname == attribute_name:
             fields["system_fortindr"]["options"][attribute_name]["required"] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -339,7 +451,9 @@ def main():
             fos, versioned_schema, "system_fortindr"
         )
 
-        is_error, has_changed, result, diff = fortios_system(module.params, fos)
+        is_error, has_changed, result, diff = fortios_system(
+            module.params, fos, module.check_mode
+        )
 
     else:
         module.fail_json(**FAIL_SOCKET_MSG)

@@ -11,6 +11,10 @@ DOCUMENTATION = r"""
 module: vcenter_cluster_info
 short_description: Retrieves information about the cluster corresponding to cluster.
 description: Retrieves information about the cluster corresponding to cluster.
+deprecated:
+    removed_in: 5.0.0
+    why: This module has been moved to the L(new vmware.vmware collection,https://forum.ansible.com/t/5880)
+    alternative: Use M(vmware.vmware.cluster_info) instead.
 options:
     cluster:
         description:
@@ -153,18 +157,20 @@ PAYLOAD_FORMAT = {
 }  # pylint: disable=line-too-long
 
 from ansible.module_utils.basic import env_fallback
+import os
 
-try:
-    from ansible_collections.cloud.common.plugins.module_utils.turbo.exceptions import (
-        EmbeddedModuleFailure,
-    )
-    from ansible_collections.cloud.common.plugins.module_utils.turbo.module import (
-        AnsibleTurboModule as AnsibleModule,
-    )
+if os.getenv("VMWARE_ENABLE_TURBO", False):
+    try:
+        from ansible_collections.cloud.common.plugins.module_utils.turbo.module import (
+            AnsibleTurboModule as AnsibleModule,
+        )
 
-    AnsibleModule.collection_name = "vmware.vmware_rest"
-except ImportError:
+        AnsibleModule.collection_name = "vmware.vmware_rest"
+    except ImportError:
+        from ansible.module_utils.basic import AnsibleModule
+else:
     from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.vmware.vmware_rest.plugins.module_utils.vmware_rest import (
     build_full_device_list,
     exists,
@@ -253,8 +259,11 @@ async def main():
             validate_certs=module.params["vcenter_validate_certs"],
             log_file=module.params["vcenter_rest_log_file"],
         )
-    except EmbeddedModuleFailure as err:
-        module.fail_json(err.get_message())
+    except Exception as err:
+        if hasattr(err, "get_message"):
+            module.fail_json(err.get_message())
+        else:
+            module.fail_json(str(err))
     result = await entry_point(module, session)
     module.exit_json(**result)
 

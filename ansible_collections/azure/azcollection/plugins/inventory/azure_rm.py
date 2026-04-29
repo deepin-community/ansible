@@ -7,10 +7,20 @@ __metaclass__ = type
 DOCUMENTATION = r'''
     name: azure_rm
     short_description: Azure Resource Manager inventory plugin
+    options:
+        batch_fetch_interval:
+            description: Interval with which to check if the batched requests are completed
+            default: 3
+            type: int
+        batch_fetch_timeout:
+            description: The timeout to use when polling for batched requests
+            default: 5
+            type: int
     extends_documentation_fragment:
       - azure.azcollection.azure
       - azure.azcollection.azure_rm
       - constructed
+      - inventory_cache
     description:
         - Query VM details from Azure Resource Manager
         - Requires a YAML configuration file whose name ends with 'azure_rm.(yml|yaml)'
@@ -66,6 +76,10 @@ include_vmss_resource_groups:
 
 # fetches VMs from Azure StackHCI in specific resource groups (defaults to no HCI vm fetch)
 include_hcivm_resource_groups:
+    - myrg1
+
+# fetches ARC hosts in specific resource groups (defaults to no ARC fetch)
+include_arc_resource_groups:
     - myrg1
 
 # places a host in the named group if the associated condition evaluates to true
@@ -141,7 +155,7 @@ except ImportError:
     from Queue import Queue, Empty
 
 from collections import namedtuple
-from ansible.plugins.inventory import BaseInventoryPlugin, Constructable
+from ansible.plugins.inventory import BaseInventoryPlugin, Constructable, Cacheable
 from ansible.module_utils.six import iteritems
 from ansible_collections.azure.azcollection.plugins.module_utils.azure_rm_common import AzureRMAuth
 from ansible.errors import AnsibleParserError, AnsibleError
@@ -149,6 +163,10 @@ from ansible.module_utils.parsing.convert_bool import boolean
 from ansible.module_utils._text import to_native, to_bytes, to_text
 from itertools import chain
 from os import environ
+try:
+    from ansible.template import trust_as_template
+except ImportError:
+    trust_as_template = None
 
 try:
     from azure.core._pipeline_client import PipelineClient
@@ -158,6 +176,7 @@ try:
     from azure.core.pipeline import PipelineResponse
     from azure.mgmt.core.polling.arm_polling import ARMPolling
     from azure.core.polling import LROPoller
+    from netaddr import IPAddress
 except ImportError:
     Configuration = object
     parse_resource_id = object
@@ -188,8 +207,7 @@ class AzureRMRestConfiguration(Configuration):
 UrlAction = namedtuple('UrlAction', ['url', 'api_version', 'handler', 'handler_args'])
 
 
-# FUTURE: add Cacheable support once we have a sane serialization format
-class InventoryModule(BaseInventoryPlugin, Constructable):
+class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
     NAME = 'azure.azcollection.azure_rm'
 
@@ -200,8 +218,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         self._filters = None
 
         # FUTURE: use API profiles with defaults
-        self._compute_api_version = '2021-11-01'
-        self._network_api_version = '2015-06-15'
+        self._compute_api_version = '2024-07-01'
+        self._network_api_version = '2024-05-01'
         self._hybridcompute_api_version = '2024-05-20-preview'
         self._stackhci_api_version = '2024-01-01'
 
@@ -234,6 +252,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             self._sanitize_group_name = self._legacy_script_compatible_group_sanitization
 
         self._batch_fetch = self.get_option('batch_fetch')
+        self._batch_fetch_interval = self.get_option('batch_fetch_interval')
+        self._batch_fetch_timeout = self.get_option('batch_fetch_timeout')
 
         self._legacy_hostnames = self.get_option('plain_host_names')
 
@@ -241,11 +261,46 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
         self._include_filters = self.get_option('include_host_filters')
 
-        try:
-            self._credential_setup()
-            self._get_hosts()
-        except Exception:
-            raise
+        # Load results from Cache if requested
+        cache_key = self.get_cache_key(path)
+
+        # cache may be True or False at this point to indicate if the inventory is being refreshed
+        # get the user's cache option too to see if we should save the cache if it is changing
+        user_cache_setting = self.get_option('cache')
+
+        # read if the user has caching enabled and the cache isn't being refreshed
+        attempt_to_read_cache = user_cache_setting and cache
+        # update if the user has caching enabled and the cache is being refreshed;
+        # update this value to True if the cache has expired below
+        cache_needs_update = user_cache_setting and not cache
+
+        # attempt to read the cache if inventory isn't being refreshed and the user has caching enabled
+        if attempt_to_read_cache:
+            try:
+                results = self._cache[cache_key]
+            except KeyError:
+                # This occurs if the cache_key is not in the cache or if the cache_key
+                # expired, so the cache needs to be updated
+                cache_needs_update = True
+        if not attempt_to_read_cache or cache_needs_update:
+            # parse the provided inventory source
+            try:
+                self._credential_setup()
+                self._get_hosts()
+                results = self._serialize(self._hosts)
+            except Exception:
+                raise
+        if cache_needs_update:
+            self._cache[cache_key] = results
+
+        self._populate(results)
+
+    def _serialize(self, hosts):
+        results = []
+        for h in hosts:
+            results.append(dict(default_inventory_hostname=h.default_inventory_hostname,
+                                hostvars=h.hostvars))
+        return results
 
     def _credential_setup(self):
         auth_source = environ.get('ANSIBLE_AZURE_AUTH_SOURCE', None) or self.get_option('auth_source')
@@ -298,6 +353,15 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         url = url.format(subscriptionId=self._clientconfig.subscription_id, rg=rg)
         self._enqueue_get(url=url, api_version=self._compute_api_version, handler=self._on_vm_page_response)
 
+    def _enqueue_arc_list(self, rg='*'):
+        if not rg or rg == '*':
+            url = '/subscriptions/{subscriptionId}/providers/Microsoft.HybridCompute/machines'
+        else:
+            url = '/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.HybridCompute/machines'
+
+        url = url.format(subscriptionId=self._clientconfig.subscription_id, rg=rg)
+        self._enqueue_get(url=url, api_version=self._hybridcompute_api_version, handler=self._on_arc_page_response)
+
     def _enqueue_arcvm_list(self, rg='*'):
         if not rg or rg == '*':
             url = '/subscriptions/{subscriptionId}/providers/Microsoft.HybridCompute/machines'
@@ -324,6 +388,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             for vm_rg in self.get_option('include_vm_resource_groups'):
                 self._enqueue_vm_list(vm_rg)
 
+        for arc_rg in self.get_option('include_arc_resource_groups'):
+            self._enqueue_arc_list(arc_rg)
+
         for vm_rg in self.get_option('include_hcivm_resource_groups'):
             self._enqueue_arcvm_list(vm_rg)
 
@@ -339,6 +406,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         else:
             self._process_queue_serial()
 
+    def _populate(self, results):
         constructable_config_strict = boolean(self.get_option('fail_on_template_errors'))
         if self.get_option('hostvar_expressions') is not None:
             constructable_config_compose = self.get_option('hostvar_expressions')
@@ -349,25 +417,26 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
         constructable_hostnames = self.get_option('hostnames')
 
-        for h in self._hosts:
+        for h in results:
+            hostvars = h.get("hostvars")
             # FUTURE: track hostnames to warn if a hostname is repeated (can happen for legacy and for composed inventory_hostname)
             inventory_hostname = self._get_hostname(h, hostnames=constructable_hostnames, strict=constructable_config_strict)
-            if self._filter_exclude_host(inventory_hostname, h.hostvars):
+            if self._filter_exclude_host(inventory_hostname, hostvars):
                 continue
-            if not self._filter_include_host(inventory_hostname, h.hostvars):
+            if not self._filter_include_host(inventory_hostname, hostvars):
                 continue
             self.inventory.add_host(inventory_hostname)
             # FUTURE: configurable default IP list? can already do this via hostvar_expressions
             self.inventory.set_variable(inventory_hostname, "ansible_host",
-                                        next(chain(h.hostvars['public_ipv4_address'], h.hostvars['private_ipv4_addresses']), None))
-            for k, v in iteritems(h.hostvars):
+                                        next(chain(hostvars['public_ipv4_address'], hostvars['private_ipv4_addresses']), None))
+            for k, v in iteritems(hostvars):
                 # FUTURE: configurable hostvar prefix? Makes docs harder...
                 self.inventory.set_variable(inventory_hostname, k, v)
 
             # constructable delegation
-            self._set_composite_vars(constructable_config_compose, h.hostvars, inventory_hostname, strict=constructable_config_strict)
-            self._add_host_to_composed_groups(constructable_config_groups, h.hostvars, inventory_hostname, strict=constructable_config_strict)
-            self._add_host_to_keyed_groups(constructable_config_keyed_groups, h.hostvars, inventory_hostname, strict=constructable_config_strict)
+            self._set_composite_vars(constructable_config_compose, hostvars, inventory_hostname, strict=constructable_config_strict)
+            self._add_host_to_composed_groups(constructable_config_groups, hostvars, inventory_hostname, strict=constructable_config_strict)
+            self._add_host_to_keyed_groups(constructable_config_keyed_groups, hostvars, inventory_hostname, strict=constructable_config_strict)
 
     # FUTURE: fix underlying inventory stuff to allow us to quickly access known groupvars from reconciled host
     def _filter_host(self, filter, inventory_hostname, hostvars):
@@ -375,7 +444,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
         for condition in filter:
             # FUTURE: should warn/fail if conditional doesn't return True or False
-            conditional = "{{% if {0} %}} True {{% else %}} False {{% endif %}}".format(condition)
+            conditional = "{{% if {0} %}}true{{% else %}}false{{% endif %}}".format(condition)
+            if trust_as_template:
+                conditional = trust_as_template(conditional)
             try:
                 if boolean(self.templar.template(conditional)):
                     return True
@@ -398,9 +469,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
         for preference in hostnames:
             if preference == 'default':
-                return host.default_inventory_hostname
+                return host.get("default_inventory_hostname")
             try:
-                hostname = self._compose(preference, host.hostvars)
+                hostname = self._compose(preference, host.get("hostvars"))
             except Exception as e:  # pylint: disable=broad-except
                 if strict:
                     raise AnsibleError("Could not compose %s as hostnames - %s" % (preference, to_native(e)))
@@ -437,6 +508,15 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             for h in response['value']:
                 # FUTURE: add direct VM filtering by tag here (performance optimization)?
                 self._hosts.append(AzureHost(h, self, vmss=vmss, arcvm=arcvm, legacy_name=self._legacy_hostnames))
+
+    def _on_arc_page_response(self, response):
+        next_link = response.get('nextLink')
+
+        if next_link:
+            self._enqueue_get(url=next_link, api_version=self._hybridcompute_api_version, handler=self._on_arc_page_response)
+
+        for arcvm in response['value']:
+            self._hosts.append(ArcHost(arcvm, self, legacy_name=self._legacy_hostnames))
 
     def _on_arcvm_page_response(self, response):
         next_link = response.get('nextLink')
@@ -535,8 +615,6 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         url = '/batch'
         query_parameters = {'api-version': '2015-11-01'}
         header_parameters = {'x-ms-client-request-id': str(uuid.uuid4()), 'Content-Type': 'application/json; charset=utf-8'}
-        polling_timeout = 600
-        polling_interval = 30
         operation_config = {}
         body_content = dict(requests=batched_requests)
 
@@ -552,8 +630,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             poller = LROPoller(self.new_client,
                                PipelineResponse(None, response, None),
                                get_long_running_output,
-                               ARMPolling(polling_interval, **operation_config))
-            response = self.get_poller_result(poller, polling_timeout)
+                               ARMPolling(self._batch_fetch_interval, **operation_config))
+            response = self.get_poller_result(poller, self._batch_fetch_timeout)
             if hasattr(response, 'body'):
                 response = json.loads(response.body())
             elif hasattr(response, 'context'):
@@ -565,7 +643,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
     def get_poller_result(self, poller, timeout):
         try:
-            poller.wait(timeout=timeout)
+            while not poller.done():
+                poller.wait(timeout=timeout)
             return poller.result()
         except Exception as exc:
             raise
@@ -589,6 +668,75 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
 # VM list (all, N resource groups): VM -> InstanceView, N NICs, N PublicIPAddress)
 # VMSS VMs (all SS, N specific SS, N resource groups?): SS -> VM -> InstanceView, N NICs, N PublicIPAddress)
+
+
+class ArcHost(object):
+    def __init__(self, arc_model, inventory_client, legacy_name=False):
+        self._inventory_client = inventory_client
+        self._arc_model = arc_model
+        self._instanceview = self._arc_model
+        self._status = self._arc_model['properties'].get('status', {}).lower()  # 'Connected'
+        self._powerstate = self._status.replace('connected', 'running')
+
+        self._hostvars = {}
+
+        arc_name = self._arc_model['name']
+
+        if legacy_name:
+            self.default_inventory_hostname = arc_name
+        else:
+            # Azure often doesn't provide a globally-unique filename, so use resource name + a chunk of ID hash
+            self.default_inventory_hostname = '{0}_{1}'.format(arc_name, hashlib.sha1(to_bytes(arc_model['id'])).hexdigest()[0:4])
+
+    @property
+    def hostvars(self):
+        if self._hostvars != {}:
+            return self._hostvars
+
+        properties = self._arc_model.get('properties', {})
+        new_hostvars = dict(
+            network_interface=[],
+            mac_address=[],
+            ansible_all_ipv4_addresses=[],
+            ansible_all_ipv6_addresses=[],
+            public_ipv4_address=[],
+            private_ipv4_addresses=[],
+            public_dns_hostnames=[],
+            ansible_dns=[],
+            id=self._arc_model['id'],
+            location=self._arc_model['location'],
+            name=self._arc_model['name'],
+            default_inventory_hostname=self.default_inventory_hostname,
+            powerstate=self._powerstate,
+            status=self._status,
+            provisioning_state=properties.get('provisioningState', 'unknown').lower(),
+            vmid=self._arc_model['properties']['vmId'],
+            os_profile=dict(
+                sku=properties.get('osSku', 'unknown'),
+                system=properties.get('osType', 'unknown'),
+                version=properties.get('osVersion', 'unknown'),
+            ),
+            tags=self._arc_model.get('tags', {}),
+            resource_type=self._arc_model.get('type', "unknown"),
+            resource_group=parse_resource_id(self._arc_model['id']).get('resource_group').lower(),
+        )
+
+        for nic in properties.get('networkProfile', {}).get('networkInterfaces', []):
+            new_hostvars['mac_address'].append(nic.get('macAddress'))
+            new_hostvars['network_interface'].append(nic.get('name'))
+            for ipaddr in nic.get('ipAddresses', []):
+                ipAddressVersion = ipaddr.get('ipAddressVersion')
+                if ipAddressVersion == 'IPv4':
+                    ipv4_address = ipaddr.get('address')
+                    new_hostvars['ansible_all_ipv4_addresses'].append(ipv4_address)
+                    if IPAddress(ipv4_address).is_global():
+                        new_hostvars['public_ipv4_address'].append(ipv4_address)
+                    else:
+                        new_hostvars['private_ipv4_addresses'].append(ipv4_address)
+                if ipAddressVersion == 'IPv6':
+                    new_hostvars['ansible_all_ipv6_addresses'].append(ipaddr.get('address'))
+        self._hostvars = new_hostvars
+        return self._hostvars
 
 
 class AzureHost(object):
@@ -660,6 +808,7 @@ class AzureHost(object):
 
         new_hostvars = dict(
             network_interface=[],
+            network_interface_properties=[],
             mac_address=[],
             network_interface_id=[],
             security_group_id=[],
@@ -732,6 +881,8 @@ class AzureHost(object):
                 if nic._nic_model['properties'].get('networkSecurityGroup') else None
             new_hostvars['security_group'].append(parse_resource_id(nic._nic_model['properties']['networkSecurityGroup']['id'])['resource_name']) \
                 if nic._nic_model['properties'].get('networkSecurityGroup') else None
+
+            new_hostvars['network_interface_properties'].append(nic._nic_model)
 
         # set image and os_disk
         new_hostvars['image'] = {}

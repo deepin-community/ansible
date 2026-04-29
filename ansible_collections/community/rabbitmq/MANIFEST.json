@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "community",
   "name": "rabbitmq",
-  "version": "1.3.0",
+  "version": "1.6.0",
   "authors": [
    "Ansible (https://github.com/ansible)",
    "community.rabbitmq"
@@ -24,7 +24,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "e4a87617bfd273702d37e86b00a3e37f03b8242320e8ffa8f90d2f7b9b9cc975",
+  "chksum_sha256": "909b5a09f85e7880418acdae0cc4bd697458961338f4facaa27d8462a66ac8a3",
   "format": 1
  },
  "format": 1

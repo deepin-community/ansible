@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2022-2024, NetApp, Inc
+# (c) 2022-2025, NetApp, Inc
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -14,7 +14,7 @@ short_description: NetApp ONTAP S3 users
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: 21.20.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Create, delete, or modify S3 users on NetApp ONTAP.
 
@@ -61,30 +61,30 @@ notes:
 '''
 
 EXAMPLES = """
-    - name: create or modify s3 user
-      na_ontap_s3_users:
-        state: present
-        name: carchi8py
-        vserver: ansibleSVM
-        comment: not enabled
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: true
-        validate_certs: false
-        use_rest: always
+- name: Create or modify s3 user
+  netapp.ontap.na_ontap_s3_users:
+    state: present
+    name: carchi8py
+    vserver: ansibleSVM
+    comment: not enabled
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: false
+    use_rest: always
 
-    - name: delete s3 user
-      na_ontap_s3_users:
-        state: absent
-        name: carchi8py
-        vserver: ansibleSVM
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: true
-        validate_certs: false
-        use_rest: always
+- name: Delete s3 user
+  netapp.ontap.na_ontap_s3_users:
+    state: absent
+    name: carchi8py
+    vserver: ansibleSVM
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: false
+    use_rest: always
 """
 
 RETURN = """

@@ -138,6 +138,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -153,17 +154,16 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         spamfilter_mheader:
-          comment: <string>
-          entries:
-            -
-              action: <value in [spam, clear]>
-              fieldbody: <string>
-              fieldname: <string>
-              id: <integer>
-              pattern_type: <value in [wildcard, regexp]>
-              status: <value in [disable, enable]>
-          id: <integer>
-          name: <string>
+          id: 0 # Required variable, integer
+          # comment: <string>
+          # entries:
+          #   - action: <value in [spam, clear]>
+          #     fieldbody: <string>
+          #     fieldname: <string>
+          #     id: <integer>
+          #     pattern_type: <value in [wildcard, regexp]>
+          #     status: <value in [disable, enable]>
+          # name: <string>
 '''
 
 RETURN = '''

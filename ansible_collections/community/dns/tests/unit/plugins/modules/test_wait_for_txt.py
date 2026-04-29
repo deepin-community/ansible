@@ -6,28 +6,30 @@
 # Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 import pytest
-
-from ansible_collections.community.internal_test_tools.tests.unit.compat.mock import MagicMock, patch
-
+from ansible_collections.community.dns.plugins.modules import wait_for_txt
+from ansible_collections.community.internal_test_tools.tests.unit.compat.mock import (
+    MagicMock,
+    patch,
+)
 from ansible_collections.community.internal_test_tools.tests.unit.plugins.modules.utils import (
-    set_module_args,
-    ModuleTestCase,
     AnsibleExitJson,
     AnsibleFailJson,
+    ModuleTestCase,
+    set_module_args,
 )
-
-from ansible_collections.community.dns.plugins.modules import wait_for_txt
 
 from ..module_utils.resolver_helper import (
-    mock_resolver,
-    mock_query_udp,
     create_mock_answer,
     create_mock_response,
+    mock_query_udp,
+    mock_resolver,
 )
+
 
 # We need dnspython
 dns = pytest.importorskip('dns')
@@ -192,7 +194,7 @@ class TestWaitForTXT(ModuleTestCase):
                 with patch('dns.query.udp', mock_query_udp(udp_sequence)):
                     with patch('time.sleep', mock_sleep):
                         with pytest.raises(AnsibleExitJson) as exc:
-                            set_module_args({
+                            with set_module_args({
                                 'records': [
                                     {
                                         'name': 'www.example.com',
@@ -201,8 +203,8 @@ class TestWaitForTXT(ModuleTestCase):
                                         ]
                                     },
                                 ],
-                            })
-                            wait_for_txt.main()
+                            }):
+                                wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['changed'] is False
@@ -341,7 +343,7 @@ class TestWaitForTXT(ModuleTestCase):
                 with patch('dns.query.udp', mock_query_udp(udp_sequence)):
                     with patch('time.sleep', mock_sleep):
                         with pytest.raises(AnsibleExitJson) as exc:
-                            set_module_args({
+                            with set_module_args({
                                 'records': [
                                     {
                                         'name': 'www.example.com',
@@ -360,8 +362,8 @@ class TestWaitForTXT(ModuleTestCase):
                                     },
                                 ],
                                 'timeout': 10,
-                            })
-                            wait_for_txt.main()
+                            }):
+                                wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['changed'] is False
@@ -472,7 +474,7 @@ class TestWaitForTXT(ModuleTestCase):
                 with patch('dns.query.udp', mock_query_udp(udp_sequence)):
                     with patch('time.sleep', mock_sleep):
                         with pytest.raises(AnsibleExitJson) as exc:
-                            set_module_args({
+                            with set_module_args({
                                 'records': [
                                     {
                                         'name': 'example.com',
@@ -484,8 +486,8 @@ class TestWaitForTXT(ModuleTestCase):
                                         'mode': 'subset',
                                     },
                                 ],
-                            })
-                            wait_for_txt.main()
+                            }):
+                                wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['changed'] is False
@@ -620,7 +622,7 @@ class TestWaitForTXT(ModuleTestCase):
                 with patch('dns.query.udp', mock_query_udp(udp_sequence)):
                     with patch('time.sleep', mock_sleep):
                         with pytest.raises(AnsibleExitJson) as exc:
-                            set_module_args({
+                            with set_module_args({
                                 'records': [
                                     {
                                         'name': 'www.example.com',
@@ -639,8 +641,8 @@ class TestWaitForTXT(ModuleTestCase):
                                         'mode': 'superset',
                                     },
                                 ],
-                            })
-                            wait_for_txt.main()
+                            }):
+                                wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['changed'] is False
@@ -756,7 +758,7 @@ class TestWaitForTXT(ModuleTestCase):
                 with patch('dns.query.udp', mock_query_udp(udp_sequence)):
                     with patch('time.sleep', mock_sleep):
                         with pytest.raises(AnsibleExitJson) as exc:
-                            set_module_args({
+                            with set_module_args({
                                 'records': [
                                     {
                                         'name': 'example.com',
@@ -767,8 +769,8 @@ class TestWaitForTXT(ModuleTestCase):
                                         'mode': 'superset_not_empty',
                                     },
                                 ],
-                            })
-                            wait_for_txt.main()
+                            }):
+                                wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['changed'] is False
@@ -878,7 +880,7 @@ class TestWaitForTXT(ModuleTestCase):
                 with patch('dns.query.udp', mock_query_udp(udp_sequence)):
                     with patch('time.sleep', mock_sleep):
                         with pytest.raises(AnsibleExitJson) as exc:
-                            set_module_args({
+                            with set_module_args({
                                 'records': [
                                     {
                                         'name': 'example.com',
@@ -890,8 +892,8 @@ class TestWaitForTXT(ModuleTestCase):
                                         'mode': 'equals',
                                     },
                                 ],
-                            })
-                            wait_for_txt.main()
+                            }):
+                                wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['changed'] is False
@@ -1002,7 +1004,7 @@ class TestWaitForTXT(ModuleTestCase):
                 with patch('dns.query.udp', mock_query_udp(udp_sequence)):
                     with patch('time.sleep', mock_sleep):
                         with pytest.raises(AnsibleExitJson) as exc:
-                            set_module_args({
+                            with set_module_args({
                                 'records': [
                                     {
                                         'name': 'example.com',
@@ -1014,8 +1016,8 @@ class TestWaitForTXT(ModuleTestCase):
                                         'mode': 'equals_ordered',
                                     },
                                 ],
-                            })
-                            wait_for_txt.main()
+                            }):
+                                wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['changed'] is False
@@ -1155,7 +1157,7 @@ class TestWaitForTXT(ModuleTestCase):
                         with patch('ansible_collections.community.dns.plugins.modules.wait_for_txt.monotonic',
                                    mock_monotonic([0, 0.01, 1.2, 6.013, 7.41, 12.021])):
                             with pytest.raises(AnsibleFailJson) as exc:
-                                set_module_args({
+                                with set_module_args({
                                     'records': [
                                         {
                                             'name': 'www.example.com',
@@ -1174,8 +1176,8 @@ class TestWaitForTXT(ModuleTestCase):
                                         },
                                     ],
                                     'timeout': 12,
-                                })
-                                wait_for_txt.main()
+                                }):
+                                    wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['msg'] == 'Timeout (1 out of 2 check(s) passed).'
@@ -1273,7 +1275,7 @@ class TestWaitForTXT(ModuleTestCase):
                         with patch('ansible_collections.community.dns.plugins.modules.wait_for_txt.monotonic',
                                    mock_monotonic([0, 0.01, 1.2, 6.013])):
                             with pytest.raises(AnsibleFailJson) as exc:
-                                set_module_args({
+                                with set_module_args({
                                     'records': [
                                         {
                                             'name': 'www.example.com',
@@ -1283,8 +1285,8 @@ class TestWaitForTXT(ModuleTestCase):
                                         },
                                     ],
                                     'timeout': 2,
-                                })
-                                wait_for_txt.main()
+                                }):
+                                    wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['failed'] is True
@@ -1315,7 +1317,7 @@ class TestWaitForTXT(ModuleTestCase):
                 with patch('dns.query.udp', mock_query_udp(udp_sequence)):
                     with patch('time.sleep', mock_sleep):
                         with pytest.raises(AnsibleFailJson) as exc:
-                            set_module_args({
+                            with set_module_args({
                                 'records': [
                                     {
                                         'name': 'www.example.com',
@@ -1324,8 +1326,8 @@ class TestWaitForTXT(ModuleTestCase):
                                         ],
                                     },
                                 ],
-                            })
-                            wait_for_txt.main()
+                            }):
+                                wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['msg'] == 'Unexpected resolving error: Error SERVFAIL while querying 1.1.1.1 with query get NS for "com."'
@@ -1455,7 +1457,7 @@ class TestWaitForTXT(ModuleTestCase):
                 with patch('dns.query.udp', mock_query_udp(udp_sequence)):
                     with patch('time.sleep', mock_sleep):
                         with pytest.raises(AnsibleFailJson) as exc:
-                            set_module_args({
+                            with set_module_args({
                                 'records': [
                                     {
                                         'name': 'www.example.com',
@@ -1464,8 +1466,8 @@ class TestWaitForTXT(ModuleTestCase):
                                         ],
                                     },
                                 ],
-                            })
-                            wait_for_txt.main()
+                            }):
+                                wait_for_txt.main()
 
         print(exc.value.args[0])
         assert exc.value.args[0]['msg'] == 'Unexpected resolving error: Found CNAME loop starting at www.example.com'

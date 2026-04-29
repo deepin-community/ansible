@@ -1,6 +1,6 @@
 # Copyright: (c) 2024, Dell Technologies
 
-# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """Unit Tests for info module on PowerFlex"""
 
@@ -24,6 +24,7 @@ from ansible_collections.dellemc.powerflex.tests.unit.plugins.module_utils.mock_
 utils.get_logger = MagicMock()
 utils.get_powerflex_gateway_host_connection = MagicMock()
 utils.PowerFlexClient = MagicMock()
+utils.filter_response = MagicMock()
 
 from ansible.module_utils import basic
 basic.AnsibleModule = MagicMock()
@@ -358,7 +359,6 @@ class TestPowerflexInfo():
             "gather_subset": ['sds']
         })
         info_module_mock.module.params = self.get_module_args
-        sds_resp = MockInfoApi.INFO_SDS_GET_LIST
         info_module_mock.powerflex_conn.sds.get = MagicMock(
             side_effect=MockApiException
         )
@@ -399,7 +399,6 @@ class TestPowerflexInfo():
             "gather_subset": ['protection_domain']
         })
         info_module_mock.module.params = self.get_module_args
-        pd_resp = MockInfoApi.INFO_GET_PD_LIST
         info_module_mock.powerflex_conn.protection_domain.get = MagicMock(
             side_effect=MockApiException
         )
@@ -440,7 +439,6 @@ class TestPowerflexInfo():
             "gather_subset": ['device']
         })
         info_module_mock.module.params = self.get_module_args
-        device_resp = MockInfoApi.INFO_GET_DEVICE_LIST
         info_module_mock.powerflex_conn.device.get = MagicMock(
             side_effect=MockApiException
         )
@@ -467,7 +465,6 @@ class TestPowerflexInfo():
             "gather_subset": ['fault_set']
         })
         info_module_mock.module.params = self.get_module_args
-        fault_set_resp = MockInfoApi.INFO_GET_FAULT_SET_LIST
         info_module_mock.powerflex_conn.fault_set.get = MagicMock(
             side_effect=MockApiException
         )
@@ -484,7 +481,6 @@ class TestPowerflexInfo():
             }]
         })
         info_module_mock.module.params = self.get_module_args
-        fault_set_resp = MockInfoApi.INFO_GET_FAULT_SET_LIST
         self.capture_fail_json_call(MockInfoApi.get_exception_response(
             'invalid_filter_operator_exception'), info_module_mock)
 
@@ -493,7 +489,6 @@ class TestPowerflexInfo():
             "gather_subset": ['fault_set']
         })
         info_module_mock.module.params = self.get_module_args
-        fault_set_resp = MockInfoApi.INFO_GET_FAULT_SET_LIST
         info_module_mock.powerflex_conn.system.api_version = MagicMock(
             side_effect=MockApiException
         )
@@ -505,7 +500,6 @@ class TestPowerflexInfo():
             "gather_subset": ['fault_set']
         })
         info_module_mock.module.params = self.get_module_args
-        fault_set_resp = MockInfoApi.INFO_GET_FAULT_SET_LIST
         info_module_mock.powerflex_conn.system.get = MagicMock(
             side_effect=MockApiException
         )
@@ -625,3 +619,97 @@ class TestPowerflexInfo():
         )
         self.capture_fail_json_call(MockInfoApi.get_exception_response(
             'firmware_repository_get_error'), info_module_mock)
+
+    def test_get_nvme_host_details(self, info_module_mock):
+        self.get_module_args.update({
+            "gather_subset": ['nvme_host']
+        })
+        info_module_mock.module.params = self.get_module_args
+        nvme_host_resp = MockInfoApi.INFO_NVME_HOST_LIST
+        info_module_mock.powerflex_conn.sdc.get = MagicMock(
+            return_value=nvme_host_resp
+        )
+        info_module_mock.perform_module_operation()
+        info_module_mock.powerflex_conn.sdc.get.assert_called()
+
+    def test_get_nvme_host_details_filter(self, info_module_mock):
+        self.get_module_args.update({
+            "gather_subset": ['nvme_host'],
+            "filters": [{
+                "filter_key": "name",
+                "filter_operator": "equal",
+                "filter_value": "fake_host_name_1"
+            }]
+        })
+        info_module_mock.module.params = self.get_module_args
+        nvme_host_resp = MockInfoApi.INFO_SDC_FILTER_LIST
+        info_module_mock.powerflex_conn.sdc.get = MagicMock(
+            return_value=nvme_host_resp
+        )
+        info_module_mock.perform_module_operation()
+        info_module_mock.powerflex_conn.sdc.get.assert_called()
+
+    def test_get_nvme_host_details_exception(self, info_module_mock):
+        self.get_module_args.update({
+            "gather_subset": ['nvme_host']
+        })
+        info_module_mock.module.params = self.get_module_args
+        info_module_mock.powerflex_conn.sdc.get = MagicMock(
+            side_effect=MockApiException
+        )
+        self.capture_fail_json_call(MockInfoApi.get_exception_response(
+            'nvme_host_get_details'), info_module_mock)
+
+    def test_get_sdt_details(self, info_module_mock):
+        self.get_module_args.update({
+            "gather_subset": ['sdt']
+        })
+        info_module_mock.module.params = self.get_module_args
+        info_module_mock.powerflex_conn.sdt.get = MagicMock(
+            return_value=MockInfoApi.INFO_GET_SDT_LIST
+        )
+        info_module_mock.powerflex_conn.sdc.get = MagicMock(
+            return_value=MockInfoApi.INFO_GET_SDT_NVME_HOST_LIST
+        )
+        info_module_mock.powerflex_conn.host.get_related = MagicMock(
+            return_value=MockInfoApi.INFO_GET_SDT_NVME_CONTROLLER_LIST
+        )
+        info_module_mock.perform_module_operation()
+        info_module_mock.powerflex_conn.sdt.get.assert_called()
+        info_module_mock.powerflex_conn.sdc.get.assert_called()
+        info_module_mock.powerflex_conn.host.get_related.assert_called()
+
+    def test_get_sdt_details_filter(self, info_module_mock):
+        self.get_module_args.update({
+            "gather_subset": ['sdt'],
+            "filters": [{
+                "filter_key": "name",
+                "filter_operator": "equal",
+                "filter_value": "sdt-name",
+            }]
+        })
+        info_module_mock.module.params = self.get_module_args
+        info_module_mock.powerflex_conn.sdt.get = MagicMock(
+            return_value=MockInfoApi.INFO_GET_SDT_LIST
+        )
+        info_module_mock.powerflex_conn.sdc.get = MagicMock(
+            return_value=MockInfoApi.INFO_GET_SDT_NVME_HOST_LIST
+        )
+        info_module_mock.powerflex_conn.host.get_related = MagicMock(
+            return_value=MockInfoApi.INFO_GET_SDT_NVME_CONTROLLER_LIST
+        )
+        info_module_mock.perform_module_operation()
+        info_module_mock.powerflex_conn.sdt.get.assert_called()
+        info_module_mock.powerflex_conn.sdc.get.assert_called()
+        info_module_mock.powerflex_conn.host.get_related.assert_called()
+
+    def test_get_sdt_details_exception(self, info_module_mock):
+        self.get_module_args.update({
+            "gather_subset": ['sdt']
+        })
+        info_module_mock.module.params = self.get_module_args
+        info_module_mock.powerflex_conn.sdc.get = MagicMock(
+            side_effect=MockApiException
+        )
+        self.capture_fail_json_call(MockInfoApi.get_exception_response(
+            'sdt_get_error'), info_module_mock)

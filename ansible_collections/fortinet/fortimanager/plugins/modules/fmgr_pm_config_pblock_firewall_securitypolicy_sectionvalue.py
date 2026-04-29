@@ -114,6 +114,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -131,8 +132,8 @@ EXAMPLES = '''
         security_policy: <your own value>
         state: present # <value in [present, absent]>
         pm_config_pblock_firewall_securitypolicy_sectionvalue:
-          attr: <value in [label, global-label]>
-          name: <string>
+          # attr: <value in [label, global-label]>
+          # name: <string>
 '''
 
 RETURN = '''
@@ -193,14 +194,14 @@ def main():
         'security_policy': {'type': 'str'},
         'pm_config_pblock_firewall_securitypolicy_sectionvalue': {
             'type': 'dict',
-            'v_range': [['7.0.3', '7.2.2'], ['7.2.4', '7.2.4'], ['7.2.6', '7.2.8'], ['7.4.2', '']],
+            'v_range': [['7.0.3', '7.2.2'], ['7.2.4', '7.2.4'], ['7.2.6', '7.2.9'], ['7.4.2', '']],
             'options': {
                 'attr': {
-                    'v_range': [['7.0.3', '7.2.2'], ['7.2.4', '7.2.4'], ['7.2.6', '7.2.8'], ['7.4.2', '']],
+                    'v_range': [['7.0.3', '7.2.2'], ['7.2.4', '7.2.4'], ['7.2.6', '7.2.9'], ['7.4.2', '']],
                     'choices': ['label', 'global-label'],
                     'type': 'str'
                 },
-                'name': {'v_range': [['7.0.3', '7.2.2'], ['7.2.4', '7.2.4'], ['7.2.6', '7.2.8'], ['7.4.2', '']], 'type': 'str'}
+                'name': {'v_range': [['7.0.3', '7.2.2'], ['7.2.4', '7.2.4'], ['7.2.6', '7.2.9'], ['7.4.2', '']], 'type': 'str'}
             }
         }
     }

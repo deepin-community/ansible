@@ -4,9 +4,13 @@ ansible source: source-is-missing [ansible_collections/containers/podman/docs/*.
 # Yep. It doesn't. And it won't. That's not how ansible works.
 ansible source: package-does-not-install-examples [ansible_collections/*]
 
-# Scheduled for removal in Ansible 12:
-# https://github.com/ansible-community/ansible-build-data/pull/464
-ansible source: uses-deprecated-python-stdlib distutils * [ansible_collections/sensu/sensu_go/*]
-
 # No.
 ansible source: maintainer-manual-page [debian/man/ansible-community.1]
+
+# A lot of these are backwards-compatible switch statements to allow running on
+# older Python releases
+ansible source: uses-deprecated-python-stdlib *
+
+# "disabled-on-ci" is a custom restriction to let DDs run tests locally by
+# skipping that restriction, while salsa-ci and debci skip those tests.
+ansible source: unknown-runtime-tests-restriction disabled-on-ci [debian/tests/control:*]

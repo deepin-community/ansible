@@ -447,12 +447,24 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            vrf_select:
+                aliases: ['vrf-select']
+                type: int
+                description: VRF ID used for connection to server.
+            subscribe_update_notification:
+                aliases: ['subscribe-update-notification']
+                type: str
+                description: Enable/disable subscription to receive update notification from FortiGuard.
+                choices:
+                    - 'disable'
+                    - 'enable'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -467,84 +479,86 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         system_fortiguard:
-          antispam_cache: <value in [disable, enable]>
-          antispam_cache_mpercent: <integer>
-          antispam_cache_ttl: <integer>
-          antispam_expiration: <integer>
-          antispam_force_off: <value in [disable, enable]>
-          antispam_license: <integer>
-          antispam_timeout: <integer>
-          auto_join_forticloud: <value in [disable, enable]>
-          ddns_server_ip: <string>
-          ddns_server_port: <integer>
-          load_balance_servers: <integer>
-          outbreak_prevention_cache: <value in [disable, enable]>
-          outbreak_prevention_cache_mpercent: <integer>
-          outbreak_prevention_cache_ttl: <integer>
-          outbreak_prevention_expiration: <integer>
-          outbreak_prevention_force_off: <value in [disable, enable]>
-          outbreak_prevention_license: <integer>
-          outbreak_prevention_timeout: <integer>
-          port: <value in [53, 80, 8888, ...]>
-          sdns_server_ip: <list or string>
-          sdns_server_port: <integer>
-          service_account_id: <string>
-          source_ip: <string>
-          source_ip6: <string>
-          update_server_location: <value in [any, usa, automatic, ...]>
-          webfilter_cache: <value in [disable, enable]>
-          webfilter_cache_ttl: <integer>
-          webfilter_expiration: <integer>
-          webfilter_force_off: <value in [disable, enable]>
-          webfilter_license: <integer>
-          webfilter_timeout: <integer>
-          protocol: <value in [udp, http, https]>
-          proxy_password: <list or string>
-          proxy_server_ip: <string>
-          proxy_server_port: <integer>
-          proxy_username: <string>
-          sandbox_region: <string>
-          avquery_cache_ttl: <integer>
-          avquery_timeout: <integer>
-          avquery_cache: <value in [disable, enable]>
-          avquery_cache_mpercent: <integer>
-          avquery_license: <integer>
-          avquery_force_off: <value in [disable, enable]>
-          fortiguard_anycast: <value in [disable, enable]>
-          fortiguard_anycast_source: <value in [fortinet, aws, debug]>
-          interface: <string>
-          interface_select_method: <value in [auto, sdwan, specify]>
-          sdns_options:
-            - "include-question-section"
-          anycast_sdns_server_ip: <string>
-          anycast_sdns_server_port: <integer>
-          persistent_connection: <value in [disable, enable]>
-          update_build_proxy: <value in [disable, enable]>
-          update_extdb: <value in [disable, enable]>
-          update_ffdb: <value in [disable, enable]>
-          update_uwdb: <value in [disable, enable]>
-          videofilter_expiration: <integer>
-          videofilter_license: <integer>
-          ddns_server_ip6: <string>
-          vdom: <string>
-          auto_firmware_upgrade: <value in [disable, enable]>
-          auto_firmware_upgrade_day:
-            - "sunday"
-            - "monday"
-            - "tuesday"
-            - "wednesday"
-            - "thursday"
-            - "friday"
-            - "saturday"
-          auto_firmware_upgrade_end_hour: <integer>
-          auto_firmware_upgrade_start_hour: <integer>
-          sandbox_inline_scan: <value in [disable, enable]>
-          auto_firmware_upgrade_delay: <integer>
-          gui_prompt_auto_upgrade: <value in [disable, enable]>
-          FDS_license_expiring_days: <integer>
-          antispam_cache_mpermille: <integer>
-          outbreak_prevention_cache_mpermille: <integer>
-          update_dldb: <value in [disable, enable]>
+          # antispam_cache: <value in [disable, enable]>
+          # antispam_cache_mpercent: <integer>
+          # antispam_cache_ttl: <integer>
+          # antispam_expiration: <integer>
+          # antispam_force_off: <value in [disable, enable]>
+          # antispam_license: <integer>
+          # antispam_timeout: <integer>
+          # auto_join_forticloud: <value in [disable, enable]>
+          # ddns_server_ip: <string>
+          # ddns_server_port: <integer>
+          # load_balance_servers: <integer>
+          # outbreak_prevention_cache: <value in [disable, enable]>
+          # outbreak_prevention_cache_mpercent: <integer>
+          # outbreak_prevention_cache_ttl: <integer>
+          # outbreak_prevention_expiration: <integer>
+          # outbreak_prevention_force_off: <value in [disable, enable]>
+          # outbreak_prevention_license: <integer>
+          # outbreak_prevention_timeout: <integer>
+          # port: <value in [53, 80, 8888, ...]>
+          # sdns_server_ip: <list or string>
+          # sdns_server_port: <integer>
+          # service_account_id: <string>
+          # source_ip: <string>
+          # source_ip6: <string>
+          # update_server_location: <value in [any, usa, automatic, ...]>
+          # webfilter_cache: <value in [disable, enable]>
+          # webfilter_cache_ttl: <integer>
+          # webfilter_expiration: <integer>
+          # webfilter_force_off: <value in [disable, enable]>
+          # webfilter_license: <integer>
+          # webfilter_timeout: <integer>
+          # protocol: <value in [udp, http, https]>
+          # proxy_password: <list or string>
+          # proxy_server_ip: <string>
+          # proxy_server_port: <integer>
+          # proxy_username: <string>
+          # sandbox_region: <string>
+          # avquery_cache_ttl: <integer>
+          # avquery_timeout: <integer>
+          # avquery_cache: <value in [disable, enable]>
+          # avquery_cache_mpercent: <integer>
+          # avquery_license: <integer>
+          # avquery_force_off: <value in [disable, enable]>
+          # fortiguard_anycast: <value in [disable, enable]>
+          # fortiguard_anycast_source: <value in [fortinet, aws, debug]>
+          # interface: <string>
+          # interface_select_method: <value in [auto, sdwan, specify]>
+          # sdns_options:
+          #   - "include-question-section"
+          # anycast_sdns_server_ip: <string>
+          # anycast_sdns_server_port: <integer>
+          # persistent_connection: <value in [disable, enable]>
+          # update_build_proxy: <value in [disable, enable]>
+          # update_extdb: <value in [disable, enable]>
+          # update_ffdb: <value in [disable, enable]>
+          # update_uwdb: <value in [disable, enable]>
+          # videofilter_expiration: <integer>
+          # videofilter_license: <integer>
+          # ddns_server_ip6: <string>
+          # vdom: <string>
+          # auto_firmware_upgrade: <value in [disable, enable]>
+          # auto_firmware_upgrade_day:
+          #   - "sunday"
+          #   - "monday"
+          #   - "tuesday"
+          #   - "wednesday"
+          #   - "thursday"
+          #   - "friday"
+          #   - "saturday"
+          # auto_firmware_upgrade_end_hour: <integer>
+          # auto_firmware_upgrade_start_hour: <integer>
+          # sandbox_inline_scan: <value in [disable, enable]>
+          # auto_firmware_upgrade_delay: <integer>
+          # gui_prompt_auto_upgrade: <value in [disable, enable]>
+          # FDS_license_expiring_days: <integer>
+          # antispam_cache_mpermille: <integer>
+          # outbreak_prevention_cache_mpermille: <integer>
+          # update_dldb: <value in [disable, enable]>
+          # vrf_select: <integer>
+          # subscribe_update_notification: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -675,11 +689,13 @@ def main():
                 'auto-firmware-upgrade-start-hour': {'v_range': [['7.2.1', '']], 'type': 'int'},
                 'sandbox-inline-scan': {'v_range': [['7.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'auto-firmware-upgrade-delay': {'v_range': [['7.2.4', '']], 'type': 'int'},
-                'gui-prompt-auto-upgrade': {'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'gui-prompt-auto-upgrade': {'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'FDS-license-expiring-days': {'v_range': [['7.4.0', '']], 'type': 'int'},
                 'antispam-cache-mpermille': {'v_range': [['7.4.0', '']], 'type': 'int'},
                 'outbreak-prevention-cache-mpermille': {'v_range': [['7.4.0', '']], 'type': 'int'},
-                'update-dldb': {'v_range': [['7.4.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'update-dldb': {'v_range': [['7.4.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'vrf-select': {'v_range': [['7.6.2', '']], 'type': 'int'},
+                'subscribe-update-notification': {'v_range': [['7.6.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }
         }
     }

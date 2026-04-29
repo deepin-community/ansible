@@ -122,6 +122,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -138,11 +139,11 @@ EXAMPLES = '''
         interface: <your own value>
         state: present # <value in [present, absent]>
         dynamic_interface_platformmapping:
-          egress_shaping_profile: <list or string>
-          ingress_shaping_profile: <list or string>
-          intf_zone: <string>
-          intrazone_deny: <value in [disable, enable]>
-          name: <string>
+          name: "your value" # Required variable, string
+          # egress_shaping_profile: <list or string>
+          # ingress_shaping_profile: <list or string>
+          # intf_zone: <string>
+          # intrazone_deny: <value in [disable, enable]>
 '''
 
 RETURN = '''

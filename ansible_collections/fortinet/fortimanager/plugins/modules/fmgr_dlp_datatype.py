@@ -145,6 +145,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -160,19 +161,19 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         dlp_datatype:
-          comment: <string>
-          look_ahead: <integer>
-          look_back: <integer>
-          name: <string>
-          pattern: <string>
-          transform: <string>
-          verify: <string>
-          verify_transformed_pattern: <value in [disable, enable]>
-          match_around: <string>
-          match_ahead: <integer>
-          match_back: <integer>
-          verify2: <string>
-          fgd_id: <integer>
+          name: "your value" # Required variable, string
+          # comment: <string>
+          # look_ahead: <integer>
+          # look_back: <integer>
+          # pattern: <string>
+          # transform: <string>
+          # verify: <string>
+          # verify_transformed_pattern: <value in [disable, enable]>
+          # match_around: <string>
+          # match_ahead: <integer>
+          # match_back: <integer>
+          # verify2: <string>
+          # fgd_id: <integer>
 '''
 
 RETURN = '''

@@ -14,6 +14,10 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: vmware_cluster_ha
+deprecated:
+  removed_in: 7.0.0
+  why: This module has been moved to the L(new vmware.vmware collection,https://forum.ansible.com/t/5880)
+  alternative: Use M(vmware.vmware.cluster_ha) instead.
 short_description: Manage High Availability (HA) on VMware vSphere clusters
 description:
     - Manages HA configuration on VMware vSphere clusters.
@@ -252,10 +256,10 @@ from ansible_collections.community.vmware.plugins.module_utils.vmware import (
     PyVmomi,
     TaskError,
     find_datacenter_by_name,
-    vmware_argument_spec,
     wait_for_task,
     option_diff,
 )
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 from ansible.module_utils._text import to_native
 
 
@@ -468,7 +472,7 @@ class VMwareCluster(PyVmomi):
 
 
 def main():
-    argument_spec = vmware_argument_spec()
+    argument_spec = base_argument_spec()
     argument_spec.update(dict(
         cluster_name=dict(type='str', required=True),
         datacenter=dict(type='str', required=True, aliases=['datacenter_name']),

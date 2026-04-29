@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "google",
   "name": "cloud",
-  "version": "1.4.1",
+  "version": "1.7.0",
   "authors": [
    "Google <alexstephen@google.com>",
    "Google <hawk@google.com>"
@@ -30,7 +30,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "e65223e88c1c98b65d24e791684681997554bfef7311e6b4f345c3676efc00d3",
+  "chksum_sha256": "31a5f5eb261063d553fc505c8713f6f2070213aad726cbb7fd49debad31be99e",
   "format": 1
  },
  "format": 1

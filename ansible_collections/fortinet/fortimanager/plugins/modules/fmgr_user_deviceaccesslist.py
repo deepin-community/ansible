@@ -124,6 +124,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -139,13 +140,12 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         user_deviceaccesslist:
-          default_action: <value in [deny, accept]>
-          device_list:
-            -
-              action: <value in [deny, accept]>
-              device: <string>
-              id: <integer>
-          name: <string>
+          name: "your value" # Required variable, string
+          # default_action: <value in [deny, accept]>
+          # device_list:
+          #   - action: <value in [deny, accept]>
+          #     device: <string>
+          #     id: <integer>
 '''
 
 RETURN = '''

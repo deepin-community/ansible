@@ -102,6 +102,7 @@ All modules are idempotent with the exception of modules that change or set pass
 - purefb_banner - manage FlashBlade login banner
 - purefb_bladename - manage FlashBlade name
 - purefb_bucket - manage S3 buckets on a FlashBlade
+- purefb_bucket_access - manage S3 bucket access policies on a FlashBlade
 - purefb_bucket_replica - manage bucket replica links on a FlashBlade
 - purefb_certgrp - manage FlashBlade certificate groups
 - purefb_certs - manage FlashBlade SSL certificates
@@ -110,6 +111,7 @@ All modules are idempotent with the exception of modules that change or set pass
 - purefb_ds - manage Directory Services settings on a FlashBlade
 - purefb_dsrole - manage Directory Service Roles on a FlashBlade
 - purefb_eula - manage EULA on FlashBlade
+- purefb_fleet - manage Fusion fleet members
 - purefb_fs - manage filesystems on a FlashBlade
 - purefb_fs_replica - manage filesystem replica links on a FlashBlade
 - purefb_groupquota - manage individual group quotas on FlashBlade filesystems
@@ -131,6 +133,7 @@ All modules are idempotent with the exception of modules that change or set pass
 - purefb_s3acc - manage the object store accounts on a FlashBlade
 - purefb_s3user - manage the object atore users on a FlashBlade
 - purefb_saml - manage FlashBlade SAML2 service and identity providers
+- purefb_server - manage FlashBlade servers
 - purefb_smtp - manage SMTP settings on a FlashBlade
 - purefb_snap - manage filesystem snapshots on a FlashBlade
 - purefb_snmp_agent - modify the FlashBlade SNMP Agent

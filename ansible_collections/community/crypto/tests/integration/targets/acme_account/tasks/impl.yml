@@ -4,21 +4,21 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 - block:
-  - name: Generate account keys
-    openssl_privatekey:
-      path: "{{ remote_tmp_dir }}/{{ item.name }}.pem"
-      passphrase: "{{ item.pass | default(omit) | default(omit, true) }}"
-      type: ECC
-      curve: secp256r1
-      force: true
-    loop: "{{ account_keys }}"
+    - name: Generate account keys
+      community.crypto.openssl_privatekey:
+        path: "{{ remote_tmp_dir }}/{{ item.name }}.pem"
+        passphrase: "{{ item.pass | default(omit) | default(omit, true) }}"
+        type: ECC
+        curve: secp256r1
+        force: true
+      loop: "{{ account_keys }}"
 
-  - name: Parse account keys (to ease debugging some test failures)
-    openssl_privatekey_info:
-      path: "{{ remote_tmp_dir }}/{{ item.name }}.pem"
-      passphrase: "{{ item.pass | default(omit) | default(omit, true) }}"
-      return_private_key_data: true
-    loop: "{{ account_keys }}"
+    - name: Parse account keys (to ease debugging some test failures)
+      community.crypto.openssl_privatekey_info:
+        path: "{{ remote_tmp_dir }}/{{ item.name }}.pem"
+        passphrase: "{{ item.pass | default(omit) | default(omit, true) }}"
+        return_private_key_data: true
+      loop: "{{ account_keys }}"
 
   vars:
     account_keys:
@@ -30,11 +30,11 @@
       - name: accountkey5
 
 - name: Do not try to create account
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     allow_creation: false
@@ -42,103 +42,103 @@
   register: account_not_created
 
 - name: Create it now (check mode, diff)
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     allow_creation: true
     terms_agreed: true
     contact:
-    - mailto:example@example.org
+      - mailto:example@example.org
   check_mode: true
   diff: true
   register: account_created_check
 
 - name: Create it now
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     allow_creation: true
     terms_agreed: true
     contact:
-    - mailto:example@example.org
+      - mailto:example@example.org
   register: account_created
 
 - name: Create it now (idempotent)
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     allow_creation: true
     terms_agreed: true
     contact:
-    - mailto:example@example.org
+      - mailto:example@example.org
   register: account_created_idempotent
 
 - name: Read account key
-  slurp:
+  ansible.builtin.slurp:
     src: '{{ remote_tmp_dir }}/accountkey.pem'
   register: slurp
 
 - name: Change email address (check mode, diff)
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_content: "{{ slurp.content | b64decode }}"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     # allow_creation: false
     contact:
-    - mailto:example@example.com
+      - mailto:example@example.com
   check_mode: true
   diff: true
   register: account_modified_check
 
 - name: Change email address
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_content: "{{ slurp.content | b64decode }}"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     # allow_creation: false
     contact:
-    - mailto:example@example.com
+      - mailto:example@example.com
   register: account_modified
 
 - name: Change email address (idempotent)
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     account_uri: "{{ account_created.account_uri }}"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     # allow_creation: false
     contact:
-    - mailto:example@example.com
+      - mailto:example@example.com
   register: account_modified_idempotent
 
 - name: Cannot access account with wrong URI
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     account_uri: "{{ account_created.account_uri ~ '12345thisdoesnotexist' }}"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     contact: []
@@ -146,11 +146,11 @@
   register: account_modified_wrong_uri
 
 - name: Clear contact email addresses (check mode, diff)
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     # allow_creation: false
@@ -160,11 +160,11 @@
   register: account_modified_2_check
 
 - name: Clear contact email addresses
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     # allow_creation: false
@@ -172,11 +172,11 @@
   register: account_modified_2
 
 - name: Clear contact email addresses (idempotent)
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     # allow_creation: false
@@ -184,42 +184,42 @@
   register: account_modified_2_idempotent
 
 - name: Change account key (check mode, diff)
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     new_account_key_src: "{{ remote_tmp_dir }}/accountkey2.pem"
     new_account_key_passphrase: "{{ 'hunter2' if select_crypto_backend != 'openssl' else omit }}"
     state: changed_key
     contact:
-    - mailto:example@example.com
+      - mailto:example@example.com
   check_mode: true
   diff: true
   register: account_change_key_check
 
 - name: Change account key
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     new_account_key_src: "{{ remote_tmp_dir }}/accountkey2.pem"
     new_account_key_passphrase: "{{ 'hunter2' if select_crypto_backend != 'openssl' else omit }}"
     state: changed_key
     contact:
-    - mailto:example@example.com
+      - mailto:example@example.com
   register: account_change_key
 
 - name: Deactivate account (check mode, diff)
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey2.pem"
     account_key_passphrase: "{{ 'hunter2' if select_crypto_backend != 'openssl' else omit }}"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: absent
   check_mode: true
@@ -227,34 +227,34 @@
   register: account_deactivate_check
 
 - name: Deactivate account
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey2.pem"
     account_key_passphrase: "{{ 'hunter2' if select_crypto_backend != 'openssl' else omit }}"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: absent
   register: account_deactivate
 
 - name: Deactivate account (idempotent)
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey2.pem"
     account_key_passphrase: "{{ 'hunter2' if select_crypto_backend != 'openssl' else omit }}"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: absent
   register: account_deactivate_idempotent
 
 - name: Do not try to create account II
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey2.pem"
     account_key_passphrase: "{{ 'hunter2' if select_crypto_backend != 'openssl' else omit }}"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     allow_creation: false
@@ -262,11 +262,11 @@
   register: account_not_created_2
 
 - name: Do not try to create account III
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/accountkey.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     allow_creation: false
@@ -274,17 +274,17 @@
   register: account_not_created_3
 
 - name: Create account with External Account Binding
-  acme_account:
+  community.crypto.acme_account:
     select_crypto_backend: "{{ select_crypto_backend }}"
     account_key_src: "{{ remote_tmp_dir }}/{{ item.account }}.pem"
     acme_version: 2
-    acme_directory: https://{{ acme_host }}:14000/dir
+    acme_directory: "{{ acme_directory_url }}"
     validate_certs: false
     state: present
     allow_creation: true
     terms_agreed: true
     contact:
-    - mailto:example@example.org
+      - mailto:example@example.org
     external_account_binding:
       kid: "{{ item.kid }}"
       alg: "{{ item.alg }}"
@@ -304,4 +304,4 @@
       kid: kid-3
       alg: HS512
       key: zWNDZM6eQGHWpSRTPal5eIUYFTu7EajVIoguysqZ9wG44nMEtx3MUAsUDkMTQ12W
-- debug: var=account_created_eab
+- ansible.builtin.debug: var=account_created_eab

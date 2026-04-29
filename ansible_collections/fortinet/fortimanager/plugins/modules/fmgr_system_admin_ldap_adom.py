@@ -100,6 +100,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -115,7 +116,7 @@ EXAMPLES = '''
         ldap: <your own value>
         state: present # <value in [present, absent]>
         system_admin_ldap_adom:
-          adom_name: <string>
+          adom_name: "your value" # Required variable, string
 '''
 
 RETURN = '''

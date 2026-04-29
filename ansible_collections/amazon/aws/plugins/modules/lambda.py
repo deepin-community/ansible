@@ -629,8 +629,6 @@ def main():
         ["image_uri", "s3_object_version"],
     ]
 
-    required_by = {"runtime": ["handler"]}
-
     required_together = [
         ["s3_key", "s3_bucket"],
         ["vpc_subnet_ids", "vpc_security_group_ids"],
@@ -668,7 +666,6 @@ def main():
     tags = module.params.get("tags")
     purge_tags = module.params.get("purge_tags")
     kms_key_arn = module.params.get("kms_key_arn")
-    architectures = module.params.get("architecture")
     image_uri = module.params.get("image_uri")
     layers = []
 
@@ -808,6 +805,9 @@ def main():
             module.fail_json(msg="Unable to get function information after updating")
         response = format_response(response)
         # We're done
+        # "ZipFile" attribute contains non UTF-8 data. Ansible considers it an error
+        # starting with version 2.18. Removing it from the output avoids the error.
+        code_kwargs.pop("ZipFile", None)
         module.exit_json(changed=changed, code_kwargs=code_kwargs, func_kwargs=func_kwargs, **response)
 
     # Function doesn't exist, create new Lambda function

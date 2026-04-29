@@ -1,3 +1,86 @@
+ansible (12.0.0+dfsg-0+deb13u1) trixie; urgency=medium
+
+  * d/watch: Track 12.0.x releases for trixie
+  * New upstream version 12.0.0+dfsg, providing following security fixes:
+    - cloudscale_ch.cloud: Validate API tokens before passing them to Ansible,
+      to ensure that a badly formed one (i.e., one with newlines) is not
+      accidentally logged.
+    - community.general: keycloak_authentication - API calls did not properly
+      set the priority during update resulting in incorrectly sorted
+      authentication flows.
+    - community.general: keycloak_client - Sanitize saml.encryption.private.key
+      so it does not show in the logs
+  * Remove cloud-common-flaky-test.patch (dropped upstream)
+  * security fix: prevent keycloak_user from logging credentials (backported
+    from ansible 12.2.0)
+
+ -- Lee Garrett <debian@rocketjump.eu>  Fri, 28 Nov 2025 16:56:02 +0100
+
+ansible (12.0.0~b5+dfsg-0+deb13u1) trixie; urgency=medium
+
+  * New upstream version 12.0.0~b5+dfsg
+  * Update debian/gbp.conf to track trixie branches
+  * Change gbp upstream tag as long as upstream version in trixie and sid match
+  * Update debian/watch to also catch beta releases
+  * Drop community hashi-vault patches (applied upstream)
+  * Add 12 previously failing collection CI tests to autopkgtest
+
+ -- Lee Garrett <debian@rocketjump.eu>  Wed, 27 Aug 2025 11:54:39 +0200
+
+ansible (12.0.0~a6+dfsg-1) unstable; urgency=medium
+
+  * New upstream version 12.0.0~a6+dfsg
+  * Drop 0002-fix-libvirt-encoding-errors-on-windows-guests.patch (applied
+    upstream)
+  * d/copyright: Remove file exclusion (fixed upstream)
+  * d/control: Remove Breaks/Replaces on ansible-base
+  * d/control: Bump ansible-core version dependency
+  * Update lintian overrides
+  * autopkgtests: Add proxmox to the flaky list
+
+ -- Lee Garrett <debian@rocketjump.eu>  Fri, 13 Jun 2025 16:15:07 +0200
+
+ansible (12.0.0~a4+dfsg-1) unstable; urgency=medium
+
+  * New upstream version 12.0.0~a4+dfsg
+  * debian/control: Update Homepage field
+  * Drop community-grafana-py312.patch (applied upstream)
+  * Disable community.crypto test (needs upstream fix)
+
+ -- Lee Garrett <debian@rocketjump.eu>  Tue, 13 May 2025 16:36:23 +0200
+
+ansible (12.0.0~a2+dfsg-1) unstable; urgency=medium
+
+  * The "greetings from Mini-Debconf Hamburg" release.
+  * New upstream version 12.0.0~a2+dfsg.
+  * Update debian/watch to properly mangle beta/rc release numbers.
+  * d/copyright: Remove node modules from broken grafana collection.
+
+ -- Lee Garrett <debian@rocketjump.eu>  Thu, 01 May 2025 22:23:45 +0200
+
+ansible (12.0.0~a1+dfsg-1) unstable; urgency=medium
+
+  * New upstream version 12.0.0a1+dfsg
+  * Update to new major version that supports ansible-core 2.19
+  * Update watch file to include alpha (a) and release candidate (rc) releases
+  * autopkgtests: Update flaky list
+  * Update d/copyright
+  * Remove sensu_go lintian override (collection was removed)
+  * Bump Standards-Version (no changes needed)
+  * Remove unused lintian overrides
+  * Silence lintian warnings of deprecated python stdlib
+  * Update list of failing unit tests
+  * Don't run flaky tests on CI
+
+ -- Lee Garrett <debian@rocketjump.eu>  Thu, 17 Apr 2025 15:36:25 +0200
+
+ansible (11.2.0+dfsg-1) unstable; urgency=medium
+
+  * New upstream version 11.2.0+dfsg
+  * Drop d/patches/community-mongodb-py313.patch (applied upstream)
+
+ -- Lee Garrett <debian@rocketjump.eu>  Sat, 08 Feb 2025 05:39:09 +0100
+
 ansible (11.1.0+dfsg-1) unstable; urgency=medium
 
   * New upstream release.

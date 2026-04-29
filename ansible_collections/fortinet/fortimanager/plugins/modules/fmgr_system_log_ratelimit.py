@@ -145,6 +145,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -158,21 +159,19 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_log_ratelimit:
-          device:
-            -
-              device: <string>
-              filter_type: <value in [devid]>
-              id: <integer>
-              ratelimit: <integer>
-          device_ratelimit_default: <integer>
-          mode: <value in [disable, manual]>
-          system_ratelimit: <integer>
-          ratelimits:
-            -
-              filter: <string>
-              filter_type: <value in [devid, adom]>
-              id: <integer>
-              ratelimit: <integer>
+          # device:
+          #   - device: <string>
+          #     filter_type: <value in [devid]>
+          #     id: <integer>
+          #     ratelimit: <integer>
+          # device_ratelimit_default: <integer>
+          # mode: <value in [disable, manual]>
+          # system_ratelimit: <integer>
+          # ratelimits:
+          #   - filter: <string>
+          #     filter_type: <value in [devid, adom]>
+          #     id: <integer>
+          #     ratelimit: <integer>
 '''
 
 RETURN = '''

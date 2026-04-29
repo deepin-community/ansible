@@ -191,12 +191,20 @@ options:
                 choices:
                     - 'disable'
                     - 'enable'
+            include_subdomains:
+                aliases: ['include-subdomains']
+                type: str
+                description: Enable/disable matching subdomains.
+                choices:
+                    - 'disable'
+                    - 'enable'
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -212,34 +220,34 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         webfilter_urlfilter:
-          comment: <string>
-          entries:
-            -
-              action: <value in [exempt, block, allow, ...]>
-              dns_address_family: <value in [ipv4, ipv6, both]>
-              exempt:
-                - "av"
-                - "web-content"
-                - "activex-java-cookie"
-                - "dlp"
-                - "fortiguard"
-                - "all"
-                - "filepattern"
-                - "pass"
-                - "range-block"
-                - "antiphish"
-              id: <integer>
-              referrer_host: <string>
-              status: <value in [disable, enable]>
-              type: <value in [simple, regex, wildcard]>
-              url: <string>
-              web_proxy_profile: <string>
-              antiphish_action: <value in [block, log]>
-          id: <integer>
-          ip_addr_block: <value in [disable, enable]>
-          name: <string>
-          one_arm_ips_urlfilter: <value in [disable, enable]>
-          ip4_mapped_ip6: <value in [disable, enable]>
+          id: 0 # Required variable, integer
+          # comment: <string>
+          # entries:
+          #   - action: <value in [exempt, block, allow, ...]>
+          #     dns_address_family: <value in [ipv4, ipv6, both]>
+          #     exempt:
+          #       - "av"
+          #       - "web-content"
+          #       - "activex-java-cookie"
+          #       - "dlp"
+          #       - "fortiguard"
+          #       - "all"
+          #       - "filepattern"
+          #       - "pass"
+          #       - "range-block"
+          #       - "antiphish"
+          #     id: <integer>
+          #     referrer_host: <string>
+          #     status: <value in [disable, enable]>
+          #     type: <value in [simple, regex, wildcard]>
+          #     url: <string>
+          #     web_proxy_profile: <string>
+          #     antiphish_action: <value in [block, log]>
+          # ip_addr_block: <value in [disable, enable]>
+          # name: <string>
+          # one_arm_ips_urlfilter: <value in [disable, enable]>
+          # ip4_mapped_ip6: <value in [disable, enable]>
+          # include_subdomains: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -328,7 +336,8 @@ def main():
                 'ip-addr-block': {'choices': ['disable', 'enable'], 'type': 'str'},
                 'name': {'type': 'str'},
                 'one-arm-ips-urlfilter': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'ip4-mapped-ip6': {'v_range': [['7.2.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                'ip4-mapped-ip6': {'v_range': [['7.2.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'include-subdomains': {'v_range': [['7.6.3', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }
         }
     }

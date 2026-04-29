@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Copyright: (c) 2022, Dell Technologies
-# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """ Ansible module for managing replication consistency groups on Dell Technologies (Dell) PowerFlex"""
 
@@ -962,18 +962,18 @@ class PowerFlexReplicationConsistencyGroup(object):
         is_consistent = self.module.params['is_consistent']
         activity_mode = self.module.params['activity_mode']
         new_rcg_name = self.module.params['new_rcg_name']
-        changed = False
 
         pause, freeze = self.get_pause_and_freeze_value()
-        if create_snapshot is True:
-            changed = self.create_rcg_snapshot(rcg_id)
-        if rpo and rcg_details['rpoInSeconds'] and \
-                rpo != rcg_details['rpoInSeconds']:
-            changed = self.modify_rpo(rcg_id, rpo)
+
+        changed = self.create_snap(rcg_id, create_snapshot)
+
+        rpo_changed = self.rpo_mod(rcg_id, rcg_details, rpo)
+
         if target_volume_access_mode and \
                 rcg_details['targetVolumeAccessMode'] != target_volume_access_mode:
             changed = \
-                self.modify_target_volume_access_mode(rcg_id, target_volume_access_mode)
+                self.modify_target_volume_access_mode(
+                    rcg_id, target_volume_access_mode)
         if activity_mode and \
                 self.modify_activity_mode(rcg_id, rcg_details, activity_mode):
             changed = True
@@ -993,8 +993,20 @@ class PowerFlexReplicationConsistencyGroup(object):
             changed = True
 
         rcg_action_status = self.perform_rcg_action(rcg_id, rcg_details)
-        changed = changed or rcg_action_status
 
+        return rpo_changed or changed or rcg_action_status
+
+    def rpo_mod(self, rcg_id, rcg_details, rpo):
+        changed = False
+        if rpo and rcg_details['rpoInSeconds'] and \
+                rpo != rcg_details['rpoInSeconds']:
+            changed = self.modify_rpo(rcg_id, rpo)
+        return changed
+
+    def create_snap(self, rcg_id, create_snapshot):
+        changed = False
+        if create_snapshot is True:
+            changed = self.create_rcg_snapshot(rcg_id)
         return changed
 
     def validate_input(self, rcg_params):

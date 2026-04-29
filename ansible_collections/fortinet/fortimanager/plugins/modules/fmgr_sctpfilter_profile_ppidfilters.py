@@ -116,6 +116,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -132,10 +133,10 @@ EXAMPLES = '''
         profile: <your own value>
         state: present # <value in [present, absent]>
         sctpfilter_profile_ppidfilters:
-          action: <value in [pass, reset, replace]>
-          comment: <string>
-          id: <integer>
-          ppid: <integer>
+          id: 0 # Required variable, integer
+          # action: <value in [pass, reset, replace]>
+          # comment: <string>
+          # ppid: <integer>
 '''
 
 RETURN = '''
@@ -195,12 +196,12 @@ def main():
         'profile': {'required': True, 'type': 'str'},
         'sctpfilter_profile_ppidfilters': {
             'type': 'dict',
-            'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']],
+            'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']],
             'options': {
-                'action': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'choices': ['pass', 'reset', 'replace'], 'type': 'str'},
-                'comment': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'type': 'str'},
-                'id': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'required': True, 'type': 'int'},
-                'ppid': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'type': 'int'}
+                'action': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'choices': ['pass', 'reset', 'replace'], 'type': 'str'},
+                'comment': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'type': 'str'},
+                'id': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'required': True, 'type': 'int'},
+                'ppid': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'type': 'int'}
             }
         }
     }

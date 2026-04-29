@@ -124,6 +124,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -139,14 +140,13 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         sctpfilter_profile:
-          comment: <string>
-          name: <string>
-          ppid_filters:
-            -
-              action: <value in [pass, reset, replace]>
-              comment: <string>
-              id: <integer>
-              ppid: <integer>
+          name: "your value" # Required variable, string
+          # comment: <string>
+          # ppid_filters:
+          #   - action: <value in [pass, reset, replace]>
+          #     comment: <string>
+          #     id: <integer>
+          #     ppid: <integer>
 '''
 
 RETURN = '''
@@ -205,18 +205,18 @@ def main():
         'adom': {'required': True, 'type': 'str'},
         'sctpfilter_profile': {
             'type': 'dict',
-            'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']],
+            'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']],
             'options': {
-                'comment': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'type': 'str'},
-                'name': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'required': True, 'type': 'str'},
+                'comment': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'type': 'str'},
+                'name': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'required': True, 'type': 'str'},
                 'ppid-filters': {
-                    'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']],
+                    'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']],
                     'type': 'list',
                     'options': {
-                        'action': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'choices': ['pass', 'reset', 'replace'], 'type': 'str'},
-                        'comment': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'type': 'str'},
-                        'id': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'type': 'int'},
-                        'ppid': {'v_range': [['7.2.5', '7.2.8'], ['7.4.2', '']], 'type': 'int'}
+                        'action': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'choices': ['pass', 'reset', 'replace'], 'type': 'str'},
+                        'comment': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'type': 'str'},
+                        'id': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'type': 'int'},
+                        'ppid': {'v_range': [['7.2.5', '7.2.9'], ['7.4.2', '']], 'type': 'int'}
                     },
                     'elements': 'dict'
                 }

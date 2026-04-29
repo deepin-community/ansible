@@ -4,7 +4,7 @@
 #
 # Dell OpenManage Ansible Modules
 # Version 9.3.0
-# Copyright (C) 2019-2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright (C) 2019-2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
@@ -516,6 +516,8 @@ def check_specified_identifier_exists_in_the_system(module, session_obj, uri, er
         return resp
     except HTTPError as err:
         if err.code == 404:
+            if module.params.get("state") == "absent" and module.params.get("volume_id"):
+                module.exit_json(msg=NO_CHANGES_FOUND)
             module.exit_json(msg=err_message, failed=True)
         raise err
     except (URLError, SSLValidationError, ConnectionError, TypeError, ValueError) as err:
@@ -565,6 +567,10 @@ def perform_storage_volume_action(method, uri, session_obj, action, payload=None
     try:
         resp = session_obj.invoke_request(method, uri, data=payload)
         task_uri = resp.headers["Location"]
+        if not task_uri:
+            msg = resp.json_data["@Message.ExtendedInfo"][1]["Message"]
+            status_message = {"msg": msg}
+            return status_message
         return get_success_message(action, task_uri)
     except (HTTPError, URLError, SSLValidationError, ConnectionError,
             TypeError, ValueError) as err:
@@ -974,16 +980,19 @@ def main():
                 reboot_required = check_apply_time_supported_and_reboot_required(module, session_obj, controller_id, greater_version)
             if reboot_required:
                 perform_reboot(module, session_obj)
-            job_tracking_required = check_job_tracking_required(module, session_obj, reboot_required, controller_id, greater_version)
-            job_id = status_message.get("task_id")
-            job_url = MANAGER_JOB_ID_URI.format(job_id)
-            if job_tracking_required:
-                track_job(module, session_obj, job_id, job_url)
+            if status_message.get("task_id"):
+                job_tracking_required = check_job_tracking_required(module, session_obj, reboot_required, controller_id, greater_version)
+                job_id = status_message.get("task_id")
+                job_url = MANAGER_JOB_ID_URI.format(job_id)
+                if job_tracking_required and job_id:
+                    track_job(module, session_obj, job_id, job_url)
+                else:
+                    task_status = {"uri": job_url, "id": job_id}
+                    resp = session_obj.invoke_request("GET", job_url)
+                    job_data = strip_substr_dict(resp.json_data)
+                    module.exit_json(msg=status_message["msg"], task=task_status, job_status=job_data, changed=True)
             else:
-                task_status = {"uri": job_url, "id": job_id}
-                resp = session_obj.invoke_request("GET", job_url)
-                job_data = strip_substr_dict(resp.json_data)
-                module.exit_json(msg=status_message["msg"], task=task_status, job_status=job_data, changed=True)
+                module.exit_json(msg=status_message["msg"])
     except HTTPError as err:
         module.exit_json(msg=str(err), error_info=json.load(err), failed=True)
     except URLError as err:

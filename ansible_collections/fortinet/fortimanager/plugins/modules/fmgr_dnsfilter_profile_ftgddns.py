@@ -120,6 +120,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -135,15 +136,14 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         dnsfilter_profile_ftgddns:
-          filters:
-            -
-              action: <value in [monitor, block]>
-              category: <string>
-              id: <integer>
-              log: <value in [disable, enable]>
-          options:
-            - "error-allow"
-            - "ftgd-disable"
+          # filters:
+          #   - action: <value in [monitor, block]>
+          #     category: <string>
+          #     id: <integer>
+          #     log: <value in [disable, enable]>
+          # options:
+          #   - "error-allow"
+          #   - "ftgd-disable"
 '''
 
 RETURN = '''

@@ -1,7 +1,7 @@
 # Copyright: (c) 2019, Hetzner Cloud GmbH <info@hetzner-cloud.de>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 ---
-- name: Test missing required parameters
+- name: Test missing required parameters # noqa: args[module]
   hetzner.hcloud.load_balancer_service:
     state: present
   ignore_errors: true
@@ -160,7 +160,7 @@
       - result.hcloud_load_balancer_service.health_check.timeout == 10
       - result.hcloud_load_balancer_service.health_check.http.domain == ""
       - result.hcloud_load_balancer_service.health_check.http.path == "/"
-      - result.hcloud_load_balancer_service.health_check.http.status_codes == ["2??", "3??"]
+      - result.hcloud_load_balancer_service.health_check.http.status_codes | sort == ["2??", "3??"]
 
 - name: Test delete with http
   hetzner.hcloud.load_balancer_service:

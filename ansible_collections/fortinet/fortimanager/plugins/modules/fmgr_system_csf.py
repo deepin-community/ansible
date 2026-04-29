@@ -322,6 +322,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -335,43 +336,41 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_csf:
-          accept_auth_by_cert: <value in [disable, enable]>
-          authorization_request_type: <value in [certificate, serial]>
-          certificate: <string>
-          configuration_sync: <value in [default, local]>
-          downstream_access: <value in [disable, enable]>
-          downstream_accprofile: <string>
-          fabric_connector:
-            -
-              accprofile: <string>
-              configuration_write_access: <value in [disable, enable]>
-              serial: <string>
-          fabric_object_unification: <value in [local, default]>
-          fabric_workers: <integer>
-          file_mgmt: <value in [disable, enable]>
-          file_quota: <integer>
-          file_quota_warning: <integer>
-          fixed_key: <list or string>
-          forticloud_account_enforcement: <value in [disable, enable]>
-          group_name: <string>
-          group_password: <list or string>
-          log_unification: <value in [disable, enable]>
-          saml_configuration_sync: <value in [local, default]>
-          status: <value in [disable, enable]>
-          trusted_list:
-            -
-              action: <value in [accept, deny]>
-              authorization_type: <value in [serial, certificate]>
-              certificate: <string>
-              downstream_authorization: <value in [disable, enable]>
-              ha_members: <string>
-              index: <integer>
-              name: <string>
-              serial: <string>
-          upstream: <string>
-          upstream_port: <integer>
-          upstream_confirm: <value in [discover, confirm]>
-          ssl_protocol: <value in [follow-global-ssl-protocol, sslv3, tlsv1.0, ...]>
+          # accept_auth_by_cert: <value in [disable, enable]>
+          # authorization_request_type: <value in [certificate, serial]>
+          # certificate: <string>
+          # configuration_sync: <value in [default, local]>
+          # downstream_access: <value in [disable, enable]>
+          # downstream_accprofile: <string>
+          # fabric_connector:
+          #   - accprofile: <string>
+          #     configuration_write_access: <value in [disable, enable]>
+          #     serial: <string>
+          # fabric_object_unification: <value in [local, default]>
+          # fabric_workers: <integer>
+          # file_mgmt: <value in [disable, enable]>
+          # file_quota: <integer>
+          # file_quota_warning: <integer>
+          # fixed_key: <list or string>
+          # forticloud_account_enforcement: <value in [disable, enable]>
+          # group_name: <string>
+          # group_password: <list or string>
+          # log_unification: <value in [disable, enable]>
+          # saml_configuration_sync: <value in [local, default]>
+          # status: <value in [disable, enable]>
+          # trusted_list:
+          #   - action: <value in [accept, deny]>
+          #     authorization_type: <value in [serial, certificate]>
+          #     certificate: <string>
+          #     downstream_authorization: <value in [disable, enable]>
+          #     ha_members: <string>
+          #     index: <integer>
+          #     name: <string>
+          #     serial: <string>
+          # upstream: <string>
+          # upstream_port: <integer>
+          # upstream_confirm: <value in [discover, confirm]>
+          # ssl_protocol: <value in [follow-global-ssl-protocol, sslv3, tlsv1.0, ...]>
 '''
 
 RETURN = '''
@@ -477,7 +476,7 @@ def main():
                 'upstream-port': {'v_range': [['7.4.1', '']], 'type': 'int'},
                 'upstream-confirm': {'v_range': [['7.6.0', '']], 'choices': ['discover', 'confirm'], 'type': 'str'},
                 'ssl-protocol': {
-                    'v_range': [['7.4.4', '7.4.5']],
+                    'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']],
                     'choices': ['follow-global-ssl-protocol', 'sslv3', 'tlsv1.0', 'tlsv1.1', 'tlsv1.2', 'tlsv1.3'],
                     'type': 'str'
                 }

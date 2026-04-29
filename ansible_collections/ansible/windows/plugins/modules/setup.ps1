@@ -25,19 +25,28 @@ $spec = @{
 # This module can be called by the gather_facts action plugin in ansible-base. While it shouldn't add any new options
 # we need to make sure the module doesn't break if it does. To do this we need to add any options in the input args
 if ($args.Length -gt 0) {
-    $params = Get-Content -LiteralPath $args[0] | ConvertFrom-AnsibleJson
+    $params = Get-Content $args[0] | ConvertFrom-Json
+    if ($params) {
+        foreach ($prop in $params.PSObject.Properties.Name) {
+            if ($prop.StartsWith('_') -or $spec.options.ContainsKey($prop)) {
+                continue
+            }
+            $spec.options.$prop = @{ type = 'raw' }
+        }
+    }
 }
 else {
     $params = $complex_args
-}
-if ($params) {
-    foreach ($param in $params.GetEnumerator()) {
-        if ($param.Key.StartsWith('_') -or $spec.options.ContainsKey($param.Key)) {
-            continue
+    if ($params) {
+        foreach ($param in $params.GetEnumerator()) {
+            if ($param.Key.StartsWith('_') -or $spec.options.ContainsKey($param.Key)) {
+                continue
+            }
+            $spec.options."$($param.Key)" = @{ type = 'raw' }
         }
-        $spec.options."$($param.Key)" = @{ type = 'raw' }
     }
 }
+
 
 $module = [Ansible.Basic.AnsibleModule]::Create($args, $spec)
 
@@ -142,7 +151,8 @@ namespace Ansible.Windows.Setup
             public byte ProductName;
             public byte Version;
             public byte SerialNumber;
-            // There are more fields but we only need up to SerialNumber.
+            public Guid UUID;
+            // There are more fields but we only need up to UUID.
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -364,6 +374,7 @@ namespace Ansible.Windows.Setup
         public string Manufacturer;
         public string Model;
         public string SerialNumber;
+        public string UUID;
         public bool ProcessorCountFound = false;
         public List<Tuple<int, int>> ProcessorInfo = new List<Tuple<int, int>>();
 
@@ -405,6 +416,7 @@ namespace Ansible.Windows.Setup
                         Manufacturer = ExtractFromStringTable(stringTable, systemInfo.Manufacturer);
                         Model = ExtractFromStringTable(stringTable, systemInfo.ProductName);
                         SerialNumber = ExtractFromStringTable(stringTable, systemInfo.SerialNumber);
+                        UUID = systemInfo.UUID.ToString().ToUpperInvariant();
                     }
                     else if (header.Type == 4)
                     {
@@ -587,11 +599,13 @@ $factMeta = @(
                 # than nothing
                 $win32CS = Get-CimInstance -ClassName Win32_ComputerSystem -Property Model
                 $win32Bios = Get-CimInstance -ClassName Win32_Bios -Property ReleaseDate, SMBIOSBIOSVersion, SerialNumber
+                $win32_csp = Get-CimInstance -ClassName Win32_ComputerSystemProduct -Property UUID
                 $bios = [PSCustomObject]@{
                     ReleaseDate = $win32Bios.ReleaseDate
                     SMBIOSBIOSVersion = $win32Bios.SMBIOSBIOSVersion
                     Model = $win32CS.Model.Trim()
                     SerialNumber = $win32Bios.SerialNumber
+                    UUID = $win32_csp.UUID
                 }
             }
 
@@ -602,6 +616,7 @@ $factMeta = @(
             $ansibleFacts.ansible_bios_version = $bios.SMBIOSBIOSVersion
             $ansibleFacts.ansible_product_name = $bios.Model
             $ansibleFacts.ansible_product_serial = $bios.SerialNumber
+            $ansibleFacts.ansible_product_uuid = $bios.UUID
         }
     },
     @{
@@ -652,7 +667,7 @@ $factMeta = @(
 
             $osInfoParams = @{
                 LiteralPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
-                Name = 'InstallationType'
+                Name = 'InstallationType', 'InstallTime'
                 ErrorAction = 'SilentlyContinue'
             }
             $osInfo = Get-ItemProperty @osInfoParams
@@ -664,6 +679,11 @@ $factMeta = @(
             $ansibleFacts.ansible_os_name = $null
             $ansibleFacts.ansible_os_product_type = $productType
             $ansibleFacts.ansible_os_installation_type = $osInfo.InstallationType
+            $ansibleFacts.ansible_os_install_date = $null
+            if ($osInfo.InstallTime) {
+                $installDate = [DateTime]::FromFileTimeUtc($osInfo.InstallTime)
+                $ansibleFacts.ansible_os_install_date = $installDate.ToString("yyyy-MM-ddTHH:mm:ssZ")
+            }
 
             # We cannot call WMI if we aren't an admin (on a network logon), conditionally set these facts.
             $currentUser = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
@@ -1115,19 +1135,21 @@ $factMeta = @(
             }
 
             $modelMap = @{
-                kvm = @('KVM', 'KVM Server', 'Bochs', 'AHV')
+                kvm = @('KVM', 'KVM Server', 'Bochs', 'AHV', 'CloudStack KVM Hypervisor')
                 RHEV = @('RHEV Hypervisor')
-                VMware = @('VMWare Virtual Platform', 'VMware7,1')
+                VMware = @('VMWare*')
                 openstack = @('OpenStack Compute', 'OpenStack Nova')
                 xen = @('xen', 'HVM domU')
                 'Hyper-V' = @('Virtual Machine')
                 VirtualBox = @('VirtualBox')
             }
             foreach ($modelInfo in $modelMap.GetEnumerator()) {
-                if ($bios.Model -in $modelInfo.Value) {
-                    $ansibleFacts.ansible_virtualization_role = 'guest'
-                    $ansibleFacts.ansible_virtualization_type = $modelInfo.Key
-                    return
+                foreach ($entry in $modelInfo.Value) {
+                    if ($bios.Model -like $entry) {
+                        $ansibleFacts.ansible_virtualization_role = 'guest'
+                        $ansibleFacts.ansible_virtualization_type = $modelInfo.Key
+                        return
+                    }
                 }
             }
 

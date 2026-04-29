@@ -3,6 +3,7 @@
 # Copyright: (c) 2020, Lionel Hercot (@lhercot) <lhercot@cisco.com>
 # Copyright: (c) 2018, Dag Wieers (@dagwieers) <dag@wieers.com> (based on mso_site test case)
 # Copyright: (c) 2020, Shreyas Srish (@shrsr) <ssrish@cisco.com>
+# Copyright: (c) 2024, Noppanut Ploywong (@noppanut15) <noppanut.connect@gmail.com>
 
 # GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -47,12 +48,8 @@
   cisco.mso.mso_tenant_site:
     <<: *mso_info
     tenant: ansible_test
-    site: '{{ item }}'
+    site: '{{ mso_site | default("ansible_test") }}'
     state: absent
-  loop:
-    - '{{ mso_site | default("ansible_test") }}'
-    - 'aws_{{ mso_site | default("ansible_test") }}'
-    - 'azure_{{ mso_site | default("ansible_test") }}'
 
 - name: Ensure tenant ansible_test exist
   cisco.mso.mso_tenant: 
@@ -511,7 +508,7 @@
   ansible.builtin.assert:
     that:
     - nm_remove_again_stat2e2 is not changed
-
+    
 # ADD EXISTING STATIC PORT
 - name: Add static port 1 to site EPG1 again (normal mode)
   cisco.mso.mso_schema_site_anp_epg_staticport:
@@ -1275,6 +1272,41 @@
       - nm_force_replace_new_static_ports.current.9.path == "topology/pod-1/paths-101/pathep-[eth2/9]"
       - nm_force_replace_new_static_ports.current.9.portEncapVlan == 1209
 
+- name: Replace VLAN of existing static port with bulk
+  cisco.mso.mso_schema_site_anp_epg_staticport: &replace_vlan_static_ports
+    <<: *static_ports_append
+    static_ports:
+    - leaf: 101
+      pod: pod-1
+      path: eth2/9
+      type: port
+      vlan: 1309
+  register: nm_replace_vlan_static_ports
+
+- name: Replace VLAN of existing static port with bulk again
+  cisco.mso.mso_schema_site_anp_epg_staticport:
+    <<: *replace_vlan_static_ports
+    static_ports:
+    - leaf: 101
+      pod: pod-1
+      path: eth2/9
+      type: port
+      vlan: 1309
+  register: nm_replace_vlan_static_ports_again
+
+- name: Verify replacing VLAN of existing static port with bulk
+  ansible.builtin.assert:
+    that:
+      - nm_replace_vlan_static_ports is changed
+      - nm_replace_vlan_static_ports.previous.9.path == "topology/pod-1/paths-101/pathep-[eth2/9]"
+      - nm_replace_vlan_static_ports.previous.9.portEncapVlan == 1209
+      - nm_replace_vlan_static_ports.current.9.path == "topology/pod-1/paths-101/pathep-[eth2/9]"
+      - nm_replace_vlan_static_ports.current.9.portEncapVlan == 1309
+      - nm_replace_vlan_static_ports_again is not changed
+      - nm_replace_vlan_static_ports_again.previous.9.path == "topology/pod-1/paths-101/pathep-[eth2/9]"
+      - nm_replace_vlan_static_ports_again.previous.9.portEncapVlan == 1309
+      - nm_replace_vlan_static_ports_again.current.9.path == "topology/pod-1/paths-101/pathep-[eth2/9]"
+
 # QUERY TESTS FOR BULK
 
 - name: Query static ports
@@ -1297,6 +1329,11 @@
   cisco.mso.mso_schema_site_anp_epg_staticport:
     <<: *static_ports_append
     static_ports:
+    - leaf: 101
+      pod: pod-1
+      path: eth2/0
+      type: port
+      vlan: 1200
     - leaf: 101
       pod: pod-1 
       path: eth1/40
@@ -1323,10 +1360,10 @@
       - nm_query_static_ports.current.3.path == "topology/pod-1/paths-101/pathep-[eth2/3]"
       - nm_query_static_ports.current.3.portEncapVlan == 1203
       - nm_query_static_ports.current.9.path == "topology/pod-1/paths-101/pathep-[eth2/9]"
-      - nm_query_static_ports.current.9.portEncapVlan == 1209
+      - nm_query_static_ports.current.9.portEncapVlan == 1309
       - err_query_static_ports is failed
-      - err_query_static_ports.msg.0 == "Provided Static Port Path 'topology/pod-1/paths-101/pathep-[eth2/0]' not found"
-      - err_query_static_ports.msg.1 == "Provided Static Port Path 'topology/pod-1/paths-101/pathep-[eth2/1]' not found"
+      - err_query_static_ports.msg.0 == "Provided Static Port Path 'topology/pod-1/paths-101/pathep-[eth1/40]' not found"
+      - err_query_static_ports.msg.1 == "Provided Static Port Path 'topology/pod-1/paths-201/pathep-[eth1/41]' not found"
 
 # FORCE REMOVE ALL CONTRACTS
 
@@ -1364,6 +1401,74 @@
       - force_remove_all_new_static is changed
       - force_remove_all_new_static.previous == []
       - force_remove_all_new_static.current | length == 1
+
+# WITHOUT VLAN REMOVAL TEST
+- name: Create static ports for without VLAN removal tests
+  cisco.mso.mso_schema_site_anp_epg_staticport:
+    <<: *mso_info
+    schema: '{{ mso_schema | default("ansible_test") }}'
+    site: '{{ mso_site | default("ansible_test") }}'
+    template: template_bulk
+    anp: anp_bulk
+    epg: epg_bulk
+    static_ports:
+      - pod: pod-2
+        leaf: 102
+        path: eth1/1
+        vlan: 101
+      - pod: pod-2
+        leaf: 102
+        path: eth1/2
+        vlan: 102
+      - pod: pod-2
+        leaf: 102
+        path: eth1/3
+        vlan: 103
+    state: present
+
+- name: Remove a static port without VLAN
+  cisco.mso.mso_schema_site_anp_epg_staticport:
+    <<: *mso_info
+    schema: '{{ mso_schema | default("ansible_test") }}'
+    site: '{{ mso_site | default("ansible_test") }}'
+    template: template_bulk
+    anp: anp_bulk
+    epg: epg_bulk
+    pod: pod-2
+    leaf: 102
+    path: eth1/1
+    state: absent
+  register: rm_stat_without_vlan
+
+- name: Verify rm_stat_without_vlan
+  ansible.builtin.assert:
+    that:
+    - rm_stat_without_vlan is changed
+    - rm_stat_without_vlan.current == {}
+
+- name: Remove multiple static ports in bulk without VLAN
+  cisco.mso.mso_schema_site_anp_epg_staticport:
+    <<: *mso_info
+    schema: '{{ mso_schema | default("ansible_test") }}'
+    site: '{{ mso_site | default("ansible_test") }}'
+    template: template_bulk
+    anp: anp_bulk
+    epg: epg_bulk
+    static_ports:
+      - pod: pod-2
+        leaf: 102
+        path: eth1/2
+      - pod: pod-2
+        leaf: 102
+        path: eth1/3
+    state: absent
+  register: rm_bulk_stat_without_vlan
+
+- name: Verify rm_bulk_stat_without_vlan
+  ansible.builtin.assert:
+    that:
+    - rm_bulk_stat_without_vlan is changed
+    - rm_bulk_stat_without_vlan.current == []
 
 # OVERWRITE ARGUMENTS
 

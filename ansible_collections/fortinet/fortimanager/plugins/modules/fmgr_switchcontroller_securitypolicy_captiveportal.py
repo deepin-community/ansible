@@ -108,6 +108,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -123,9 +124,9 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         switchcontroller_securitypolicy_captiveportal:
-          name: <string>
-          policy_type: <value in [captive-portal]>
-          vlan: <string>
+          name: "your value" # Required variable, string
+          # policy_type: <value in [captive-portal]>
+          # vlan: <string>
 '''
 
 RETURN = '''

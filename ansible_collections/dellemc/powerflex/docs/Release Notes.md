@@ -1,8 +1,8 @@
 **Ansible Modules for Dell Technologies PowerFlex** 
 =========================================
-### Release notes 2.5.0
+### Release notes 2.6.1
 
->   © 2024 Dell Inc. or its subsidiaries. All rights reserved. Dell
+>   © 2025 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   and other trademarks are trademarks of Dell Inc. or its
 >   subsidiaries. Other trademarks may be trademarks of their respective
 >   owners.
@@ -28,7 +28,8 @@ Table 1. Revision history
 
 | Revision | Date            | Description                                                 |
 |----------|-----------------|-------------------------------------------------------------|
-| 01       | May 2024        | Current release of Ansible Modules for Dell PowerFlex 2.5.0 |
+| 02       | June 2025        | Current release of Ansible Modules for Dell PowerFlex 2.6.1 |
+| 01       | Dec 2024        | Current release of Ansible Modules for Dell PowerFlex 2.6.0 |
 
 Product description
 -------------------
@@ -36,7 +37,7 @@ Product description
 The Ansible modules for Dell PowerFlex are used to automate and orchestrate
 the deployment, configuration, and management of Dell PowerFlex storage
 systems. The capabilities of Ansible modules are managing volumes,
-storage pools, SDCs, snapshots, snapshot policy, SDSs, replication consistency groups, replication pairs, resource group, devices, protection domain, MDM and fault sets. 
+storage pools, SDCs, snapshots, snapshot policy, SDSs, SDTs, NVMe hosts, replication consistency groups, replication pairs, resource group, devices, protection domain, MDM and fault sets. 
 cluster, and obtaining high-level information about a PowerFlex system information.
 The modules use playbooks to list, show, create, delete, and modify
 each of the entities.
@@ -44,8 +45,10 @@ each of the entities.
 New features and enhancements
 -----------------------------
 Along with the previous release deliverables, this release supports following features - 
- - The storage pool module has been enhanced to support more features.
- - Fixed the roles to support attaching the MDM cluster to the gateway.
+ - snapshot_policy - Reanmed snapshotAccessMode and secureSnapshots to
+   snapshot_access_mode and secure_snapshots respectively.
+ - Updated minimum SDK version to 2.6.1.
+ - Added none check for mdm cluster id in mdm_cluster module.
 
 Known issues
 ------------

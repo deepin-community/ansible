@@ -154,6 +154,8 @@ options:
                 choices:
                     - Linux
                     - Windows
+                    - linux
+                    - windows
             storage_profiles:
                 description:
                     - Storage profile specifies what kind of storage used.
@@ -430,7 +432,7 @@ options:
     addon:
         description:
             - Profile of managed cluster add-on.
-            - Key can be C(http_application_routing), C(monitoring), C(virtual_node).
+            - Key can be C(http_application_routing), C(monitoring), C(virtual_node) and C(azure_keyvault_secrets_provider).
             - Value must be a dict contains a bool variable C(enabled).
         type: dict
         suboptions:
@@ -444,6 +446,19 @@ options:
                     enabled:
                         description:
                             - Whether the solution enabled.
+                        type: bool
+                        default: true
+            azure_keyvault_secrets_provider:
+                description:
+                    - Whether to enable the Azure Key Vault provider in an AKS cluster.
+                type: dict
+                version_added: "3.7.0"
+                aliases:
+                    - azureKeyvaultSecretsProvider
+                suboptions:
+                    enabled:
+                        description:
+                            - Enabled or disabled the Azure Key Vault provider in the AKS cluster.
                         type: bool
                         default: true
             monitoring:
@@ -783,6 +798,11 @@ state:
     returned: always
     type: dict
     example:
+        addon:
+          azure_keyvault_secrets_provider: { "enabled": true }
+          http_application_routing: { "enabled": false }
+          monitoring: null
+          virtual_node: null
         agent_pool_profiles:
          - count: 1
            dns_prefix: Null
@@ -1012,7 +1032,7 @@ def create_agent_pool_profiles_dict(agentpoolprofiles):
         security_profile=dict(
             enable_secure_boot=profile.security_profile.enable_secure_boot,
             enable_vtpm=profile.security_profile.enable_vtpm
-        )
+        ) if profile.security_profile is not None else None
     ) for profile in agentpoolprofiles] if agentpoolprofiles else None
 
 
@@ -1029,14 +1049,18 @@ def create_addon_profiles_spec():
         configs = values.get('config') or {}
         for item in configs.keys():
             addon_spec[item] = dict(type='str', aliases=[configs[item]], required=True)
-        spec[key] = dict(type='dict', options=addon_spec, aliases=[values['name']])
+        if key == 'azure_keyvault_secrets_provider':
+            spec[key] = dict(type='dict', no_log=True, options=addon_spec, aliases=[values['name']])
+        else:
+            spec[key] = dict(type='dict', options=addon_spec, aliases=[values['name']])
     return spec
 
 
 ADDONS = {
     'http_application_routing': dict(name='httpApplicationRouting'),
     'monitoring': dict(name='omsagent', config={'log_analytics_workspace_resource_id': 'logAnalyticsWorkspaceResourceID'}),
-    'virtual_node': dict(name='aciConnector', config={'subnet_resource_id': 'SubnetName'})
+    'virtual_node': dict(name='aciConnector', config={'subnet_resource_id': 'SubnetName'}),
+    'azure_keyvault_secrets_provider': dict(name='azureKeyvaultSecretsProvider')
 }
 
 
@@ -1063,7 +1087,7 @@ agent_pool_profile_spec = dict(
                           'StorageAccount', 'ManagedDisks']),
     vnet_subnet_id=dict(type='str'),
     availability_zones=dict(type='list', elements='int', choices=[1, 2, 3]),
-    os_type=dict(type='str', choices=['Linux', 'Windows']),
+    os_type=dict(type='str', choices=['Linux', 'Windows', 'linux', 'windows']),
     orchestrator_version=dict(type='str', required=False),
     type=dict(type='str', choices=['VirtualMachineScaleSets', 'AvailabilitySet']),
     mode=dict(type='str', choices=['System', 'User']),

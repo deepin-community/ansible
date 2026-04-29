@@ -33,38 +33,51 @@ def is_list_complex(x):
 
 
 def has_diff_elem(ls1, ls2):
-    return any((elem not in ls1 for elem in ls2))
+    """Checks if there are different elements between two lists."""
+    if len(ls1) != len(ls2):
+        return True
+    return any(elem not in ls1 for elem in ls2)
+
+
+def compare_dicts(dict1, dict2):
+    """Compares two dictionaries considering the defined rules."""
+    for key in dict1:
+        if key in dict2:
+            val1, val2 = dict1[key], dict2[key]
+
+            if isinstance(val1, str) and have_to_change_to_lowercase(val1.lower()):
+                if val1.lower() != val2.lower():
+                    return True
+            elif isinstance(val1, list):
+                if has_diff_elem(val1, val2):
+                    return True
+            else:
+                if str(val1) != str(val2):
+                    return True
+    return False
 
 
 def has_diff_elem2(ls1, ls2):
-    for elem in ls2:
+    """Compares two lists, with dictionaries inside them, to detect differences."""
+    if len(ls1) != len(ls2):
+        return True
+
+    for i, elem in enumerate(ls2):
         if isinstance(elem, dict):
-            find = False
-            keys1 = elem.keys()
-            for elem2 in ls1:
-                keys2 = elem2.keys()
-                common_keys = []
-                for key in keys1:
-                    if key in keys2:
-                        common_keys.append(key)
-                has_diff = False
-                for k in common_keys:
-                    if isinstance(elem2[k], str) and have_to_change_to_lowercase(elem2[k].lower()):
-                        if elem2[k].lower() != elem[k].lower():
-                            has_diff = True
-                    else:
-                        if elem2[k] != elem[k]:
-                            has_diff = True
-                if not has_diff:
-                    find = True
-                    break
-            if not find:
+            # Ensure ls1[i] is also a dictionary
+            if not isinstance(ls1[i], dict):
                 return True
+            if compare_dicts(ls1[i], elem):
+                return True
+        else:
+            # If elements are not dictionaries, compare them directly
+            if str(ls1[i]) != str(elem):
+                return True
+
     return False
 
 
 def have_to_change_to_lowercase(attr):
-    # print("hola")
     return attr in lowercase_change_words
 
 
@@ -75,7 +88,6 @@ def delete_default_rule(ls):
             del ls[index]
             break
         index = index + 1
-    print(ls)
     return ls
 
 
@@ -229,7 +241,7 @@ class MERAKI(object):
                 suppress_logging=params.get("meraki_suppress_logging"),
                 simulate=params.get("meraki_simulate"),
                 be_geo_id=params.get("meraki_be_geo_id"),
-                caller="MerakiAnsibleCollection/1.0.0 Cisco",
+                caller="MerakiAnsibleCollection/2.21.2 Cisco",
                 use_iterator_for_get_pages=params.get(
                     "meraki_use_iterator_for_get_pages"),
                 inherit_logging_config=params.get(
@@ -309,7 +321,7 @@ class MERAKI(object):
         except exceptions.APIError as e:
             self.fail_json(
                 msg=(
-                    "An error occured when executing operation."
+                    "An error occurred when executing operation."
                     "The error was: {error}"
                 ).format(error=to_native(e))
             )

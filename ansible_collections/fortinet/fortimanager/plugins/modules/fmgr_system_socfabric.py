@@ -134,6 +134,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -147,17 +148,16 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_socfabric:
-          name: <string>
-          port: <integer>
-          psk: <list or string>
-          role: <value in [member, supervisor]>
-          secure_connection: <value in [disable, enable]>
-          status: <value in [disable, enable]>
-          supervisor: <string>
-          trusted_list:
-            -
-              id: <integer>
-              serial: <string>
+          # name: <string>
+          # port: <integer>
+          # psk: <list or string>
+          # role: <value in [member, supervisor]>
+          # secure_connection: <value in [disable, enable]>
+          # status: <value in [disable, enable]>
+          # supervisor: <string>
+          # trusted_list:
+          #   - id: <integer>
+          #     serial: <string>
 '''
 
 RETURN = '''
@@ -218,7 +218,7 @@ def main():
             'options': {
                 'name': {'v_range': [['7.0.0', '']], 'type': 'str'},
                 'port': {'v_range': [['7.0.0', '']], 'type': 'int'},
-                'psk': {'v_range': [['7.0.0', '7.2.8']], 'type': 'raw'},
+                'psk': {'v_range': [['7.0.0', '7.2.9']], 'type': 'raw'},
                 'role': {'v_range': [['7.0.0', '']], 'choices': ['member', 'supervisor'], 'type': 'str'},
                 'secure-connection': {'v_range': [['7.0.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'status': {'v_range': [['7.0.0', '']], 'choices': ['disable', 'enable'], 'type': 'str'},

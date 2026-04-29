@@ -101,6 +101,10 @@ options:
                 choices:
                     - 'enable'
                     - 'disable'
+            external_idp:
+                description:
+                    - External identity provider configuration. Source user.external-identity-provider.name.
+                type: str
             fsso_agent_for_ntlm:
                 description:
                     - FSSO agent to use for NTLM authentication. Source user.fsso.name.
@@ -132,6 +136,7 @@ options:
                     - 'ssh-publickey'
                     - 'cert'
                     - 'saml'
+                    - 'entra-sso'
             name:
                 description:
                     - Authentication scheme name.
@@ -192,11 +197,12 @@ EXAMPLES = """
       authentication_scheme:
           domain_controller: "<your_own_value> (source user.domain-controller.name)"
           ems_device_owner: "enable"
+          external_idp: "<your_own_value> (source user.external-identity-provider.name)"
           fsso_agent_for_ntlm: "<your_own_value> (source user.fsso.name)"
           fsso_guest: "enable"
           kerberos_keytab: "<your_own_value> (source user.krb-keytab.name)"
           method: "ntlm"
-          name: "default_name_9"
+          name: "default_name_10"
           negotiate_ntlm: "enable"
           require_tfa: "enable"
           saml_server: "<your_own_value> (source user.saml.name)"
@@ -205,7 +211,7 @@ EXAMPLES = """
           user_cert: "enable"
           user_database:
               -
-                  name: "default_name_17 (source system.datasource.name user.radius.name user.tacacs+.name user.ldap.name user.group.name)"
+                  name: "default_name_18 (source system.datasource.name user.radius.name user.tacacs+.name user.ldap.name user.group.name)"
 """
 
 RETURN = """
@@ -294,12 +300,16 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_authentication_scheme_data(json):
     option_list = [
         "domain_controller",
         "ems_device_owner",
+        "external_idp",
         "fsso_agent_for_ntlm",
         "fsso_guest",
         "kerberos_keytab",
@@ -329,8 +339,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -357,24 +366,25 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def authentication_scheme(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     authentication_scheme_data = data["authentication_scheme"]
 
     filtered_data = filter_authentication_scheme_data(authentication_scheme_data)
@@ -387,40 +397,56 @@ def authentication_scheme(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("authentication", "scheme", filtered_data, vdom=vdom)
         current_data = fos.get("authentication", "scheme", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -446,8 +472,9 @@ def authentication_scheme(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["authentication_scheme"] = converted_data
+    data_copy["authentication_scheme"] = filtered_data
     fos.do_member_operation(
         "authentication",
         "scheme",
@@ -478,6 +505,7 @@ def is_successful_status(resp):
 
 
 def fortios_authentication(data, fos, check_mode):
+
     if data["authentication_scheme"]:
         resp = authentication_scheme(data, fos, check_mode)
     else:
@@ -512,6 +540,7 @@ versioned_schema = {
                 {"value": "ssh-publickey"},
                 {"value": "cert", "v_range": [["v7.0.0", ""]]},
                 {"value": "saml", "v_range": [["v7.0.0", ""]]},
+                {"value": "entra-sso", "v_range": [["v7.6.1", ""]]},
             ],
             "multiple_values": True,
             "elements": "str",
@@ -554,6 +583,7 @@ versioned_schema = {
             "v_range": [["v6.0.0", ""]],
         },
         "ssh_ca": {"v_range": [["v6.0.0", ""]], "type": "string"},
+        "external_idp": {"v_range": [["v7.6.1", ""]], "type": "string"},
         "ems_device_owner": {
             "v_range": [["v7.0.0", "v7.0.0"]],
             "type": "string",

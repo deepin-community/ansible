@@ -106,6 +106,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -120,10 +121,10 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         fmg_sasemanager_status:
-          forticlient_ver: <string>
-          forticloud_id: <integer>
-          license_type: <value in [standard_license, advanced_license, comprehensive_license]>
-          spa_hubs: <integer>
+          # forticlient_ver: <string>
+          # forticloud_id: <integer>
+          # license_type: <value in [standard_license, advanced_license, comprehensive_license]>
+          # spa_hubs: <integer>
 '''
 
 RETURN = '''
@@ -182,12 +183,16 @@ def main():
         'adom': {'required': True, 'type': 'str'},
         'fmg_sasemanager_status': {
             'type': 'dict',
-            'v_range': [['7.6.0', '']],
+            'v_range': [['7.6.0', '7.6.1']],
             'options': {
-                'forticlient-ver': {'v_range': [['7.6.0', '']], 'type': 'str'},
-                'forticloud-id': {'v_range': [['7.6.0', '']], 'type': 'int'},
-                'license-type': {'v_range': [['7.6.0', '']], 'choices': ['standard_license', 'advanced_license', 'comprehensive_license'], 'type': 'str'},
-                'spa-hubs': {'v_range': [['7.6.0', '']], 'type': 'int'}
+                'forticlient-ver': {'v_range': [['7.6.0', '7.6.1']], 'type': 'str'},
+                'forticloud-id': {'v_range': [['7.6.0', '7.6.1']], 'type': 'int'},
+                'license-type': {
+                    'v_range': [['7.6.0', '7.6.1']],
+                    'choices': ['standard_license', 'advanced_license', 'comprehensive_license'],
+                    'type': 'str'
+                },
+                'spa-hubs': {'v_range': [['7.6.0', '7.6.1']], 'type': 'int'}
             }
         }
     }

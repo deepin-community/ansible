@@ -4,6 +4,132 @@ Purestorage.Flasharray Release Notes
 
 .. contents:: Topics
 
+v1.36.0
+=======
+
+Minor Changes
+-------------
+
+- purefa_user - No longer tries to expose API tokens as these are not required in the module
+
+Bugfixes
+--------
+
+- purefa_vg - Fixed issue where VG QoS updates were being ignored
+
+v1.35.1
+=======
+
+Bugfixes
+--------
+
+- purefa_ds - Fixed issue with updaing a LDAP configuration fails with a list error.
+- purefa_proxy - Fixed issue with incorrect string comparison
+
+v1.35.0
+=======
+
+Minor Changes
+-------------
+
+- purefa_endpoint - Converted to REST v2
+- purefa_fleet - Allows FlashBlades to be added to Fusion fleets if FlashArray is Purity//FA 6.8.5 or higher
+- purefa_host - Hosts can be created in realms and renamed within the same realm
+- purefa_host - Move function added to allow movement of host to/from realms
+- purefa_inventory - Added support for capacity down licensing
+- purefa_policy - Added support change a specific quota rule by name
+- purefa_subnet - Converted to use REST 2
+- purefa_volume - Added support for creating volumes in Realms
+
+Bugfixes
+--------
+
+- purefa_volume - Fixed issue for error on volume delete w/o eradicate
+
+v1.34.1
+=======
+
+Bugfixes
+--------
+
+- purefa_vg - Fixed idempotency issue when clearing volume group QoS settings
+- purefa_vg - Fixed issue with creating non-QoS volume groups
+
+v1.34.0
+=======
+
+Minor Changes
+-------------
+
+- purefa_timeout - Convert to REST v2
+- purefa_user - Added parameter for SSH public keys and API token timeout
+- purefa_user - Converted to use REST v2
+- purefa_user - When changing API token or timout for an existing user, the user role must be provided or it will revert to ``readonly``
+
+Bugfixes
+--------
+
+- purefa_dsrole - Fixed bug with DS role having no group or group base cannot be updated
+- purefa_pgsnap - Fixed issue with overwrite failing
+- purefa_vlan - Allow LACP bonds to be subnet interfaces
+
+v1.33.1
+=======
+
+Bugfixes
+--------
+
+- purefa_host - Fix issue with no VLAN provided when Purity//FA is a recent version.
+- purefa_host - Fix issue with setting preferred_arrays for a host.
+
+v1.33.0
+=======
+
+Minor Changes
+-------------
+
+- all - Minimum ``py-pure-client`` version increased to 1.57.0 due to release of Realms feature
+- purefa_hg - Added support for Fusion
+- purefa_host - Added Fusion support
+- purefa_info - Add performance data for network interfaces
+- purefa_info - Added new section ``realms``.
+- purefa_info - Added new subset ``fleet``
+- purefa_info - Deprecate ``network.<interface>.hwaddr`` - replaced by ``network.<interface>.mac_address``
+- purefa_info - Deprecate ``network.<interface>.slaves`` - replaced by ``network.<interface>.subinterfaces``
+- purefa_info - VNC feature deprecated from Purity//FA 6.8.0.
+- purefa_pg - Added Fusion support.
+- purefa_pgsched - Added support for Fusion.
+- purefa_pgsnap - Added support for Fusion.
+- purefa_pod_replica - Added Fusion support.
+- purefa_pods - Added support for Fusion with ``context`` parameter.
+- purefa_smtp - Added support for additional parameters, including encryption mode and email prefixs and email sender name.
+- purefa_snap - Added Fusion support.
+- purefa_vg - Added support for Fusion
+- purefa_vlan - Convert to REST v2
+- purefa_vnc - VNC feature deprecated from Purity//FA 6.8.0.
+- purefa_volume - Added ``context`` parameter to support fleet operations
+
+Bugfixes
+--------
+
+- purefa_ds - Fixed issue with trying to create a pre-existing system-defined role
+- purefa_hg - Fixed issue when ``check_mode = true`` not reporting correct status when adding new hosts to hostgroup.
+- purefa_pod - Errored out when setting failover preference for pod
+- purefa_ra - Fixed duration check logic
+- purefa_volume - Fixes issue of moving protected volume into volume group
+
+Known Issues
+------------
+
+- All Fusion fleet members will be assumed to be at the same Purity//FA version level as the array connected to by Ansible.
+- FlashArray//CBS is not currently supported as a member of a Fusion fleet
+
+New Modules
+-----------
+
+- purestorage.flasharray.purefa_fleet - Manage Fusion Fleet
+- purestorage.flasharray.purefa_realm - Manage realms on Pure Storage FlashArrays
+
 v1.32.0
 =======
 

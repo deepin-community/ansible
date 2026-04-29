@@ -125,6 +125,27 @@ options:
                             name:
                                 type: str
                                 description: CASB access rule activity name.
+                            attribute_filter:
+                                aliases: ['attribute-filter']
+                                type: list
+                                elements: dict
+                                description: Attribute filter.
+                                suboptions:
+                                    action:
+                                        type: str
+                                        description: CASB access rule tenant control action.
+                                        choices:
+                                            - 'block'
+                                            - 'monitor'
+                                            - 'bypass'
+                                    attribute_match:
+                                        aliases: ['attribute-match']
+                                        type: list
+                                        elements: str
+                                        description: CASB access rule tenant match.
+                                    id:
+                                        type: int
+                                        description: CASB tenant control ID.
                     custom_control:
                         aliases: ['custom-control']
                         type: list
@@ -147,6 +168,27 @@ options:
                                         type: list
                                         elements: str
                                         description: CASB custom control user input.
+                            attribute_filter:
+                                aliases: ['attribute-filter']
+                                type: list
+                                elements: dict
+                                description: Attribute filter.
+                                suboptions:
+                                    action:
+                                        type: str
+                                        description: CASB access rule tenant control action.
+                                        choices:
+                                            - 'block'
+                                            - 'monitor'
+                                            - 'bypass'
+                                    attribute_match:
+                                        aliases: ['attribute-match']
+                                        type: list
+                                        elements: str
+                                        description: CASB access rule tenant match.
+                                    id:
+                                        type: int
+                                        description: CASB tenant control ID.
                     domain_control:
                         aliases: ['domain-control']
                         type: str
@@ -198,6 +240,28 @@ options:
                         choices:
                             - 'disable'
                             - 'enable'
+                    advanced_tenant_control:
+                        aliases: ['advanced-tenant-control']
+                        type: list
+                        elements: dict
+                        description: Advanced tenant control.
+                        suboptions:
+                            attribute:
+                                type: list
+                                elements: dict
+                                description: Attribute.
+                                suboptions:
+                                    input:
+                                        type: list
+                                        elements: str
+                                        description: CASB extend user input value.
+                                    name:
+                                        type: str
+                                        description: CASB extend user input name.
+                            name:
+                                type: list
+                                elements: str
+                                description: CASB advanced tenant control name.
             comment:
                 type: str
                 description: Comment.
@@ -207,6 +271,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -222,36 +287,45 @@ EXAMPLES = '''
         adom: <your own value>
         state: present # <value in [present, absent]>
         casb_profile:
-          name: <string>
-          saas_application:
-            -
-              access_rule:
-                -
-                  action: <value in [block, bypass, monitor]>
-                  bypass:
-                    - "av"
-                    - "dlp"
-                    - "web-filter"
-                    - "file-filter"
-                    - "video-filter"
-                  name: <string>
-              custom_control:
-                -
-                  name: <string>
-                  option:
-                    -
-                      name: <string>
-                      user_input: <list or string>
-              domain_control: <value in [disable, enable]>
-              domain_control_domains: <list or string>
-              log: <value in [disable, enable]>
-              name: <string>
-              safe_search: <value in [disable, enable]>
-              safe_search_control: <list or string>
-              tenant_control: <value in [disable, enable]>
-              tenant_control_tenants: <list or string>
-              status: <value in [disable, enable]>
-          comment: <string>
+          name: "your value" # Required variable, string
+          # saas_application:
+          #   - access_rule:
+          #       - action: <value in [block, bypass, monitor]>
+          #         bypass:
+          #           - "av"
+          #           - "dlp"
+          #           - "web-filter"
+          #           - "file-filter"
+          #           - "video-filter"
+          #         name: <string>
+          #         attribute_filter:
+          #           - action: <value in [block, monitor, bypass]>
+          #             attribute_match: <list or string>
+          #             id: <integer>
+          #     custom_control:
+          #       - name: <string>
+          #         option:
+          #           - name: <string>
+          #             user_input: <list or string>
+          #         attribute_filter:
+          #           - action: <value in [block, monitor, bypass]>
+          #             attribute_match: <list or string>
+          #             id: <integer>
+          #     domain_control: <value in [disable, enable]>
+          #     domain_control_domains: <list or string>
+          #     log: <value in [disable, enable]>
+          #     name: <string>
+          #     safe_search: <value in [disable, enable]>
+          #     safe_search_control: <list or string>
+          #     tenant_control: <value in [disable, enable]>
+          #     tenant_control_tenants: <list or string>
+          #     status: <value in [disable, enable]>
+          #     advanced_tenant_control:
+          #       - attribute:
+          #           - input: <list or string>
+          #             name: <string>
+          #         name: <list or string>
+          # comment: <string>
 '''
 
 RETURN = '''
@@ -328,7 +402,17 @@ def main():
                                     'choices': ['av', 'dlp', 'web-filter', 'file-filter', 'video-filter'],
                                     'elements': 'str'
                                 },
-                                'name': {'v_range': [['7.4.1', '']], 'type': 'str'}
+                                'name': {'v_range': [['7.4.1', '']], 'type': 'str'},
+                                'attribute-filter': {
+                                    'v_range': [['7.6.2', '']],
+                                    'type': 'list',
+                                    'options': {
+                                        'action': {'v_range': [['7.6.2', '']], 'choices': ['block', 'monitor', 'bypass'], 'type': 'str'},
+                                        'attribute-match': {'v_range': [['7.6.2', '']], 'type': 'list', 'elements': 'str'},
+                                        'id': {'v_range': [['7.6.2', '']], 'type': 'int'}
+                                    },
+                                    'elements': 'dict'
+                                }
                             },
                             'elements': 'dict'
                         },
@@ -345,6 +429,16 @@ def main():
                                         'user-input': {'v_range': [['7.4.1', '']], 'type': 'list', 'elements': 'str'}
                                     },
                                     'elements': 'dict'
+                                },
+                                'attribute-filter': {
+                                    'v_range': [['7.6.2', '']],
+                                    'type': 'list',
+                                    'options': {
+                                        'action': {'v_range': [['7.6.2', '']], 'choices': ['block', 'monitor', 'bypass'], 'type': 'str'},
+                                        'attribute-match': {'v_range': [['7.6.2', '']], 'type': 'list', 'elements': 'str'},
+                                        'id': {'v_range': [['7.6.2', '']], 'type': 'int'}
+                                    },
+                                    'elements': 'dict'
                                 }
                             },
                             'elements': 'dict'
@@ -357,7 +451,24 @@ def main():
                         'safe-search-control': {'v_range': [['7.4.1', '']], 'type': 'list', 'elements': 'str'},
                         'tenant-control': {'v_range': [['7.4.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                         'tenant-control-tenants': {'v_range': [['7.4.1', '']], 'type': 'list', 'elements': 'str'},
-                        'status': {'v_range': [['7.4.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'}
+                        'status': {'v_range': [['7.4.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                        'advanced-tenant-control': {
+                            'v_range': [['7.6.2', '']],
+                            'type': 'list',
+                            'options': {
+                                'attribute': {
+                                    'v_range': [['7.6.2', '']],
+                                    'type': 'list',
+                                    'options': {
+                                        'input': {'v_range': [['7.6.2', '']], 'type': 'list', 'elements': 'str'},
+                                        'name': {'v_range': [['7.6.2', '']], 'type': 'str'}
+                                    },
+                                    'elements': 'dict'
+                                },
+                                'name': {'v_range': [['7.6.2', '']], 'type': 'list', 'elements': 'str'}
+                            },
+                            'elements': 'dict'
+                        }
                     },
                     'elements': 'dict'
                 },

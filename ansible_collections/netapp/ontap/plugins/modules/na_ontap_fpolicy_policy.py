@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2021-2023, NetApp, Inc
+# (c) 2021-2025, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -16,7 +16,7 @@ short_description: NetApp ONTAP - Create, delete or modify an FPolicy policy.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: '21.3.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
 - Create, delete or modify an FPolicy policy. Fpolicy scope must exist before running this module.
 - FPolicy is a file access notification framework that enables an administrator to monitor file and directory access in storage configured for CIFS and NFS.
@@ -77,41 +77,39 @@ options:
 
 EXAMPLES = """
 - name: Create FPolicy policy
-  na_ontap_fpolicy_policy:
+  netapp.ontap.na_ontap_fpolicy_policy:
     state: present
     vserver: svm1
     name: fpolicy_policy
     events: fcpolicy_event
     engine: fpolicy_ext_engine
-    username: "{{ username }}"
-    password: "{{ password }}"
-    hostname: "{{ hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 
 - name: Modify FPolicy policy
-  na_ontap_fpolicy_policy:
+  netapp.ontap.na_ontap_fpolicy_policy:
     state: present
     vserver: svm1
     name: fpolicy_policy
     events: fcpolicy_event
     is_mandatory: false
-    username: "{{ username }}"
-    password: "{{ password }}"
-    hostname: "{{ hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 
 - name: Delete FPolicy policy
-  na_ontap_fpolicy_policy:
+  netapp.ontap.na_ontap_fpolicy_policy:
     state: absent
     vserver: svm1
     name: fpolicy_policy
     events: fcpolicy_event
-    username: "{{ username }}"
-    password: "{{ password }}"
-    hostname: "{{ hostname }}"
-
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    hostname: "{{ netapp_hostname }}"
 """
 
 RETURN = """
-
 """
 
 import traceback

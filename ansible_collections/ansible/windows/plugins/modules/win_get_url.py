@@ -39,6 +39,12 @@ options:
       - If a I(checksum) is passed to this parameter, the digest of the
         destination file will be calculated after it is downloaded to ensure
         its integrity and verify that the transfer completed successfully.
+      - If a checksum is passed in this parameter or via C(checksum_url) and the
+        file in C(dest) exists then C(checksum_dest) is calculated.
+        If C(checksum_dest) equals the checksum no download is done unless
+        C(force) is C(true). If the checksum does not match the file is always
+        downloaded, as if C(force) was set. This behaviour was added in the
+        C(2.7.0) release of this collection.
       - This option cannot be set with I(checksum_url).
     type: str
   checksum_algorithm:
@@ -118,7 +124,7 @@ EXAMPLES = r'''
     checksum_algorithm: sha256
     force: true
 
-- name: Download src with sha256 checksum url
+- name: Download src with static sha1 checksum
   ansible.windows.win_get_url:
     url: http://www.example.com/earthrise.jpg
     dest: C:\temp\earthrise.jpg

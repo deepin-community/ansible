@@ -37,6 +37,7 @@ author:
 notes:
     - Legacy fortiosapi has been deprecated, httpapi is the preferred way to run playbooks
 
+    - The module supports check_mode.
 
 requirements:
     - ansible>=2.15
@@ -212,6 +213,29 @@ options:
                                 choices:
                                     - 'disable'
                                     - 'enable'
+                            multiple_PDN:
+                                description:
+                                    - Multiple-PDN enable/disable.
+                                type: str
+                                choices:
+                                    - 'disable'
+                                    - 'enable'
+                            pdn1_dataplan:
+                                description:
+                                    - PDN1-dataplan. Source extension-controller.dataplan.name.
+                                type: str
+                            pdn2_dataplan:
+                                description:
+                                    - PDN2-dataplan. Source extension-controller.dataplan.name.
+                                type: str
+                            pdn3_dataplan:
+                                description:
+                                    - PDN3-dataplan. Source extension-controller.dataplan.name.
+                                type: str
+                            pdn4_dataplan:
+                                description:
+                                    - PDN4-dataplan. Source extension-controller.dataplan.name.
+                                type: str
                             preferred_carrier:
                                 description:
                                     - Preferred carrier.
@@ -320,6 +344,29 @@ options:
                                 choices:
                                     - 'disable'
                                     - 'enable'
+                            multiple_PDN:
+                                description:
+                                    - Multiple-PDN enable/disable.
+                                type: str
+                                choices:
+                                    - 'disable'
+                                    - 'enable'
+                            pdn1_dataplan:
+                                description:
+                                    - PDN1-dataplan. Source extension-controller.dataplan.name.
+                                type: str
+                            pdn2_dataplan:
+                                description:
+                                    - PDN2-dataplan. Source extension-controller.dataplan.name.
+                                type: str
+                            pdn3_dataplan:
+                                description:
+                                    - PDN3-dataplan. Source extension-controller.dataplan.name.
+                                type: str
+                            pdn4_dataplan:
+                                description:
+                                    - PDN4-dataplan. Source extension-controller.dataplan.name.
+                                type: str
                             preferred_carrier:
                                 description:
                                     - Preferred carrier.
@@ -553,6 +600,32 @@ options:
                         choices:
                             - 'activebackup'
                             - 'loadbalance'
+                    traffic_split_services:
+                        description:
+                            - Config FortiExtender traffic split interface for LAN extension.
+                        type: list
+                        elements: dict
+                        suboptions:
+                            address:
+                                description:
+                                    - Address selection. Source firewall.address.name.
+                                type: str
+                            name:
+                                description:
+                                    - FortiExtender LAN extension tunnel split entry name.
+                                required: true
+                                type: str
+                            service:
+                                description:
+                                    - Service selection. Source firewall.service.custom.name.
+                                type: str
+                            vsdb:
+                                description:
+                                    - Select vsdb [enable/disable].
+                                type: str
+                                choices:
+                                    - 'disable'
+                                    - 'enable'
             login_password:
                 description:
                     - Set the managed extender"s administrator password.
@@ -595,6 +668,7 @@ options:
                     - 'BS10FW'
                     - 'BS20GW'
                     - 'BS20GN'
+                    - 'FVG51G'
             name:
                 description:
                     - FortiExtender profile name.
@@ -1123,6 +1197,11 @@ EXAMPLES = """
                       switch_back_timer: "86400"
                   default_sim: "sim1"
                   gps: "disable"
+                  multiple_PDN: "disable"
+                  pdn1_dataplan: "<your_own_value> (source extension-controller.dataplan.name)"
+                  pdn2_dataplan: "<your_own_value> (source extension-controller.dataplan.name)"
+                  pdn3_dataplan: "<your_own_value> (source extension-controller.dataplan.name)"
+                  pdn4_dataplan: "<your_own_value> (source extension-controller.dataplan.name)"
                   preferred_carrier: "<your_own_value>"
                   redundant_intf: "<your_own_value>"
                   redundant_mode: "disable"
@@ -1142,6 +1221,11 @@ EXAMPLES = """
                       switch_back_timer: "86400"
                   default_sim: "sim1"
                   gps: "disable"
+                  multiple_PDN: "disable"
+                  pdn1_dataplan: "<your_own_value> (source extension-controller.dataplan.name)"
+                  pdn2_dataplan: "<your_own_value> (source extension-controller.dataplan.name)"
+                  pdn3_dataplan: "<your_own_value> (source extension-controller.dataplan.name)"
+                  pdn4_dataplan: "<your_own_value> (source extension-controller.dataplan.name)"
                   preferred_carrier: "<your_own_value>"
                   redundant_intf: "<your_own_value>"
                   redundant_mode: "disable"
@@ -1161,17 +1245,17 @@ EXAMPLES = """
                   receiver:
                       -
                           alert: "system-reboot"
-                          name: "default_name_61"
+                          name: "default_name_71"
                           phone_number: "<your_own_value>"
                           status: "disable"
                   status: "disable"
           enforce_bandwidth: "enable"
           extension: "wan-extension"
-          id: "67"
+          id: "77"
           lan_extension:
               backhaul:
                   -
-                      name: "default_name_70"
+                      name: "default_name_80"
                       port: "wan"
                       role: "primary"
                       weight: "1"
@@ -1179,17 +1263,23 @@ EXAMPLES = """
               backhaul_ip: "<your_own_value>"
               downlinks:
                   -
-                      name: "default_name_77"
+                      name: "default_name_87"
                       port: "port1"
                       pvid: "0"
                       type: "port"
                       vap: "<your_own_value> (source extension-controller.extender-vap.name)"
               ipsec_tunnel: "<your_own_value>"
               link_loadbalance: "activebackup"
+              traffic_split_services:
+                  -
+                      address: "<your_own_value> (source firewall.address.name)"
+                      name: "default_name_96"
+                      service: "<your_own_value> (source firewall.service.custom.name)"
+                      vsdb: "disable"
           login_password: "<your_own_value>"
           login_password_change: "yes"
           model: "FX201E"
-          name: "default_name_87"
+          name: "default_name_102"
           wifi:
               country: "--"
               radio_1:
@@ -1204,7 +1294,7 @@ EXAMPLES = """
                   lan_ext_vap: "<your_own_value> (source extension-controller.extender-vap.name)"
                   local_vaps:
                       -
-                          name: "default_name_101 (source extension-controller.extender-vap.name)"
+                          name: "default_name_116 (source extension-controller.extender-vap.name)"
                   max_clients: "0"
                   mode: "AP"
                   operating_standard: "auto"
@@ -1223,7 +1313,7 @@ EXAMPLES = """
                   lan_ext_vap: "<your_own_value> (source extension-controller.extender-vap.name)"
                   local_vaps:
                       -
-                          name: "default_name_119 (source extension-controller.extender-vap.name)"
+                          name: "default_name_134 (source extension-controller.extender-vap.name)"
                   max_clients: "0"
                   mode: "AP"
                   operating_standard: "auto"
@@ -1309,6 +1399,18 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortimanager.comm
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.data_post_processor import (
     remove_invalid_fields,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    is_same_comparison,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    serialize,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    find_current_values,
+)
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_extension_controller_extender_profile_data(json):
@@ -1342,8 +1444,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -1375,16 +1476,18 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def valid_attr_to_invalid_attr(data):
@@ -1413,12 +1516,11 @@ def valid_attr_to_invalid_attrs(data):
     return valid_attr_to_invalid_attr(data)
 
 
-def extension_controller_extender_profile(data, fos):
+def extension_controller_extender_profile(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     extension_controller_extender_profile_data = data[
         "extension_controller_extender_profile"
     ]
@@ -1429,9 +1531,94 @@ def extension_controller_extender_profile(data, fos):
     filtered_data = flatten_multilists_attributes(filtered_data)
     converted_data = underscore_to_hyphen(valid_attr_to_invalid_attrs(filtered_data))
 
+    # check_mode starts from here
+    if check_mode:
+        diff = {
+            "before": "",
+            "after": filtered_data,
+        }
+        mkeyname = fos.get_mkeyname(None, None)
+        mkey = fos.get_mkey(
+            "extension-controller", "extender-profile", filtered_data, vdom=vdom
+        )
+        current_data = fos.get(
+            "extension-controller", "extender-profile", vdom=vdom, mkey=mkey
+        )
+        is_existed = (
+            current_data
+            and current_data.get("http_status") == 200
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
+        )
+
+        # 2. if it exists and the state is 'present' then compare current settings with desired
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
+                return False, True, filtered_data, diff
+
+            # if mkey exists then compare each other
+            # record exits and they're matched or not
+            copied_filtered_data = filtered_data.copy()
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
+
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
+            if is_existed:
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
+                )
+
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
+                )
+
+                return (
+                    False,
+                    not is_same,
+                    filtered_data,
+                    {"before": unified_current_values, "after": unified_filtered_data},
+                )
+
+            # record does not exist
+            return False, True, filtered_data, diff
+
+        if state == "absent":
+            if mkey is None:
+                return (
+                    False,
+                    False,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+
+            if is_existed:
+                return (
+                    False,
+                    True,
+                    filtered_data,
+                    {"before": current_data["results"][0], "after": ""},
+                )
+            return False, False, filtered_data, {}
+
+        return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["extension_controller_extender_profile"] = converted_data
+    data_copy["extension_controller_extender_profile"] = filtered_data
     fos.do_member_operation(
         "extension-controller",
         "extender-profile",
@@ -1466,14 +1653,16 @@ def is_successful_status(resp):
     )
 
 
-def fortios_extension_controller(data, fos):
+def fortios_extension_controller(data, fos, check_mode):
+
     if data["extension_controller_extender_profile"]:
-        resp = extension_controller_extender_profile(data, fos)
+        resp = extension_controller_extender_profile(data, fos, check_mode)
     else:
         fos._module.fail_json(
             msg="missing task body: %s" % ("extension_controller_extender_profile")
         )
-
+    if isinstance(resp, tuple) and len(resp) == 4:
+        return resp
     return (
         not is_successful_status(resp),
         is_successful_status(resp)
@@ -1518,6 +1707,7 @@ versioned_schema = {
                 {"value": "BS10FW", "v_range": [["v7.4.4", ""]]},
                 {"value": "BS20GW", "v_range": [["v7.4.4", ""]]},
                 {"value": "BS20GN", "v_range": [["v7.4.4", ""]]},
+                {"value": "FVG51G", "v_range": [["v7.6.1", ""]]},
             ],
         },
         "extension": {
@@ -1770,6 +1960,27 @@ versioned_schema = {
                                 },
                             },
                         },
+                        "multiple_PDN": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                            "options": [{"value": "disable"}, {"value": "enable"}],
+                        },
+                        "pdn1_dataplan": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                        },
+                        "pdn2_dataplan": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                        },
+                        "pdn3_dataplan": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                        },
+                        "pdn4_dataplan": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                        },
                     },
                 },
                 "modem2": {
@@ -1874,6 +2085,27 @@ versioned_schema = {
                                     "type": "integer",
                                 },
                             },
+                        },
+                        "multiple_PDN": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                            "options": [{"value": "disable"}, {"value": "enable"}],
+                        },
+                        "pdn1_dataplan": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                        },
+                        "pdn2_dataplan": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                        },
+                        "pdn3_dataplan": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                        },
+                        "pdn4_dataplan": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
                         },
                     },
                 },
@@ -2424,6 +2656,25 @@ versioned_schema = {
                     },
                     "v_range": [["v7.6.0", ""]],
                 },
+                "traffic_split_services": {
+                    "type": "list",
+                    "elements": "dict",
+                    "children": {
+                        "name": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                            "required": True,
+                        },
+                        "vsdb": {
+                            "v_range": [["v7.6.1", ""]],
+                            "type": "string",
+                            "options": [{"value": "disable"}, {"value": "enable"}],
+                        },
+                        "address": {"v_range": [["v7.6.1", ""]], "type": "string"},
+                        "service": {"v_range": [["v7.6.1", ""]], "type": "string"},
+                    },
+                    "v_range": [["v7.6.1", ""]],
+                },
             },
         },
     },
@@ -2453,15 +2704,15 @@ def main():
         },
     }
     for attribute_name in module_spec["options"]:
-        fields["extension_controller_extender_profile"]["options"][
-            attribute_name
-        ] = module_spec["options"][attribute_name]
+        fields["extension_controller_extender_profile"]["options"][attribute_name] = (
+            module_spec["options"][attribute_name]
+        )
         if mkeyname and mkeyname == attribute_name:
             fields["extension_controller_extender_profile"]["options"][attribute_name][
                 "required"
             ] = True
 
-    module = AnsibleModule(argument_spec=fields, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     check_legacy_fortiosapi(module)
 
     is_error = False
@@ -2485,7 +2736,7 @@ def main():
         )
 
         is_error, has_changed, result, diff = fortios_extension_controller(
-            module.params, fos
+            module.params, fos, module.check_mode
         )
 
     else:

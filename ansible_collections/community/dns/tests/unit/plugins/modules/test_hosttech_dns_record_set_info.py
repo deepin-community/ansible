@@ -3,38 +3,41 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+
 __metaclass__ = type
 
+# These imports are needed so patching below works
+import ansible_collections.community.dns.plugins.module_utils.http  # noqa: F401, pylint: disable=unused-import
 import pytest
-
-from ansible_collections.community.internal_test_tools.tests.unit.compat.mock import patch
-
+from ansible_collections.community.dns.plugins.modules import (
+    hosttech_dns_record_set_info,
+)
+from ansible_collections.community.internal_test_tools.tests.unit.compat.mock import (
+    patch,
+)
 from ansible_collections.community.internal_test_tools.tests.unit.utils.fetch_url_module_framework import (
     BaseTestModule,
     FetchUrlCall,
 )
 
-from ansible_collections.community.dns.plugins.modules import hosttech_dns_record_set_info
-
-# These imports are needed so patching below works
-import ansible_collections.community.dns.plugins.module_utils.http  # noqa: F401, pylint: disable=unused-import
-
 from .hosttech import (
+    HOSTTECH_JSON_ZONE_GET_RESULT,
+    HOSTTECH_JSON_ZONE_LIST_RESULT,
+    HOSTTECH_WSDL_DEFAULT_ZONE_RESULT,
+    HOSTTECH_WSDL_ZONE_NOT_FOUND,
     expect_wsdl_authentication,
     expect_wsdl_value,
     validate_wsdl_call,
-    HOSTTECH_WSDL_DEFAULT_ZONE_RESULT,
-    HOSTTECH_WSDL_ZONE_NOT_FOUND,
-    HOSTTECH_JSON_ZONE_GET_RESULT,
-    HOSTTECH_JSON_ZONE_LIST_RESULT,
 )
+
 
 try:
     import lxml.etree
     HAS_LXML_ETREE = True
-except ImportError:
-    HAS_LXML_ETREE = False
+except ImportError:  # pragma: no cover
+    HAS_LXML_ETREE = False  # pragma: no cover
 
 
 def mock_sleep(delay):
@@ -278,7 +281,7 @@ class TestHosttechDNSRecordSetInfoJSON(BaseTestModule):
             .expect_header('authorization', 'Bearer foo')
             .expect_url('https://api.ns1.hosttech.eu/api/user/v1/zones/23')
             .return_header('Content-Type', 'application/json')
-            .result_json(dict(message="")),
+            .result_json({'message': ''}),
         ])
 
         assert result['msg'] == 'Zone not found'
@@ -315,7 +318,7 @@ class TestHosttechDNSRecordSetInfoJSON(BaseTestModule):
             .expect_header('accept', 'application/json')
             .expect_header('authorization', 'Bearer foo')
             .expect_url('https://api.ns1.hosttech.eu/api/user/v1/zones/23')
-            .result_json(dict(message="")),
+            .result_json({'message': ''}),
         ])
 
         assert result['msg'] == 'Cannot authenticate: Forbidden: you do not have access to this resource (HTTP status 403)'

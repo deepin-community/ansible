@@ -152,6 +152,10 @@ options:
                         choices:
                             - 'enable'
                             - 'disable'
+                    vrf_select:
+                        description:
+                            - VRF ID used for connection to server.
+                        type: int
             acct_all_servers:
                 description:
                     - Enable/disable sending of accounting messages to all configured servers .
@@ -312,6 +316,13 @@ options:
                 description:
                     - RADIUS service port number.
                 type: int
+            require_message_authenticator:
+                description:
+                    - Require message authenticator in authentication response.
+                type: str
+                choices:
+                    - 'enable'
+                    - 'disable'
             rsso:
                 description:
                     - Enable/disable RADIUS based single sign on feature.
@@ -577,6 +588,10 @@ options:
                 choices:
                     - 'enable'
                     - 'disable'
+            vrf_select:
+                description:
+                    - VRF ID used for connection to server.
+                type: int
 """
 
 EXAMPLES = """
@@ -598,6 +613,7 @@ EXAMPLES = """
                   server: "192.168.100.40"
                   source_ip: "84.230.14.43"
                   status: "enable"
+                  vrf_select: "0"
           acct_all_servers: "enable"
           acct_interim_interval: "0"
           all_usergroup: "disable"
@@ -606,7 +622,7 @@ EXAMPLES = """
           call_station_id_type: "legacy"
           class:
               -
-                  name: "default_name_21"
+                  name: "default_name_22"
           client_cert: "<your_own_value> (source vpn.certificate.local.name)"
           delimiter: "plus"
           group_override_attr_type: "filter-Id"
@@ -616,7 +632,7 @@ EXAMPLES = """
           mac_case: "uppercase"
           mac_password_delimiter: "hyphen"
           mac_username_delimiter: "hyphen"
-          name: "default_name_31"
+          name: "default_name_32"
           nas_id: "<your_own_value>"
           nas_id_type: "legacy"
           nas_ip: "<your_own_value>"
@@ -624,6 +640,7 @@ EXAMPLES = """
           password_renewal: "enable"
           radius_coa: "enable"
           radius_port: "0"
+          require_message_authenticator: "enable"
           rsso: "enable"
           rsso_context_timeout: "28800"
           rsso_endpoint_attribute: "User-Name"
@@ -657,6 +674,7 @@ EXAMPLES = """
           transport_protocol: "udp"
           use_management_vdom: "enable"
           username_case_sensitive: "enable"
+          vrf_select: "0"
 """
 
 RETURN = """
@@ -745,6 +763,9 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_user_radius_data(json):
@@ -776,6 +797,7 @@ def filter_user_radius_data(json):
         "password_renewal",
         "radius_coa",
         "radius_port",
+        "require_message_authenticator",
         "rsso",
         "rsso_context_timeout",
         "rsso_endpoint_attribute",
@@ -809,6 +831,7 @@ def filter_user_radius_data(json):
         "transport_protocol",
         "use_management_vdom",
         "username_case_sensitive",
+        "vrf_select",
     ]
 
     json = remove_invalid_fields(json)
@@ -826,8 +849,7 @@ def flatten_single_path(data, path, index):
         not data
         or index == len(path)
         or path[index] not in data
-        or not data[path[index]]
-        and not isinstance(data[path[index]], list)
+        or (not data[path[index]] and not isinstance(data[path[index]], list))
     ):
         return
 
@@ -855,24 +877,25 @@ def flatten_multilists_attributes(data):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def user_radius(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     user_radius_data = data["user_radius"]
 
     filtered_data = filter_user_radius_data(user_radius_data)
@@ -885,40 +908,56 @@ def user_radius(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("user", "radius", filtered_data, vdom=vdom)
         current_data = fos.get("user", "radius", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -944,8 +983,9 @@ def user_radius(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["user_radius"] = converted_data
+    data_copy["user_radius"] = filtered_data
     fos.do_member_operation(
         "user",
         "radius",
@@ -974,6 +1014,7 @@ def is_successful_status(resp):
 
 
 def fortios_user(data, fos, check_mode):
+
     if data["user_radius"]:
         resp = user_radius(data, fos, check_mode)
     else:
@@ -1085,6 +1126,11 @@ versioned_schema = {
             "type": "string",
             "options": [{"value": "enable"}, {"value": "disable"}],
         },
+        "require_message_authenticator": {
+            "v_range": [["v7.6.1", ""]],
+            "type": "string",
+            "options": [{"value": "enable"}, {"value": "disable"}],
+        },
         "password_encoding": {
             "v_range": [["v6.0.0", ""]],
             "type": "string",
@@ -1133,6 +1179,7 @@ versioned_schema = {
             "v_range": [["v6.2.0", "v6.2.0"], ["v6.2.5", ""]],
             "type": "string",
         },
+        "vrf_select": {"v_range": [["v7.6.1", ""]], "type": "integer"},
         "switch_controller_service_type": {
             "v_range": [["v6.4.0", "v6.4.0"], ["v6.4.4", ""]],
             "type": "list",
@@ -1361,6 +1408,7 @@ versioned_schema = {
                     "v_range": [["v6.2.0", "v6.2.0"], ["v6.2.5", ""]],
                     "type": "string",
                 },
+                "vrf_select": {"v_range": [["v7.6.1", ""]], "type": "integer"},
             },
             "v_range": [["v6.0.0", ""]],
         },

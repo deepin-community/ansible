@@ -167,6 +167,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -182,18 +183,18 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         wanopt_profile_http:
-          byte_caching: <value in [disable, enable]>
-          log_traffic: <value in [disable, enable]>
-          port: <list or integer>
-          prefer_chunking: <value in [dynamic, fix]>
-          secure_tunnel: <value in [disable, enable]>
-          ssl: <value in [disable, enable]>
-          ssl_port: <list or integer>
-          status: <value in [disable, enable]>
-          tunnel_non_http: <value in [disable, enable]>
-          tunnel_sharing: <value in [private, shared, express-shared]>
-          unknown_http_version: <value in [best-effort, reject, tunnel]>
-          protocol_opt: <value in [protocol, tcp]>
+          # byte_caching: <value in [disable, enable]>
+          # log_traffic: <value in [disable, enable]>
+          # port: <list or integer>
+          # prefer_chunking: <value in [dynamic, fix]>
+          # secure_tunnel: <value in [disable, enable]>
+          # ssl: <value in [disable, enable]>
+          # ssl_port: <list or integer>
+          # status: <value in [disable, enable]>
+          # tunnel_non_http: <value in [disable, enable]>
+          # tunnel_sharing: <value in [private, shared, express-shared]>
+          # unknown_http_version: <value in [best-effort, reject, tunnel]>
+          # protocol_opt: <value in [protocol, tcp]>
 '''
 
 RETURN = '''
@@ -257,15 +258,15 @@ def main():
             'options': {
                 'byte-caching': {'choices': ['disable', 'enable'], 'type': 'str'},
                 'log-traffic': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'port': {'type': 'raw'},
+                'port': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
                 'prefer-chunking': {'choices': ['dynamic', 'fix'], 'type': 'str'},
                 'secure-tunnel': {'choices': ['disable', 'enable'], 'type': 'str'},
                 'ssl': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'ssl-port': {'type': 'raw'},
+                'ssl-port': {'v_range': [['6.0.0', '7.6.2']], 'type': 'raw'},
                 'status': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'tunnel-non-http': {'choices': ['disable', 'enable'], 'type': 'str'},
+                'tunnel-non-http': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'tunnel-sharing': {'choices': ['private', 'shared', 'express-shared'], 'type': 'str'},
-                'unknown-http-version': {'choices': ['best-effort', 'reject', 'tunnel'], 'type': 'str'},
+                'unknown-http-version': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['best-effort', 'reject', 'tunnel'], 'type': 'str'},
                 'protocol-opt': {'v_range': [['6.4.0', '']], 'choices': ['protocol', 'tcp'], 'type': 'str'}
             }
         }

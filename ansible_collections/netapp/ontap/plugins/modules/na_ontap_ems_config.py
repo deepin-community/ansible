@@ -13,7 +13,7 @@ short_description: NetApp ONTAP module to modify EMS configuration.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap_rest
 version_added: '22.8.0'
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 description:
   - Configure event notification and logging for the cluster.
 options:
@@ -61,30 +61,30 @@ notes:
 """
 
 EXAMPLES = """
-  - name: Modify EMS mail config
-    netapp.ontap.na_ontap_ems_config:
-      state: present
-      mail_from: administrator@mycompany.com
-      mail_server: mail.mycompany.com
-      pubsub_enabled: true
-      hostname: "{{ netapp_hostname }}"
-      username: "{{ netapp_username }}"
-      password: "{{ netapp_password }}"
-      https: true
-      validate_certs: "{{ validate_certs }}"
+- name: Modify EMS mail config
+  netapp.ontap.na_ontap_ems_config:
+    state: present
+    mail_from: administrator@mycompany.com
+    mail_server: mail.mycompany.com
+    pubsub_enabled: true
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
 
-  - name: Modify EMS proxy config
-    netapp.ontap.na_ontap_ems_config:
-      state: present
-      proxy_url: http://proxy.example.com:8080
-      pubsub_enabled: true
-      proxy_user: admin
-      proxy_password: password
-      hostname: "{{ netapp_hostname }}"
-      username: "{{ netapp_username }}"
-      password: "{{ netapp_password }}"
-      https: true
-      validate_certs: "{{ validate_certs }}"
+- name: Modify EMS proxy config
+  netapp.ontap.na_ontap_ems_config:
+    state: present
+    proxy_url: http://proxy.example.com:8080
+    pubsub_enabled: true
+    proxy_user: admin
+    proxy_password: password
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
 """
 
 RETURN = """
@@ -112,7 +112,7 @@ class NetAppOntapEmsConfig:
         ))
         self.module = AnsibleModule(
             argument_spec=self.argument_spec,
-            supports_check_mode=False
+            supports_check_mode=True
         )
         self.uuid = None
         self.na_helper = NetAppModule(self.module)

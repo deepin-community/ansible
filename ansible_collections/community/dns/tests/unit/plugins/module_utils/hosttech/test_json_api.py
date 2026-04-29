@@ -6,25 +6,22 @@
 # Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 import pytest
-
-from ansible_collections.community.internal_test_tools.tests.unit.compat.mock import MagicMock
-
-from ansible_collections.community.dns.plugins.module_utils.record import (
-    DNSRecord,
+from ansible_collections.community.dns.plugins.module_utils.hosttech.json_api import (
+    HostTechJSONAPI,
+    _create_record_from_json,
+    _record_to_json,
 )
-
+from ansible_collections.community.dns.plugins.module_utils.record import DNSRecord
 from ansible_collections.community.dns.plugins.module_utils.zone_record_api import (
     DNSAPIError,
 )
-
-from ansible_collections.community.dns.plugins.module_utils.hosttech.json_api import (
-    _create_record_from_json,
-    _record_to_json,
-    HostTechJSONAPI,
+from ansible_collections.community.internal_test_tools.tests.unit.compat.mock import (
+    MagicMock,
 )
 
 
@@ -326,8 +323,7 @@ def test_list_pagination():
         assert query['offset'] in [0, 1, 2]
         if query['offset'] < 2:
             return {'data': [query['offset']]}, {}
-        else:
-            return {'data': []}, {}
+        return {'data': []}, {}
 
     def get_2(url, query=None, must_have_content=True, expected=None):
         assert url == 'https://example.com'
@@ -340,8 +336,7 @@ def test_list_pagination():
         assert query['offset'] in [0, 2]
         if query['offset'] < 2:
             return {'data': ['bar', 'baz']}, {}
-        else:
-            return {'data': ['foo']}, {}
+        return {'data': ['foo']}, {}
 
     api = HostTechJSONAPI(MagicMock(), '123')
 
@@ -350,7 +345,7 @@ def test_list_pagination():
     assert result == [0, 1]
 
     api._get = MagicMock(side_effect=get_2)
-    result = api._list_pagination('https://example.com', query=dict(foo='bar'), block_size=2)
+    result = api._list_pagination('https://example.com', query={'foo': 'bar'}, block_size=2)
     assert result == ['bar', 'baz', 'foo']
 
 
@@ -372,10 +367,10 @@ def test_extract_error_message():
     api = HostTechJSONAPI(MagicMock(), '123')
     assert api._extract_error_message(None) == ''
     assert api._extract_error_message('foo') == ' with data: foo'
-    assert api._extract_error_message(dict()) == ' with data: {}'
-    assert api._extract_error_message(dict(message='')) == " with data: {'message': ''}"
-    assert api._extract_error_message(dict(message='foo')) == ' with message "foo"'
-    assert api._extract_error_message(dict(message='foo', errors='')) == ' with message "foo"'
-    assert api._extract_error_message(dict(message='foo', errors=dict())) == ' with message "foo"'
-    assert api._extract_error_message(dict(message='foo', errors=dict(bar='baz'))) == ' with message "foo" (field "bar": baz)'
-    assert api._extract_error_message(dict(errors=dict(bar=['baz', 'bam'], arf='fra'))) == ' (field "arf": fra) (field "bar": baz; bam)'
+    assert api._extract_error_message({}) == ' with data: {}'
+    assert api._extract_error_message({'message': ''}) == " with data: {'message': ''}"
+    assert api._extract_error_message({'message': 'foo'}) == ' with message "foo"'
+    assert api._extract_error_message({'message': 'foo', 'errors': ''}) == ' with message "foo"'
+    assert api._extract_error_message({'message': 'foo', 'errors': {}}) == ' with message "foo"'
+    assert api._extract_error_message({'message': 'foo', 'errors': {'bar': 'baz'}}) == ' with message "foo" (field "bar": baz)'
+    assert api._extract_error_message({'errors': {'bar': ['baz', 'bam'], 'arf': 'fra'}}) == ' (field "arf": fra) (field "bar": baz; bam)'

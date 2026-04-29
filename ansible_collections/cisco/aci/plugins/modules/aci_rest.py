@@ -61,6 +61,14 @@ options:
     - Preserve the response for the provided path.
     type: bool
     default: false
+  page_size:
+    description:
+    - The number of items to return in a single page.
+    type: int
+  page:
+    description:
+    - The page number to return.
+    type: int
 extends_documentation_fragment:
 - cisco.aci.aci
 - cisco.aci.annotation
@@ -159,6 +167,17 @@ EXAMPLES = r"""
     username: admin
     password: SomeSecretPassword
     method: get
+    path: /api/node/class/fvTenant.json
+  delegate_to: localhost
+  register: query_result
+
+- name: Get first 5 tenants using password authentication and pagination
+  cisco.aci.aci_rest:
+    host: apic
+    username: admin
+    password: SomeSecretPassword
+    method: get
+    page_size: 5
     path: /api/node/class/fvTenant.json
   delegate_to: localhost
   register: query_result
@@ -316,14 +335,15 @@ def add_annotation(annotation, payload):
         for key, val in payload.items():
             if key in ANNOTATION_UNSUPPORTED:
                 continue
-            att = val.get("attributes", {})
-            if "annotation" not in att.keys():
-                att["annotation"] = annotation
-            # Recursively add annotation to children
-            children = val.get("children", None)
-            if children:
-                for child in children:
-                    add_annotation(annotation, child)
+            if isinstance(val, dict):
+                att = val.get("attributes", {})
+                if "annotation" not in att.keys():
+                    att["annotation"] = annotation
+                # Recursively add annotation to children
+                children = val.get("children", None)
+                if children:
+                    for child in children:
+                        add_annotation(annotation, child)
 
 
 def add_annotation_xml(annotation, tree):
@@ -376,6 +396,8 @@ def main():
         src=dict(type="path", aliases=["config_file"]),
         content=dict(type="raw"),
         rsp_subtree_preserve=dict(type="bool", default=False),
+        page_size=dict(type="int"),
+        page=dict(type="int"),
     )
 
     module = AnsibleModule(
@@ -389,6 +411,10 @@ def main():
     src = module.params.get("src")
     rsp_subtree_preserve = module.params.get("rsp_subtree_preserve")
     annotation = module.params.get("annotation")
+    page_size = module.params.get("page_size")
+    page = module.params.get("page")
+    if module.params.get("method") != "get" and page_size:
+        module.fail_json(msg="Pagination parameters (page and page_size) are only valid for GET method")
 
     # Report missing file
     file_exists = False
@@ -452,6 +478,10 @@ def main():
     # NOTE By setting aci.path we ensure that Ansible displays accurate URL info when the plugin and the aci_rest module are used.
     aci.path = path.lstrip("/")
     aci.url = "{0}/{1}".format(aci.base_url, aci.path)
+
+    if aci.params.get("method") == "get" and page_size:
+        aci.path = update_qsl(aci.path, {"page": page, "page-size": page_size})
+        aci.url = update_qsl(aci.url, {"page": page, "page-size": page_size})
     if aci.params.get("method") != "get" and not rsp_subtree_preserve:
         aci.path = "{0}?rsp-subtree=modified".format(aci.path)
         aci.url = update_qsl(aci.url, {"rsp-subtree": "modified"})

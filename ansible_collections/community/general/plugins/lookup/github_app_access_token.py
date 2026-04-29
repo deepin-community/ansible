@@ -5,49 +5,49 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-DOCUMENTATION = '''
-    name: github_app_access_token
-    author:
-      - Poh Wei Sheng (@weisheng-p)
-    short_description: Obtain short-lived Github App Access tokens
-    version_added: '8.2.0'
-    requirements:
-      - jwt (https://github.com/GehirnInc/python-jwt)
+DOCUMENTATION = r"""
+name: github_app_access_token
+author:
+  - Poh Wei Sheng (@weisheng-p)
+short_description: Obtain short-lived Github App Access tokens
+version_added: '8.2.0'
+requirements:
+  - jwt (https://github.com/GehirnInc/python-jwt)
+description:
+  - This generates a Github access token that can be used with a C(git) command, if you use a Github App.
+options:
+  key_path:
     description:
-      - This generates a Github access token that can be used with a C(git) command, if you use a Github App.
-    options:
-      key_path:
-        description:
-        - Path to your private key.
-        - Either O(key_path) or O(private_key) must be specified.
-        type: path
-      app_id:
-        description:
-        - Your GitHub App ID, you can find this in the Settings page.
-        required: true
-        type: str
-      installation_id:
-        description:
-        - The installation ID that contains the git repository you would like access to.
-        - As of 2023-12-24, this can be found via Settings page > Integrations > Application. The last part of the URL in the
-          configure button is the installation ID.
-        - Alternatively, you can use PyGithub (U(https://github.com/PyGithub/PyGithub)) to get your installation ID.
-        required: true
-        type: str
-      private_key:
-        description:
-        - GitHub App private key in PEM file format as string.
-        - Either O(key_path) or O(private_key) must be specified.
-        type: str
-        version_added: 10.0.0
-      token_expiry:
-        description:
-        - How long the token should last for in seconds.
-        default: 600
-        type: int
-'''
+      - Path to your private key.
+      - Either O(key_path) or O(private_key) must be specified.
+    type: path
+  app_id:
+    description:
+      - Your GitHub App ID, you can find this in the Settings page.
+    required: true
+    type: str
+  installation_id:
+    description:
+      - The installation ID that contains the git repository you would like access to.
+      - As of 2023-12-24, this can be found at Settings page > Integrations > Application. The last part of the URL in the
+        configure button is the installation ID.
+      - Alternatively, you can use PyGithub (U(https://github.com/PyGithub/PyGithub)) to get your installation ID.
+    required: true
+    type: str
+  private_key:
+    description:
+      - GitHub App private key in PEM file format as string.
+      - Either O(key_path) or O(private_key) must be specified.
+    type: str
+    version_added: 10.0.0
+  token_expiry:
+    description:
+      - How long the token should last for in seconds.
+    default: 600
+    type: int
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Get access token to be used for git checkout with app_id=123456, installation_id=64209
   ansible.builtin.git:
     repo: >-
@@ -57,14 +57,14 @@ EXAMPLES = '''
     github_token: >-
       {{ lookup('community.general.github_app_access_token', key_path='/home/to_your/key',
                 app_id='123456', installation_id='64209') }}
-'''
+"""
 
-RETURN = '''
-  _raw:
-    description: A one-element list containing your GitHub access token.
-    type: list
-    elements: str
-'''
+RETURN = r"""
+_raw:
+  description: A one-element list containing your GitHub access token.
+  type: list
+  elements: str
+"""
 
 
 try:
@@ -97,7 +97,7 @@ def read_key(path, private_key=None):
         with open(path, 'rb') as pem_file:
             return jwk_from_pem(pem_file.read())
     except Exception as e:
-        raise AnsibleError("Error while parsing key file: {0}".format(e))
+        raise AnsibleError(f"Error while parsing key file: {e}")
 
 
 def encode_jwt(app_id, jwk, exp=600):
@@ -110,7 +110,7 @@ def encode_jwt(app_id, jwk, exp=600):
     try:
         return jwt_instance.encode(payload, jwk, alg='RS256')
     except Exception as e:
-        raise AnsibleError("Error while encoding jwt: {0}".format(e))
+        raise AnsibleError(f"Error while encoding jwt: {e}")
 
 
 def post_request(generated_jwt, installation_id):
@@ -124,19 +124,19 @@ def post_request(generated_jwt, installation_id):
     except HTTPError as e:
         try:
             error_body = json.loads(e.read().decode())
-            display.vvv("Error returned: {0}".format(error_body))
+            display.vvv(f"Error returned: {error_body}")
         except Exception:
             error_body = {}
         if e.code == 404:
             raise AnsibleError("Github return error. Please confirm your installationd_id value is valid")
         elif e.code == 401:
             raise AnsibleError("Github return error. Please confirm your private key is valid")
-        raise AnsibleError("Unexpected data returned: {0} -- {1}".format(e, error_body))
+        raise AnsibleError(f"Unexpected data returned: {e} -- {error_body}")
     response_body = response.read()
     try:
         json_data = json.loads(response_body.decode('utf-8'))
     except json.decoder.JSONDecodeError as e:
-        raise AnsibleError("Error while dencoding JSON respone from github: {0}".format(e))
+        raise AnsibleError(f"Error while dencoding JSON respone from github: {e}")
     return json_data.get('token')
 
 

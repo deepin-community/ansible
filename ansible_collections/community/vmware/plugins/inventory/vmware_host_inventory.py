@@ -10,6 +10,10 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
     name: vmware_host_inventory
+    deprecated:
+      removed_in: 7.0.0
+      why: This module has been moved to the L(new vmware.vmware collection,https://forum.ansible.com/t/5880)
+      alternative: Use P(vmware.vmware.esxi_hosts#inventory) instead.
     short_description: VMware ESXi hostsystem inventory source
     author:
       - Abhijeet Kasurde (@Akasurde)
@@ -144,6 +148,11 @@ DOCUMENTATION = r"""
           required: false
           env:
             - name: VMWARE_PROXY_PORT
+        enable_backward_compatibility:
+          description:
+          - Flatten the host properties for backward compatibility.
+          type: bool
+          default: true
 """
 
 EXAMPLES = r"""
@@ -523,7 +532,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 self.inventory.set_variable(host, k, v)
 
         # For backward compatability
-        host_properties = to_flatten_dict(host_properties)
-        for k, v in host_properties.items():
-            k = self._sanitize_group_name(k) if can_sanitize else k
-            self.inventory.set_variable(host, k, v)
+        backward_compatibility = self.get_option("enable_backward_compatibility")
+        if backward_compatibility:
+            host_properties = to_flatten_dict(host_properties)
+            for k, v in host_properties.items():
+                k = self._sanitize_group_name(k) if can_sanitize else k
+                self.inventory.set_variable(host, k, v)

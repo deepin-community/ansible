@@ -104,6 +104,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -119,9 +120,9 @@ EXAMPLES = '''
         adom: <your own value>
         managed_switch: <your own value>
         switchcontroller_managedswitch_snmptrapthreshold:
-          trap_high_cpu_threshold: <integer>
-          trap_log_full_threshold: <integer>
-          trap_low_memory_threshold: <integer>
+          # trap_high_cpu_threshold: <integer>
+          # trap_log_full_threshold: <integer>
+          # trap_low_memory_threshold: <integer>
 '''
 
 RETURN = '''

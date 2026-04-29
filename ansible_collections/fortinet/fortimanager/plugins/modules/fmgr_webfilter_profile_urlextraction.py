@@ -115,6 +115,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -130,11 +131,11 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         webfilter_profile_urlextraction:
-          redirect_header: <string>
-          redirect_no_content: <value in [disable, enable]>
-          redirect_url: <string>
-          server_fqdn: <string>
-          status: <value in [disable, enable]>
+          # redirect_header: <string>
+          # redirect_no_content: <value in [disable, enable]>
+          # redirect_url: <string>
+          # server_fqdn: <string>
+          # status: <value in [disable, enable]>
 '''
 
 RETURN = '''

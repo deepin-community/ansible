@@ -9,8 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = r'''
----
+DOCUMENTATION = r"""
 module: boot
 short_description: Set boot configuration
 version_added: 1.2.0
@@ -20,9 +19,9 @@ description:
   - Set the boot configuration for a dedicated server.
 seealso:
   - module: community.hrobot.ssh_key
-    description: Add, remove or update SSH key
+    description: Add, remove or update SSH key.
   - module: community.hrobot.ssh_key_info
-    description: Query information on SSH keys
+    description: Query information on SSH keys.
 extends_documentation_fragment:
   - community.hrobot.robot
   - community.hrobot.attributes
@@ -35,6 +34,8 @@ attributes:
     support: full
   diff_mode:
     support: none
+  idempotent:
+    support: full
 
 options:
   server_number:
@@ -44,26 +45,25 @@ options:
     required: true
   regular_boot:
     description:
-      - If this option is provided, all special boot configurations are removed and
-        the installed operating system will be booted up next (assuming it is bootable).
-      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc),
-        O(install_windows), O(install_plesk), and O(install_cpanel) must be provided.
+      - If this option is provided, all special boot configurations are removed and the installed operating system will be
+        booted up next (assuming it is bootable).
+      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc), O(install_windows), O(install_plesk),
+        and O(install_cpanel) must be provided.
     type: bool
     choices:
       - true
   rescue:
     description:
       - If this option is provided, the rescue system will be activated for the next boot.
-      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc),
-        O(install_windows), O(install_plesk), and O(install_cpanel) must be provided.
+      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc), O(install_windows), O(install_plesk),
+        and O(install_cpanel) must be provided.
     type: dict
     suboptions:
       os:
         description:
-          - The operating system to use for the rescue system. Possible choices can
-            change over time.
-          - Currently, V(linux), V(linuxold), V(freebsd), V(freebsdold), V(freebsdax),
-            V(freebsdbetaax), V(vkvm), and V(vkvmold) seem to be available.
+          - The operating system to use for the rescue system. Possible choices can change over time.
+          - Currently, V(linux), V(linuxold), V(freebsd), V(freebsdold), V(freebsdax), V(freebsdbetaax), V(vkvm), and V(vkvmold)
+            seem to be available.
         type: str
         required: true
       arch:
@@ -71,24 +71,25 @@ options:
           - The architecture to use for the rescue system.
           - Not all architectures are available for all operating systems.
           - Defaults to V(64).
+          - This option is deprecated and will be removed in community.hrobot 3.0.0.
         type: int
         choices:
           - 32
           - 64
       authorized_keys:
         description:
-          - One or more SSH key fingerprints to equip the rescue system with.
+          - One or more SSH key fingerprints to equip the rescue system with. You can also specify the public key itself,
+            the module will compute its fingerprint and pass it on to the Robot API.
           - Only fingerprints for SSH keys deposited in the Robot API can be used.
-          - You can use the M(community.hrobot.ssh_key_info) module to query the
-            SSH keys you can use, and the M(community.hrobot.ssh_key) module to
-            add or update SSH keys.
+          - You can use the M(community.hrobot.ssh_key_info) module to query the SSH keys you can use, and the M(community.hrobot.ssh_key)
+            module to add or update SSH keys.
         type: list
         elements: str
   install_linux:
     description:
       - If this option is provided, a Linux system install will be activated for the next boot.
-      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc),
-        O(install_windows), O(install_plesk), and O(install_cpanel) must be provided.
+      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc), O(install_windows), O(install_plesk),
+        and O(install_cpanel) must be provided.
     type: dict
     suboptions:
       dist:
@@ -101,6 +102,7 @@ options:
           - The architecture to use for the install.
           - Not all architectures are available for all distributions.
           - Defaults to V(64).
+          - This option is deprecated and will be removed in community.hrobot 3.0.0.
         type: int
         choices:
           - 32
@@ -112,18 +114,18 @@ options:
         required: true
       authorized_keys:
         description:
-          - One or more SSH key fingerprints to equip the rescue system with.
+          - One or more SSH key fingerprints to equip the rescue system with. You can also specify the public key itself,
+            the module will compute its fingerprint and pass it on to the Robot API.
           - Only fingerprints for SSH keys deposited in the Robot API can be used.
-          - You can use the M(community.hrobot.ssh_key_info) module to query the
-            SSH keys you can use, and the M(community.hrobot.ssh_key) module to
-            add or update SSH keys.
+          - You can use the M(community.hrobot.ssh_key_info) module to query the SSH keys you can use, and the M(community.hrobot.ssh_key)
+            module to add or update SSH keys.
         type: list
         elements: str
   install_vnc:
     description:
       - If this option is provided, a VNC installation will be activated for the next boot.
-      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc),
-        O(install_windows), O(install_plesk), and O(install_cpanel) must be provided.
+      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc), O(install_windows), O(install_plesk),
+        and O(install_cpanel) must be provided.
     type: dict
     suboptions:
       dist:
@@ -136,6 +138,7 @@ options:
           - The architecture to use for the install.
           - Not all architectures are available for all distributions.
           - Defaults to V(64).
+          - This option is deprecated and will be removed in community.hrobot 3.0.0.
         type: int
         choices:
           - 32
@@ -148,8 +151,8 @@ options:
   install_windows:
     description:
       - If this option is provided, a Windows installation will be activated for the next boot.
-      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc),
-        O(install_windows), O(install_plesk), and O(install_cpanel) must be provided.
+      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc), O(install_windows), O(install_plesk),
+        and O(install_cpanel) must be provided.
     type: dict
     suboptions:
       lang:
@@ -160,8 +163,8 @@ options:
   install_plesk:
     description:
       - If this option is provided, a Plesk installation will be activated for the next boot.
-      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc),
-        O(install_windows), O(install_plesk), and O(install_cpanel) must be provided.
+      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc), O(install_windows), O(install_plesk),
+        and O(install_cpanel) must be provided.
     type: dict
     suboptions:
       dist:
@@ -174,6 +177,7 @@ options:
           - The architecture to use for the install.
           - Not all architectures are available for all distributions.
           - Defaults to V(64).
+          - This option is deprecated and will be removed in community.hrobot 3.0.0.
         type: int
         choices:
           - 32
@@ -191,8 +195,8 @@ options:
   install_cpanel:
     description:
       - If this option is provided, a cPanel installation will be activated for the next boot.
-      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc),
-        O(install_windows), O(install_plesk), and O(install_cpanel) must be provided.
+      - Precisely one of O(regular_boot), O(rescue), O(install_linux), O(install_vnc), O(install_windows), O(install_plesk),
+        and O(install_cpanel) must be provided.
     type: dict
     suboptions:
       dist:
@@ -205,6 +209,7 @@ options:
           - The architecture to use for the install.
           - Not all architectures are available for all distributions.
           - Defaults to V(64).
+          - This option is deprecated and will be removed in community.hrobot 3.0.0.
         type: int
         choices:
           - 32
@@ -219,9 +224,10 @@ options:
           - The hostname.
         type: str
         required: true
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
+---
 - name: Disable all special boot configurations
   community.hrobot.boot:
     hetzner_user: foo
@@ -245,30 +251,29 @@ EXAMPLES = r'''
       authorized_keys:
         - 56:29:99:a4:5d:ed:ac:95:c1:f5:88:82:90:5d:dd:10
         - 15:28:b0:03:95:f0:77:b3:10:56:15:6b:77:22:a5:bb
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 configuration_type:
-    description:
-      - Describes the active boot configuration.
-    returned: success
-    type: str
-    choices:
-      - regular_boot
-      - rescue
-      - install_linux
-      - install_vnc
-      - install_windows
-      - install_plesk
-      - install_cpanel
+  description:
+    - Describes the active boot configuration.
+  returned: success
+  type: str
+  choices:
+    - regular_boot
+    - rescue
+    - install_linux
+    - install_vnc
+    - install_windows
+    - install_plesk
+    - install_cpanel
 password:
-    description:
-      - The root password for the active boot configuration, if available.
-      - For non-rescue boot configurations, it is avised to change the root password
-        as soon as possible.
-    returned: success and if RV(configuration_type) is not V(regular_boot)
-    type: str
-'''
+  description:
+    - The root password for the active boot configuration, if available.
+    - For non-rescue boot configurations, it is avised to change the root password as soon as possible.
+  returned: success and if RV(configuration_type) is not V(regular_boot)
+  type: str
+"""
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.six.moves.urllib.parse import urlencode
@@ -277,6 +282,11 @@ from ansible_collections.community.hrobot.plugins.module_utils.robot import (
     BASE_URL,
     ROBOT_DEFAULT_ARGUMENT_SPEC,
     fetch_url_json,
+)
+
+from ansible_collections.community.hrobot.plugins.module_utils.ssh import (
+    FingerprintError,
+    extract_fingerprint,
 )
 
 
@@ -321,18 +331,18 @@ def main():
         regular_boot=dict(type='bool', choices=[True]),
         rescue=dict(type='dict', options=dict(
             os=dict(type='str', required=True),
-            arch=dict(type='int', choices=[32, 64]),
+            arch=dict(type='int', choices=[32, 64], removed_in_version='3.0.0', removed_from_collection='community.hrobot'),
             authorized_keys=dict(type='list', elements='str', no_log=False),
         )),
         install_linux=dict(type='dict', options=dict(
             dist=dict(type='str', required=True),
-            arch=dict(type='int', choices=[32, 64]),
+            arch=dict(type='int', choices=[32, 64], removed_in_version='3.0.0', removed_from_collection='community.hrobot'),
             lang=dict(type='str', required=True),
             authorized_keys=dict(type='list', elements='str', no_log=False),
         )),
         install_vnc=dict(type='dict', options=dict(
             dist=dict(type='str', required=True),
-            arch=dict(type='int', choices=[32, 64]),
+            arch=dict(type='int', choices=[32, 64], removed_in_version='3.0.0', removed_from_collection='community.hrobot'),
             lang=dict(type='str', required=True),
         )),
         install_windows=dict(type='dict', options=dict(
@@ -340,13 +350,13 @@ def main():
         )),
         install_plesk=dict(type='dict', options=dict(
             dist=dict(type='str', required=True),
-            arch=dict(type='int', choices=[32, 64]),
+            arch=dict(type='int', choices=[32, 64], removed_in_version='3.0.0', removed_from_collection='community.hrobot'),
             lang=dict(type='str', required=True),
             hostname=dict(type='str', required=True),
         )),
         install_cpanel=dict(type='dict', options=dict(
             dist=dict(type='str', required=True),
-            arch=dict(type='int', choices=[32, 64]),
+            arch=dict(type='int', choices=[32, 64], removed_in_version='3.0.0', removed_from_collection='community.hrobot'),
             lang=dict(type='str', required=True),
             hostname=dict(type='str', required=True),
         )),
@@ -396,8 +406,27 @@ def main():
                 if option is None or option == []:
                     continue
                 data[data_key] = option
+            # Normalize options
+            option_key = 'authorized_keys'
+            if module.params[option_name].get(option_key):
+                should = module.params[option_name][option_key]
+                for index, key in enumerate(should):
+                    if ' ' in key:
+                        try:
+                            should[index] = extract_fingerprint(key)
+                        except FingerprintError as exc:
+                            module.fail_json(
+                                msg="Error while extracting fingerprint of {option_name}.{option_key}[{idx}]'s value {key!r}: {exc}".format(
+                                    option_name=option_name,
+                                    option_key=option_key,
+                                    idx=index + 1,
+                                    key=key,
+                                    exc=exc,
+                                ),
+                            )
+                module.params[option_name][option_key] = should
+            # Idempotence check
             if existing.get('active'):
-                # Idempotence check
                 needs_change = False
                 for option_key, (result_key, data_key) in options.items():
                     should = module.params[option_name][option_key]
@@ -410,7 +439,7 @@ def main():
                     if isinstance(has, list):
                         has = sorted(has)
                         if not isinstance(should, list):
-                            should = [should]
+                            should = [should]  # pragma: no cover
                         should = sorted(should)
                     if should != has:
                         needs_change = True

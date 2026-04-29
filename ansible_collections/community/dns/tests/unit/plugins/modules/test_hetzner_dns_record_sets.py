@@ -3,18 +3,18 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+
 __metaclass__ = type
 
+# These imports are needed so patching below works
+import ansible_collections.community.dns.plugins.module_utils.http  # noqa: F401, pylint: disable=unused-import
+from ansible_collections.community.dns.plugins.modules import hetzner_dns_record_sets
 from ansible_collections.community.internal_test_tools.tests.unit.utils.fetch_url_module_framework import (
     BaseTestModule,
     FetchUrlCall,
 )
-
-from ansible_collections.community.dns.plugins.modules import hetzner_dns_record_sets
-
-# These imports are needed so patching below works
-import ansible_collections.community.dns.plugins.module_utils.http  # noqa: F401, pylint: disable=unused-import
 
 from .hetzner import (
     HETZNER_JSON_ZONE_GET_RESULT,
@@ -59,7 +59,7 @@ class TestHetznerDNSRecordJSON(BaseTestModule):
             .expect_header('auth-api-token', 'foo')
             .expect_url('https://dns.hetzner.com/api/v1/zones/23')
             .return_header('Content-Type', 'application/json')
-            .result_json(dict(message="")),
+            .result_json({'message': ""}),
         ])
 
         assert result['msg'] == 'Zone not found'
@@ -94,7 +94,7 @@ class TestHetznerDNSRecordJSON(BaseTestModule):
             .expect_header('accept', 'application/json')
             .expect_header('auth-api-token', 'foo')
             .expect_url('https://dns.hetzner.com/api/v1/zones/23')
-            .result_json(dict(message="")),
+            .result_json({'message': ""}),
         ])
 
         assert result['msg'] == 'Cannot authenticate: Forbidden: you do not have access to this resource (HTTP status 403)'

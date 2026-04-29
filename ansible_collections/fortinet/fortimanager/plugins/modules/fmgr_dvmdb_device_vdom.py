@@ -131,6 +131,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -147,14 +148,14 @@ EXAMPLES = '''
         device: <your own value>
         state: present # <value in [present, absent]>
         dvmdb_device_vdom:
-          comments: <string>
-          name: <string>
-          opmode: <value in [nat, transparent]>
-          rtm_prof_id: <integer>
-          status: <string>
-          vpn_id: <integer>
-          meta_fields: <dict>
-          vdom_type: <value in [traffic, admin]>
+          name: "your value" # Required variable, string
+          # comments: <string>
+          # opmode: <value in [nat, transparent]>
+          # rtm_prof_id: <integer>
+          # status: <string>
+          # vpn_id: <integer>
+          # meta_fields: <dict>
+          # vdom_type: <value in [traffic, admin]>
 '''
 
 RETURN = '''

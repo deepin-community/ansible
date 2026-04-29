@@ -58,7 +58,7 @@ options:
         choices: [ 1, 2, 3, 4, 5 ]
 
 extends_documentation_fragment:
-    - vmware.vmware.vmware.documentation
+    - vmware.vmware.base_options
 '''
 
 EXAMPLES = r'''
@@ -86,6 +86,14 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
+cluster:
+    description:
+        - Information about the target cluster
+    returned: On success
+    type: dict
+    sample:
+        moid: cluster-79828,
+        name: test-cluster
 result:
     description:
         - Information about the DPM config update task, if something changed
@@ -109,27 +117,29 @@ except ImportError:
     pass
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware import (
-    PyVmomi,
-    vmware_argument_spec
+from ansible_collections.vmware.vmware.plugins.module_utils._module_pyvmomi_base import (
+    ModulePyvmomiBase
 )
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_tasks import (
+from ansible_collections.vmware.vmware.plugins.module_utils.argument_spec import (
+    base_argument_spec
+)
+from ansible_collections.vmware.vmware.plugins.module_utils._vsphere_tasks import (
     TaskError,
     RunningTaskMonitor
 )
-from ansible_collections.vmware.vmware.plugins.module_utils._vmware_facts import (
+from ansible_collections.vmware.vmware.plugins.module_utils._facts import (
     ClusterFacts
 )
 
 from ansible.module_utils._text import to_native
 
 
-class VMwareCluster(PyVmomi):
+class VMwareCluster(ModulePyvmomiBase):
     def __init__(self, module):
         super(VMwareCluster, self).__init__(module)
 
-        datacenter = self.get_datacenter_by_name(self.params.get('datacenter'), fail_on_missing=True)
-        self.cluster = self.get_cluster_by_name(self.params.get('cluster'), fail_on_missing=True, datacenter=datacenter)
+        datacenter = self.get_datacenter_by_name_or_moid(self.params.get('datacenter'), fail_on_missing=True)
+        self.cluster = self.get_cluster_by_name_or_moid(self.params.get('cluster'), fail_on_missing=True, datacenter=datacenter)
 
     @property
     def automation_level(self):
@@ -208,7 +218,7 @@ class VMwareCluster(PyVmomi):
 def main():
     module = AnsibleModule(
         argument_spec={
-            **vmware_argument_spec(), **dict(
+            **base_argument_spec(), **dict(
                 cluster=dict(type='str', required=True, aliases=['cluster_name']),
                 datacenter=dict(type='str', required=True, aliases=['datacenter_name']),
                 enable=dict(type='bool', default=True),
@@ -225,10 +235,16 @@ def main():
 
     result = dict(
         changed=False,
-        result={}
+        result={},
+        cluster=dict(
+            name="",
+            moid=""
+        )
     )
 
     cluster_dpm = VMwareCluster(module)
+    result['cluster']['name'] = cluster_dpm.cluster.name
+    result['cluster']['moid'] = cluster_dpm.cluster._GetMoId()
 
     config_is_different = cluster_dpm.check_dpm_config_diff()
     if config_is_different:

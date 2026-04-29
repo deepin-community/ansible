@@ -138,6 +138,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -154,13 +155,13 @@ EXAMPLES = '''
         profile: <your own value>
         state: present # <value in [present, absent]>
         sshfilter_profile_shellcommands:
-          action: <value in [block, allow]>
-          alert: <value in [disable, enable]>
-          id: <integer>
-          log: <value in [disable, enable]>
-          pattern: <string>
-          severity: <value in [low, medium, high, ...]>
-          type: <value in [regex, simple]>
+          id: 0 # Required variable, integer
+          # action: <value in [block, allow]>
+          # alert: <value in [disable, enable]>
+          # log: <value in [disable, enable]>
+          # pattern: <string>
+          # severity: <value in [low, medium, high, ...]>
+          # type: <value in [regex, simple]>
 '''
 
 RETURN = '''

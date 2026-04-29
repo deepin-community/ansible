@@ -34,6 +34,8 @@ options:
         description: Tenant id of service principal.
     use_msi:
         description: MSI token autodiscover, default is true.
+    use_cli:
+        description: When I(use_cli=True), get the 'az lgin' credential authentication, default if false.
     cloud_type:
         description: Specify which cloud, such as C(azure), C(usgovcloudapi).
 notes:
@@ -127,7 +129,7 @@ try:
     import logging
     import requests
     from azure.keyvault.secrets import SecretClient
-    from azure.identity import DefaultAzureCredential, ClientSecretCredential
+    from azure.identity import DefaultAzureCredential, ClientSecretCredential, AzureCliCredential
     from azure.keyvault.secrets import SecretClient
 
 except ImportError:
@@ -153,7 +155,10 @@ def lookup_secret_non_msi(terms, vault_url, kwargs):
             client_secret=secret,
         )
     else:
-        credential = DefaultAzureCredential()
+        if kwargs.get('use_cli'):
+            credential = AzureCliCredential()
+        else:
+            credential = DefaultAzureCredential()
     client = SecretClient(vault_url, credential)
 
     ret = []
@@ -162,7 +167,7 @@ def lookup_secret_non_msi(terms, vault_url, kwargs):
             secret_val = client.get_secret(term).value
             ret.append(secret_val)
         except Exception:
-            raise AnsibleError('Failed to fetch secret ' + term + '.')
+            raise AnsibleError('Failed to fetch secret ' + term + ' from ' + vault_url + '.')
     return ret
 
 
@@ -211,9 +216,9 @@ class LookupModule(LookupBase):
                     secret_res = requests.get(vault_url + '/secrets/' + term, params=secret_params, headers=secret_headers)
                     ret.append(secret_res.json()["value"])
                 except KeyError:
-                    raise AnsibleError('Failed to fetch secret ' + term + '.')
+                    raise AnsibleError('Failed to fetch secret ' + term + ' from ' + vault_url + '.')
                 except Exception:
-                    raise AnsibleError('Failed to fetch secret: ' + term + ' via MSI endpoint.')
+                    raise AnsibleError('Failed to fetch secret ' + term + ' from ' + vault_url + ' via MSI endpoint.')
             return ret
         else:
             return lookup_secret_non_msi(terms, vault_url, kwargs)

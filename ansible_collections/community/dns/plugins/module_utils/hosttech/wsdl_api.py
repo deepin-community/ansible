@@ -4,42 +4,38 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+
 __metaclass__ = type
 
 
-from ansible.module_utils.six import raise_from
 from ansible.module_utils.common.text.converters import to_native
-
-from ansible_collections.community.dns.plugins.module_utils.record import (
-    DNSRecord,
-)
-
+from ansible.module_utils.six import raise_from
+from ansible_collections.community.dns.plugins.module_utils.record import DNSRecord
 from ansible_collections.community.dns.plugins.module_utils.wsdl import (
+    Composer,
     WSDLError,
     WSDLNetworkError,
-    Composer,
 )
-
 from ansible_collections.community.dns.plugins.module_utils.zone import (
     DNSZone,
     DNSZoneWithRecords,
 )
-
 from ansible_collections.community.dns.plugins.module_utils.zone_record_api import (
-    DNSAPIError,
-    DNSAPIAuthenticationError,
     NOT_PROVIDED,
+    DNSAPIAuthenticationError,
+    DNSAPIError,
     ZoneRecordAPI,
     filter_records,
 )
 
 
-def _create_record_from_encoding(source, type=None):
+def _create_record_from_encoding(source, record_type=None):
     source = dict(source)
     result = DNSRecord()
     result.id = source.pop('id')
-    result.type = source.pop('type', type)
+    result.type = source.pop('type', record_type)
     result.prefix = source.pop('prefix', None)
     ttl = source.pop('ttl')
     result.ttl = int(ttl) if ttl is not None else None
@@ -58,10 +54,10 @@ def _create_record_from_encoding(source, type=None):
 def _create_zone_from_encoding(source, prefix=NOT_PROVIDED, record_type=NOT_PROVIDED):
     zone = DNSZone(source['name'])
     zone.id = source['id']
-    zone.info = dict(
-        email=source.get('email'),
-        ttl=source['ttl'],
-    )
+    zone.info = {
+        'email': source.get('email'),
+        'ttl': source['ttl'],
+    }
     return DNSZoneWithRecords(
         zone,
         filter_records(
@@ -129,12 +125,12 @@ class HostTechWSDLAPI(ZoneRecordAPI):
 
     def _announce(self, msg):
         if self._debug:
-            pass
+            pass  # pragma: no cover
             # q.q('{0} {1} {2}'.format('=' * 4, msg, '=' * 40))
 
     def _execute(self, command, result_name, acceptable_types):
         if self._debug:
-            pass
+            pass  # pragma: no cover
             # q.q('Request: {0}'.format(command))
         try:
             result = command.execute(debug=self._debug)
@@ -145,11 +141,11 @@ class HostTechWSDLAPI(ZoneRecordAPI):
         res = result.get_result(result_name)
         if isinstance(res, acceptable_types):
             if self._debug:
-                pass
+                pass  # pragma: no cover
                 # q.q('Extracted result: {0} (type {1})'.format(res, type(res)))
             return res
         if self._debug:
-            pass
+            pass  # pragma: no cover
             # q.q('Result: {0}; extracted type {1}'.format(result, type(res)))
         raise DNSAPIError('Result has unexpected type {0} (expecting {1})!'.format(type(res), acceptable_types))
 
@@ -175,17 +171,17 @@ class HostTechWSDLAPI(ZoneRecordAPI):
         except WSDLNetworkError as exc:
             raise_from(DNSAPIError('Network error while getting zone: {0}'.format(to_native(exc))), exc)
 
-    def get_zone_with_records_by_id(self, id, prefix=NOT_PROVIDED, record_type=NOT_PROVIDED):
+    def get_zone_with_records_by_id(self, zone_id, prefix=NOT_PROVIDED, record_type=NOT_PROVIDED):
         """
         Given a zone ID, return the zone contents with records if found.
 
-        @param id: The zone ID
+        @param zone_id: The zone ID
         @param prefix: The prefix to filter for, if provided. Since None is a valid value,
                        the special constant NOT_PROVIDED indicates that we are not filtering.
         @param record_type: The record type to filter for, if provided
         @return The zone information with records (DNSZoneWithRecords), or None if not found
         """
-        return self.get_zone_with_records_by_name(str(id), prefix=prefix, record_type=record_type)
+        return self.get_zone_with_records_by_name(str(zone_id), prefix=prefix, record_type=record_type)
 
     def get_zone_records(self, zone_id, prefix=NOT_PROVIDED, record_type=NOT_PROVIDED):
         """
@@ -210,14 +206,14 @@ class HostTechWSDLAPI(ZoneRecordAPI):
         zone = self.get_zone_with_records_by_name(name)
         return zone.zone if zone else None
 
-    def get_zone_by_id(self, id):
+    def get_zone_by_id(self, zone_id):
         """
         Given a zone ID, return the zone contents if found.
 
-        @param id: The zone ID
+        @param zone_id: The zone ID
         @return The zone information (DNSZone), or None if not found
         """
-        zone = self.get_zone_with_records_by_id(id)
+        zone = self.get_zone_with_records_by_id(zone_id)
         return zone.zone if zone else None
 
     def add_record(self, zone_id, record):

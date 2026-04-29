@@ -334,6 +334,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -349,56 +350,56 @@ EXAMPLES = '''
         adom: <your own value>
         mms_profile: <your own value>
         firewall_mmsprofile_notification:
-          alert_int: <integer>
-          alert_int_mode: <value in [hours, minutes]>
-          alert_src_msisdn: <string>
-          alert_status: <value in [disable, enable]>
-          bword_int: <integer>
-          bword_int_mode: <value in [hours, minutes]>
-          bword_status: <value in [disable, enable]>
-          carrier_endpoint_bwl_int: <integer>
-          carrier_endpoint_bwl_int_mode: <value in [hours, minutes]>
-          carrier_endpoint_bwl_status: <value in [disable, enable]>
-          days_allowed:
-            - "sunday"
-            - "monday"
-            - "tuesday"
-            - "wednesday"
-            - "thursday"
-            - "friday"
-            - "saturday"
-          detect_server: <value in [disable, enable]>
-          dupe_int: <integer>
-          dupe_int_mode: <value in [hours, minutes]>
-          dupe_status: <value in [disable, enable]>
-          file_block_int: <integer>
-          file_block_int_mode: <value in [hours, minutes]>
-          file_block_status: <value in [disable, enable]>
-          flood_int: <integer>
-          flood_int_mode: <value in [hours, minutes]>
-          flood_status: <value in [disable, enable]>
-          from_in_header: <value in [disable, enable]>
-          mms_checksum_int: <integer>
-          mms_checksum_int_mode: <value in [hours, minutes]>
-          mms_checksum_status: <value in [disable, enable]>
-          mmsc_hostname: <string>
-          mmsc_password: <list or string>
-          mmsc_port: <integer>
-          mmsc_url: <string>
-          mmsc_username: <string>
-          msg_protocol: <value in [mm1, mm3, mm4, ...]>
-          msg_type: <value in [submit-req, deliver-req]>
-          protocol: <string>
-          rate_limit: <integer>
-          tod_window_duration: <string>
-          tod_window_end: <string>
-          tod_window_start: <string>
-          user_domain: <string>
-          vas_id: <string>
-          vasp_id: <string>
-          virus_int: <integer>
-          virus_int_mode: <value in [hours, minutes]>
-          virus_status: <value in [disable, enable]>
+          # alert_int: <integer>
+          # alert_int_mode: <value in [hours, minutes]>
+          # alert_src_msisdn: <string>
+          # alert_status: <value in [disable, enable]>
+          # bword_int: <integer>
+          # bword_int_mode: <value in [hours, minutes]>
+          # bword_status: <value in [disable, enable]>
+          # carrier_endpoint_bwl_int: <integer>
+          # carrier_endpoint_bwl_int_mode: <value in [hours, minutes]>
+          # carrier_endpoint_bwl_status: <value in [disable, enable]>
+          # days_allowed:
+          #   - "sunday"
+          #   - "monday"
+          #   - "tuesday"
+          #   - "wednesday"
+          #   - "thursday"
+          #   - "friday"
+          #   - "saturday"
+          # detect_server: <value in [disable, enable]>
+          # dupe_int: <integer>
+          # dupe_int_mode: <value in [hours, minutes]>
+          # dupe_status: <value in [disable, enable]>
+          # file_block_int: <integer>
+          # file_block_int_mode: <value in [hours, minutes]>
+          # file_block_status: <value in [disable, enable]>
+          # flood_int: <integer>
+          # flood_int_mode: <value in [hours, minutes]>
+          # flood_status: <value in [disable, enable]>
+          # from_in_header: <value in [disable, enable]>
+          # mms_checksum_int: <integer>
+          # mms_checksum_int_mode: <value in [hours, minutes]>
+          # mms_checksum_status: <value in [disable, enable]>
+          # mmsc_hostname: <string>
+          # mmsc_password: <list or string>
+          # mmsc_port: <integer>
+          # mmsc_url: <string>
+          # mmsc_username: <string>
+          # msg_protocol: <value in [mm1, mm3, mm4, ...]>
+          # msg_type: <value in [submit-req, deliver-req]>
+          # protocol: <string>
+          # rate_limit: <integer>
+          # tod_window_duration: <string>
+          # tod_window_end: <string>
+          # tod_window_start: <string>
+          # user_domain: <string>
+          # vas_id: <string>
+          # vasp_id: <string>
+          # virus_int: <integer>
+          # virus_int_mode: <value in [hours, minutes]>
+          # virus_status: <value in [disable, enable]>
 '''
 
 RETURN = '''
@@ -459,55 +460,56 @@ def main():
         'mms_profile': {'type': 'str'},
         'firewall_mmsprofile_notification': {
             'type': 'dict',
-            'v_range': [['6.0.0', '']],
+            'v_range': [['6.0.0', '7.6.2']],
             'options': {
-                'alert-int': {'type': 'int'},
-                'alert-int-mode': {'choices': ['hours', 'minutes'], 'type': 'str'},
-                'alert-src-msisdn': {'type': 'str'},
-                'alert-status': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'bword-int': {'type': 'int'},
-                'bword-int-mode': {'choices': ['hours', 'minutes'], 'type': 'str'},
-                'bword-status': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'carrier-endpoint-bwl-int': {'type': 'int'},
-                'carrier-endpoint-bwl-int-mode': {'choices': ['hours', 'minutes'], 'type': 'str'},
-                'carrier-endpoint-bwl-status': {'choices': ['disable', 'enable'], 'type': 'str'},
+                'alert-int': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'alert-int-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['hours', 'minutes'], 'type': 'str'},
+                'alert-src-msisdn': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'alert-status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'bword-int': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'bword-int-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['hours', 'minutes'], 'type': 'str'},
+                'bword-status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'carrier-endpoint-bwl-int': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'carrier-endpoint-bwl-int-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['hours', 'minutes'], 'type': 'str'},
+                'carrier-endpoint-bwl-status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'days-allowed': {
+                    'v_range': [['6.0.0', '7.6.2']],
                     'type': 'list',
                     'choices': ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
                     'elements': 'str'
                 },
-                'detect-server': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'dupe-int': {'type': 'int'},
-                'dupe-int-mode': {'choices': ['hours', 'minutes'], 'type': 'str'},
-                'dupe-status': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'file-block-int': {'type': 'int'},
-                'file-block-int-mode': {'choices': ['hours', 'minutes'], 'type': 'str'},
-                'file-block-status': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'flood-int': {'type': 'int'},
-                'flood-int-mode': {'choices': ['hours', 'minutes'], 'type': 'str'},
-                'flood-status': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'from-in-header': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'mms-checksum-int': {'type': 'int'},
-                'mms-checksum-int-mode': {'choices': ['hours', 'minutes'], 'type': 'str'},
-                'mms-checksum-status': {'choices': ['disable', 'enable'], 'type': 'str'},
-                'mmsc-hostname': {'type': 'str'},
-                'mmsc-password': {'no_log': True, 'type': 'raw'},
-                'mmsc-port': {'type': 'int'},
-                'mmsc-url': {'type': 'str'},
-                'mmsc-username': {'type': 'str'},
-                'msg-protocol': {'choices': ['mm1', 'mm3', 'mm4', 'mm7'], 'type': 'str'},
-                'msg-type': {'choices': ['submit-req', 'deliver-req'], 'type': 'str'},
-                'protocol': {'type': 'str'},
-                'rate-limit': {'type': 'int'},
-                'tod-window-duration': {'type': 'str'},
+                'detect-server': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'dupe-int': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'dupe-int-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['hours', 'minutes'], 'type': 'str'},
+                'dupe-status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'file-block-int': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'file-block-int-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['hours', 'minutes'], 'type': 'str'},
+                'file-block-status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'flood-int': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'flood-int-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['hours', 'minutes'], 'type': 'str'},
+                'flood-status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'from-in-header': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'mms-checksum-int': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'mms-checksum-int-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['hours', 'minutes'], 'type': 'str'},
+                'mms-checksum-status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'mmsc-hostname': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'mmsc-password': {'v_range': [['6.0.0', '7.6.2']], 'no_log': True, 'type': 'raw'},
+                'mmsc-port': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'mmsc-url': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'mmsc-username': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'msg-protocol': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['mm1', 'mm3', 'mm4', 'mm7'], 'type': 'str'},
+                'msg-type': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['submit-req', 'deliver-req'], 'type': 'str'},
+                'protocol': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'rate-limit': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'tod-window-duration': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
                 'tod-window-end': {'v_range': [['6.0.0', '7.2.0']], 'type': 'str'},
-                'tod-window-start': {'type': 'str'},
-                'user-domain': {'type': 'str'},
-                'vas-id': {'type': 'str'},
-                'vasp-id': {'type': 'str'},
-                'virus-int': {'type': 'int'},
-                'virus-int-mode': {'choices': ['hours', 'minutes'], 'type': 'str'},
-                'virus-status': {'choices': ['disable', 'enable'], 'type': 'str'}
+                'tod-window-start': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'user-domain': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'vas-id': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'vasp-id': {'v_range': [['6.0.0', '7.6.2']], 'type': 'str'},
+                'virus-int': {'v_range': [['6.0.0', '7.6.2']], 'type': 'int'},
+                'virus-int-mode': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['hours', 'minutes'], 'type': 'str'},
+                'virus-status': {'v_range': [['6.0.0', '7.6.2']], 'choices': ['disable', 'enable'], 'type': 'str'}
             }
         }
     }

@@ -193,12 +193,36 @@ options:
                 aliases: ['sim2-pin-code']
                 type: raw
                 description: (list) SIM #2 PIN password.
+            multiple_PDN:
+                aliases: ['multiple-PDN']
+                type: str
+                description: Multiple-PDN enable/disable.
+                choices:
+                    - 'disable'
+                    - 'enable'
+            pdn1_dataplan:
+                aliases: ['pdn1-dataplan']
+                type: raw
+                description: (list) PDN1-dataplan.
+            pdn2_dataplan:
+                aliases: ['pdn2-dataplan']
+                type: raw
+                description: (list) PDN2-dataplan.
+            pdn3_dataplan:
+                aliases: ['pdn3-dataplan']
+                type: raw
+                description: (list) PDN3-dataplan.
+            pdn4_dataplan:
+                aliases: ['pdn4-dataplan']
+                type: raw
+                description: (list) PDN4-dataplan.
 '''
 
 EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -214,28 +238,33 @@ EXAMPLES = '''
         adom: <your own value>
         extender_profile: <your own value>
         extensioncontroller_extenderprofile_cellular_modem1:
-          auto_switch:
-            dataplan: <value in [disable, enable]>
-            disconnect: <value in [disable, enable]>
-            disconnect_period: <integer>
-            disconnect_threshold: <integer>
-            signal: <value in [disable, enable]>
-            switch_back:
-              - "time"
-              - "timer"
-            switch_back_time: <string>
-            switch_back_timer: <integer>
-          conn_status: <integer>
-          default_sim: <value in [sim1, sim2, carrier, ...]>
-          gps: <value in [disable, enable]>
-          modem_id: <integer>
-          preferred_carrier: <string>
-          redundant_intf: <string>
-          redundant_mode: <value in [disable, enable]>
-          sim1_pin: <value in [disable, enable]>
-          sim1_pin_code: <list or string>
-          sim2_pin: <value in [disable, enable]>
-          sim2_pin_code: <list or string>
+          # auto_switch:
+          #   dataplan: <value in [disable, enable]>
+          #   disconnect: <value in [disable, enable]>
+          #   disconnect_period: <integer>
+          #   disconnect_threshold: <integer>
+          #   signal: <value in [disable, enable]>
+          #   switch_back:
+          #     - "time"
+          #     - "timer"
+          #   switch_back_time: <string>
+          #   switch_back_timer: <integer>
+          # conn_status: <integer>
+          # default_sim: <value in [sim1, sim2, carrier, ...]>
+          # gps: <value in [disable, enable]>
+          # modem_id: <integer>
+          # preferred_carrier: <string>
+          # redundant_intf: <string>
+          # redundant_mode: <value in [disable, enable]>
+          # sim1_pin: <value in [disable, enable]>
+          # sim1_pin_code: <list or string>
+          # sim2_pin: <value in [disable, enable]>
+          # sim2_pin_code: <list or string>
+          # multiple_PDN: <value in [disable, enable]>
+          # pdn1_dataplan: <list or string>
+          # pdn2_dataplan: <list or string>
+          # pdn3_dataplan: <list or string>
+          # pdn4_dataplan: <list or string>
 '''
 
 RETURN = '''
@@ -322,7 +351,12 @@ def main():
                 'sim1-pin': {'v_range': [['7.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
                 'sim1-pin-code': {'v_range': [['7.2.1', '']], 'type': 'raw'},
                 'sim2-pin': {'v_range': [['7.2.1', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'sim2-pin-code': {'v_range': [['7.2.1', '']], 'type': 'raw'}
+                'sim2-pin-code': {'v_range': [['7.2.1', '']], 'type': 'raw'},
+                'multiple-PDN': {'v_range': [['7.6.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
+                'pdn1-dataplan': {'v_range': [['7.6.2', '']], 'type': 'raw'},
+                'pdn2-dataplan': {'v_range': [['7.6.2', '']], 'type': 'raw'},
+                'pdn3-dataplan': {'v_range': [['7.6.2', '']], 'type': 'raw'},
+                'pdn4-dataplan': {'v_range': [['7.6.2', '']], 'type': 'raw'}
             }
         }
     }

@@ -112,6 +112,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -125,12 +126,12 @@ EXAMPLES = '''
         # rc_succeeded: [0, -2, -3, ...]
         # rc_failed: [-2, -3, ...]
         system_locallog_setting:
-          log_interval_dev_no_logging: <integer>
-          log_interval_disk_full: <integer>
-          log_interval_gbday_exceeded: <integer>
-          log_daemon_crash: <value in [disable, enable]>
-          no_log_detection_threshold: <integer>
-          log_interval_adom_perf_stats: <integer>
+          # log_interval_dev_no_logging: <integer>
+          # log_interval_disk_full: <integer>
+          # log_interval_gbday_exceeded: <integer>
+          # log_daemon_crash: <value in [disable, enable]>
+          # no_log_detection_threshold: <integer>
+          # log_interval_adom_perf_stats: <integer>
 '''
 
 RETURN = '''
@@ -193,7 +194,7 @@ def main():
                 'log-interval-disk-full': {'type': 'int'},
                 'log-interval-gbday-exceeded': {'type': 'int'},
                 'log-daemon-crash': {'v_range': [['7.2.2', '']], 'choices': ['disable', 'enable'], 'type': 'str'},
-                'no-log-detection-threshold': {'v_range': [['7.2.4', '7.2.8'], ['7.4.2', '']], 'type': 'int'},
+                'no-log-detection-threshold': {'v_range': [['7.2.4', '7.2.9'], ['7.4.2', '']], 'type': 'int'},
                 'log-interval-adom-perf-stats': {'v_range': [['7.4.0', '']], 'type': 'int'}
             }
         }

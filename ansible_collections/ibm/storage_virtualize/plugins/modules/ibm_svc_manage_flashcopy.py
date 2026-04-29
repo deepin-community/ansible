@@ -3,6 +3,7 @@
 
 # Copyright (C) 2021 IBM CORPORATION
 # Author(s): Sreshtant Bohidar <sreshtant.bohidar@ibm.com>
+#            Lavanya C R <lavanya.c.r1@ibm.com>
 #
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -60,7 +61,7 @@ options:
         description:
             - Specifies the copy type when creating the FlashCopy mapping.
             - Required when I(state=present), to create a FlashCopy mapping.
-        choices: [ snapshot, clone, backup]
+        choices: [ snapshot, clone, backup ]
         type: str
     source:
         description:
@@ -95,7 +96,14 @@ options:
             - Specifies the copy rate. The rate varies between 0-150.
             - If unspecified, the default copy rate of 50 for clone and 0 for snapshot is used.
             - Valid when I(state=present), to create or modify a FlashCopy mapping.
-        type: str
+        type: int
+    cleanrate:
+        description:
+            - Specifies the clean rate. The rate varies between 0-150.
+            - If unspecified, the default clean rate is 50.
+            - Valid when I(state=present), to create or modify a FlashCopy mapping.
+        type: int
+        version_added: 2.7.0
     grainsize:
         description:
             - Specifies the grain size for the FlashCopy mapping.
@@ -123,6 +131,7 @@ options:
         type: str
 author:
     - Sreshtant Bohidar(@Sreshtant-Bohidar)
+    - Lavanya C R(@lavanyacr)
 notes:
     - This module supports C(check_mode).
 '''
@@ -130,10 +139,10 @@ notes:
 EXAMPLES = '''
 - name: Create FlashCopy mapping for snapshot
   ibm.storage_virtualize.ibm_svc_manage_flashcopy:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     log_path: /tmp/playbook.debug
     state: present
     name: snapshot-name
@@ -143,13 +152,26 @@ EXAMPLES = '''
     mdiskgrp: Pool0
     consistgrp: consistencygroup-name
     copyrate: 50
+    cleanrate: 60
     grainsize: 64
+- name: Update FlashCopy mapping
+  ibm.storage_virtualize.ibm_svc_manage_flashcopy:
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    log_path: /tmp/playbook.debug
+    state: present
+    name: snapshot-name
+    consistgrp: consistencygroup-name
+    copyrate: 50
+    cleanrate: 60
 - name: Create FlashCopy mapping for clone
   ibm.storage_virtualize.ibm_svc_manage_flashcopy:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     log_path: /tmp/playbook.debug
     state: present
     name: snapshot-name
@@ -162,10 +184,10 @@ EXAMPLES = '''
     grainsize: 64
 - name: Create FlashCopy mapping for backup
   ibm.storage_virtualize.ibm_svc_manage_flashcopy:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     log_path: /tmp/playbook.debug
     state: present
     name: snapshot-name
@@ -177,24 +199,39 @@ EXAMPLES = '''
     grainsize: 64
 - name: Delete FlashCopy mapping for snapshot
   ibm.storage_virtualize.ibm_svc_manage_flashcopy:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     log_path: /tmp/playbook.debug
     name: snapshot-name
     state: absent
     force: true
 - name: Delete FlashCopy mapping for clone
   ibm.storage_virtualize.ibm_svc_manage_flashcopy:
-    clustername: "{{clustername}}"
-    domain: "{{domain}}"
-    username: "{{username}}"
-    password: "{{password}}"
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
     log_path: /tmp/playbook.debug
     name: clone-name
     state: absent
     force: true
+- name: Create FlashCopy mapping with existing target volume.
+  ibm.storage_virtualize.ibm_svc_manage_flashcopy:
+    clustername: "{{ clustername }}"
+    domain: "{{ domain }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    log_path: /tmp/playbook.debug
+    state: present
+    name: snapshot-name
+    copytype: clone
+    source: source-volume-name
+    target: target-volume-name
+    consistgrp: consistencygroup-name
+    copyrate: 50
+    grainsize: 64
 '''
 
 RETURN = '''#'''
@@ -219,7 +256,8 @@ class IBMSVCFlashcopy(object):
                 state=dict(type='str', required=True, choices=['present', 'absent']),
                 consistgrp=dict(type='str', required=False),
                 noconsistgrp=dict(type='bool', required=False),
-                copyrate=dict(type='str', required=False),
+                copyrate=dict(type='int', required=False),
+                cleanrate=dict(type='int', required=False),
                 grainsize=dict(type='str', required=False),
                 force=dict(type='bool', required=False),
                 old_name=dict(type='str')
@@ -246,17 +284,11 @@ class IBMSVCFlashcopy(object):
         self.noconsistgrp = self.module.params.get('noconsistgrp', False)
         self.grainsize = self.module.params.get('grainsize', False)
         self.copyrate = self.module.params.get('copyrate', False)
+        self.cleanrate = self.module.params.get('cleanrate', False)
         self.force = self.module.params.get('force', False)
         self.old_name = self.module.params.get('old_name', '')
 
-        # Handline for mandatory parameter name
-        if not self.name:
-            self.module.fail_json(msg="Missing mandatory parameter: name")
-
-        # Handline for mandatory parameter state
-        if not self.state:
-            self.module.fail_json(msg="Missing mandatory parameter: state")
-
+        self.basic_checks()
         self.changed = False
 
         self.restapi = IBMSVCRestApi(
@@ -269,6 +301,15 @@ class IBMSVCFlashcopy(object):
             log_path=log_path,
             token=self.module.params['token']
         )
+
+    def basic_checks(self):
+        if self.state == 'absent':
+            invalids = ('copytype', 'source', 'target', 'mdiskgrp', 'consistgrp', 'noconsistgrp', 'copyrate', 'cleanrate', 'grainsize')
+            invalid_exists = ', '.join((var for var in invalids if getattr(self, var) not in {'', None}))
+            if invalid_exists:
+                self.module.fail_json(
+                    msg='state=absent but following parameters have been passed: {0}'.format(invalid_exists)
+                )
 
     def run_command(self, cmd):
         return self.restapi.svc_obj_info(cmd=cmd[0], cmdopts=cmd[1], cmdargs=cmd[2])
@@ -338,10 +379,10 @@ class IBMSVCFlashcopy(object):
     def fcmap_create(self, temp_target_name):
         if self.copyrate:
             if self.copytype in ('clone', 'backup'):
-                if int(self.copyrate) not in range(1, 151):
+                if self.copyrate not in range(1, 151):
                     self.module.fail_json(msg="Copyrate for clone and backup must be in range 1-150")
             if self.copytype == 'snapshot':
-                if int(self.copyrate) not in range(0, 151):
+                if self.copyrate not in range(0, 151):
                     self.module.fail_json(msg="Copyrate for snapshot must be in range 0-150")
         else:
             if self.copytype in ('clone', 'backup'):
@@ -359,6 +400,7 @@ class IBMSVCFlashcopy(object):
         cmdopts['source'] = self.source
         cmdopts['target'] = temp_target_name
         cmdopts['copyrate'] = self.copyrate
+        cmdopts['cleanrate'] = self.cleanrate
         if self.grainsize:
             cmdopts['grainsize'] = self.grainsize
         if self.consistgrp:
@@ -429,9 +471,10 @@ class IBMSVCFlashcopy(object):
             if self.consistgrp:
                 if self.consistgrp != data['group_name']:
                     props['consistgrp'] = self.consistgrp
-        if self.copyrate:
-            if self.copyrate != data['copy_rate']:
-                props['copyrate'] = self.copyrate
+        if self.copyrate and self.copyrate != int(data['copy_rate']):
+            props['copyrate'] = self.copyrate
+        if self.cleanrate and self.cleanrate != int(data['clean_rate']):
+            props['cleanrate'] = self.cleanrate
         return props
 
     def fcmap_update(self, modify):
@@ -453,6 +496,7 @@ class IBMSVCFlashcopy(object):
         parameters = {
             "copytype": self.copytype,
             "copyrate": self.copyrate,
+            "cleanrate": self.cleanrate,
             "source": self.source,
             "target": self.target,
             "grainsize": self.grainsize,
@@ -487,7 +531,7 @@ class IBMSVCFlashcopy(object):
     def apply(self):
         msg = None
         modify = []
-
+        temp = None
         if self.state == 'present' and self.old_name:
             msg = self.flashcopy_rename()
             self.module.exit_json(msg=msg, changed=self.changed)
@@ -510,12 +554,12 @@ class IBMSVCFlashcopy(object):
                         self.module.fail_json(msg="Required while creating FlashCopy mapping: 'source'")
                     if not sdata:
                         self.module.fail_json(msg="The source volume [%s] doesn't exist." % self.source)
+
                     if tdata:
                         if sdata[0]["capacity"] == tdata[0]["capacity"]:
-                            if self.copytype == 'clone':
-                                msg = "target [%s] already exists." % self.target
-                            elif self.copytype == 'snapshot':
-                                msg = "target [%s] already exists, fcmap would not be created." % self.target
+                            self.fcmap_create(self.target)
+                            msg = "mapping [%s] has been created" % self.name
+                            self.module.exit_json(msg=msg, changed=self.changed)
                         elif sdata[0]["capacity"] != tdata[0]["capacity"]:
                             self.module.fail_json(msg="source and target must be of same size")
                     if sdata and not tdata:

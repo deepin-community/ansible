@@ -61,4 +61,7 @@ Depends: @,
          python3-textfsm,
          python3-xmltodict,
          yamllint
-Restrictions: flaky
+Restrictions:
+  flaky,
+  # don't run broken tests on CI
+  disabled-on-ci,

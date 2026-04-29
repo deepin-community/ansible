@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "community",
   "name": "ciscosmb",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "authors": [
    "Petr Kl\u00edma <qaxi@seznam.cz>"
   ],
@@ -17,10 +17,11 @@
    "sg350",
    "sg550",
    "cbs350",
+   "c1300",
    "smb",
    "small_bussiness"
   ],
-  "description": "Cisco SMB switches - SG300, SG500, SG350, SG550, CBS350",
+  "description": "Cisco SMB switches - SG300, SG500, SG350, SG550, CBS350, C1300",
   "license": [],
   "license_file": "LICENSE",
   "dependencies": {
@@ -35,7 +36,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "0184b4a8b12bb7fd53db5eba127a744f66f90bdf37070164de7b6825a4b0f3d6",
+  "chksum_sha256": "35f1e51b6436c1a9d6d30279475091263b3b0cf24e08e1a5dadf5c0859986c67",
   "format": 1
  },
  "format": 1

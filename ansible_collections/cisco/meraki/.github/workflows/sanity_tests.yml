@@ -1,24 +1,24 @@
 name: CI
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
   schedule:
     - cron: '0 6 * * *'
 env:
   NAMESPACE: cisco
-  COLLECTION_NAME: meraki 
+  COLLECTION_NAME: meraki
 jobs:
   sanity:
     name: Sanity (Ⓐ${{ matrix.ansible }})
     strategy:
       matrix:
         ansible:
-          - stable-2.14
-          - stable-2.15
-          - stable-2.16
+          - stable-2.17
+          - stable-2.18
+          - stable-2.19
           - devel
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out code
         uses: actions/checkout@v3

@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "cisco",
   "name": "nxos",
-  "version": "9.2.1",
+  "version": "11.0.0",
   "authors": [
    "Ansible Network Community (ansible-network)"
   ],
@@ -18,7 +18,7 @@
   "license": [],
   "license_file": "LICENSE",
   "dependencies": {
-   "ansible.netcommon": ">=6.1.0"
+   "ansible.netcommon": ">=8.1.0"
   },
   "repository": "https://github.com/ansible-collections/cisco.nxos",
   "documentation": null,
@@ -29,7 +29,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "0154aaf1793ad88b3a112f91af4bf98f246247baa25c51aefc1eec5659b6014b",
+  "chksum_sha256": "f0829dd486605fe6448c637158c0bcc89b0a241087ba1502b6f59f03653ebbd9",
   "format": 1
  },
  "format": 1

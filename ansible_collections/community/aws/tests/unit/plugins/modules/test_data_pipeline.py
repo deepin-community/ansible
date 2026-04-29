@@ -25,16 +25,6 @@ except ImportError:
 
 from ansible_collections.amazon.aws.plugins.module_utils.botocore import HAS_BOTO3
 
-# Magic...  Incorrectly identified by pylint as unused
-# isort: off
-# pylint: disable=unused-import
-
-from ansible_collections.amazon.aws.tests.unit.utils.amazon_placebo_fixtures import maybe_sleep
-from ansible_collections.amazon.aws.tests.unit.utils.amazon_placebo_fixtures import placeboify
-
-# pylint: enable=unused-import
-# isort: on
-
 from ansible_collections.community.aws.plugins.modules import data_pipeline
 
 if not HAS_BOTO3:
@@ -45,8 +35,8 @@ class FailException(Exception):
     pass
 
 
-@pytest.fixture(scope="module")
-def dp_setup():
+@pytest.fixture(scope="module", name="dp_setup")
+def fixture_dp_setup():
     """
     Yield a FakeModule object, data pipeline id of a vanilla data pipeline, and data pipeline objects
 

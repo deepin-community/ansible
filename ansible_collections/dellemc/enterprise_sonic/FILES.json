@@ -22,6 +22,13 @@
    "format": 1
   },
   {
+   "name": "changelogs/fragments",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
    "name": "changelogs/archive_fragments",
    "ftype": "dir",
    "chksum_type": null,
@@ -1205,49 +1212,238 @@
    "format": 1
   },
   {
-   "name": "changelogs/archive_fragments/2.5.1",
+   "name": "changelogs/archive_fragments/3.0.0",
    "ftype": "dir",
    "chksum_type": null,
    "chksum_sha256": null,
    "format": 1
   },
   {
-   "name": "changelogs/archive_fragments/2.5.1/446-README-documentation-links-fix.yaml",
+   "name": "changelogs/archive_fragments/3.0.0/446-README-documentation-links-fix.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "8195670a9c32927638c73ab26bf824eb70c6eedf5c5e79cbaabae79a1a949814",
    "format": 1
   },
   {
-   "name": "changelogs/archive_fragments/2.5.1/443-update-regex-edit-config.yaml",
+   "name": "changelogs/archive_fragments/3.0.0/443-update-regex-edit-config.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "20e5be4ea006708cae9335bd5c998845b46276eff450d36fc2da757b34b30759",
    "format": 1
   },
   {
-   "name": "changelogs/archive_fragments/2.5.1/v2.5.1_summary.yaml",
+   "name": "changelogs/archive_fragments/3.0.0/382-aaa-breaking-change.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6711ed8613ac34022358c522c7b02af40331e9f6654e4ef5f19b63ecf419c928",
+   "chksum_sha256": "b6f714158e01f211457e292ecab2b7227b3703713ac5568a0070cb90f05d3c59",
    "format": 1
   },
   {
-   "name": "changelogs/archive_fragments/2.5.1/441-system-downward-compatibility-fix.yaml",
+   "name": "changelogs/archive_fragments/3.0.0/448-set-suppress-vlan-neigh-option.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "9c37fd559da5646ede94f09ad363ddde41e95ac7c1ec96820793ac38883dcbdc",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/478-Adding-severity-option-to-logging-module.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0c1fe30861eb1ea58c91ef5916fcfceb996901f9d05375d07684ce8e3ed0983e",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/440-bgp-aann-support-merged-fix.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cc4559671359e0879f6a024cf70e8083ed294f1ab8480d39f12f4da9c01dd19d",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/456-tests-sanity-ignore-action-plugin-for-ansible-2.19.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "379db682d78743ab58a5f0ca0054c439f43de0e6c52789baf09796ecf2bf2bb2",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/463-mclag-prereq-member-deletion.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "d0390439d8c9f8842bee84c91dc1b162d9a91e40f25db14baa415962d3b60598",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/421-set-new-native-option-ipv-ipv6-next-hop.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "1902582656171b1fc209a1e8a96780b5bca547818ee0fb04cf0e21e799a78a58",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/482-radius_server-regression-test-hostname.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "bb1d8b7cb0961d9075f7efbb363b2ce77f7a5a6b0ae3693181814d18eda32f6e",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/465-update-qos-wred-test-case.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a8beb4b054342a5679aeeb0f00377f878650444f69f556a1c4efd618af6c356b",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/v_3.0.0_summary.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "5e859bde3904521c28951b776b05977b53e067094edf7efab37f27aa2c919674",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/455-fix-vrrp-regression-failure.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "75db66c2a604f7c3bef6794e29b94383fc28e8bfb0a4208ddc93c2ba749adfc5",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/477-stp-bugfix-and-refactor.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "1b75a949a16a426bb3a1de5320599c1ea4e1d44fe5e15a1bbf34f4a58d6ab713",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/441-system-downward-compatibility-fix.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "736ed425b0c705a2612a164f491085dcd8a797122de21a154dbfa07ed183d6de",
    "format": 1
   },
   {
-   "name": "changelogs/archive_fragments/2.5.1/445-ConnectionError-add-imports.yaml",
+   "name": "changelogs/archive_fragments/3.0.0/460-stp-long-int-vlan-fix.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c38c05108f63557300455d8f0bb207f67b9e6c8903a336d774fdb2063395d06e",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/459-add-new-message-type.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "26036954b6721adb620ff7aba645b4d67258fddc32ac2ac21852254803c2b14e",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/466-ospf-area-bugfix.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ab9b16f64fd23f4f9a03e5caad3de5c08d893270b2581737f4e109f68c44dab0",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/470-interfaces-speed-bugfix.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a8908e6bbe5dfc2037ff9f351f20e34362897716cd01330ae5dbcd8e833359c6",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/471-fix-vxlan-regression-tests.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "b8d7172e0243fca877fc0bbabdb7f71e613091ed56801895759de12551c476e0",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/423-syslog-over-TLS.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "334958f570093980a1daad1a16ef03d6b28e8fe25697dbab09799f5b840ee785",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/474-l3_interfaces-ipv6-autoconf-downward-compatibility.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6c61db9b131f28c6aaadad43b2a933e05262d233f0f461947e42f60488f4c87d",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/444-add-buffer-init-attribute.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "05fd0e078420add6a9d7a339ea6d2fb5e5d045494e6e2cf6a357271deeb1bb56",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/380-sonic-image-verification.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0336aa762d7872c6f4c9a8629eee14eaefc5805be07dc4c75ebd43a7e35ece43",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/296-new-vlan-mapping-resource-module.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "06697bda934a33df04b3c687048d43ba39a4c4f6e8a40c1873f7dd3671d4f0da",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/473-qos-interfaces-deletion-bugfix.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "468a7300bed52d2a1103764545657885eb12cbff917ef1169e1131be3d71de48",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/414-ldap-security-profile.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "8aee4077c0590f70d320d798e1f37bb93ad2dc39791d3b3cb1e3ab6efe165af4",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/445-ConnectionError-add-imports.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "fc71bca90833fa6416fdd6e4cf5c406f3c8f759d987c201de7806a93625f4ac5",
    "format": 1
   },
   {
-   "name": "changelogs/archive_fragments/2.5.1/434-changelogs-post-release-2.5.0-pylint-and-doc-fixes.yaml",
+   "name": "changelogs/archive_fragments/3.0.0/424-remote-audit-log.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ea6f87da2f2ecc6f458b134585b2c27d5ebd4d5f8d5bef53f38d6e351afd96cb",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/453-add-unreliable-los-option-to-interface.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "30c357b1a68c586e0b5c83c158f4b6d8406ae7d404f3597a203a1b280844aa79",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/481-copp-bugfix.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "eb07ee18530983ce5b86d98c09d0e3010df46a09ba4c9713f7899385841970a9",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/464-REST-server-cipher-suite.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "d1e5e9912b4398073e36af96f59b5ac98c4d4916c68322875a408d320aaf2747",
+   "format": 1
+  },
+  {
+   "name": "changelogs/archive_fragments/3.0.0/434-changelogs-post-release-2.5.0-pylint-and-doc-fixes.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "f4789b0144641fcfad250d7b9bae52143ad41bb456a50e1c54e00a57215f6238",
@@ -1257,14 +1453,14 @@
    "name": "changelogs/.plugin-cache.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e3656a5d0a4bc4cc7e1251c961f7c0da6760c5533b85bbb5688defb6300e0365",
+   "chksum_sha256": "9293aea7c2c9d313efdbe91ec38f7783681084e6daa9b841253b83ce64a9d440",
    "format": 1
   },
   {
    "name": "changelogs/changelog.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3d70efd161eb77363d36b1e000a2a330f6fb7bd65e4a676481444b9c2e44bbe5",
+   "chksum_sha256": "51f403969a1b20b8b4313effdc84fab762f0c2668aaed42edbe192744df22b5a",
    "format": 1
   },
   {
@@ -1390,7 +1586,7 @@
    "name": "plugins/modules/sonic_vlan_mapping.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f15f7c1e47793bc22877f27f705656fbb9c123f552d6761d005e2bf5c92522b2",
+   "chksum_sha256": "ca4865a74db413581df573176439025654c3cb05e44490783bf5d5e54e368074",
    "format": 1
   },
   {
@@ -1411,14 +1607,14 @@
    "name": "plugins/modules/sonic_stp.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "12b7f6e3cf07e95d8b3c1c6fd4fcbc7beb6965d5cb72383c86269b0bd79662ce",
+   "chksum_sha256": "ba7a53d0716aa121f504dbda0a8dceaabf05ba78b63c4ca0a72da90fca114bbb",
    "format": 1
   },
   {
    "name": "plugins/modules/sonic_bgp_communities.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "74308975a3e77769115e9fcf6e4c5744774f2d8a028d43c1bb47d573061aa736",
+   "chksum_sha256": "97ea8b859fac55044c357d3d5d389c1fbf73ad9c279e995068fd4878a4fef96b",
    "format": 1
   },
   {
@@ -1439,14 +1635,14 @@
    "name": "plugins/modules/sonic_vrrp.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3d3a0efce0ac1177769b7c7b883d4b985b3b26c09cc8c9945bdbef1082e25d96",
+   "chksum_sha256": "287440499746a908e9072cb9e2c90bd1aa2300657838258e545cb1236bc3978d",
    "format": 1
   },
   {
    "name": "plugins/modules/sonic_vxlans.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a7504a5ab98b26c589b23df3cf691d48858e42bd13000d5efb72fb269069d2d9",
+   "chksum_sha256": "52ec38846a3cf1dafc2b05eefd544ecde9cdb5b463cda1e19d6c5fd34d61d64f",
    "format": 1
   },
   {
@@ -1467,7 +1663,7 @@
    "name": "plugins/modules/sonic_image_management.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e260ee0d37c295bc2fde66f058430aaf0cf4d52cfa220f5236ebf1c5b08ff6d5",
+   "chksum_sha256": "9c47eeb2b6a3c7c176aa69ad50cbbf597999f40f339b4dfb7cb900068d1469bf",
    "format": 1
   },
   {
@@ -1509,14 +1705,14 @@
    "name": "plugins/modules/sonic_interfaces.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7b096d2a3cf02bbdcc5d5ebb03e2df2f68288581686c1ba1894e592df8b10e06",
+   "chksum_sha256": "cd545979acd58fee356462be08f37e80596e0f606b921cecacfc2ed64fdda6d6",
    "format": 1
   },
   {
    "name": "plugins/modules/sonic_ldap.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "815782022251a15b5900fc503b3c3d623fda0c21af0ebd75cb850b492fb4297c",
+   "chksum_sha256": "f27042355fd4a3d196efc5c6ffde6de99c020fdbb217568a06f232a484dcc0c0",
    "format": 1
   },
   {
@@ -1579,7 +1775,7 @@
    "name": "plugins/modules/sonic_route_maps.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "53e85f596febfd35d834c1e4ee89b007099ea5bcba84d6a2f45d060ffaa02f65",
+   "chksum_sha256": "178b6bd457bbdea5ff79b9bff914d40c5388680a6afb2d90f7c2a78d4dd51031",
    "format": 1
   },
   {
@@ -1656,7 +1852,7 @@
    "name": "plugins/modules/sonic_qos_buffer.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b30b3f4c708f8dc30800a1e4ee0d2157e8f9ed184a0d1caa3c60f25816374251",
+   "chksum_sha256": "056cfe3e8ace072aa4e3c4f69b47144f48ed14fdd2949ada2b4c0a541b80caca",
    "format": 1
   },
   {
@@ -1733,14 +1929,14 @@
    "name": "plugins/modules/sonic_facts.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "c9de451945e48499d3871a184d55004138ace7d140a223bcf86e658753bed3bc",
+   "chksum_sha256": "9b8496c1d71bfe626f67a06cc1628760a40f15066c355f29fc61d7908416495d",
    "format": 1
   },
   {
    "name": "plugins/modules/sonic_radius_server.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "87e0569e1b54fa1febd13fe70e132677a233331692fbec1babb2d791882e84f2",
+   "chksum_sha256": "3eea08c500c6e73a14250d9221d6422fc8e763856caba238dfc69b09ccd610f2",
    "format": 1
   },
   {
@@ -1775,7 +1971,14 @@
    "name": "plugins/modules/sonic_mgmt_servers.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "10a192803d138581411120c6e5b28ddf544c2698948868ca05de1e4c8140e058",
+   "chksum_sha256": "dbdc3c9748d3123b1a21c3e234f21bbc1fc53d4abc65fd4f363f4bf40c0b28c5",
+   "format": 1
+  },
+  {
+   "name": "plugins/modules/sonic_ssh.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ee0e9843054b7fd11637ca75e4ad6b663ed43bbc3aff8ed24ab8b52b3e2a6183",
    "format": 1
   },
   {
@@ -1810,7 +2013,7 @@
    "name": "plugins/modules/sonic_logging.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8d52eb30c31df44de1ef3bfca4f78209094673b1fa4b7378a03bd35a0fbd0de9",
+   "chksum_sha256": "867baf1a0652002cf43b28a8873b7f98b64549edac92649a20bc144f33c826a2",
    "format": 1
   },
   {
@@ -1831,7 +2034,7 @@
    "name": "plugins/modules/sonic_aaa.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5e0367da89779b1fd77ede17f153e486059653537afc129399c4633b78bc5301",
+   "chksum_sha256": "fa9e8c1a0eab2c954d7a5e627511106967b7edcbd31f7954bf9f21efdb7738cd",
    "format": 1
   },
   {
@@ -1922,7 +2125,7 @@
    "name": "plugins/module_utils/network/sonic/facts/facts.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "05d1937cb489003f9b32b2ff5313510b19e24478c8b13ee9da04d7ebaff86917",
+   "chksum_sha256": "236aa791430cc20f1d1cee1e6a851e5a186b1e03b32dacc3f4a4225bcb9e44e3",
    "format": 1
   },
   {
@@ -1964,7 +2167,7 @@
    "name": "plugins/module_utils/network/sonic/facts/bgp_communities/bgp_communities.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "969f2079fc54fba0dc76eb226b29b1b2c1b18c5ff59520fd16cbb48463e474ac",
+   "chksum_sha256": "26490a6f5b740f5afa1212937097b0ede5a2ef63caea0d48463c00b042e9f119",
    "format": 1
   },
   {
@@ -1978,7 +2181,7 @@
    "name": "plugins/module_utils/network/sonic/facts/aaa/aaa.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d64144e0152dcc788ea4cb146f9c1bba788db714b6c89d6a40cb6a36edfdc1ab",
+   "chksum_sha256": "c52cfc6c49703d45a66195020c10964551d5c2b26b24e9b5c8bfa3d361b72518",
    "format": 1
   },
   {
@@ -1999,7 +2202,7 @@
    "name": "plugins/module_utils/network/sonic/facts/mgmt_servers/mgmt_servers.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "504a39093b88b47cc99d592123a33f50a17b6aef88653eb06ea38583ebf14cfd",
+   "chksum_sha256": "9c863358b2c1bd55b4812463f0ac983291c51475c78906a381b17b251e528557",
    "format": 1
   },
   {
@@ -2063,6 +2266,20 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "format": 1
+  },
+  {
+   "name": "plugins/module_utils/network/sonic/facts/ssh",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "plugins/module_utils/network/sonic/facts/ssh/ssh.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "922e7280b0e05d3c58f80bd8c4ec6d951fa218cf0d051957261518b49b8e816d",
    "format": 1
   },
   {
@@ -2146,7 +2363,7 @@
    "name": "plugins/module_utils/network/sonic/facts/ldap/ldap.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "aa377793b38b8b33e1dcaf1f9d5f3d38c035c458c674b311ed16fc3621ac486d",
+   "chksum_sha256": "9ce07042d5ab6ed773a533aff4ee5d13939cffff7373c1cd044fb007ebb27ebb",
    "format": 1
   },
   {
@@ -2209,7 +2426,7 @@
    "name": "plugins/module_utils/network/sonic/facts/vxlans/vxlans.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6ac05f65a0fd553df5ece88836aa12109a9c2446f569494c82c6bdcaabb91e3e",
+   "chksum_sha256": "b8cebafa9d6e6d89db5e1163c39d4a37fb8d345222cb2bb6c13c4d5c0e5d47d1",
    "format": 1
   },
   {
@@ -2461,7 +2678,7 @@
    "name": "plugins/module_utils/network/sonic/facts/stp/stp.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "c8c82f160cf1f15d35db707bf137b8063073c0c3b71a0518f8b0f90bb7ec56ff",
+   "chksum_sha256": "212bcb818ee486f33ea2c1f4d532562a13170d5a5482d115408cca48607c5307",
    "format": 1
   },
   {
@@ -2517,7 +2734,7 @@
    "name": "plugins/module_utils/network/sonic/facts/interfaces/interfaces.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2b9c2214ac00be01d2a81f4b18f61938931bf9c7393c6340f969a4851e72899e",
+   "chksum_sha256": "ff338bf8edb580b63252446dceb47d4b320447c1b9402d8ff993b6cdbdd071a7",
    "format": 1
   },
   {
@@ -2818,7 +3035,7 @@
    "name": "plugins/module_utils/network/sonic/facts/logging/logging.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1266c2e8f58624e84bab8e5449e4af1b08559876c99d77a904328d9d86400f70",
+   "chksum_sha256": "a08f682f1ceec7cdff7ee2158490ed83d2be2642ee3e105c779644ba7d38a260",
    "format": 1
   },
   {
@@ -2839,7 +3056,7 @@
    "name": "plugins/module_utils/network/sonic/facts/qos_buffer/qos_buffer.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "380a199633d208f7d3f71035330f365aa1e2dea097ad000c6e4d3ecd4786cd05",
+   "chksum_sha256": "15d414395cd3686e1e06aa91dad3cda187fd3af5236852978045f55de8d3cb0f",
    "format": 1
   },
   {
@@ -3021,7 +3238,7 @@
    "name": "plugins/module_utils/network/sonic/facts/vlan_mapping/vlan_mapping.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "daf715775a622cfb63723d94c7693fb1c8113dbe6c2a4b0cd317737d1c0bcc40",
+   "chksum_sha256": "cc6a2cd8d2e4b7f74c8f6010fa487c2f954a91d8627ccdc9738fbe0941c61f4c",
    "format": 1
   },
   {
@@ -3084,14 +3301,14 @@
    "name": "plugins/module_utils/network/sonic/facts/route_maps/route_maps.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "12ec6b097bb7ca3de01f5ed9c2275806d68d6e438f39ce933cd140acc878c6d3",
+   "chksum_sha256": "45b512e71552d9dc7971f813bb584aa9c383d2c89d2d131683fc7d9c466caecf",
    "format": 1
   },
   {
    "name": "plugins/module_utils/network/sonic/sonic.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cd8906cff0b53378aae1bcbf794102305dffff1dd42e8be61d7c40995acab002",
+   "chksum_sha256": "b85bfd2fd7ac8a3194939994f3b0a6477d97a41f73c498fc7d1441623397a91c",
    "format": 1
   },
   {
@@ -3189,7 +3406,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/facts/facts.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7310d5d278289831c5373db80f8bd2cf1ddb9de1887496da22f42da1341d29d1",
+   "chksum_sha256": "f36a3cc1eac75e6a5b564a77292d65bb3b1a730c06c2217b73b91f317388e5e7",
    "format": 1
   },
   {
@@ -3238,7 +3455,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/bgp_communities/bgp_communities.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "c1c69b72962c5030db0e623ffe66d51db1b0456cb87b8c1dd1815b011c58f650",
+   "chksum_sha256": "da164ce3f60d7d1bdf2b8b62883a4e321d0c6e1338b8859c73a312d41a5ac859",
    "format": 1
   },
   {
@@ -3252,7 +3469,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/aaa/aaa.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "61219ac1fa1c852ed1662fcea00fd733097880ae437479ec83fa38b702fcb21e",
+   "chksum_sha256": "d7356d1e2705f712239e82e0cdb1bee6c6ec49fe5d8bf2de35133adf6d64354b",
    "format": 1
   },
   {
@@ -3273,7 +3490,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/mgmt_servers/mgmt_servers.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0d0d80a9f329da46133314ee509571e64ef4f7f0b7cd7527d90a552d11abc5a9",
+   "chksum_sha256": "bb7c89b328e58bb4cfe0917ff8845d97f7a9c607e92b139fed7bc6081a03f4aa",
    "format": 1
   },
   {
@@ -3337,6 +3554,20 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "format": 1
+  },
+  {
+   "name": "plugins/module_utils/network/sonic/argspec/ssh",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "plugins/module_utils/network/sonic/argspec/ssh/ssh.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "76aec8261810f450e1e106c111138c3928db1034c22887a29d05124eac86b323",
    "format": 1
   },
   {
@@ -3420,7 +3651,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/ldap/ldap.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "93105a6e4d263b16aa99c400ed9d93afc5ce45bbff4f65f02fbdb03daf824b16",
+   "chksum_sha256": "ec3d972da888cfd3046505aa8daca258994864cf346718dcb6ca53ee6ab75a5c",
    "format": 1
   },
   {
@@ -3483,7 +3714,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/vxlans/vxlans.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e57019b5b02151aa3b5a1f92c82a4f823d59d013000c520ddcf0e558cf3e50f1",
+   "chksum_sha256": "f13fa79242d686959b84557517e2744d729e351dafc447f077017ff18245b9a2",
    "format": 1
   },
   {
@@ -3728,7 +3959,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/stp/stp.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0d058343ea2c3cce3fe58078701f66cebbe91944cc9402d37ca7bc31b98542da",
+   "chksum_sha256": "07637776f1eae758d89708aeeb986cc7384fb2df19a9d7452e01cd556c4bc4a3",
    "format": 1
   },
   {
@@ -3791,7 +4022,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/interfaces/interfaces.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "04e92b4c1ceb5c318e76a933dd5c08a7c05a009d4a40038d076e43169c70d56e",
+   "chksum_sha256": "9cfd1a19b19d93225fabdce6b864fae2cf01e76d47d0bbfa10db766c1cc33e07",
    "format": 1
   },
   {
@@ -4092,7 +4323,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/logging/logging.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1c1b35e4236cb9e35c83c33b25851259818a2cc713119b9ed9cc0af2b6a50916",
+   "chksum_sha256": "643776495491e4dccc641e67d9c5b0004afe56417d2c241b561c308ceafe609d",
    "format": 1
   },
   {
@@ -4113,7 +4344,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/qos_buffer/qos_buffer.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "67920c4b7b41d0fa1d6f0f52ce67074133a1958b935f157ecbd6649dbcf22c77",
+   "chksum_sha256": "be0d889a7c967670cd91252094b52a42083a4f5263e180f13847f0b10daab5c3",
    "format": 1
   },
   {
@@ -4295,7 +4526,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/vlan_mapping/vlan_mapping.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "bd0e8cb34175ac5eeede2e26a1f4fe186da14e0881c0a7c40865a45c63c67756",
+   "chksum_sha256": "04dcca7317da9f43da0f5ab9f1497744d922ae07a5d0baed280f4278e4d514c6",
    "format": 1
   },
   {
@@ -4351,7 +4582,7 @@
    "name": "plugins/module_utils/network/sonic/argspec/route_maps/route_maps.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0d297bb61ec07744d2d124320efbfa43e04c3eb25529dde53c8067ed90e4fe18",
+   "chksum_sha256": "bdbf3a11102beb3122cf74d1d29b464827dfd49b5daf080097dcfd50f6fc066c",
    "format": 1
   },
   {
@@ -4428,7 +4659,7 @@
    "name": "plugins/module_utils/network/sonic/config/bgp_communities/bgp_communities.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e5949c2779966a16d31d354e30597b6563efbee9e85a5d4cc5f09c6da974d5ea",
+   "chksum_sha256": "a41494400883dba09520f285a1fa079feb76515062b8fb386234fa41b06965b5",
    "format": 1
   },
   {
@@ -4442,7 +4673,7 @@
    "name": "plugins/module_utils/network/sonic/config/aaa/aaa.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0c62cfcf15301239d3606d505b5cdebb06480becb236a2cfa42d18e67857141d",
+   "chksum_sha256": "c3b510675549d3011721e059959b4718c03c35a1007eadd30924b69645658cd8",
    "format": 1
   },
   {
@@ -4463,7 +4694,7 @@
    "name": "plugins/module_utils/network/sonic/config/mgmt_servers/mgmt_servers.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d59e718bd1b48bce2aaab5e8295bd4daf05e8a8a502a0d48555dde0fb8bf122d",
+   "chksum_sha256": "99fea927823ee9e0aa871b2fecdc58cf0be30558b74cb3f986bd8a1550b344b5",
    "format": 1
   },
   {
@@ -4513,6 +4744,20 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "30ad4bcdc9479f0ccd6585427213b3869de8b9f840ab9d362616edd892939579",
+   "format": 1
+  },
+  {
+   "name": "plugins/module_utils/network/sonic/config/ssh",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "plugins/module_utils/network/sonic/config/ssh/ssh.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "50fe2a8bbe3ae077356d4c349641056289a0894504151298cb2f67805d9396e5",
    "format": 1
   },
   {
@@ -4575,7 +4820,7 @@
    "name": "plugins/module_utils/network/sonic/config/ospf_area/ospf_area.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1ea060433233e0286ffe70ef1121e25a3af384c2a43a7576c6ad789177cc14c9",
+   "chksum_sha256": "429d4d1f4cdfcf8a70203d3917e403e9694d9e70458c395604b2d987909c7300",
    "format": 1
   },
   {
@@ -4589,7 +4834,7 @@
    "name": "plugins/module_utils/network/sonic/config/ldap/ldap.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8a2cfa1c133a78e96d54fc5a3136d664fd9437e297e28ec9293478e0c9a220a0",
+   "chksum_sha256": "ff451dba3bf67e965fec8b267ea4180f31d374b3892d7149948fec62771a52ca",
    "format": 1
   },
   {
@@ -4645,7 +4890,7 @@
    "name": "plugins/module_utils/network/sonic/config/vxlans/vxlans.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7ff5e2ba23c55446ef6ae03c584576199909e8c71ee6fcb7551e3efe05f783cc",
+   "chksum_sha256": "86f1da9f3e9c9ff28ce4c32d0d17f5a3b1c517d2d283362b0e0ddebc290d4605",
    "format": 1
   },
   {
@@ -4750,7 +4995,7 @@
    "name": "plugins/module_utils/network/sonic/config/l3_interfaces/l3_interfaces.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d81f132accb8defd7fb8d153e6d20a4b922f695863d5e53c5f98bb6de1bafc97",
+   "chksum_sha256": "da4a6f3332536feae31fc0df380123cd7442139fdbb3912a8c7ca3b0784bffc7",
    "format": 1
   },
   {
@@ -4869,7 +5114,7 @@
    "name": "plugins/module_utils/network/sonic/config/stp/stp.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6d4db156bc8c4d381bd22bf9d0db693509ea01cb6d78c97bd7a855ee05ff3e04",
+   "chksum_sha256": "ca4756705655eecb4500b6c6cc45097066e4f267ec350ccc7ae1e5fcec8488db",
    "format": 1
   },
   {
@@ -4897,7 +5142,7 @@
    "name": "plugins/module_utils/network/sonic/config/vrrp/vrrp.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1a7dbaa77c6f87a00a9f6abfb4ed2243a9d750673eb885a51d47d305b500dc7a",
+   "chksum_sha256": "9a5020aa5bd13eb59c3c73bb5c1bffea278c329dab00990531b21c9cdeb59b89",
    "format": 1
   },
   {
@@ -4925,7 +5170,7 @@
    "name": "plugins/module_utils/network/sonic/config/interfaces/interfaces.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "59c5786fc6a38ede89fddb0d3e1c2838880e370503f4db8f40a5e8eb33ba69b3",
+   "chksum_sha256": "ab1f5686307b2d0605210483a7239a659126e0f56f728f82b15adfc6a71bafbc",
    "format": 1
   },
   {
@@ -5009,7 +5254,7 @@
    "name": "plugins/module_utils/network/sonic/config/mclag/mclag.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "283bb351afb839bf565637ac36b4e602c5533fc0cbe737e9fd999efab7064b18",
+   "chksum_sha256": "2f50b05327f2b737a1fad5226098f98b4763eaf6fa8a848a4c6fe1083278c577",
    "format": 1
   },
   {
@@ -5184,7 +5429,7 @@
    "name": "plugins/module_utils/network/sonic/config/qos_interfaces/qos_interfaces.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4de649c5bb397de81d574d8b25a901403c2a5c5dd2da4cb893d7dc79fae0a93d",
+   "chksum_sha256": "947e65d7b085437e11f63cd52e2522ca80f00fa220fc243af2846d57adf4eeb7",
    "format": 1
   },
   {
@@ -5205,7 +5450,7 @@
    "name": "plugins/module_utils/network/sonic/config/logging/logging.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9d0a73d191a77f01b1666cdcc8794457b6b501b43e1919e51661583426c92669",
+   "chksum_sha256": "a163221ddc885a1851f2b17cab37d7f014bed69297647079a0c01ed5dbab5de1",
    "format": 1
   },
   {
@@ -5226,7 +5471,7 @@
    "name": "plugins/module_utils/network/sonic/config/qos_buffer/qos_buffer.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "291e0af48f011b30cbb4170b9d569f153e412c2b631648bdb43c80d193a5fe38",
+   "chksum_sha256": "ceedd81060b32d9454f95538d7ca415fb734041da4ea291e4ef4b355c1e01e6c",
    "format": 1
   },
   {
@@ -5282,7 +5527,7 @@
    "name": "plugins/module_utils/network/sonic/config/copp/copp.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2fac02813d94d6dba85e3667727971ddf81105dbedd0613796a9482f9a6223c9",
+   "chksum_sha256": "1c0a811eaa1c0e45bcff67f2d2ff3929a886ff54cc2129bd2cd5825e51e4bb6f",
    "format": 1
   },
   {
@@ -5408,7 +5653,7 @@
    "name": "plugins/module_utils/network/sonic/config/vlan_mapping/vlan_mapping.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8ba00006e25c72c156c1d6c0276f592550e5361d4924175abb5ba6be6980bf6b",
+   "chksum_sha256": "5f3684c18c17ee4aab5b74a3c76d6bc3c3d87d41e1ad10f59404806ae1fe18b7",
    "format": 1
   },
   {
@@ -5464,7 +5709,7 @@
    "name": "plugins/module_utils/network/sonic/config/route_maps/route_maps.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "20db2a3e225a4cc502e2a9f31471b928a6f4bc1c7473f671b8d80b06793b6fcc",
+   "chksum_sha256": "28531990cccd9f27f9df05a100c405bb2e1cfcb358a72599e2801b9c0007d129",
    "format": 1
   },
   {
@@ -5559,6 +5804,13 @@
    "format": 1
   },
   {
+   "name": "tests/sanity/ignore-2.19.txt",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0fcb36eb462773c00b14c9e9f4db400f752ceed07d6ceb2a34833393f0b01134",
+   "format": 1
+  },
+  {
    "name": "tests/sanity/ignore-2.16.txt",
    "ftype": "file",
    "chksum_type": "sha256",
@@ -5625,7 +5877,7 @@
    "name": "tests/regression/test.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6ab03fff7c7cc5570c8437981c2e1c2b86de1f8362876710d1f7fb4d051f5ad1",
+   "chksum_sha256": "407739fca2971c7cfa31a9821ba3c5c88e465c3e52c77cbe01e4b0982bec7e4f",
    "format": 1
   },
   {
@@ -5653,7 +5905,7 @@
    "name": "tests/regression/roles/sonic_logging/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ea74cc59b45e1eb5e9dc07b9dc2019129571f25c366793f27b1f59f63d11c8c3",
+   "chksum_sha256": "f0dfeaf9966b5346918a891b60bc2f401ac018ab85fc2f5fe4e3c127e2de3043",
    "format": 1
   },
   {
@@ -5786,7 +6038,7 @@
    "name": "tests/regression/roles/sonic_vrrp/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1ea5b4176c3c93dc7d196d718d29c7da93029800e66c415776ac210c97363cf5",
+   "chksum_sha256": "c9097d97270175adf5d11f18d5bccc01c0b2f44891a1778e957868bdf02c5289",
    "format": 1
   },
   {
@@ -5800,7 +6052,7 @@
    "name": "tests/regression/roles/sonic_vrrp/meta/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5116cc9727de8d455b371ae1876ebb2e874b3bae27e31aa18e29b53aed41f535",
+   "chksum_sha256": "af0aad24caea6100f1eaf28dd660a9deb60f86870295a92c77ba0dc0ee9b92b1",
    "format": 1
   },
   {
@@ -5814,28 +6066,28 @@
    "name": "tests/regression/roles/sonic_vrrp/tasks/preparation_tests.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2eb4e861d76c5d6e272da63d86003e3bf58866c87165a2675d3a9b55820803e7",
+   "chksum_sha256": "d2d44c9198f47d85aaf8a3a24620c5b258073b4282aff901acf6072ce75ccfa2",
    "format": 1
   },
   {
    "name": "tests/regression/roles/sonic_vrrp/tasks/tasks_template.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "70f77016a320edaf02bd86cc6429cf20ce694bc1dc84ab8e79de3ca67bb47686",
+   "chksum_sha256": "1c0c0aa7e7c8bac6010c6e91a81a9179ac4c531049c04b2d063c37b2f248369f",
    "format": 1
   },
   {
    "name": "tests/regression/roles/sonic_vrrp/tasks/cleanup_tests.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7c1ab57e0936dae2abca1a9a201523d4ef713e7ba99c961bcfb3e821cfb764af",
+   "chksum_sha256": "ecdd374b3b6ca7f0dbc3f166feba2601e1be00dc096228b36ed878914ed75b01",
    "format": 1
   },
   {
    "name": "tests/regression/roles/sonic_vrrp/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "963c3731c895e1a46d24cc5dd897d0775cfeb4752d70fc7037ddaf8fb9a7fa29",
+   "chksum_sha256": "fd3dfffbbb7800249d9ecd70219b5fcd1b1b14dd83e6fba5c17fb98ae2353447",
    "format": 1
   },
   {
@@ -5996,7 +6248,7 @@
    "name": "tests/regression/roles/sonic_qos_buffer/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ea3dc9863ace0c8ba18f265a5e64d79e8d537836d4af20da803df29e7be064f0",
+   "chksum_sha256": "fc5fbf26aacdbdfdb2453a09ad8a18a0529a4daae575ead4645950d91660ff32",
    "format": 1
   },
   {
@@ -6021,13 +6273,6 @@
    "format": 1
   },
   {
-   "name": "tests/regression/roles/sonic_qos_buffer/tasks/preparation_tests.yaml",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "902b060d77c8686011f38d6e2c8ab7abcd21a33a3c4d861f3c86a297b549c797",
-   "format": 1
-  },
-  {
    "name": "tests/regression/roles/sonic_qos_buffer/tasks/tasks_template.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
@@ -6035,17 +6280,10 @@
    "format": 1
   },
   {
-   "name": "tests/regression/roles/sonic_qos_buffer/tasks/cleanup_tests.yaml",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "ba90e87f6036ae8bb97c633440ff8330c163c171f22330f2cae088d329dd1b6f",
-   "format": 1
-  },
-  {
    "name": "tests/regression/roles/sonic_qos_buffer/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "aa1aab5afa067c69b4923de6106c5b781061a4c6e133bcbb9cf993fcc99868b5",
+   "chksum_sha256": "cd0822bd88838437cbefef8bdf7b8c835096cb618c95cf130729c3d308a8ae1a",
    "format": 1
   },
   {
@@ -6143,7 +6381,7 @@
    "name": "tests/regression/roles/sonic_interfaces/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "afa84eb28e3e8a829f5d3747ba9a0867bc131de5e3a29aa6c8c2508569489abe",
+   "chksum_sha256": "1cd380f24c2cd04950f2514b790bf72ed04bf599a8b20e7d516ea3ea289a7bb2",
    "format": 1
   },
   {
@@ -6325,7 +6563,14 @@
    "name": "tests/regression/roles/sonic_image_management/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "fdd5fb73849eb16a66423ed9531b5a17cb982514c54400dd749b7bb4ac0bc353",
+   "chksum_sha256": "5c025e37a3f7f93832d3b9923ee56329e16ce4eaaaf48f37aec6ccc24b888a8a",
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_image_management/tasks/image_gpg.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "725042a16a2572d49febbbac7411242ff2df9d2870dedaeb5559dfb6b97ecf55",
    "format": 1
   },
   {
@@ -6347,6 +6592,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "a36eb08f90c1c1bf0eaf2d5315e9970edc1604765b4ecf3dad6d52d3838e5d94",
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_image_management/tasks/image_verify.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "674aa326a51cb55a64e2ad6a2afa6a0233f5d2ec56fc8d79c5d96fc680aecba9",
    "format": 1
   },
   {
@@ -6630,6 +6882,76 @@
    "format": 1
   },
   {
+   "name": "tests/regression/roles/sonic_ssh",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_ssh/defaults",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_ssh/defaults/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "21c099833b06825fa63ac4615948a73f4c0362dfcd9e641de7218e671e80205a",
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_ssh/meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_ssh/meta/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "af0aad24caea6100f1eaf28dd660a9deb60f86870295a92c77ba0dc0ee9b92b1",
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_ssh/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_ssh/tasks/preparation_tests.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "05f60affed162bd8d92f135ba17784c7b6571028b5da893689f783435e6eee0f",
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_ssh/tasks/tasks_template.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e7d1e5c9db5697f1d4c9a80cb64788c7d5864cf9dfe69710935b544c6418de80",
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_ssh/tasks/cleanup_tests.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "bc596b412c643e3a92b49346b5605a3e3d2c1af6c6fdf97730d89becf5f72352",
+   "format": 1
+  },
+  {
+   "name": "tests/regression/roles/sonic_ssh/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "32bfbccfe038802854bee14c7f195c2d081f809da15424a3a893db8904d2db9b",
+   "format": 1
+  },
+  {
    "name": "tests/regression/roles/sonic_route_maps",
    "ftype": "dir",
    "chksum_type": null,
@@ -6647,7 +6969,7 @@
    "name": "tests/regression/roles/sonic_route_maps/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f00c3fd0bcaba6e82067ce333f170eced3507f60ec80ca22577f6e1fbca9b642",
+   "chksum_sha256": "8f48833954d1b0de688ac8b29cfb5af07540bba3e6a4df782bd1eeb53cbd810d",
    "format": 1
   },
   {
@@ -7053,7 +7375,7 @@
    "name": "tests/regression/roles/sonic_vlan_mapping/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "c4fe4d04ceb98beac6327157077ca7f386b30a6cda19662437714c5adff51ed6",
+   "chksum_sha256": "9f33e1aba14f963aaa836b758e303c2b53c94397edb69b1b0aebfb498bafc33a",
    "format": 1
   },
   {
@@ -7627,7 +7949,7 @@
    "name": "tests/regression/roles/sonic_aaa/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "441fa183bae7dfee663218df7a29666a8417895fc7a20d17a5d5e9b92256f1cd",
+   "chksum_sha256": "f9d0a64351a656a6c3f1f25bcbcce61dc39a10bcce6724a703632bd8d049dcb9",
    "format": 1
   },
   {
@@ -7655,7 +7977,7 @@
    "name": "tests/regression/roles/sonic_aaa/tasks/preparation_tests.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "dc7a2c3172e30fa52832d171c90691a412bbb3c73ca1909580e99aa4a30200ee",
+   "chksum_sha256": "52c11d877f916221fa3b3aa83c25079c452cba55eb6078372ac558c1b1f9c622",
    "format": 1
   },
   {
@@ -7666,17 +7988,10 @@
    "format": 1
   },
   {
-   "name": "tests/regression/roles/sonic_aaa/tasks/tasks_template_del.yaml",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "7de7b7896a20012c48a078b7a6d98d3921017dac84e73a7f444723221879f615",
-   "format": 1
-  },
-  {
    "name": "tests/regression/roles/sonic_aaa/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7d0de7954ee326560a6ae01bfe2109c8ed1ce0fcb4e62167d00f3ff642f61151",
+   "chksum_sha256": "fd1be2504faf7dd7bb451405d245064130925c20a54d36438abdcddb798b4a10",
    "format": 1
   },
   {
@@ -7928,7 +8243,7 @@
    "name": "tests/regression/roles/sonic_mgmt_servers/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "36a41edf755f3c0c91989b8aa849f1bdf3d1767c9cbffeed21379afee131b2c5",
+   "chksum_sha256": "a0cde351da06659656bdbd4409f96243d54e7cf7d380d7d5709262fad69887df",
    "format": 1
   },
   {
@@ -8222,7 +8537,7 @@
    "name": "tests/regression/roles/common/tasks/idempotent.facts.report.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f228e22999e5b13f192bb7e5064c46e4f8b8dcd817bccb6e1a1d4bf33368c30c",
+   "chksum_sha256": "47b3e286ae1d332cfa78fca634dfd00e19afa0416dc59dff85e75fadfb96fdf5",
    "format": 1
   },
   {
@@ -8236,7 +8551,7 @@
    "name": "tests/regression/roles/common/tasks/action.facts.report.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2d51ee6515850e5d44140d451c2027d0037dc9b294fd0b5e16986f8fda94803e",
+   "chksum_sha256": "b5e2adce9cc5ca5289ca50edd99a4b07a53e23c6bb0f0c04c69f7a65f49a2b2f",
    "format": 1
   },
   {
@@ -8390,7 +8705,7 @@
    "name": "tests/regression/roles/sonic_vxlan/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a08b011291da07f7dd6e8da03c08189b62d437e6bbbac282cc2806223b72bf42",
+   "chksum_sha256": "93385f001f7e3e6a3a505ed26188642084fd6af8054dedd9e7104e35fe173f75",
    "format": 1
   },
   {
@@ -8432,7 +8747,7 @@
    "name": "tests/regression/roles/sonic_vxlan/tasks/preparation_tests.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9505adb80d90b058a0afa8e2ac8bae2e4e8f18b6d5fb8141d1a5350ed6fe7c73",
+   "chksum_sha256": "e1b3b7e292fd040e983f9d69b90db5397ff46a418ec6dc375ebfc513a4bab3d0",
    "format": 1
   },
   {
@@ -8446,14 +8761,14 @@
    "name": "tests/regression/roles/sonic_vxlan/tasks/cleanup_tests.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f63bf8a1f623c7626ccc7131205a93e63d1850f705e8b939c6fbd33edf6d0f8f",
+   "chksum_sha256": "aec66ec66b458812caac9e6aad1561d6ac451dd28bc874175f869ba84e76fe33",
    "format": 1
   },
   {
    "name": "tests/regression/roles/sonic_vxlan/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "eb5c2730875fce6c694a3aef3f0fbca3627a8dc5db8a4b889b942881b477125d",
+   "chksum_sha256": "1a9cfddc90b70771847ac80aad537e52f128cc8e65b6309dceccef4f90386eb3",
    "format": 1
   },
   {
@@ -8474,7 +8789,7 @@
    "name": "tests/regression/roles/sonic_stp/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b0ac82a7c557b0fb833202c92824adf3be9508c7bd26f3f5b75cdec9fb1f6f4e",
+   "chksum_sha256": "02b619a287eaf15d9989c27be071a3f6a52948f28b75ee673b969411fb2e6641",
    "format": 1
   },
   {
@@ -8502,7 +8817,7 @@
    "name": "tests/regression/roles/sonic_stp/tasks/preparation_tests.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "be5ca34c31c98943ebfde9441e451e3d54426c8e1754a48b64b923c96cca6bea",
+   "chksum_sha256": "a390352eb7cc3b01cf9f43cd3370b128b69903ca1dec2c447d84f59bc253324f",
    "format": 1
   },
   {
@@ -9559,7 +9874,7 @@
    "name": "tests/regression/roles/sonic_qos_wred/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4a12e0e10d3f95a5c340882c3fb07bcad3674b34c3c8e205cbd554c1566ec178",
+   "chksum_sha256": "b5393a10874c1b329cb01c9437fd12de1ef3b87041fe3195964c5acec8aa08bc",
    "format": 1
   },
   {
@@ -9622,7 +9937,7 @@
    "name": "tests/regression/roles/sonic_bgp_communities/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9f504a50c935ab1338be04bfa241007828d028dcf233efb52bfc38d52a639b72",
+   "chksum_sha256": "ef333e97ffc7e0815dd3430640dee63d3c166514d939d1fd68f03ad5568d1e3d",
    "format": 1
   },
   {
@@ -9636,7 +9951,7 @@
    "name": "tests/regression/roles/sonic_bgp_communities/meta/main.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4780e46505dc61639a5541c0108b65dadd794ba515d4d102a4b5a791e5f857dd",
+   "chksum_sha256": "af0aad24caea6100f1eaf28dd660a9deb60f86870295a92c77ba0dc0ee9b92b1",
    "format": 1
   },
   {
@@ -9650,21 +9965,21 @@
    "name": "tests/regression/roles/sonic_bgp_communities/tasks/preparation_tests.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "516ce145037ca601b5913a25a07e14e9b3a7d46692ec81bf1e38274e0ff70734",
+   "chksum_sha256": "189e54d963703db761644b1d08ac89f3c72d0daf5e72f9c4cdc959d45f0292c2",
    "format": 1
   },
   {
    "name": "tests/regression/roles/sonic_bgp_communities/tasks/tasks_template.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "96df216263dfc8ce5cd25ba67e58fd506f99536d0b72ea98f2bf08dd07a787f4",
+   "chksum_sha256": "e72094bebac5188d998160e5219aa1c232e7d6cc8d1eae6cbaaeb0c4fb965ccf",
    "format": 1
   },
   {
    "name": "tests/regression/roles/sonic_bgp_communities/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8c875934f87cca2fdc3b1d4f7c2ce76ee878e50fee2697a5faad0ccfb2524545",
+   "chksum_sha256": "6671407f3f90aaff35affc8d480280927233e03c9a08885d80eda568a821458d",
    "format": 1
   },
   {
@@ -9853,7 +10168,7 @@
    "name": "tests/regression/roles/sonic_radius_server/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8e97b8f8db857938ce1b1d31c02b427ef03e2b9acce6b32de5f09cfe430d0fbd",
+   "chksum_sha256": "55f82143ba95a11fe13a864510619d3d0a80f45402c81fa16f6dd483e4b72625",
    "format": 1
   },
   {
@@ -10280,7 +10595,7 @@
    "name": "tests/regression/roles/sonic_l3_interfaces/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1715b15d1d28aa1e413171eb76ea50bbe57bc2e3777a6b34877e5dd165a29de1",
+   "chksum_sha256": "5c620cceb8cb86840363a8c3aa7574fc8b98c0b7e69acf1d6ada7715c2a49e53",
    "format": 1
   },
   {
@@ -10343,7 +10658,7 @@
    "name": "tests/regression/roles/sonic_ldap/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7437cb69b8c0c21810893d9088f68a753c4d83a84183ec0811adde4e6969989f",
+   "chksum_sha256": "a74b172c8bf7e0da0274688648693059804f669669f7db3495b18867952c4639",
    "format": 1
   },
   {
@@ -10665,7 +10980,7 @@
    "name": "tests/unit/modules/network/sonic/test_sonic_stp.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "21ff8d2f05a1e61816e4f63752711fd41337c75e1d23c21086896a288e4cf7ae",
+   "chksum_sha256": "c65579588800ab606fc3285fd68c8856f45814ca6f0cf3d63b8d0ce0e0a56b60",
    "format": 1
   },
   {
@@ -10721,7 +11036,7 @@
    "name": "tests/unit/modules/network/sonic/test_sonic_aaa.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cf0a17e40e07834b3502c4e9e2c30cc4e8f2b86b4a3dedb3e29f7fb00b731f26",
+   "chksum_sha256": "9bcd6464d7d37167c6196736269dcc2b6ae79d88fb583ab503c4c11acea6a456",
    "format": 1
   },
   {
@@ -10763,7 +11078,7 @@
    "name": "tests/unit/modules/network/sonic/test_sonic_vxlans.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f24e3c08f29cbbebad66894503729f2e33870f48fa8aa8bd2ef536fe2394f008",
+   "chksum_sha256": "7023540cc29459af9dc52a26aef0b9354436321c9b1863e7e3a73af4ab8d9828",
    "format": 1
   },
   {
@@ -10819,7 +11134,7 @@
    "name": "tests/unit/modules/network/sonic/test_sonic_interfaces.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9952114bcc557fa8da116d22c23f69d2d4a0f9dc44a504f8eeeb15132cfe7cea",
+   "chksum_sha256": "07b2c169cd48f9dac7d13929435e45e875c2b87cf3ba3e5d44d9e70a86727e03",
    "format": 1
   },
   {
@@ -10861,7 +11176,7 @@
    "name": "tests/unit/modules/network/sonic/test_sonic_qos_buffer.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0f2efb273f436ab08d66fa50e78257462a7e7d6f7d1d344325bbe1ae7f8d02c7",
+   "chksum_sha256": "018e2cc374cd7de6a4d5ab88122692c8b337bd09fe486b510c6db97e5340c5c3",
    "format": 1
   },
   {
@@ -10910,7 +11225,7 @@
    "name": "tests/unit/modules/network/sonic/test_sonic_route_maps.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8637c55695cd2e4efb3079261b8bd9088bca9f4e89e11a5b77b63f21bec87418",
+   "chksum_sha256": "fbacefd0208acf3a58c25af2c8e29d4857134aba0831be6e862c9ada015d224f",
    "format": 1
   },
   {
@@ -11015,7 +11330,7 @@
    "name": "tests/unit/modules/network/sonic/test_sonic_image_management.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "344038fbf71a57b336a3b23fbb9fc708393bac42a2cd65d8dc9b9fce1bbdb317",
+   "chksum_sha256": "f9daccdedb4e4be5e2d6d41fef0a3a5ac2956c6a31b0cccadb7fb1d473832028",
    "format": 1
   },
   {
@@ -11043,7 +11358,7 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_bgp_communities.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8730f1ccb2748ff19bc4913aa73be0805001e6294fcbe14bd1a5e35e493e1389",
+   "chksum_sha256": "f3898af3ec4e0abe215df04841f80bdd3612378d2210e529c04c8725d50aed73",
    "format": 1
   },
   {
@@ -11071,7 +11386,7 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_mgmt_servers.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "faba087275b5f7b23c9963a10151cfc77149deeb847083f10a313ee5b6576504",
+   "chksum_sha256": "0110a45e9622f6ecb92c6485159155285a22ad53f6c01409afd679f0a1b91356",
    "format": 1
   },
   {
@@ -11092,7 +11407,7 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_qos_buffer.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "282ae94412a5d72333c863fa5119f934105e3581ad0daeb467b3f0c3f766b6ad",
+   "chksum_sha256": "f0cb1f8e799341a9f3b0e81c9780ea3bb048a5ce843c1be70c2c01c722e2dc62",
    "format": 1
   },
   {
@@ -11127,14 +11442,14 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_vrrp.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b9e47647dd9c901e17be30e535b98aa58f70bc873a170ebd5a8b804cf5bb3c0c",
+   "chksum_sha256": "ce99f539f2eabc35264286c1e541bd944f93009eb667aa497f88896a00f7531e",
    "format": 1
   },
   {
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_interfaces.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a083afcd43f83ed12ea6e8fa59d51d23b9e232ecd9945757fa80d1126655bb79",
+   "chksum_sha256": "73918e6c106ef53c10dfbcd8b47a18841b358bfa68be9c8428cee3782026b75c",
    "format": 1
   },
   {
@@ -11176,14 +11491,14 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_l3_interfaces.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d22984dfa4f582a35fe2d18c7a38a57edd22f12283f5279aa1713895f1395473",
+   "chksum_sha256": "1a7fe40931036f1daa6a5b3101dafb0bb012c61f97c062ce22501bd70ba09936",
    "format": 1
   },
   {
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_logging.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "df5aa274672b27118df06fedf660178ec481ff27b49bec282903bbad8e155c3a",
+   "chksum_sha256": "2a1024d9157941dd37c971bc61f0fc0b7314ba12146cf77f00973c995a36a2a5",
    "format": 1
   },
   {
@@ -11239,7 +11554,7 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_image_management.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "dfbf1012d4c3ec82e1ee9f56fa75caec88baf8b5f86b478999bff86163abfa74",
+   "chksum_sha256": "caf327d5339d22b636abcc795b179a8e9ff83a17ea46a7fd671c22e6d39f912e",
    "format": 1
   },
   {
@@ -11253,7 +11568,7 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_mclag.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "54d0365155a17262ac8758047f2c9d06b2de652397c029401905cb66ae46b816",
+   "chksum_sha256": "4f78a0a9014306f8dbbc1b25b0f6bd3286b9c932d4202df1e709e776d88b649f",
    "format": 1
   },
   {
@@ -11295,7 +11610,7 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_vxlans.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "75f1ac91cc1276abfcbbb366af2df99ad8e9698969d19f96168187c504bf472a",
+   "chksum_sha256": "bb0b11599e9d652919cca718e2f494630e664f8056a1e92fff3f4bd07ae0d64e",
    "format": 1
   },
   {
@@ -11358,7 +11673,7 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_radius_server.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a10862f910d398696fd2687694e9d28c3f9094c8ff8bfa97f7c7fa9bc49558c8",
+   "chksum_sha256": "428313ac6adb9b301c46735aa7ebc3b4047330bba2b6f293f7301e8a95c95295",
    "format": 1
   },
   {
@@ -11372,7 +11687,7 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_ldap.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0bd0b13b4468d0074495b6c3157809900cb60d6fcda9dd115b839067bad54334",
+   "chksum_sha256": "78da44d4dab21eb694f7f40d3c478f6dd1e79428d80aef349b94404781b5dd0d",
    "format": 1
   },
   {
@@ -11386,7 +11701,7 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_stp.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e124dec2a9bb0d1af1929a522c3313c8c05e4b71f121e4c500cb9dbbee4d21bc",
+   "chksum_sha256": "f0892c9179e45101d86c75286179cc7ff05adaa6381d4b7111db4a83408af61f",
    "format": 1
   },
   {
@@ -11449,14 +11764,14 @@
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_route_maps.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8ebcd64e2a6db550e6fa88b70363cd433a210f214d2617ff2f007fb239f00875",
+   "chksum_sha256": "bb6fb7675fbf56a691dd62d27aa12733bd6fcabb15a1d8d57f7b94810ddc20eb",
    "format": 1
   },
   {
    "name": "tests/unit/modules/network/sonic/fixtures/sonic_aaa.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e67e6bfda5ee943c070db0918bb743e0ae2bcce5e552defefb31acb2460c607e",
+   "chksum_sha256": "8c473935aaa446687ee72a7f79c62ea8c26853519c639d917ff55cfe208d8b58",
    "format": 1
   },
   {
@@ -11471,6 +11786,20 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "95f59f0e3adf9657fcdc64495f2317738c597da8d6ec574f50dc722eadf985c4",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/modules/network/sonic/fixtures/sonic_ssh.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "3d43ed1a89e6a0b1c40aded121eb95eae87c6f99f30068acb9d156a39da35e52",
+   "format": 1
+  },
+  {
+   "name": "tests/unit/modules/network/sonic/test_sonic_ssh.py",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a7c169e101c9def4a077f78c32732a9fdf11561cbee148d106721c7860fc5864",
    "format": 1
   },
   {
@@ -11687,7 +12016,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "579dcca254a7dc623e6e0d707d97788fd4591b5a749c254692eafbefbbcbdd92",
+   "chksum_sha256": "1e7c68aa2158cfa9d2f363c1852fdf70a02308593ce5b5029d5ccf826119cdde",
    "format": 1
   },
   {
@@ -11803,13 +12132,6 @@
    "format": 1
   },
   {
-   "name": "playbooks/common_examples/qos_buffer_init.yaml",
-   "ftype": "file",
-   "chksum_type": "sha256",
-   "chksum_sha256": "622792fe8f4f93932477709c00516da3e6621ea63c7a46682c0616f839ff5cf8",
-   "format": 1
-  },
-  {
    "name": "playbooks/common_examples/mgmt_vrf_config.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
@@ -11904,7 +12226,7 @@
    "name": "playbooks/common_examples/sonic_aaa.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "4ea8077dce4c37d517434b92715be316de2b23c4e3b783dd881a841a6e86eabe",
+   "chksum_sha256": "088386496ae684f5d0be12bc6a199d3d4292fbb21462ba9ee54150eaddb71fc2",
    "format": 1
   },
   {
@@ -11988,7 +12310,7 @@
    "name": "README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "40b64ebe6cac87969275260f5dd5900f9673a2a02f578d9b54f450cb28f1b85e",
+   "chksum_sha256": "08bdb8d39a500e7a4286a0fd68f861d7c66bfbc8859bcee75ee92bb6bd81763a",
    "format": 1
   }
  ],

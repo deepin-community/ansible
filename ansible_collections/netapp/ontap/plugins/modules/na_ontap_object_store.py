@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2019-2021, NetApp, Inc
+# (c) 2019-2024, NetApp, Inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 '''
@@ -18,7 +18,7 @@ short_description: NetApp ONTAP manage object store config.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: 2.9.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 
 description:
 - Create or delete object store config on ONTAP.
@@ -103,7 +103,7 @@ options:
 '''
 
 EXAMPLES = """
-- name: object store Create
+- name: Object store Create
   netapp.ontap.na_ontap_object_store:
     state: present
     name: ansible
@@ -112,21 +112,20 @@ EXAMPLES = """
     container: abc
     access_key: s3.amazonaws.com
     secret_password: abc
-    hostname: "{{ hostname }}"
-    username: "{{ username }}"
-    password: "{{ password }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-- name: object store Create
+- name: Object store delete
   netapp.ontap.na_ontap_object_store:
     state: absent
     name: ansible
-    hostname: "{{ hostname }}"
-    username: "{{ username }}"
-    password: "{{ password }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 """
 
 RETURN = """
-
 """
 import traceback
 

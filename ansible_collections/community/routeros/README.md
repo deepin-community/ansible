@@ -5,7 +5,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
 # Community RouterOS Collection
-[![CI](https://github.com/ansible-collections/community.routeros/workflows/CI/badge.svg?event=push)](https://github.com/ansible-collections/community.routeros/actions)
+[![Documentation](https://img.shields.io/badge/docs-brightgreen.svg)](https://docs.ansible.com/ansible/devel/collections/community/routeros/)
+[![CI](https://github.com/ansible-collections/community.routeros/actions/workflows/nox.yml/badge.svg?branch=main)](https://github.com/ansible-collections/community.routeros/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/community.routeros)](https://codecov.io/gh/ansible-collections/community.routeros)
 [![REUSE status](https://api.reuse.software/badge/github.com/ansible-collections/community.routeros)](https://api.reuse.software/info/github.com/ansible-collections/community.routeros)
 
@@ -33,11 +34,11 @@ For more information about communication, see the [Ansible communication guide](
 
 ## Tested with Ansible
 
-Tested with the current ansible-core 2.15, ansible-core 2.16, ansible-core 2.17, and ansible-core 2.18 releases and the current development version of ansible-core. Ansible 2.9, ansible-base 2.10, and ansible-core versions before 2.15.0 are not supported.
+Tested with the current ansible-core 2.15, ansible-core 2.16, ansible-core 2.17, ansible-core 2.18, and ansible-core 2.19 releases and the current development version of ansible-core. Ansible 2.9, ansible-base 2.10, and ansible-core versions before 2.15.0 are not supported.
 
 ## External requirements
 
-The exact requirements for every module are listed in the module documentation. 
+The exact requirements for every module are listed in the module documentation.
 
 ### Supported connections
 
@@ -207,4 +208,4 @@ See [LICENSES/GPL-3.0-or-later.txt](https://github.com/ansible-collections/commu
 
 Parts of the collection are licensed under the [BSD 2-Clause license](https://github.com/ansible-collections/community.routeros/blob/main/LICENSES/BSD-2-Clause.txt).
 
-All files have a machine readable `SDPX-License-Identifier:` comment denoting its respective license(s) or an equivalent entry in an accompanying `.license` file. Only changelog fragments (which will not be part of a release) are covered by a blanket statement in `.reuse/dep5`. This conforms to the [REUSE specification](https://reuse.software/spec/).
+All files have a machine readable `SDPX-License-Identifier:` comment denoting its respective license(s) or an equivalent entry in an accompanying `.license` file. Only changelog fragments (which will not be part of a release) are covered by a blanket statement in `REUSE.toml`. This conforms to the [REUSE specification](https://reuse.software/spec/).

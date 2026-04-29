@@ -8,8 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = r'''
----
+DOCUMENTATION = r"""
 module: krb_ticket
 short_description: Kerberos utils for managing tickets
 version_added: 10.0.0
@@ -31,7 +30,7 @@ options:
   principal:
     description:
       - The principal name.
-      - If not set, the user running this module will be used.
+      - If not set, the user running this module is used.
     type: str
   state:
     description:
@@ -51,20 +50,24 @@ options:
       - Use O(cache_name) as the ticket cache name and location.
       - If this option is not used, the default cache name and location are used.
       - The default credentials cache may vary between systems.
-      - If not set the the value of E(KRB5CCNAME) environment variable will be used instead, its value is used to name the default ticket cache.
+      - If not set the the value of E(KRB5CCNAME) environment variable is used instead, its value is used to name the default
+        ticket cache.
     type: str
   lifetime:
     description:
       - Requests a ticket with the lifetime, if the O(lifetime) is not specified, the default ticket lifetime is used.
-      - Specifying a ticket lifetime longer than the maximum ticket lifetime (configured by each site) will not override the configured maximum ticket lifetime.
-      - "The value for O(lifetime) must be followed by one of the following suffixes: V(s) - seconds, V(m) - minutes, V(h) - hours, V(d) - days."
-      - You cannot mix units; a value of V(3h30m) will result in an error.
+      - Specifying a ticket lifetime longer than the maximum ticket lifetime (configured by each site) does not override the
+        configured maximum ticket lifetime.
+      - 'The value for O(lifetime) must be followed by one of the following suffixes: V(s) - seconds, V(m) - minutes, V(h)
+        - hours, V(d) - days.'
+      - You cannot mix units; a value of V(3h30m) results in an error.
       - See U(https://web.mit.edu/kerberos/krb5-1.12/doc/basic/date_format.html) for reference.
     type: str
   start_time:
     description:
       - Requests a postdated ticket.
-      - Postdated tickets are issued with the invalid flag set, and need to be resubmitted to the KDC for validation before use.
+      - Postdated tickets are issued with the invalid flag set, and need to be resubmitted to the KDC for validation before
+        use.
       - O(start_time) specifies the duration of the delay before the ticket can become valid.
       - You can use absolute time formats, for example V(July 27, 2012 at 20:30) you would neet to set O(start_time=20120727203000).
       - You can also use time duration format similar to O(lifetime) or O(renewable).
@@ -73,8 +76,9 @@ options:
   renewable:
     description:
       - Requests renewable tickets, with a total lifetime equal to O(renewable).
-      - "The value for O(renewable) must be followed by one of the following delimiters: V(s) - seconds, V(m) - minutes, V(h) - hours, V(d) - days."
-      - You cannot mix units; a value of V(3h30m) will result in an error.
+      - 'The value for O(renewable) must be followed by one of the following delimiters: V(s) - seconds, V(m) - minutes, V(h)
+        - hours, V(d) - days.'
+      - You cannot mix units; a value of V(3h30m) results in an error.
       - See U(https://web.mit.edu/kerberos/krb5-1.12/doc/basic/date_format.html) for reference.
     type: str
   forwardable:
@@ -95,7 +99,8 @@ options:
     type: bool
   canonicalization:
     description:
-      - Requests canonicalization of the principal name, and allows the KDC to reply with a different client principal from the one requested.
+      - Requests canonicalization of the principal name, and allows the KDC to reply with a different client principal from
+        the one requested.
     type: bool
   enterprise:
     description:
@@ -114,7 +119,7 @@ options:
   keytab:
     description:
       - Requests a ticket, obtained from a key in the local host's keytab.
-      - If O(keytab_path) is not specified will try to use default client keytab path (C(-i) option).
+      - If O(keytab_path) is not specified it tries to use default client keytab path (C(-i) option).
     type: bool
   keytab_path:
     description:
@@ -125,9 +130,9 @@ requirements:
   - krb5-user and krb5-config packages
 extends_documentation_fragment:
   - community.general.attributes
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 - name: Get Kerberos ticket using default principal
   community.general.krb_ticket:
     password: some_password
@@ -179,7 +184,7 @@ EXAMPLES = r'''
   community.general.krb_ticket:
     state: absent
     kdestroy_all: true
-'''
+"""
 
 from ansible.module_utils.basic import AnsibleModule, env_fallback
 from ansible_collections.community.general.plugins.module_utils.cmd_runner import CmdRunner, cmd_runner_fmt

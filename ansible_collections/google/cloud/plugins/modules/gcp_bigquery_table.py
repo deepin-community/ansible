@@ -56,17 +56,17 @@ options:
       dataset_id:
         description:
         - The ID of the dataset containing this table.
-        required: false
+        required: true
         type: str
       project_id:
         description:
         - The ID of the project containing this table.
-        required: false
+        required: true
         type: str
       table_id:
         description:
         - The ID of the the table.
-        required: false
+        required: true
         type: str
   clustering:
     description:
@@ -181,7 +181,7 @@ options:
           fields:
             description:
             - Describes the nested schema fields if the type property is set to RECORD.
-            elements: str
+            elements: raw
             required: false
             type: list
           mode:
@@ -253,6 +253,7 @@ options:
           data .
         required: false
         type: int
+        default: 0
       source_format:
         description:
         - The data format.
@@ -295,7 +296,7 @@ options:
                 description:
                 - Describes the nested schema fields if the type property is set to
                   RECORD .
-                elements: str
+                elements: raw
                 required: false
                 type: list
               mode:
@@ -328,6 +329,7 @@ options:
               when reading the data.
             required: false
             type: int
+            default: 0
       csv_options:
         description:
         - Additional properties to set if sourceFormat is set to CSV.
@@ -368,6 +370,7 @@ options:
               when reading the data.
             required: false
             type: int
+            default: 0
       bigtable_options:
         description:
         - Additional options if sourceFormat is set to BIGTABLE.
@@ -1013,7 +1016,11 @@ def main():
     module = GcpModule(
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
-            table_reference=dict(type='dict', options=dict(dataset_id=dict(type='str'), project_id=dict(type='str'), table_id=dict(type='str'))),
+            table_reference=dict(type='dict', options=dict(
+                dataset_id=dict(type='str', required=True),
+                project_id=dict(type='str', required=True),
+                table_id=dict(type='str', required=True)
+            )),
             clustering=dict(type='list', elements='str'),
             description=dict(type='str'),
             friendly_name=dict(type='str'),
@@ -1038,7 +1045,7 @@ def main():
                         elements='dict',
                         options=dict(
                             description=dict(type='str'),
-                            fields=dict(type='list', elements='str'),
+                            fields=dict(type='list', elements='raw'),
                             mode=dict(type='str'),
                             name=dict(type='str'),
                             type=dict(type='str'),
@@ -1065,7 +1072,7 @@ def main():
                                 elements='dict',
                                 options=dict(
                                     description=dict(type='str'),
-                                    fields=dict(type='list', elements='str'),
+                                    fields=dict(type='list', elements='raw'),
                                     mode=dict(type='str'),
                                     name=dict(type='str'),
                                     type=dict(type='str'),
@@ -1169,7 +1176,7 @@ def resource_to_request(module):
     request = {
         u'kind': 'bigquery#table',
         u'tableReference': TableTablereference(module.params.get('table_reference', {}), module).to_request(),
-        u'clustering': module.params.get('clustering'),
+        u'clustering': TableClustering(module.params.get('clustering', {}), module).to_request(),
         u'description': module.params.get('description'),
         u'friendlyName': module.params.get('friendly_name'),
         u'labels': module.params.get('labels'),
@@ -1247,7 +1254,7 @@ def is_different(module, response):
 def response_to_hash(module, response):
     return {
         u'tableReference': TableTablereference(response.get(u'tableReference', {}), module).from_response(),
-        u'clustering': response.get(u'clustering'),
+        u'clustering': TableClustering(response.get(u'clustering', {}), module).from_response(),
         u'creationTime': response.get(u'creationTime'),
         u'description': response.get(u'description'),
         u'friendlyName': response.get(u'friendlyName'),
@@ -1711,6 +1718,21 @@ class TableColumnsArray(object):
                 u'type': item.get(u'type'),
             }
         )
+
+
+class TableClustering(object):
+    def __init__(self, request, module):
+        self.module = module
+        if request:
+            self.request = request
+        else:
+            self.request = {}
+
+    def to_request(self):
+        return remove_nones_from_dict({'fields': self.request})
+
+    def from_response(self):
+        return remove_nones_from_dict({'fields': self.request})
 
 
 if __name__ == '__main__':

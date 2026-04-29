@@ -1,5 +1,73 @@
 # Changelog
 
+## [5.2.0](https://github.com/ansible-collections/hetzner.hcloud/compare/5.1.0...5.2.0) (2025-08-14)
+
+
+### Features
+
+* allow renaming a volume ([#683](https://github.com/ansible-collections/hetzner.hcloud/issues/683)) ([8c8a52c](https://github.com/ansible-collections/hetzner.hcloud/commit/8c8a52ceed3bb26c0dfcb0aaf4b9bdb9359b0609))
+* warn when experimental features are used ([#669](https://github.com/ansible-collections/hetzner.hcloud/issues/669)) ([36053c7](https://github.com/ansible-collections/hetzner.hcloud/commit/36053c7ee802d26dabcc97bf88013966f8f6411a))
+
+
+### Bug Fixes
+
+* add `volume_attachment` module to meta ([#655](https://github.com/ansible-collections/hetzner.hcloud/issues/655)) ([e6e4ce1](https://github.com/ansible-collections/hetzner.hcloud/commit/e6e4ce1d5f4117262bc234b14ab87d6e753474d8))
+
+## [5.1.0](https://github.com/ansible-collections/hetzner.hcloud/compare/5.0.1...5.1.0) (2025-06-11)
+
+
+### Features
+
+* allow recreating ssh key when public key in the API does not match  ([#634](https://github.com/ansible-collections/hetzner.hcloud/issues/634)) ([4fc2003](https://github.com/ansible-collections/hetzner.hcloud/commit/4fc2003f304971ace64be27581b117aa5ad09378))
+
+
+### Bug Fixes
+
+* ensure returned resource ids are integers ([#651](https://github.com/ansible-collections/hetzner.hcloud/issues/651)) ([579b34e](https://github.com/ansible-collections/hetzner.hcloud/commit/579b34e754a53a10522e5edcd5994133ba653f42))
+
+## [5.0.1](https://github.com/ansible-collections/hetzner.hcloud/compare/5.0.0...5.0.1) (2025-05-21)
+
+
+### Bug Fixes
+
+* remove deprecated force_upgrade argument ([#637](https://github.com/ansible-collections/hetzner.hcloud/issues/637)) ([88f84e7](https://github.com/ansible-collections/hetzner.hcloud/commit/88f84e7d7c41fec1a01aee1229212443472aa591))
+
+## [5.0.0](https://github.com/ansible-collections/hetzner.hcloud/compare/4.3.0...5.0.0) (2025-05-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* do not detach volume if `server` is not provided ([#632](https://github.com/ansible-collections/hetzner.hcloud/issues/632))
+* prevent host variable name collision with ansible reserved names ([#617](https://github.com/ansible-collections/hetzner.hcloud/issues/617))
+* drop support for ansible-core 2.16 ([#612](https://github.com/ansible-collections/hetzner.hcloud/issues/612))
+* drop support for ansible-core 2.15 ([#611](https://github.com/ansible-collections/hetzner.hcloud/issues/611))
+
+### Features
+
+* add volume_attachment module ([#622](https://github.com/ansible-collections/hetzner.hcloud/issues/622)) ([c37cdf0](https://github.com/ansible-collections/hetzner.hcloud/commit/c37cdf0bc654eeeb987e6407648ce8e6a0aed599))
+* allow renaming a server ([#619](https://github.com/ansible-collections/hetzner.hcloud/issues/619)) ([e59e787](https://github.com/ansible-collections/hetzner.hcloud/commit/e59e787d9927041d1c50261476e6df6c58d71869))
+* drop support for ansible-core 2.15 ([#611](https://github.com/ansible-collections/hetzner.hcloud/issues/611)) ([92f1354](https://github.com/ansible-collections/hetzner.hcloud/commit/92f135456fa6caff29e832d99db9870ae9c61aaf))
+* drop support for ansible-core 2.16 ([#612](https://github.com/ansible-collections/hetzner.hcloud/issues/612)) ([140d150](https://github.com/ansible-collections/hetzner.hcloud/commit/140d1508ccb8adb1d8fc2f64e446e993bfc02336))
+* drop support for python 3.8 ([#615](https://github.com/ansible-collections/hetzner.hcloud/issues/615)) ([b82e18f](https://github.com/ansible-collections/hetzner.hcloud/commit/b82e18ffbdf8a584b89d43970f6f0cb63d5ac3b8))
+
+
+### Bug Fixes
+
+* do not detach volume if `server` is not provided ([#632](https://github.com/ansible-collections/hetzner.hcloud/issues/632)) ([e8fda35](https://github.com/ansible-collections/hetzner.hcloud/commit/e8fda3557cf835e4e711a934b46d4f672f9b517c))
+* prevent host variable name collision with ansible reserved names ([#617](https://github.com/ansible-collections/hetzner.hcloud/issues/617)) ([5de425c](https://github.com/ansible-collections/hetzner.hcloud/commit/5de425c90c3ea365ebd24527cce5828a1debd35b))
+
+## [4.3.0](https://github.com/ansible-collections/hetzner.hcloud/compare/4.2.2...4.3.0) (2025-03-21)
+
+
+### Features
+
+* add new `created` state for idempotent server creation ([#606](https://github.com/ansible-collections/hetzner.hcloud/issues/606)) ([4534cf6](https://github.com/ansible-collections/hetzner.hcloud/commit/4534cf6b9d0fc422e77192d6994b86afb7d4b1df))
+
+
+### Bug Fixes
+
+* only update load balancer service when changed ([#603](https://github.com/ansible-collections/hetzner.hcloud/issues/603)) ([6956596](https://github.com/ansible-collections/hetzner.hcloud/commit/6956596fd2a4a570834fbfb42fb6194ed5271d59))
+
 ## [4.2.2](https://github.com/ansible-collections/hetzner.hcloud/compare/4.2.1...4.2.2) (2024-11-22)
 
 

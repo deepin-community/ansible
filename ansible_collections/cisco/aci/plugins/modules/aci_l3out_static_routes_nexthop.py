@@ -48,6 +48,12 @@ options:
     description:
     - The nexthop for the prefix
     type: str
+  preference:
+    description:
+    - The administrative preference value for the nexthop.
+    - The APIC defaults to 0 when unset during creation.
+    - The value must be between 0 and 255.
+    type: int
   state:
     description:
     - Use C(present) or C(absent) for adding or removing.
@@ -60,10 +66,10 @@ extends_documentation_fragment:
 - cisco.aci.annotation
 
 seealso:
-- module: aci_l3out
-- module: aci_l3out_logical_node_profile
-- module: aci_l3out_logical_node_profile_to_node
-- module: aci_l3out_static_routes
+- module: cisco.aci.aci_l3out
+- module: cisco.aci.aci_l3out_logical_node_profile
+- module: cisco.aci.aci_l3out_logical_node_profile_to_node
+- module: cisco.aci.aci_l3out_static_routes
 - name: APIC Management Information Model reference
   description: More information about the internal APIC classes B(ip:NexthopP)
   link: https://developer.cisco.com/docs/apic-mim-ref/
@@ -84,6 +90,7 @@ EXAMPLES = r"""
     node_id: 111
     prefix: 10.84.90.0/24
     nexthop: 10.1.1.1
+    preference: 1
     state: present
   delegate_to: localhost
 
@@ -249,6 +256,7 @@ def main():
         node_id=dict(type="int"),
         prefix=dict(type="str", aliases=["route"]),
         nexthop=dict(type="str"),
+        preference=dict(type="int"),
         state=dict(type="str", default="present", choices=["absent", "present", "query"]),
     )
 
@@ -268,6 +276,7 @@ def main():
     node_id = module.params.get("node_id")
     prefix = module.params.get("prefix")
     nexthop = module.params.get("nexthop")
+    preference = module.params.get("preference")
     state = module.params.get("state")
 
     node_tdn = None
@@ -290,7 +299,7 @@ def main():
     aci.get_existing()
 
     if state == "present":
-        aci.payload(aci_class="ipNexthopP", class_config=dict(nhAddr=nexthop))
+        aci.payload(aci_class="ipNexthopP", class_config=dict(nhAddr=nexthop, pref=preference))
 
         aci.get_diff(aci_class="ipNexthopP")
 

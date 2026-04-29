@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "dellemc",
   "name": "openmanage",
-  "version": "9.9.0",
+  "version": "9.12.3",
   "authors": [
    "Jagadeesh N V <Jagadeesh.N.V@Dell.com>",
    "Felix Stephen <Felix.S@Dell.com>",
@@ -49,7 +49,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "fcc967921a94fa8deea6a53f48130356a1bd10449647fe212524bfb0870b5912",
+  "chksum_sha256": "a63e9cec84acb474e75b9002c9e75122a2adb2f1a83650bb0bf591a54ee9c9ba",
   "format": 1
  },
  "format": 1

@@ -91,6 +91,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -105,10 +106,9 @@ EXAMPLES = '''
         # rc_failed: [-2, -3, ...]
         adom: <your own value>
         pm_config_meta_reference:
-          package_list:
-            -
-              name: <string>
-              vdom: <string>
+          # package_list:
+          #   - name: <string>
+          #     vdom: <string>
 '''
 
 RETURN = '''
@@ -167,14 +167,14 @@ def main():
         'adom': {'required': True, 'type': 'str'},
         'pm_config_meta_reference': {
             'type': 'dict',
-            'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']],
+            'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']],
             'options': {
                 'package list': {
-                    'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']],
+                    'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']],
                     'type': 'list',
                     'options': {
-                        'name': {'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']], 'type': 'str'},
-                        'vdom': {'v_range': [['7.2.4', '7.2.8'], ['7.4.1', '']], 'type': 'str'}
+                        'name': {'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']], 'type': 'str'},
+                        'vdom': {'v_range': [['7.2.4', '7.2.9'], ['7.4.1', '']], 'type': 'str'}
                     },
                     'elements': 'dict'
                 }

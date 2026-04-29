@@ -34,7 +34,7 @@
     dest: '{{ remote_tmp_dir }}/file_1'
     content: |
       Content 1
-    mode: 0644
+    mode: "0644"
 
 - name: Create file 2
   copy:
@@ -42,7 +42,7 @@
     content: |-
       Content 2
       Extra line
-    mode: 0644
+    mode: "0644"
 
 - name: Create link 1
   file:
@@ -50,7 +50,7 @@
     state: link
     src: file_1
     follow: false
-    mode: 0644
+    mode: "0644"
 
 - name: Create link 2
   file:
@@ -59,7 +59,7 @@
     src: dead
     force: true
     follow: false
-    mode: 0644
+    mode: "0644"
 
 ################################################################################################
 # Do tests
@@ -173,7 +173,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0777
+    mode: "0777"
+    mode_parse: modern
     owner_id: 123
     group_id: 321
     force: false
@@ -186,7 +187,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0777
+    mode: "0777"
+    mode_parse: modern
     owner_id: 123
     group_id: 321
     force: false
@@ -199,7 +201,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0777
+    mode: "0777"
+    mode_parse: modern
     owner_id: 123
     group_id: 321
     force: false
@@ -225,7 +228,7 @@
       - result_1_diff.diff.before == ''
       - result_1_diff.diff.before_header == '/file'
       - result_1_diff.diff.after == 'Content 1\n'
-      - result_1_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_1_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_1 == (result_1_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_2 is changed
       - result_3 is not changed
@@ -233,7 +236,7 @@
       - result_3_diff.diff.before == 'Content 1\n'
       - result_3_diff.diff.before_header == '/file'
       - result_3_diff.diff.after == 'Content 1\n'
-      - result_3_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_3_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_3 == (result_3_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_4 is not changed
       - result_5.stdout | b64decode == 'Content 1\n'
@@ -243,7 +246,7 @@
       - result_6_diff.diff.before == 'Content 1\n'
       - result_6_diff.diff.before_header == '/file'
       - result_6_diff.diff.after == 'Content 1\n'
-      - result_6_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_6_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_6 == (result_6_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_7 is changed
       - result_8.stdout | b64decode == 'Content 1\n'
@@ -369,7 +372,7 @@
       - result_1_diff.diff.before == 'Content 1\n'
       - result_1_diff.diff.before_header == '/file'
       - result_1_diff.diff.after == 'Content 1\n'
-      - result_1_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_1_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_1 == (result_1_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_2 is not changed
       - result_2.container_path == '/file'
@@ -382,7 +385,7 @@
       - result_4_diff.diff.before == 'Content 1\n'
       - result_4_diff.diff.before_header == '/file'
       - result_4_diff.diff.after == 'Content 1\n'
-      - result_4_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_4_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_4 == (result_4_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_5 is changed
       - result_5.container_path == '/file'
@@ -506,7 +509,7 @@
       - result_1_diff.diff.before == '/file'
       - result_1_diff.diff.before_header == '/lnk'
       - result_1_diff.diff.after == 'Content 1\n'
-      - result_1_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_1_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_1 == (result_1_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_2 is changed
       - result_2.container_path == '/lnk'
@@ -515,7 +518,7 @@
       - result_3_diff.diff.before == 'Content 1\n'
       - result_3_diff.diff.before_header == '/lnk'
       - result_3_diff.diff.after == 'Content 1\n'
-      - result_3_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_3_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_3 == (result_3_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_4 is not changed
       - result_5.stdout | b64decode == 'Content 1\n'
@@ -526,7 +529,7 @@
       - result_6_diff.diff.before == 'Content 1\n'
       - result_6_diff.diff.before_header == '/lnk'
       - result_6_diff.diff.after == 'Content 1\n'
-      - result_6_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_6_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_6 == (result_6_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_7 is changed
       - result_7.container_path == '/lnk'
@@ -609,7 +612,7 @@
       - result_1_diff.diff.before == '(directory)'
       - result_1_diff.diff.before_header == '/dir'
       - result_1_diff.diff.after == 'Content 1\n'
-      - result_1_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_1_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_1 == (result_1_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_2 is changed
       - result_2.container_path == '/dir'
@@ -618,7 +621,7 @@
       - result_3_diff.diff.before == 'Content 1\n'
       - result_3_diff.diff.before_header == '/dir'
       - result_3_diff.diff.after == 'Content 1\n'
-      - result_3_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_3_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_3 == (result_3_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_4 is not changed
       - result_5.stdout | b64decode == 'Content 1\n'
@@ -671,7 +674,7 @@
       - result_1_diff.diff.before == 'Content 1\n'
       - result_1_diff.diff.before_header == '/file'
       - result_1_diff.diff.after == 'Content 2\nExtra line'
-      - result_1_diff.diff.after_header == remote_tmp_dir ~ '/file_2'
+      - result_1_diff.diff.after_header == (remote_tmp_dir ~ '/file_2')
       - result_1 == (result_1_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_2 is changed
       - result_3.stdout | b64decode == 'Content 2\nExtra line'
@@ -684,7 +687,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
   check_mode: true
   diff: false
   register: result_1
@@ -694,7 +698,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
   check_mode: true
   diff: true
   register: result_1_diff
@@ -704,7 +709,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
   register: result_2
 
 - name: Copy file (idempotent, check mode)
@@ -712,7 +718,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
   check_mode: true
   diff: false
   register: result_3
@@ -722,7 +729,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
   check_mode: true
   diff: true
   register: result_3_diff
@@ -732,7 +740,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
   register: result_4
 
 - name: Dump file
@@ -755,7 +764,7 @@
       - result_1_diff.diff.before == 'Content 2\nExtra line'
       - result_1_diff.diff.before_header == '/file'
       - result_1_diff.diff.after == 'Content 2\nExtra line'
-      - result_1_diff.diff.after_header == remote_tmp_dir ~ '/file_2'
+      - result_1_diff.diff.after_header == (remote_tmp_dir ~ '/file_2')
       - result_1 == (result_1_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_2 is changed
       - result_3 is not changed
@@ -763,7 +772,7 @@
       - result_3_diff.diff.before == 'Content 2\nExtra line'
       - result_3_diff.diff.before_header == '/file'
       - result_3_diff.diff.after == 'Content 2\nExtra line'
-      - result_3_diff.diff.after_header == remote_tmp_dir ~ '/file_2'
+      - result_3_diff.diff.after_header == (remote_tmp_dir ~ '/file_2')
       - result_3 == (result_3_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_4 is not changed
       - result_5.stdout | b64decode == 'Content 2\nExtra line'
@@ -776,7 +785,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   check_mode: true
@@ -788,7 +798,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   check_mode: true
@@ -800,7 +811,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   register: result_2
@@ -810,7 +822,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   check_mode: true
@@ -822,7 +835,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   check_mode: true
@@ -834,7 +848,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   register: result_4
@@ -856,7 +871,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 13
     group_id: 13
   check_mode: true
@@ -868,7 +884,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 13
     group_id: 13
   check_mode: true
@@ -880,7 +897,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_2'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 13
     group_id: 13
   register: result_7
@@ -905,7 +923,7 @@
       - result_1_diff.diff.before == 'Content 2\nExtra line'
       - result_1_diff.diff.before_header == '/file'
       - result_1_diff.diff.after == 'Content 2\nExtra line'
-      - result_1_diff.diff.after_header == remote_tmp_dir ~ '/file_2'
+      - result_1_diff.diff.after_header == (remote_tmp_dir ~ '/file_2')
       - result_1 == (result_1_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_2 is changed
       - result_3 is not changed
@@ -913,7 +931,7 @@
       - result_3_diff.diff.before == 'Content 2\nExtra line'
       - result_3_diff.diff.before_header == '/file'
       - result_3_diff.diff.after == 'Content 2\nExtra line'
-      - result_3_diff.diff.after_header == remote_tmp_dir ~ '/file_2'
+      - result_3_diff.diff.after_header == (remote_tmp_dir ~ '/file_2')
       - result_3 == (result_3_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_4 is not changed
       - result_5.stdout | b64decode == 'Content 2\nExtra line'
@@ -923,7 +941,7 @@
       - result_6_diff.diff.before == 'Content 2\nExtra line'
       - result_6_diff.diff.before_header == '/file'
       - result_6_diff.diff.after == 'Content 2\nExtra line'
-      - result_6_diff.diff.after_header == remote_tmp_dir ~ '/file_2'
+      - result_6_diff.diff.after_header == (remote_tmp_dir ~ '/file_2')
       - result_6 == (result_6_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_7 is changed
       - result_8.stdout | b64decode == 'Content 2\nExtra line'
@@ -942,7 +960,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_1'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   check_mode: true
@@ -954,7 +973,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_1'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   check_mode: true
@@ -966,7 +986,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_1'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   register: result_2
@@ -976,7 +997,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_1'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   check_mode: true
@@ -988,7 +1010,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_1'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   check_mode: true
@@ -1000,7 +1023,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_1'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
     owner_id: 12
     group_id: 910
   register: result_4
@@ -1010,7 +1034,8 @@
     container: '{{ cname }}'
     path: '{{ remote_tmp_dir }}/file_1'
     container_path: '/file'
-    mode: 0707
+    mode: "0707"
+    mode_parse: modern
   register: result_5
   ignore_errors: true
 
@@ -1039,7 +1064,7 @@
       - result_1_diff.diff.before == 'Content 2\nExtra line'
       - result_1_diff.diff.before_header == '/file'
       - result_1_diff.diff.after == 'Content 1\n'
-      - result_1_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_1_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_1 == (result_1_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_2 is changed
       - result_3 is not changed
@@ -1047,7 +1072,7 @@
       - result_3_diff.diff.before == 'Content 1\n'
       - result_3_diff.diff.before_header == '/file'
       - result_3_diff.diff.after == 'Content 1\n'
-      - result_3_diff.diff.after_header == remote_tmp_dir ~ '/file_1'
+      - result_3_diff.diff.after_header == (remote_tmp_dir ~ '/file_1')
       - result_3 == (result_3_diff | dict2items | rejectattr('key', 'eq', 'diff') | items2dict)
       - result_4 is not changed
       - result_5 is failed

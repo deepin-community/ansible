@@ -132,6 +132,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -148,14 +149,13 @@ EXAMPLES = '''
         internet_service_addition: <your own value>
         state: present # <value in [present, absent]>
         firewall_internetserviceaddition_entry:
-          id: <integer>
-          port_range:
-            -
-              end_port: <integer>
-              id: <integer>
-              start_port: <integer>
-          protocol: <integer>
-          addr_mode: <value in [ipv4, ipv6]>
+          id: 0 # Required variable, integer
+          # port_range:
+          #   - end_port: <integer>
+          #     id: <integer>
+          #     start_port: <integer>
+          # protocol: <integer>
+          # addr_mode: <value in [ipv4, ipv6]>
 '''
 
 RETURN = '''

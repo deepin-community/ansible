@@ -336,6 +336,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -351,56 +352,56 @@ EXAMPLES = '''
         adom: <your own value>
         wtp_profile: <your own value>
         wtpprofile_lbs:
-          aeroscout: <value in [disable, enable]>
-          aeroscout_ap_mac: <value in [bssid, board-mac]>
-          aeroscout_mmu_report: <value in [disable, enable]>
-          aeroscout_mu: <value in [disable, enable]>
-          aeroscout_mu_factor: <integer>
-          aeroscout_mu_timeout: <integer>
-          aeroscout_server_ip: <string>
-          aeroscout_server_port: <integer>
-          ekahau_blink_mode: <value in [disable, enable]>
-          ekahau_tag: <string>
-          erc_server_ip: <string>
-          erc_server_port: <integer>
-          fortipresence: <value in [disable, enable, enable2, ...]>
-          fortipresence_frequency: <integer>
-          fortipresence_port: <integer>
-          fortipresence_project: <string>
-          fortipresence_rogue: <value in [disable, enable]>
-          fortipresence_secret: <list or string>
-          fortipresence_server: <string>
-          fortipresence_unassoc: <value in [disable, enable]>
-          station_locate: <value in [disable, enable]>
-          fortipresence_ble: <value in [disable, enable]>
-          fortipresence_server_addr_type: <value in [fqdn, ipv4]>
-          fortipresence_server_fqdn: <string>
-          polestar: <value in [disable, enable]>
-          polestar_accumulation_interval: <integer>
-          polestar_asset_addrgrp_list: <string>
-          polestar_asset_uuid_list1: <string>
-          polestar_asset_uuid_list2: <string>
-          polestar_asset_uuid_list3: <string>
-          polestar_asset_uuid_list4: <string>
-          polestar_protocol: <value in [WSS]>
-          polestar_reporting_interval: <integer>
-          polestar_server_fqdn: <string>
-          polestar_server_path: <string>
-          polestar_server_port: <integer>
-          polestar_server_token: <string>
-          ble_rtls: <value in [none, polestar, evresys]>
-          ble_rtls_accumulation_interval: <integer>
-          ble_rtls_asset_addrgrp_list: <list or string>
-          ble_rtls_asset_uuid_list1: <string>
-          ble_rtls_asset_uuid_list2: <string>
-          ble_rtls_asset_uuid_list3: <string>
-          ble_rtls_asset_uuid_list4: <string>
-          ble_rtls_protocol: <value in [WSS]>
-          ble_rtls_reporting_interval: <integer>
-          ble_rtls_server_fqdn: <string>
-          ble_rtls_server_path: <string>
-          ble_rtls_server_port: <integer>
-          ble_rtls_server_token: <string>
+          # aeroscout: <value in [disable, enable]>
+          # aeroscout_ap_mac: <value in [bssid, board-mac]>
+          # aeroscout_mmu_report: <value in [disable, enable]>
+          # aeroscout_mu: <value in [disable, enable]>
+          # aeroscout_mu_factor: <integer>
+          # aeroscout_mu_timeout: <integer>
+          # aeroscout_server_ip: <string>
+          # aeroscout_server_port: <integer>
+          # ekahau_blink_mode: <value in [disable, enable]>
+          # ekahau_tag: <string>
+          # erc_server_ip: <string>
+          # erc_server_port: <integer>
+          # fortipresence: <value in [disable, enable, enable2, ...]>
+          # fortipresence_frequency: <integer>
+          # fortipresence_port: <integer>
+          # fortipresence_project: <string>
+          # fortipresence_rogue: <value in [disable, enable]>
+          # fortipresence_secret: <list or string>
+          # fortipresence_server: <string>
+          # fortipresence_unassoc: <value in [disable, enable]>
+          # station_locate: <value in [disable, enable]>
+          # fortipresence_ble: <value in [disable, enable]>
+          # fortipresence_server_addr_type: <value in [fqdn, ipv4]>
+          # fortipresence_server_fqdn: <string>
+          # polestar: <value in [disable, enable]>
+          # polestar_accumulation_interval: <integer>
+          # polestar_asset_addrgrp_list: <string>
+          # polestar_asset_uuid_list1: <string>
+          # polestar_asset_uuid_list2: <string>
+          # polestar_asset_uuid_list3: <string>
+          # polestar_asset_uuid_list4: <string>
+          # polestar_protocol: <value in [WSS]>
+          # polestar_reporting_interval: <integer>
+          # polestar_server_fqdn: <string>
+          # polestar_server_path: <string>
+          # polestar_server_port: <integer>
+          # polestar_server_token: <string>
+          # ble_rtls: <value in [none, polestar, evresys]>
+          # ble_rtls_accumulation_interval: <integer>
+          # ble_rtls_asset_addrgrp_list: <list or string>
+          # ble_rtls_asset_uuid_list1: <string>
+          # ble_rtls_asset_uuid_list2: <string>
+          # ble_rtls_asset_uuid_list3: <string>
+          # ble_rtls_asset_uuid_list4: <string>
+          # ble_rtls_protocol: <value in [WSS]>
+          # ble_rtls_reporting_interval: <integer>
+          # ble_rtls_server_fqdn: <string>
+          # ble_rtls_server_path: <string>
+          # ble_rtls_server_port: <integer>
+          # ble_rtls_server_token: <string>
 '''
 
 RETURN = '''
@@ -500,19 +501,19 @@ def main():
                 'polestar-server-path': {'v_range': [['7.4.1', '']], 'type': 'str'},
                 'polestar-server-port': {'v_range': [['7.4.1', '']], 'type': 'int'},
                 'polestar-server-token': {'v_range': [['7.4.1', '']], 'no_log': True, 'type': 'str'},
-                'ble-rtls': {'v_range': [['7.4.4', '7.4.5']], 'choices': ['none', 'polestar', 'evresys'], 'type': 'str'},
-                'ble-rtls-accumulation-interval': {'v_range': [['7.4.4', '7.4.5']], 'type': 'int'},
-                'ble-rtls-asset-addrgrp-list': {'v_range': [['7.4.4', '7.4.5']], 'type': 'raw'},
-                'ble-rtls-asset-uuid-list1': {'v_range': [['7.4.4', '7.4.5']], 'type': 'str'},
-                'ble-rtls-asset-uuid-list2': {'v_range': [['7.4.4', '7.4.5']], 'type': 'str'},
-                'ble-rtls-asset-uuid-list3': {'v_range': [['7.4.4', '7.4.5']], 'type': 'str'},
-                'ble-rtls-asset-uuid-list4': {'v_range': [['7.4.4', '7.4.5']], 'type': 'str'},
-                'ble-rtls-protocol': {'v_range': [['7.4.4', '7.4.5']], 'choices': ['WSS'], 'type': 'str'},
-                'ble-rtls-reporting-interval': {'v_range': [['7.4.4', '7.4.5']], 'type': 'int'},
-                'ble-rtls-server-fqdn': {'v_range': [['7.4.4', '7.4.5']], 'type': 'str'},
-                'ble-rtls-server-path': {'v_range': [['7.4.4', '7.4.5']], 'type': 'str'},
-                'ble-rtls-server-port': {'v_range': [['7.4.4', '7.4.5']], 'type': 'int'},
-                'ble-rtls-server-token': {'v_range': [['7.4.4', '7.4.5']], 'no_log': True, 'type': 'str'}
+                'ble-rtls': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'choices': ['none', 'polestar', 'evresys'], 'type': 'str'},
+                'ble-rtls-accumulation-interval': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'int'},
+                'ble-rtls-asset-addrgrp-list': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'raw'},
+                'ble-rtls-asset-uuid-list1': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'str'},
+                'ble-rtls-asset-uuid-list2': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'str'},
+                'ble-rtls-asset-uuid-list3': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'str'},
+                'ble-rtls-asset-uuid-list4': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'str'},
+                'ble-rtls-protocol': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'choices': ['WSS'], 'type': 'str'},
+                'ble-rtls-reporting-interval': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'int'},
+                'ble-rtls-server-fqdn': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'str'},
+                'ble-rtls-server-path': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'str'},
+                'ble-rtls-server-port': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'type': 'int'},
+                'ble-rtls-server-token': {'v_range': [['7.4.4', '7.4.7'], ['7.6.2', '']], 'no_log': True, 'type': 'str'}
             }
         }
     }

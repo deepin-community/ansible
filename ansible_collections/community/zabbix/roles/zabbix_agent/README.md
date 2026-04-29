@@ -89,13 +89,12 @@ To successfully complete the install the role requires `python-netaddr` on the c
 
 See the following list of supported Operating systems with the Zabbix releases:
 
-| Zabbix              | 7.0 | 6.4 | 6.0 |
+| Zabbix              | 7.2 | 7.0 | 6.0 |
 |---------------------|-----|-----|-----|
 | Red Hat Fam 9       |  V  |  V  |  V  |
 | Red Hat Fam 8       |  V  |  V  |  V  |
 | Ubuntu 24.04 noble  |  V  |  V  |  V  |
 | Ubuntu 22.04 jammy  |  V  |  V  |  V  |
-| Ubuntu 20.04 focal  |  V  |  V  |  V  |
 | Debian 12 bookworm  |  V  |  V  |  V  |
 | Debian 11 bullseye  |  V  |  V  |  V  |
 | Suse Fam 15         |  V  |  V  |  V  |
@@ -134,11 +133,10 @@ Selinux changes will be installed based on the status of selinux running on the 
 * `zabbix_agent_apt_priority`: Add a weight (`Pin-Priority`) for the APT repository.
 * `zabbix_agent_chassis`: Default: `false`. When set to `true`, it will give Zabbix Agent access to the Linux DMI table allowing system.hw.chassis info to populate.
 * `zabbix_agent_conf_mode`: Default: `0644`. The "mode" for the Zabbix configuration file.
-* `zabbix_agent_dont_detect_ip`: Default `false`. When set to `true`, it won't detect available ip addresses on the host and no need for the Python module `netaddr` to be installed.
+* `zabbix_agent_detect_ip`: Default `true`. When set to `false`, it won't detect available ip addresses on the host and no need for the Python module `netaddr` to be installed.
 * `zabbix_agent_get_package`: The name of the zabbix-get package. Default: `zabbix-get`.
 * `zabbix_agent_include_mode`: The mode for the directory mentioned above.
 * `zabbix_agent_install_agent_only`: Only install the Zabbix Agent and not the `zabbix-sender` and `zabbix-get` packages. Default: `False`
-* `zabbix_agent_listeninterface`: Interface zabbix-agent listens on. Leave blank for all.
 * `zabbix_agent_package_remove`: If `zabbix_agent2: True` and you want to remove the old installation. Default: `False`.
 * `zabbix_agent_package_state`: If Zabbix-agent needs to be `present` (default) or `latest`.
 * `zabbix_agent_package`: The name of the zabbix-agent package. Default: `zabbix-agent` if `zabbix_agent2` is false and `zabbix-agent2` if `true`.
@@ -225,10 +223,29 @@ Otherwise it just for the Zabbix Agent or for the Zabbix Agent 2.
 * `zabbix_version_long`: The long (major.minor.patch) version of the Zabbix Agent. This will be used to generate the `zabbix_win_package` and `zabbix_win_download_link` variables. This takes precedence over `zabbix_agent_version`.
 * `zabbix_win_download_link`: The download url to the `win.zip` file.
 * `zabbix_win_firewall_management`: Enable Windows firewall management (add service and port to allow rules). Default: `True`
-* `zabbix_win_install_dir`: The directory where Zabbix needs to be installed.
-* `zabbix_win_install_dir_conf`: The directory where Zabbix configuration file needs to be installed.
+* `zabbix_agent_win_install_dir`: The directory where Zabbix needs to be installed. Default: `C:\Program Files\Zabbix Agent 2` when variable `zabbix_agent2` is true, `C:\Program Files\Zabbix Agent` when `zabbix_agent2` is false.
+* `zabbix_agent_win_install_dir_conf`: The directory where Zabbix configuration file needs to be installed. Default: `zabbix_agent_win_install_dir`
 * `zabbix_win_install_dir_bin`: The directory where Zabbix binary file needs to be installed.
 * `zabbix_win_package`: file name pattern (zip only). This will be used to generate the `zabbix_win_download_link` variable.
+
+### Tweaking the windows service
+
+There might be times where the service is unpredictable, and rather than
+investigating or dealing with it, you can just have it restart upon failure.
+Here are some suggested values for tweaking the service.
+
+* `zabbix_agent_service_start_mode:` `auto`, zabbix comes by default with `delayed`.
+* ```yaml
+  zabbix_agent_service_failure_actions:
+      - type: restart
+        delay_ms: 10000
+      - type: restart
+        delay_ms: 20000
+      - type: restart
+        delay_ms: 40000
+  ```
+* `zabbix_agent_service_failure_reset_period_sec:` `86400` is probably a reasonable time
+
 
 ## macOS Variables
 
@@ -428,27 +445,28 @@ Including an example of how to use your role (for instance, with variables passe
 ```yaml
     - hosts: all
       roles:
-         - role: community.zabbix.zabbix_agent
-           zabbix_agent_server: 192.168.33.30
-           zabbix_agent_serveractive: 192.168.33.30
-           zabbix_api_server_host: zabbix.example.com
-           zabbix_api_login_user: Admin
-           zabbix_api_login_pass: zabbix
-           zabbix_api_create_hostgroup: true
-           zabbix_api_create_hosts: true
-           zabbix_agent_host_state: present
-           zabbix_host_groups:
-             - Linux Servers
-           zabbix_agent_link_templates:
-             - Template OS Linux
-             - Apache APP Template
-           zabbix_agent_macros:
-             - macro_key: apache_type
-               macro_value: reverse_proxy
-               macro_type: text
-           zabbix_agent_tags:
-             - tag: environment
-               value: production
+        - role: community.zabbix.zabbix_agent
+          vars:
+            zabbix_agent_server: 192.168.33.30
+            zabbix_agent_serveractive: 192.168.33.30
+            zabbix_api_server_host: zabbix.example.com
+            zabbix_api_login_user: Admin
+            zabbix_api_login_pass: zabbix
+            zabbix_api_create_hostgroup: true
+            zabbix_api_create_hosts: true
+            zabbix_agent_host_state: present
+            zabbix_host_groups:
+              - Linux Servers
+            zabbix_agent_link_templates:
+              - Template OS Linux
+              - Apache APP Template
+            zabbix_agent_macros:
+              - macro_key: apache_type
+                macro_value: reverse_proxy
+                macro_type: text
+            zabbix_agent_tags:
+              - tag: environment
+                value: production
 ```
 
 ## Combination of group_vars and playbook

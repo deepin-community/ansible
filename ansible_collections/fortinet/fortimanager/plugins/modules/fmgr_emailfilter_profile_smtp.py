@@ -136,6 +136,7 @@ EXAMPLES = '''
 - name: Example playbook (generated based on argument schema)
   hosts: fortimanagers
   connection: httpapi
+  gather_facts: false
   vars:
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
@@ -151,16 +152,16 @@ EXAMPLES = '''
         adom: <your own value>
         profile: <your own value>
         emailfilter_profile_smtp:
-          action: <value in [pass, tag, discard]>
-          hdrip: <value in [disable, enable]>
-          local_override: <value in [disable, enable]>
-          log: <value in [disable, enable]>
-          tag_msg: <string>
-          tag_type:
-            - "subject"
-            - "header"
-            - "spaminfo"
-          log_all: <value in [disable, enable]>
+          # action: <value in [pass, tag, discard]>
+          # hdrip: <value in [disable, enable]>
+          # local_override: <value in [disable, enable]>
+          # log: <value in [disable, enable]>
+          # tag_msg: <string>
+          # tag_type:
+          #   - "subject"
+          #   - "header"
+          #   - "spaminfo"
+          # log_all: <value in [disable, enable]>
 '''
 
 RETURN = '''

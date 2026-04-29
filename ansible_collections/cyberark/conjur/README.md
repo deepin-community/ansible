@@ -41,7 +41,7 @@ detailed information on our certification levels, see
 - An instance of [CyberArk Conjur Open Source](https://www.conjur.org) v1.x+ or [CyberArk
   Conjur Enterprise](https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Resources/_TopNav/cc_Home.htm)
   (formerly DAP) v10.x+ accessible from the target node
-- Ansible >= 2.13
+- Ansible >= 2.17
 
 ## Using ansible-conjur-collection with Conjur Open Source
 
@@ -103,7 +103,7 @@ Configure a remote node with a Conjur identity and Summon:
       conjur_host_factory_token: "{{ lookup('env', 'HFTOKEN') }}"
       conjur_host_name: "{{ inventory_hostname }}"
       conjur_ssl_certificate: "{{ lookup('file', '/path/to/conjur.pem') }}"
-      conjur_validate_certs: yes
+      conjur_validate_certs: true
 ```
 
 This example:
@@ -157,23 +157,380 @@ password as the application is started.
 
 ## Conjur Ansible Lookup Plugin
 
-Fetch credentials from CyberArk Conjur using the controlling host's Conjur identity or environment
-variables.
+The Conjur Ansible Lookup Plugin allows you to securely fetch credentials from CyberArk Conjur using various authentication methods. The plugin supports the following types of authentication:
+
+- API Key Authentication
+
+- AWS IAM Authentication (via IMDS token)
+
+- Azure Authentication (via Managed Identity)
+
+- GCP Authentication (via IMDS token)
+
+Each authentication method retrieves secrets from Conjur dynamically, ensuring secure and seamless integration with cloud environments and Conjur.
+
+### Authentication Parameters
+
+Credentials can be fetched from CyberArk Conjur using the controlling host's Conjur identity, environment variables, or extra-vars.
 
 The controlling host running Ansible must have a Conjur identity, provided for example by the
 [ConjurAnsible role](#conjur-ansible-role).
 
-### Environment variables
+### Authentication Methods
 
-The following environment variables will be used by the lookup plugin to authenticate with the
-Conjur host, if they are present on the system running the lookup plugin.
+#### 1. API Key Authentication
 
-- `CONJUR_ACCOUNT` : The Conjur account name
-- `CONJUR_APPLIANCE_URL` : URL of the running Conjur service
-- `CONJUR_CERT_FILE` : Path to the Conjur certificate file
-- `CONJUR_AUTHN_LOGIN` : A valid Conjur host username
-- `CONJUR_AUTHN_API_KEY` : The api key that corresponds to the Conjur host username
-- `CONJUR_AUTHN_TOKEN_FILE` : Path to a file containing a valid Conjur auth token
+This is the default method for authenticating with Conjur using an API key.
+
+#### Required Extra-vars/Environment Variables:
+
+- `conjur_appliance_url / CONJUR_APPLIANCE_URL`: URL of the running Conjur service (e.g., https://conjur.example.com).
+
+- `conjur_authn_login / CONJUR_AUTHN_LOGIN`: The identity of the Conjur host (e.g., host/my-host).
+
+- `conjur_authn_api_key / CONJUR_AUTHN_API_KEY`: The API key corresponding to the Conjur host username.
+
+#### Optional Extra-vars/Environment Variables:
+- `conjur_account / CONJUR_ACCOUNT`: The Conjur account name (default: conjur).
+
+- `conjur_cert_content / CONJUR_CERT_CONTENT`: Content of the Conjur certificate (PEM format).
+
+- `conjur_cert_file / CONJUR_CERT_FILE`: Path to the Conjur certificate file.
+
+- `conjur_authn_token_file / CONJUR_AUTHN_TOKEN_FILE`: Path to a file containing a valid Conjur auth token.
+
+#### API Key Authentication
+
+The lookup plugin authenticates the workload using the API key and retrieves the secrets.
+
+
+#### 2. AWS IAM Authentication
+This method uses AWS IAM roles and Instance Metadata Service (IMDS) tokens for authentication.
+
+#### Required Extra-vars/Environment Variables:
+- `conjur_authn_type / CONJUR_AUTHN_TYPE` : Authentication type ("aws").
+
+- `conjur_appliance_url / CONJUR_APPLIANCE_URL`: URL of the running Conjur service (e.g., https://conjur.example.com).
+
+- `conjur_authn_login / CONJUR_AUTHN_LOGIN`: The identity of the Conjur host (e.g., host/my-host).
+
+- `conjur_authn_service_id / CONJUR_AUTHN_SERVICE_ID`: The service ID used for the AWS Authenticator web service.
+
+#### Optional Extra-vars/Environment Variables:
+- `conjur_account / CONJUR_ACCOUNT`: The Conjur account name (default: conjur).
+
+- `conjur_cert_content / CONJUR_CERT_CONTENT`: Content of the Conjur certificate (PEM format).
+
+- `conjur_cert_file / CONJUR_CERT_FILE`: Path to the Conjur certificate file.
+
+#### How AWS Authentication Works
+
+For AWS IAM Authentication, the plugin uses AWS Instance Metadata Service (IMDS) to obtain a token for the current instance. This token is then used to authenticate the instance against Conjur and obtain secrets securely. This eliminates the need for static API keys and enhances security by utilizing temporary credentials provided by the IMDS.
+
+#### 3. Azure Authentication
+
+This method uses Azure Managed Identity to authenticate with Conjur.
+
+#### Required Extra-vars/Environment Variables:
+
+- `conjur_authn_type / CONJUR_AUTHN_TYPE` : Authentication type ("azure").
+
+- `conjur_appliance_url / CONJUR_APPLIANCE_URL`: URL of the running Conjur service (e.g., https://conjur.example.com).
+
+- `conjur_authn_login / CONJUR_AUTHN_LOGIN`: The identity of the Conjur host (e.g., host/my-host).
+
+- `conjur_authn_service_id / CONJUR_AUTHN_SERVICE_ID`: The service ID used for the Azure Authenticator web service.
+
+#### Optional Extra-vars/Environment Variables:
+
+- `conjur_account / CONJUR_ACCOUNT`: The Conjur account name (default: conjur).
+
+- `conjur_cert_content / CONJUR_CERT_CONTENT`: Content of the Conjur certificate (PEM format).
+
+- `conjur_cert_file / CONJUR_CERT_FILE`: Path to the Conjur certificate file.
+
+- `azure_client_id / AZURE_CLIENT_ID`: The Azure client ID for User Assigned Managed Identity (optional).
+
+#### How Azure Authentication Works
+
+For Azure Authentication, the plugin uses Azure Instance Metadata Service (IMDS) to retrieve authentication tokens for Azure Managed Identity. This allows the plugin to authenticate workloads running in Azure dynamically, fetching the necessary secrets from Conjur without needing static credentials.
+
+#### 4. GCP Authentication
+
+This method allows you to authenticate using a Google Cloud Platform (GCP) Service Account.
+
+#### Required Extra-vars/Environment Variables:
+
+- `conjur_authn_type / CONJUR_AUTHN_TYPE` : Authentication type ("gcp").
+
+- `conjur_appliance_url / CONJUR_APPLIANCE_URL`: URL of the running Conjur service (e.g., https://conjur.example.com).
+
+- `conjur_authn_login / CONJUR_AUTHN_LOGIN`: The identity of the Conjur host (e.g., host/my-host).
+
+
+#### Optional Extra-vars/Environment Variables:
+
+- `conjur_account / CONJUR_ACCOUNT`: The Conjur account name (default: conjur).
+
+- `conjur_cert_content / CONJUR_CERT_CONTENT`: Content of the Conjur certificate (PEM format).
+
+- `conjur_cert_file / CONJUR_CERT_FILE`: Path to the Conjur certificate file.
+
+#### How GCP Authentication Works
+
+For GCP Authentication, the plugin uses Google Cloud Instance Metadata Service (IMDS) to authenticate the workload by retrieving a JWT token. The token is used to authenticate against Conjur, allowing the plugin to fetch the requested secrets securely.
+
+### Example Playbooks and Ansible Commands
+
+Below are example playbooks and the corresponding Ansible commands to run them for each authentication method.
+
+#### 1. API Key Authentication
+
+##### Playbook Example:
+
+```yaml
+---
+- hosts: localhost
+  collections:
+    - cyberark.conjur
+  tasks:
+    - name: Lookup variable in Conjur
+      debug:
+        msg: "{{ lookup('cyberark.conjur.conjur_variable', 'data/ansible/target-secret') }}"
+```
+
+##### Using with Extra-vars:
+
+```sh
+ansible-playbook -v \
+--extra-vars "conjur_appliance_url=https://conjur.example.com" \
+--extra-vars "conjur_authn_login=host/my-host" \
+--extra-vars "conjur_authn_api_key=<your_conjur_api_key>" \
+--extra-vars "conjur_cert_file=<path>/certificate.pem" retrieve-secrets.yaml
+```
+
+Alternatively, to provide the certificate content in PEM format as a string:
+
+```sh
+ansible-playbook -v \
+--extra-vars "conjur_appliance_url=https://conjur.example.com" \
+--extra-vars "conjur_authn_login=host/my-host" \
+--extra-vars "conjur_authn_api_key=<your_conjur_api_key>" \
+--extra-vars "conjur_cert_content='-----BEGIN CERTIFICATE-----\n<your certificate content>\n-----END CERTIFICATE-----\n'" retrieve-secrets.yaml
+```
+#### Using with Environment variables:
+
+```sh
+export CONJUR_APPLIANCE_URL="https://conjur.example.com"
+export CONJUR_ACCOUNT="myaccount"
+export CONJUR_AUTHN_LOGIN="host/testapp"
+export CONJUR_AUTHN_API_KEY="<your_conjur_api_key>"
+export CONJUR_CERT_FILE="<path>/certificate.pem"
+```
+
+```sh
+ansible-playbook -v retrieve-secrets.yaml
+```
+
+#### 2. AWS IAM Authentication
+
+##### Playbook Example:
+
+```yaml
+---
+- hosts: localhost
+  collections:
+    - cyberark.conjur
+  tasks:
+    - name: Lookup variable in Conjur
+      debug:
+        msg: "{{ lookup('cyberark.conjur.conjur_variable', 'data/ansible/target-secret') }}"
+```
+##### Using with Extra-vars:
+
+```sh
+ansible-playbook -v \
+--extra-vars "conjur_authn_type=aws" \
+--extra-vars "conjur_appliance_url=https://conjur.example.com" \
+--extra-vars "conjur_authn_login=host/my-host" \
+--extra-vars "conjur_authn_service_id=<your_conjur_service_id>" \
+--extra-vars "conjur_cert_file=<path>/certificate.pem" retrieve-secrets.yaml
+```
+
+Alternatively, to provide the certificate content in PEM format as a string:
+
+```sh
+ansible-playbook -v \
+--extra-vars "conjur_authn_type=aws" \
+--extra-vars "conjur_appliance_url=https://conjur.example.com" \
+--extra-vars "conjur_authn_login=host/my-host" \
+--extra-vars "conjur_authn_service_id=<your_conjur_service_id>" \ 
+--extra-vars "conjur_cert_content='-----BEGIN CERTIFICATE-----\n<your certificate content>\n-----END CERTIFICATE-----\n'" retrieve-secrets.yaml
+```
+#### Using with Environment variables:
+
+```sh
+export CONJUR_AUTHN_TYPE="aws"
+export CONJUR_APPLIANCE_URL="https://conjur.example.com"
+export CONJUR_ACCOUNT="myaccount"
+export CONJUR_AUTHN_LOGIN="host/testapp"
+export CONJUR_AUTHN_SERVICE_ID="<your_conjur_service_id>"
+export CONJUR_CERT_FILE="<path>/certificate.pem"
+```
+
+```sh
+ansible-playbook -v retrieve-secrets.yaml
+```
+
+#### 3. Azure Authentication
+
+##### Playbook Example:
+
+```yaml
+---
+- hosts: localhost
+  collections:
+    - cyberark.conjur
+  tasks:
+    - name: Lookup variable in Conjur
+      debug:
+        msg: "{{ lookup('cyberark.conjur.conjur_variable', 'data/ansible/target-secret') }}"
+```
+##### Using with Extra-vars:
+
+```sh
+ansible-playbook -v \
+--extra-vars "conjur_authn_type=azure" \
+--extra-vars "conjur_appliance_url=https://conjur.example.com" \
+--extra-vars "conjur_authn_login=host/my-host" \
+--extra-vars "conjur_authn_service_id=<your_conjur_service_id>" \
+--extra-vars "azure_client_id=<your_azure_client_id>" \
+--extra-vars "conjur_cert_file=<path>/certificate.pem" retrieve-secrets.yaml
+```
+
+Alternatively, to provide the certificate content in PEM format as a string:
+
+```sh
+ansible-playbook -v \
+--extra-vars "conjur_authn_type=azure" \
+--extra-vars "conjur_appliance_url=https://conjur.example.com" \
+--extra-vars "conjur_authn_login=host/my-host" \
+--extra-vars "conjur_authn_service_id=<your_conjur_service_id>" \
+--extra-vars "azure_client_id=<your_azure_client_id>" \
+--extra-vars "conjur_cert_content='-----BEGIN CERTIFICATE-----\n<your certificate content>\n-----END CERTIFICATE-----\n'" retrieve-secrets.yaml
+```
+#### Using with Environment variables:
+
+```sh
+export CONJUR_AUTHN_TYPE="azure"
+export CONJUR_APPLIANCE_URL="https://conjur.example.com"
+export CONJUR_ACCOUNT="myaccount"
+export CONJUR_AUTHN_LOGIN="host/testapp"
+export CONJUR_AUTHN_SERVICE_ID="<your_conjur_service_id>"
+export AZURE_CLIENT_ID="<your_azure_client_id>"
+export CONJUR_CERT_FILE="<path>/certificate.pem"
+```
+
+```sh
+ansible-playbook -v retrieve-secrets.yaml
+```
+#### 4. GCP Authentication
+
+##### Playbook Example:
+
+```yaml
+---
+- hosts: localhost
+  collections:
+    - cyberark.conjur
+  tasks:
+    - name: Lookup variable in Conjur
+      debug:
+        msg: "{{ lookup('cyberark.conjur.conjur_variable', 'data/ansible/target-secret') }}"
+```
+##### Using with Extra-vars:
+
+```sh
+ansible-playbook -v \
+--extra-vars "conjur_authn_type=gcp" \
+--extra-vars "conjur_appliance_url=https://conjur.example.com" \
+--extra-vars "conjur_authn_login=host/my-host" \
+--extra-vars "conjur_cert_file=<path>/certificate.pem" retrieve-secrets.yaml
+```
+
+Alternatively, to provide the certificate content in PEM format as a string:
+
+```sh
+ansible-playbook -v \
+--extra-vars "conjur_authn_type=gcp" \
+--extra-vars "conjur_appliance_url=https://conjur.example.com" \
+--extra-vars "conjur_authn_login=host/my-host" \
+--extra-vars "conjur_cert_content='-----BEGIN CERTIFICATE-----\n<your certificate content>\n-----END CERTIFICATE-----\n'" retrieve-secrets.yaml
+```
+#### Using with Environment variables:
+
+```sh
+export CONJUR_AUTHN_TYPE="gcp"
+export CONJUR_APPLIANCE_URL="https://conjur.example.com"
+export CONJUR_ACCOUNT="myaccount"
+export CONJUR_AUTHN_LOGIN="host/testapp"
+export CONJUR_CERT_FILE="<path>/certificate.pem"
+```
+
+```sh
+ansible-playbook -v retrieve-secrets.yaml
+```
+
+### Certificate Content Format
+
+In addition to specifying a certificate file (using CONJUR_CERT_FILE environment variable or conjur_cert_file extra-vars), you can now provide the certificate content directly via the CONJUR_CERT_CONTENT environment variable or conjur_cert_content extra-vars. This is useful when you prefer to include the certificate as a string (PEM format) instead of referencing a file on disk.
+
+### How it works
+
+The lookup plugin will first attempt to use the CONJUR_CERT_CONTENT or conjur_cert_content variable (either from the environment or extra-vars). If it is invalid or missing, the plugin will fall back to using the certificate file specified in the CONJUR_CERT_FILE or conjur_cert_file.
+
+### Example
+
+1. CONJUR_CERT_CONTENT or conjur_cert_content as PEM format
+
+You can provide the certificate directly as a string in PEM format inside the CONJUR_CERT_CONTENT environment variable or conjur_cert_content extra-vars. Ensure that the content includes the full certificate block starting with -----BEGIN CERTIFICATE----- and ending with -----END CERTIFICATE-----.
+
+Using Environment Variable:
+
+```sh
+export CONJUR_CERT_CONTENT="-----BEGIN CERTIFICATE-----
+<your certificate content>
+-----END CERTIFICATE-----"
+```
+
+Using extra-vars:
+
+```sh
+ansible-playbook -v \
+--extra-vars "conjur_cert_content='-----BEGIN CERTIFICATE-----
+<your certificate content>
+-----END CERTIFICATE-----'" retrieve-secrets.yaml
+```
+
+Once set, the plugin will look for this variable and use the certificate content as needed.
+
+2. CONJUR_CERT_FILE or conjur_cert_file as File
+
+If CONJUR_CERT_CONTENT environment variable or conjur_cert_content extra-vars is not set or is invalid, the plugin will attempt to use the certificate file specified in the CONJUR_CERT_FILE environment variable or conjur_cert_file extra-vars.
+
+Using Environment Variable:
+
+```sh
+export CONJUR_CERT_FILE="<path>/certificate.pem"
+```
+Using extra-vars:
+
+```sh
+ansible-playbook -v \
+--extra-vars "conjur_cert_file=<path>/certificate.pem" retrieve-secrets.yaml
+```
+
+3. If both CONJUR_CERT_CONTENT or conjur_cert_content and CONJUR_CERT_FILE or conjur_cert_file are missing or invalid, the plugin will return an error. This allows you to quickly diagnose the issue and ensure that the required certificate is provided.
 
 ### Role Variables
 
@@ -197,10 +554,10 @@ None.
 ```yaml
 ---
 ansible_host: <host>
-ansible_ssh_private_key_file: "{{ lookup('cyberark.conjur.conjur_variable', 'path/to/secret-id', as_file=True) }}"
+ansible_ssh_private_key_file: "{{ lookup('cyberark.conjur.conjur_variable', 'path/to/secret-id', as_file=true) }}"
 ```
 
-**Note:** Using the `as_file=True` condition, the private key is stored in a temporary file and its path is written 
+**Note:** Using the `as_file=true` condition, the private key is stored in a temporary file and its path is written 
 in `ansible_ssh_private_key_file`.
 
 ## Contributing

@@ -20,7 +20,7 @@ from ansible.errors import AnsibleActionFail
 from ansible_collections.cisco.meraki.plugins.plugin_utils.meraki import (
     MERAKI,
     meraki_argument_spec,
-    meraki_compare_equality,
+    meraki_compare_equality2,
     get_dict_result,
 )
 from ansible_collections.cisco.meraki.plugins.plugin_utils.exceptions import (
@@ -40,8 +40,10 @@ argument_spec.update(dict(
 ))
 
 required_if = [
-    ("state", "present", ["monitoredMediaServerId", "name", "organizationId"], True),
-    ("state", "absent", ["monitoredMediaServerId", "name", "organizationId"], True),
+    ("state", "present", ["monitoredMediaServerId",
+     "name", "organizationId"], True),
+    ("state", "absent", ["monitoredMediaServerId",
+     "name", "organizationId"], True),
 ]
 required_one_of = []
 mutually_exclusive = []
@@ -53,7 +55,8 @@ class OrganizationsInsightMonitoredMediaServers(object):
         self.meraki = meraki
         self.new_object = dict(
             address=params.get("address"),
-            bestEffortMonitoringEnabled=params.get("bestEffortMonitoringEnabled"),
+            bestEffortMonitoringEnabled=params.get(
+                "bestEffortMonitoringEnabled"),
             name=params.get("name"),
             organizationId=params.get("organizationId"),
             monitoredMediaServerId=params.get("monitoredMediaServerId"),
@@ -82,7 +85,8 @@ class OrganizationsInsightMonitoredMediaServers(object):
             new_object_params['address'] = self.new_object.get('address') or \
                 self.new_object.get('address')
         if self.new_object.get('bestEffortMonitoringEnabled') is not None or self.new_object.get('best_effort_monitoring_enabled') is not None:
-            new_object_params['bestEffortMonitoringEnabled'] = self.new_object.get('bestEffortMonitoringEnabled')
+            new_object_params['bestEffortMonitoringEnabled'] = self.new_object.get(
+                'bestEffortMonitoringEnabled')
         if self.new_object.get('name') is not None or self.new_object.get('name') is not None:
             new_object_params['name'] = self.new_object.get('name') or \
                 self.new_object.get('name')
@@ -107,7 +111,8 @@ class OrganizationsInsightMonitoredMediaServers(object):
             new_object_params['address'] = self.new_object.get('address') or \
                 self.new_object.get('address')
         if self.new_object.get('bestEffortMonitoringEnabled') is not None or self.new_object.get('best_effort_monitoring_enabled') is not None:
-            new_object_params['bestEffortMonitoringEnabled'] = self.new_object.get('bestEffortMonitoringEnabled')
+            new_object_params['bestEffortMonitoringEnabled'] = self.new_object.get(
+                'bestEffortMonitoringEnabled')
         if self.new_object.get('name') is not None or self.new_object.get('name') is not None:
             new_object_params['name'] = self.new_object.get('name') or \
                 self.new_object.get('name')
@@ -196,8 +201,8 @@ class OrganizationsInsightMonitoredMediaServers(object):
         ]
         # Method 1. Params present in request (Ansible) obj are the same as the current (DNAC) params
         # If any does not have eq params, it requires update
-        return any(not meraki_compare_equality(current_obj.get(meraki_param),
-                                               requested_obj.get(ansible_param))
+        return any(not meraki_compare_equality2(current_obj.get(meraki_param),
+                                                requested_obj.get(ansible_param))
                    for (meraki_param, ansible_param) in obj_params)
 
     def create(self):
@@ -286,7 +291,8 @@ class ActionModule(ActionBase):
         self._check_argspec()
 
         meraki = MERAKI(self._task.args)
-        obj = OrganizationsInsightMonitoredMediaServers(self._task.args, meraki)
+        obj = OrganizationsInsightMonitoredMediaServers(
+            self._task.args, meraki)
 
         state = self._task.args.get("state")
 

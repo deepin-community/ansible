@@ -6,7 +6,6 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import atexit
@@ -22,6 +21,7 @@ import traceback
 import datetime
 from collections import OrderedDict
 from ansible.module_utils.compat.version import StrictVersion
+from ansible_collections.community.vmware.plugins.module_utils.clients._vmware import PyvmomiClient, ApiAccessError
 from random import randint
 
 
@@ -37,7 +37,7 @@ except ImportError:
 PYVMOMI_IMP_ERR = None
 try:
     from pyVim import connect
-    from pyVmomi import vim, vmodl, VmomiSupport
+    from pyVmomi import vim, vmodl, VmomiSupport, VmomiJSONEncoder
     HAS_PYVMOMI = True
 except ImportError:
     PYVMOMI_IMP_ERR = traceback.format_exc()
@@ -45,18 +45,14 @@ except ImportError:
 
 from ansible.module_utils._text import to_text, to_native
 from ansible.module_utils.six import integer_types, iteritems, string_types, raise_from
-from ansible.module_utils.basic import env_fallback, missing_required_lib
+from ansible.module_utils.basic import missing_required_lib
 from ansible.module_utils.six.moves.urllib.parse import unquote
+from ansible_collections.community.vmware.plugins.module_utils._argument_spec import base_argument_spec
 
 
 class TaskError(Exception):
     def __init__(self, *args, **kwargs):
         super(TaskError, self).__init__(*args, **kwargs)
-
-
-class ApiAccessError(Exception):
-    def __init__(self, *args, **kwargs):
-        super(ApiAccessError, self).__init__(*args, **kwargs)
 
 
 def check_answer_question_status(vm):
@@ -453,7 +449,7 @@ def gather_vm_facts(content, vm):
         'instance_uuid': vm.config.instanceUuid,
         'guest_tools_status': _get_vm_prop(vm, ('guest', 'toolsRunningStatus')),
         'guest_tools_version': _get_vm_prop(vm, ('guest', 'toolsVersion')),
-        'guest_question': json.loads(json.dumps(vm.summary.runtime.question, cls=VmomiSupport.VmomiJSONEncoder,
+        'guest_question': json.loads(json.dumps(vm.summary.runtime.question, cls=VmomiJSONEncoder.VmomiJSONEncoder,
                                                 sort_keys=True, strip_dynamic=True)),
         'guest_consolidation_needed': vm.summary.runtime.consolidationNeeded,
         'ipv4': None,
@@ -674,37 +670,7 @@ def get_vnc_extraconfig(vm):
 
 
 def vmware_argument_spec():
-    return dict(
-        hostname=dict(type='str',
-                      required=False,
-                      fallback=(env_fallback, ['VMWARE_HOST']),
-                      ),
-        username=dict(type='str',
-                      aliases=['user', 'admin'],
-                      required=False,
-                      fallback=(env_fallback, ['VMWARE_USER'])),
-        password=dict(type='str',
-                      aliases=['pass', 'pwd'],
-                      required=False,
-                      no_log=True,
-                      fallback=(env_fallback, ['VMWARE_PASSWORD'])),
-        port=dict(type='int',
-                  default=443,
-                  fallback=(env_fallback, ['VMWARE_PORT'])),
-        validate_certs=dict(type='bool',
-                            required=False,
-                            default=True,
-                            fallback=(env_fallback, ['VMWARE_VALIDATE_CERTS'])
-                            ),
-        proxy_host=dict(type='str',
-                        required=False,
-                        default=None,
-                        fallback=(env_fallback, ['VMWARE_PROXY_HOST'])),
-        proxy_port=dict(type='int',
-                        required=False,
-                        default=None,
-                        fallback=(env_fallback, ['VMWARE_PROXY_PORT'])),
-    )
+    return base_argument_spec()
 
 
 def connect_to_api(module, disconnect_atexit=True, return_si=False, hostname=None, username=None, password=None, port=None, validate_certs=None,
@@ -1067,11 +1033,9 @@ def quote_obj_name(object_name=None):
     return object_name
 
 
-class PyVmomi(object):
+class PyVmomi(PyvmomiClient):
     def __init__(self, module):
-        """
-        Constructor
-        """
+        self.module = module
         if not HAS_REQUESTS:
             module.fail_json(msg=missing_required_lib('requests'),
                              exception=REQUESTS_IMP_ERR)
@@ -1080,10 +1044,18 @@ class PyVmomi(object):
             module.fail_json(msg=missing_required_lib('PyVmomi'),
                              exception=PYVMOMI_IMP_ERR)
 
-        self.module = module
+        try:
+            super().__init__(hostname=module.params['hostname'],
+                             username=module.params['username'],
+                             password=module.params['password'],
+                             port=module.params['port'],
+                             validate_certs=module.params['validate_certs'],
+                             http_proxy_host=module.params['proxy_host'],
+                             http_proxy_port=module.params['proxy_port'])
+        except ApiAccessError as aae:
+            module.fail_json(msg=str(aae))
         self.params = module.params
         self.current_vm_obj = None
-        self.si, self.content = connect_to_api(self.module, return_si=True)
         self.custom_field_mgr = []
         if self.content.customFieldsManager:  # not an ESXi
             self.custom_field_mgr = self.content.customFieldsManager.field
@@ -1281,7 +1253,7 @@ class PyVmomi(object):
                 elif self.params['folder'] in actual_vm_folder_path:
                     vm_obj = vms[0]
         elif 'moid' in self.params and self.params['moid']:
-            vm_obj = VmomiSupport.templateOf('VirtualMachine')(self.params['moid'], self.si._stub)
+            vm_obj = VmomiJSONEncoder.templateOf('VirtualMachine')(self.params['moid'], self.si._stub)
             try:
                 getattr(vm_obj, 'name')
             except vmodl.fault.ManagedObjectNotFound:
@@ -1907,7 +1879,7 @@ class PyVmomi(object):
         Return:
           dict
         """
-        return json.loads(json.dumps(obj, cls=VmomiSupport.VmomiJSONEncoder,
+        return json.loads(json.dumps(obj, cls=VmomiJSONEncoder.VmomiJSONEncoder,
                                      sort_keys=True, strip_dynamic=True))
 
     def to_json(self, obj, properties=None):
@@ -1974,7 +1946,7 @@ class PyVmomi(object):
         :return: Managed Object if it exists else None
         """
 
-        obj = VmomiSupport.templateOf(object_type)(moid, self.si._stub)
+        obj = VmomiJSONEncoder.templateOf(object_type)(moid, self.si._stub)
         try:
             getattr(obj, 'name')
         except vmodl.fault.ManagedObjectNotFound:

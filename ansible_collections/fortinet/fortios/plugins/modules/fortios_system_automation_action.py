@@ -115,6 +115,8 @@ options:
                     - 'alicloud-function'
                     - 'webhook'
                     - 'cli-script'
+                    - 'diagnose-script'
+                    - 'regular-expression'
                     - 'slack-notification'
                     - 'microsoft-teams-notification'
                     - 'ios-notification'
@@ -213,6 +215,10 @@ options:
                 description:
                     - Description.
                 type: str
+            duration:
+                description:
+                    - Maximum running time for this script in seconds.
+                type: int
             email_body:
                 description:
                     - Email body.
@@ -345,6 +351,10 @@ options:
                 choices:
                     - 'http'
                     - 'https'
+            regular_expression:
+                description:
+                    - Regular expression string.
+                type: str
             replacement_message:
                 description:
                     - Enable/disable replacement message.
@@ -442,12 +452,13 @@ EXAMPLES = """
           azure_function_authorization: "anonymous"
           delay: "0"
           description: "<your_own_value>"
+          duration: "5"
           email_body: "<your_own_value>"
           email_from: "<your_own_value>"
           email_subject: "<your_own_value>"
           email_to:
               -
-                  name: "default_name_31"
+                  name: "default_name_32"
           execute_security_fabric: "enable"
           forticare_email: "enable"
           fos_message: "<your_own_value>"
@@ -461,23 +472,24 @@ EXAMPLES = """
           http_body: "<your_own_value>"
           http_headers:
               -
-                  id: "43"
+                  id: "44"
                   key: "<your_own_value>"
                   value: "<your_own_value>"
           message_type: "text"
           method: "post"
           minimum_interval: "0"
-          name: "default_name_49"
+          name: "default_name_50"
           output_size: "10"
           port: "0"
           protocol: "http"
+          regular_expression: "<your_own_value>"
           replacement_message: "enable"
           replacemsg_group: "<your_own_value> (source system.replacemsg-group.name)"
           required: "enable"
           script: "<your_own_value>"
           sdn_connector:
               -
-                  name: "default_name_58 (source system.sdn-connector.name)"
+                  name: "default_name_60 (source system.sdn-connector.name)"
           security_tag: "<your_own_value>"
           system_action: "reboot"
           timeout: "0"
@@ -572,6 +584,9 @@ from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.compariso
 from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
     find_current_values,
 )
+from ansible_collections.fortinet.fortios.plugins.module_utils.fortios.comparison import (
+    unify_data_format,
+)
 
 
 def filter_system_automation_action_data(json):
@@ -600,6 +615,7 @@ def filter_system_automation_action_data(json):
         "azure_function_authorization",
         "delay",
         "description",
+        "duration",
         "email_body",
         "email_from",
         "email_subject",
@@ -621,6 +637,7 @@ def filter_system_automation_action_data(json):
         "output_size",
         "port",
         "protocol",
+        "regular_expression",
         "replacement_message",
         "replacemsg_group",
         "required",
@@ -645,16 +662,18 @@ def filter_system_automation_action_data(json):
 
 
 def underscore_to_hyphen(data):
+    new_data = None
     if isinstance(data, list):
+        new_data = []
         for i, elem in enumerate(data):
-            data[i] = underscore_to_hyphen(elem)
+            new_data.append(underscore_to_hyphen(elem))
     elif isinstance(data, dict):
         new_data = {}
         for k, v in data.items():
             new_data[k.replace("_", "-")] = underscore_to_hyphen(v)
-        data = new_data
-
-    return data
+    else:
+        return data
+    return new_data
 
 
 def valid_attr_to_invalid_attr(data):
@@ -684,11 +703,10 @@ def valid_attr_to_invalid_attrs(data):
 
 
 def system_automation_action(data, fos, check_mode=False):
+
     state = None
     vdom = data["vdom"]
-
-    state = data["state"]
-
+    state = data.get("state", None)
     system_automation_action_data = data["system_automation_action"]
 
     filtered_data = filter_system_automation_action_data(system_automation_action_data)
@@ -700,40 +718,56 @@ def system_automation_action(data, fos, check_mode=False):
             "before": "",
             "after": filtered_data,
         }
+        mkeyname = fos.get_mkeyname(None, None)
         mkey = fos.get_mkey("system", "automation-action", filtered_data, vdom=vdom)
         current_data = fos.get("system", "automation-action", vdom=vdom, mkey=mkey)
         is_existed = (
             current_data
             and current_data.get("http_status") == 200
-            and isinstance(current_data.get("results"), list)
-            and len(current_data["results"]) > 0
+            and (
+                mkeyname
+                and isinstance(current_data.get("results"), list)
+                and len(current_data["results"]) > 0
+                or not mkeyname
+                and current_data["results"]  # global object response
+            )
         )
 
         # 2. if it exists and the state is 'present' then compare current settings with desired
-        if state == "present" or state is True:
-            if mkey is None:
+        if state == "present" or state is True or state is None:
+            # for non global modules, mkeyname must exist and it's a new module when mkey is None
+            if mkeyname is not None and mkey is None:
                 return False, True, filtered_data, diff
 
             # if mkey exists then compare each other
             # record exits and they're matched or not
             copied_filtered_data = filtered_data.copy()
-            copied_filtered_data.pop(fos.get_mkeyname(None, None), None)
+            copied_filtered_data.pop(mkeyname, None)
+            unified_filtered_data = unify_data_format(copied_filtered_data)
 
+            current_data_results = current_data.get("results", {})
+            current_config = (
+                current_data_results[0]
+                if mkeyname
+                and isinstance(current_data_results, list)
+                and len(current_data_results) > 0
+                else current_data_results
+            )
             if is_existed:
-                is_same = is_same_comparison(
-                    serialize(current_data["results"][0]),
-                    serialize(copied_filtered_data),
+                unified_current_values = find_current_values(
+                    unified_filtered_data,
+                    unify_data_format(current_config),
                 )
 
-                current_values = find_current_values(
-                    copied_filtered_data, current_data["results"][0]
+                is_same = is_same_comparison(
+                    serialize(unified_current_values), serialize(unified_filtered_data)
                 )
 
                 return (
                     False,
                     not is_same,
                     filtered_data,
-                    {"before": current_values, "after": copied_filtered_data},
+                    {"before": unified_current_values, "after": unified_filtered_data},
                 )
 
             # record does not exist
@@ -759,8 +793,9 @@ def system_automation_action(data, fos, check_mode=False):
 
         return True, False, {"reason: ": "Must provide state parameter"}, {}
     # pass post processed data to member operations
+    # no need to do underscore_to_hyphen since do_member_operation handles it by itself
     data_copy = data.copy()
-    data_copy["system_automation_action"] = converted_data
+    data_copy["system_automation_action"] = filtered_data
     fos.do_member_operation(
         "system",
         "automation-action",
@@ -791,6 +826,7 @@ def is_successful_status(resp):
 
 
 def fortios_system(data, fos, check_mode):
+
     if data["system_automation_action"]:
         resp = system_automation_action(data, fos, check_mode)
     else:
@@ -837,6 +873,8 @@ versioned_schema = {
                 {"value": "alicloud-function", "v_range": [["v6.2.0", ""]]},
                 {"value": "webhook"},
                 {"value": "cli-script", "v_range": [["v6.2.0", ""]]},
+                {"value": "diagnose-script", "v_range": [["v7.6.1", ""]]},
+                {"value": "regular-expression", "v_range": [["v7.6.1", ""]]},
                 {"value": "slack-notification", "v_range": [["v6.4.0", ""]]},
                 {"value": "microsoft-teams-notification", "v_range": [["v7.0.0", ""]]},
                 {"value": "ios-notification", "v_range": [["v6.0.0", "v6.4.4"]]},
@@ -948,6 +986,7 @@ versioned_schema = {
         "script": {"v_range": [["v6.2.0", ""]], "type": "string"},
         "output_size": {"v_range": [["v7.2.0", ""]], "type": "integer"},
         "timeout": {"v_range": [["v7.2.0", ""]], "type": "integer"},
+        "duration": {"v_range": [["v7.6.1", ""]], "type": "integer"},
         "execute_security_fabric": {
             "v_range": [["v7.0.2", ""]],
             "type": "string",
@@ -967,6 +1006,7 @@ versioned_schema = {
             },
             "v_range": [["v6.2.0", ""]],
         },
+        "regular_expression": {"v_range": [["v7.6.1", ""]], "type": "string"},
         "headers": {
             "type": "list",
             "elements": "dict",

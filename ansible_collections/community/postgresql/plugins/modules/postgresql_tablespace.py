@@ -54,6 +54,9 @@ options:
     type: dict
   rename_to:
     description:
+    - DEPRECATED (see the L(discussion,https://github.com/ansible-collections/community.postgresql/issues/820)).
+      This option will be removed in version 5.0.0.
+      To rename a tablespace, use the M(community.postgresql.postgresql_query) module.
     - New name of the tablespace.
     - The new name cannot begin with pg_, as such names are reserved for system tablespaces.
     type: str
@@ -64,12 +67,13 @@ options:
     - Permissions checking for SQL commands is carried out as though
       the session_role were the one that had logged in originally.
     type: str
-  db:
+  login_db:
     description:
     - Name of database to connect to and run queries against.
+    - The V(db) alias is deprecated and will be removed in version 5.0.0.
     type: str
     aliases:
-    - login_db
+    - db
   trust_input:
     description:
     - If C(false), check whether values of parameters I(tablespace), I(location), I(owner),
@@ -137,11 +141,6 @@ EXAMPLES = r'''
     name: bar
     set:
       random_page_cost: reset
-
-- name: Rename the tablespace from bar to pcie_ssd
-  community.postgresql.postgresql_tablespace:
-    name: bar
-    rename_to: pcie_ssd
 
 - name: Drop tablespace called bloat
   community.postgresql.postgresql_tablespace:
@@ -418,8 +417,15 @@ def main():
         location=dict(type='path', aliases=['path']),
         owner=dict(type='str'),
         set=dict(type='dict'),
-        rename_to=dict(type='str'),
-        db=dict(type='str', aliases=['login_db']),
+        login_db=dict(type='str', aliases=['db'], deprecated_aliases=[
+            {
+                'name': 'db',
+                'version': '5.0.0',
+                'collection_name': 'community.postgresql',
+            }],
+        ),
+        rename_to=dict(type='str', removed_in_version='5.0.0',
+                       removed_from_collection='community.postgresql'),
         session_role=dict(type='str'),
         trust_input=dict(type='bool', default=True),
         comment=dict(type='str', default=None),

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# (c) 2018-2024, NetApp, Inc
+# (c) 2018-2025, NetApp, Inc
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -13,7 +13,7 @@ short_description: NetApp ONTAP manage volumes.
 extends_documentation_fragment:
     - netapp.ontap.netapp.na_ontap
 version_added: 2.6.0
-author: NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>
+author: NetApp Ansible Team (@carchi8py) <ng-ansible-team@netapp.com>
 
 description:
   - Create or destroy or modify volumes on NetApp ONTAP.
@@ -380,6 +380,12 @@ options:
     type: int
     version_added: 22.8.0
 
+  large_size_enabled:
+    description:
+      - Indicates if the support for large FlexVol volumes and large files is enabled on this volume.
+    type: bool
+    version_added: 22.14.0
+
   wait_for_completion:
     description:
       - Set this parameter to 'true' for synchronous execution during create (wait until volume status is online)
@@ -481,6 +487,16 @@ options:
     type: str
     version_added: 2.9.0
 
+  tiering_object_tags:
+    description:
+      - This parameter specifies tags of a volume for objects stored on a FabricPool-enabled aggregate.
+      - Each tag is a key,value pair and should be in the format "key=value".
+      - A maximum of 4 tags are allowed per volume.
+      - To remove all existing tiering object tags, specify an empty list as the parameter value.
+    type: list
+    elements: str
+    version_added: 23.1.0
+
   space_slo:
     description:
       - Specifies the space SLO type for the volume. The space SLO type is the Service Level Objective for space management for the volume.
@@ -516,27 +532,49 @@ options:
   snapshot_auto_delete:
     description:
       - A dictionary for the auto delete options and values.
-      - Supported options include 'state', 'commitment', 'trigger', 'target_free_space', 'delete_order', 'defer_delete',
-        'prefix', 'destroy_list'.
       - All the above mentioned options except 'destroy_list' are supported in REST for ONTAP 9.13.1 or later with ONTAP collection version 22.8.0 or later.
-      - Option 'state' determines if the snapshot autodelete is currently enabled for the volume. Possible values are 'on' and 'off'.
-      - Option 'commitment' determines the snapshots which snapshot autodelete is allowed to delete to get back space.
-        Possible values are 'try', 'disrupt' and 'destroy'.
-      - Option 'trigger' determines the condition which starts the automatic deletion of snapshots.
-        Possible values are 'volume', 'snap_reserve' and DEPRECATED 'space_reserve'.
-      - Option 'target_free_space' determines when snapshot autodelete should stop deleting snapshots. Depending on the trigger,
-        snapshots are deleted till we reach the target free space percentage. Accepts int type.
-      - Option 'delete_order' determines if the oldest or newest snapshot is deleted first. Possible values are 'newest_first' and 'oldest_first'.
-      - Option 'defer_delete' determines which kind of snapshots to delete in the end. Possible values are 'scheduled', 'user_created',
-        'prefix' and 'none'.
-      - Option 'prefix' can be set to provide the prefix string for the 'prefix' value of the 'defer_delete' option.
-        The prefix string length can be 15 char long.
-      - Option 'destroy_list' is a comma seperated list of services which can be destroyed if the snapshot backing that service is deleted.
-        For 7-mode, the possible values for this option are a combination of 'lun_clone', 'vol_clone', 'cifs_share', 'file_clone' or 'none'.
-        For cluster-mode, the possible values for this option are a combination of 'lun_clone,file_clone' (for LUN clone and/or file clone),
-        'lun_clone,sfsr' (for LUN clone and/or sfsr), 'vol_clone', 'cifs_share', or 'none'.
     type: dict
     version_added: '20.4.0'
+    suboptions:
+      state:
+        description: Determines if the snapshot autodelete is currently enabled for the volume.
+        type: str
+        choices: ['on', 'off']
+      commitment:
+        description: Determines the snapshots that the snapshot autodelete is allowed to delete to get back space.
+        type: str
+        choices: [try, disrupt, destroy]
+      trigger:
+        description:
+          - Determines the condition which starts the automatic deletion of snapshots.
+          - Note - C(space_reserve) option is deprecated and may be removed in the future.
+        type: str
+        choices: [volume, snap_reserve, space_reserve]
+      target_free_space:
+        description:
+          - Determines when snapshot autodelete should stop deleting snapshots.
+          - Depending on the trigger, snapshots are deleted until the target free space percentage is reached.
+        type: int
+      delete_order:
+        description: Determines if the oldest or newest snapshot is deleted first.
+        type: str
+        choices: [newest_first, oldest_first]
+      defer_delete:
+        description: Determines what kind of snapshot to delete in the end.
+        type: str
+        choices: [scheduled, user_created, prefix, 'none']
+      prefix:
+        description:
+          - Can be set to provide the prefix string for the 'prefix' value of the 'defer_delete' option.
+          - The prefix string can be 15 characters long.
+        type: str
+      destroy_list:
+        description:
+          - A comma seperated list of services which can be destroyed if the snapshot backing that service is deleted.
+          - For 7-mode, the possible values for this option are a combination of 'lun_clone', 'vol_clone', 'cifs_share', 'file_clone' or 'none'.
+          - For cluster-mode, the possible values for this option are a combination of 'lun_clone,file_clone' (for LUN clone and/or file clone),
+            'lun_clone,sfsr' (for LUN clone and/or sfsr), 'vol_clone', 'cifs_share', or 'none'.
+        type: str
 
   cutover_action:
     description:
@@ -743,253 +781,259 @@ notes:
 '''
 
 EXAMPLES = """
+- name: Create FlexVol
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: ansibleVolume12
+    is_infinite: false
+    aggregate_name: ansible_aggr
+    size: 100
+    size_unit: mb
+    user_id: 1001
+    group_id: 2002
+    space_guarantee: none
+    tiering_policy: auto
+    export_policy: default
+    percent_snapshot_space: 60
+    qos_policy_group: max_performance_gold
+    vserver: ansibleVServer
+    wait_for_completion: true
+    space_slo: none
+    nvfail_enabled: false
+    comment: ansible created volume
+    tiering_object_tags: ['tag1=one', 'tag2=two', 'tag3=3', 'tag4=4']
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Create FlexVol
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: ansibleVolume12
-        is_infinite: False
-        aggregate_name: ansible_aggr
-        size: 100
-        size_unit: mb
-        user_id: 1001
-        group_id: 2002
-        space_guarantee: none
-        tiering_policy: auto
-        export_policy: default
-        percent_snapshot_space: 60
-        qos_policy_group: max_performance_gold
-        vserver: ansibleVServer
-        wait_for_completion: True
-        space_slo: none
-        nvfail_enabled: False
-        comment: ansible created volume
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Volume Delete
+  netapp.ontap.na_ontap_volume:
+    state: absent
+    name: ansibleVolume12
+    aggregate_name: ansible_aggr
+    vserver: ansibleVServer
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Volume Delete
-      netapp.ontap.na_ontap_volume:
-        state: absent
-        name: ansibleVolume12
-        aggregate_name: ansible_aggr
-        vserver: ansibleVServer
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Make FlexVol offline
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: ansibleVolume
+    is_infinite: false
+    is_online: false
+    vserver: ansibleVServer
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Make FlexVol offline
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: ansibleVolume
-        is_infinite: False
-        is_online: False
-        vserver: ansibleVServer
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Create Flexgroup volume manually
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: ansibleVolume
+    is_infinite: false
+    aggr_list: "{{ aggr_list }}"
+    aggr_list_multiplier: 2
+    size: 200
+    size_unit: mb
+    space_guarantee: none
+    export_policy: default
+    vserver: "{{ vserver }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: false
+    unix_permissions: 777
+    snapshot_policy: default
+    time_out: 0
 
-    - name: Create Flexgroup volume manually
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: ansibleVolume
-        is_infinite: False
-        aggr_list: "{{ aggr_list }}"
-        aggr_list_multiplier: 2
-        size: 200
-        size_unit: mb
-        space_guarantee: none
-        export_policy: default
-        vserver: "{{ vserver }}"
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: False
-        unix_permissions: 777
-        snapshot_policy: default
-        time_out: 0
+- name: Create Flexgroup volume auto provsion as flex group
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: ansibleVolume
+    is_infinite: false
+    auto_provision_as: flexgroup
+    size: 200
+    size_unit: mb
+    space_guarantee: none
+    export_policy: default
+    vserver: "{{ vserver }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: false
+    unix_permissions: 777
+    snapshot_policy: default
+    time_out: 0
 
-    - name: Create Flexgroup volume auto provsion as flex group
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: ansibleVolume
-        is_infinite: False
-        auto_provision_as: flexgroup
-        size: 200
-        size_unit: mb
-        space_guarantee: none
-        export_policy: default
-        vserver: "{{ vserver }}"
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: False
-        unix_permissions: 777
-        snapshot_policy: default
-        time_out: 0
+- name: Create FlexVol with QoS adaptive
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: ansibleVolume15
+    is_infinite: false
+    aggregate_name: ansible_aggr
+    size: 100
+    size_unit: gb
+    space_guarantee: none
+    export_policy: default
+    percent_snapshot_space: 10
+    qos_adaptive_policy_group: extreme
+    vserver: ansibleVServer
+    wait_for_completion: true
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
 
-    - name: Create FlexVol with QoS adaptive
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: ansibleVolume15
-        is_infinite: False
-        aggregate_name: ansible_aggr
-        size: 100
-        size_unit: gb
-        space_guarantee: none
-        export_policy: default
-        percent_snapshot_space: 10
-        qos_adaptive_policy_group: extreme
-        vserver: ansibleVServer
-        wait_for_completion: True
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
+- name: Modify volume dr protection (vserver of the volume must be in a snapmirror relationship)
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: ansibleVolume
+    vserver_dr_protection: protected
+    vserver: "{{ vserver }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: false
 
-    - name: Modify volume dr protection (vserver of the volume must be in a snapmirror relationship)
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: ansibleVolume
-        vserver_dr_protection: protected
-        vserver: "{{ vserver }}"
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: False
+- name: Modify volume with snapshot auto delete options
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: vol_auto_delete
+    snapshot_auto_delete:
+      state: "on"
+      commitment: try
+      defer_delete: scheduled
+      target_free_space: 30
+      destroy_list: lun_clone,vol_clone
+      delete_order: newest_first
+    aggregate_name: "{{ aggr }}"
+    vserver: "{{ vserver }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: false
 
-    - name: Modify volume with snapshot auto delete options
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: vol_auto_delete
-        snapshot_auto_delete:
-          state: "on"
-          commitment: try
-          defer_delete: scheduled
-          target_free_space: 30
-          destroy_list: lun_clone,vol_clone
-          delete_order: newest_first
-        aggregate_name: "{{ aggr }}"
-        vserver: "{{ vserver }}"
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: False
+- name: Move volume with force cutover action
+  netapp.ontap.na_ontap_volume:
+    name: ansible_vol
+    aggregate_name: aggr_ansible
+    cutover_action: force
+    vserver: "{{ vserver }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: false
 
-    - name: Move volume with force cutover action
-      netapp.ontap.na_ontap_volume:
-        name: ansible_vol
-        aggregate_name: aggr_ansible
-        cutover_action: force
-        vserver: "{{ vserver }}"
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: false
+- name: Rehost volume to another vserver auto remap luns
+  netapp.ontap.na_ontap_volume:
+    name: ansible_vol
+    from_vserver: ansible
+    auto_remap_luns: true
+    vserver: "{{ vserver }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: false
 
-    - name: Rehost volume to another vserver auto remap luns
-      netapp.ontap.na_ontap_volume:
-        name: ansible_vol
-        from_vserver: ansible
-        auto_remap_luns: true
-        vserver: "{{ vserver }}"
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: false
+- name: Rehost volume to another vserver force unmap luns
+  netapp.ontap.na_ontap_volume:
+    name: ansible_vol
+    from_vserver: ansible
+    force_unmap_luns: true
+    vserver: "{{ vserver }}"
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: false
 
-    - name: Rehost volume to another vserver force unmap luns
-      netapp.ontap.na_ontap_volume:
-        name: ansible_vol
-        from_vserver: ansible
-        force_unmap_luns: true
-        vserver: "{{ vserver }}"
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: false
+- name: Snapshot restore volume
+  netapp.ontap.na_ontap_volume:
+    name: ansible_vol
+    vserver: ansible
+    snapshot_restore: 2020-05-24-weekly
+    force_restore: true
+    preserve_lun_ids: true
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: false
 
-    - name: Snapshot restore volume
-      netapp.ontap.na_ontap_volume:
-        name: ansible_vol
-        vserver: ansible
-        snapshot_restore: 2020-05-24-weekly
-        force_restore: true
-        preserve_lun_ids: true
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: true
-        validate_certs: false
+- name: Volume create using application/applications nas template
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: ansibleVolume12
+    vserver: ansibleSVM
+    size: 100000000
+    size_unit: b
+    space_guarantee: none
+    language: es
+    percent_snapshot_space: 60
+    unix_permissions: ---rwxrwxrwx
+    snapshot_policy: default
+    efficiency_policy: default
+    comment: testing
+    nas_application_template:
+      nfs_access:   # the mere presence of a suboption is enough to enable this new feature
+        - access: ro
+        - access: rw
+          host: 10.0.0.0/8
+      exclude_aggregates: aggr0
+    hostname: "{{ netapp_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: false
 
-    - name: Volume create using application/applications nas template
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: ansibleVolume12
-        vserver: ansibleSVM
-        size: 100000000
-        size_unit: b
-        space_guarantee: none
-        language: es
-        percent_snapshot_space: 60
-        unix_permissions: ---rwxrwxrwx
-        snapshot_policy: default
-        efficiency_policy: default
-        comment: testing
-        nas_application_template:
-          nfs_access:   # the mere presence of a suboption is enough to enable this new feature
-            - access: ro
-            - access: rw
-              host: 10.0.0.0/8
-          exclude_aggregates: aggr0
-        hostname: "{{ netapp_hostname }}"
-        username: "{{ netapp_username }}"
-        password: "{{ netapp_password }}"
-        https: true
-        validate_certs: false
+# requires Ontap collection version - 21.24.0 to use iso filter plugin.
+- name: volume create with snaplock set.
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: "{{ snaplock_volume }}"
+    aggregate_name: "{{ aggregate }}"
+    size: 20
+    size_unit: mb
+    space_guarantee: none
+    policy: default
+    type: rw
+    snaplock:
+      type: enterprise
+      retention:
+        default: "{{ 60 | netapp.ontap.iso8601_duration_from_seconds }}"
 
-    # requires Ontap collection version - 21.24.0 to use iso filter plugin.
-    - name: volume create with snaplock set.
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: "{{ snaplock_volume }}"
-        aggregate_name: "{{ aggregate }}"
-        size: 20
-        size_unit: mb
-        space_guarantee: none
-        policy: default
-        type: rw
-        snaplock:
-          type: enterprise
-          retention:
-            default: "{{ 60 | netapp.ontap.iso8601_duration_from_seconds }}"
+- name: Create volume with snapshot-auto-delete options - REST
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: test_vol
+    aggregate_name: "{{ aggr }}"
+    size: 20
+    size_unit: mb
+    snapshot_auto_delete:
+      state: 'on'
+      trigger: volume
+      delete_order: "oldest_first"
+      defer_delete: "user_created"
+      commitment: "try"
+      target_free_space: 30
+      prefix: "my_prefix"
+    wait_for_completion: true
 
-    - name: Create volume with snapshot-auto-delete options - REST
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: test_vol
-        aggregate_name: "{{ aggr }}"
-        size: 20
-        size_unit: mb
-        snapshot_auto_delete:
-          state: 'on'
-          trigger: volume
-          delete_order: "oldest_first"
-          defer_delete: "user_created"
-          commitment: "try"
-          target_free_space: 30
-          prefix: "my_prefix"
-        wait_for_completion: true
+- name: Modify volume - REST
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: test_vol
+    aggregate_name: "{{ aggr }}"
+    snapdir_access: false
+    snapshot_auto_delete:
+      state: 'on'
+      target_free_space: 25
 
-    - name: Modify volume - REST
-      netapp.ontap.na_ontap_volume:
-        state: present
-        name: test_vol
-        aggregate_name: "{{ aggr }}"
-        snapdir_access: false
-        snapshot_auto_delete:
-          state: 'on'
-          target_free_space: 25
-
+- name: Modify volume tiering onject_tags - REST
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: test_vol
+    aggregate_name: "{{ aggr }}"
+    tiering_object_tags: ['tag1=one', 'tag2=two']
 """
 
 RETURN = """
@@ -1041,6 +1085,7 @@ class NetAppOntapVolume:
             atime_update=dict(required=False, type='bool'),
             vol_nearly_full_threshold_percent=dict(required=False, type='int'),
             vol_full_threshold_percent=dict(required=False, type='int'),
+            large_size_enabled=dict(required=False, type='bool'),
             auto_provision_as=dict(choices=['flexgroup'], required=False, type='str'),
             wait_for_completion=dict(required=False, type='bool', default=False),
             time_out=dict(required=False, type='int', default=180),
@@ -1051,6 +1096,7 @@ class NetAppOntapVolume:
             nvfail_enabled=dict(type='bool', required=False),
             space_slo=dict(type='str', required=False, choices=['none', 'thick', 'semi-thick']),
             tiering_policy=dict(type='str', required=False, choices=['snapshot-only', 'auto', 'backup', 'none', 'all']),
+            tiering_object_tags=dict(type='list', elements='str', required=False),
             vserver_dr_protection=dict(type='str', required=False, choices=['protected', 'unprotected']),
             comment=dict(type='str', required=False),
             snapshot_auto_delete=dict(type='dict', required=False),
@@ -1157,13 +1203,14 @@ class NetAppOntapVolume:
                                        'space_slo',
                                        'vserver_dr_protection']
         partially_supported_rest_properties = [['efficiency_policy', (9, 7)], ['tiering_minimum_cooling_days', (9, 8)],
-                                               ['analytics', (9, 8)], ['atime_update', (9, 8)],
+                                               ['analytics', (9, 8)], ['atime_update', (9, 8)], ['tiering_object_tags', (9, 8)],
                                                ['vol_nearly_full_threshold_percent', (9, 9)], ['vol_full_threshold_percent', (9, 9)],
-                                               ['activity_tracking', (9, 10, 1)], ['snapshot_locking', (9, 12, 1)], ['granular_data', (9, 12, 1)],
+                                               ['activity_tracking', (9, 10, 1)], ['snapshot_locking', (9, 12, 1)],
+                                               ['granular_data', (9, 12, 1)], ['large_size_enabled', (9, 12, 1)],
                                                ['tags', (9, 13, 1)], ['snapdir_access', (9, 13, 1)], ['snapshot_auto_delete', (9, 13, 1)]]
         self.unsupported_zapi_properties = ['sizing_method', 'logical_space_enforcement', 'logical_space_reporting', 'snaplock',
                                             'analytics', 'activity_tracking', 'tags', 'vol_nearly_full_threshold_percent',
-                                            'vol_full_threshold_percent', 'snapshot_locking', 'granular_data']
+                                            'vol_full_threshold_percent', 'large_size_enabled', 'snapshot_locking', 'granular_data', 'tiering_object_tags']
         self.use_rest = self.rest_api.is_rest_supported_properties(self.parameters, unsupported_rest_properties, partially_supported_rest_properties)
 
         if not self.use_rest:
@@ -2091,12 +2138,12 @@ class NetAppOntapVolume:
             self.volume_unmount()
         attributes = modify.keys()
         for attribute in attributes:
-            if attribute in ['space_guarantee', 'export_policy', 'unix_permissions', 'group_id', 'user_id', 'tiering_policy',
+            if attribute in ['space_guarantee', 'export_policy', 'unix_permissions', 'group_id', 'user_id', 'tiering_policy', 'tiering_object_tags',
                              'snapshot_policy', 'percent_snapshot_space', 'snapdir_access', 'atime_update', 'volume_security_style',
                              'nvfail_enabled', 'space_slo', 'qos_policy_group', 'qos_adaptive_policy_group', 'vserver_dr_protection',
                              'comment', 'logical_space_enforcement', 'logical_space_reporting', 'tiering_minimum_cooling_days',
                              'snaplock', 'max_files', 'analytics', 'activity_tracking', 'tags', 'snapshot_auto_delete',
-                             'vol_nearly_full_threshold_percent', 'vol_full_threshold_percent', 'snapshot_locking', 'granular_data']:
+                             'vol_nearly_full_threshold_percent', 'vol_full_threshold_percent', 'large_size_enabled', 'snapshot_locking', 'granular_data']:
                 self.volume_modify_attributes(modify)
                 break
         if 'snapshot_auto_delete' in attributes and not self.use_rest:
@@ -2512,6 +2559,7 @@ class NetAppOntapVolume:
                   'svm.name': self.parameters['vserver'],
                   'fields': 'encryption.enabled,'
                             'tiering.policy,'
+                            'tiering.object_tags,'
                             'nas.export_policy.name,'
                             'aggregates.name,'
                             'aggregates.uuid,'
@@ -2555,6 +2603,8 @@ class NetAppOntapVolume:
             params['fields'] += 'space.nearly_full_threshold_percent,'
         if self.parameters.get('vol_full_threshold_percent') is not None:
             params['fields'] += 'space.full_threshold_percent,'
+        if self.parameters.get('large_size_enabled') is not None:
+            params['fields'] += 'space.large_size_enabled,'
         if self.parameters.get('snapshot_locking') is not None:
             params['fields'] += 'snapshot_locking_enabled,'
         if self.parameters.get('granular_data') is not None:
@@ -2641,6 +2691,8 @@ class NetAppOntapVolume:
             body['qos.policy.name'] = self.get_qos_policy_group()
         if self.parameters.get('tiering_policy') is not None:
             body['tiering.policy'] = self.parameters['tiering_policy']
+        if self.parameters.get('tiering_object_tags') is not None:
+            body['tiering.object_tags'] = self.parameters['tiering_object_tags']
         if self.parameters.get('encrypt') is not None:
             body['encryption.enabled'] = self.parameters['encrypt']
         if self.parameters.get('logical_space_enforcement') is not None:
@@ -2716,6 +2768,7 @@ class NetAppOntapVolume:
             ('access_time_enabled', 'atime_update', None),
             ('space.nearly_full_threshold_percent', 'vol_nearly_full_threshold_percent', None),
             ('space.full_threshold_percent', 'vol_full_threshold_percent', None),
+            ('space.large_size_enabled', 'large_size_enabled', None),
             ('snapshot_locking_enabled', 'snapshot_locking', None),
             ('granular_data', 'granular_data', None),
         ]:
@@ -2730,6 +2783,7 @@ class NetAppOntapVolume:
         for key, option, transform in [
             ('nas.security_style', 'volume_security_style', None),
             ('tiering.policy', 'tiering_policy', None),
+            ('tiering.object_tags', 'tiering_object_tags', None),
             ('files.maximum', 'max_files', None),
         ]:
             if params and params.get(option) is not None:
@@ -2930,6 +2984,7 @@ class NetAppOntapVolume:
             'activity_tracking': self.na_helper.safe_get(record, ['activity_tracking', 'state']),
             'encrypt': self.na_helper.safe_get(record, ['encryption', 'enabled']),
             'tiering_policy': self.na_helper.safe_get(record, ['tiering', 'policy']),
+            'tiering_object_tags': self.na_helper.safe_get(record, ['tiering', 'object_tags']),
             'export_policy': self.na_helper.safe_get(record, ['nas', 'export_policy', 'name']),
             'aggregate_name': aggr_name,
             'aggregates': aggregates,
@@ -2966,6 +3021,7 @@ class NetAppOntapVolume:
             'snapshot_auto_delete': auto_delete_info,
             'vol_nearly_full_threshold_percent': self.na_helper.safe_get(record, ['space', 'nearly_full_threshold_percent']),
             'vol_full_threshold_percent': self.na_helper.safe_get(record, ['space', 'full_threshold_percent']),
+            'large_size_enabled': self.na_helper.safe_get(record, ['space', 'large_size_enabled']),
             'snapshot_locking': self.na_helper.safe_get(record, ['snapshot_locking_enabled']),
             'granular_data': self.na_helper.safe_get(record, ['granular_data']),
         }
@@ -3000,6 +3056,9 @@ class NetAppOntapVolume:
         modify = {}
 
         current = self.get_volume()
+        if current:
+            if 'tiering_object_tags' in current and current['tiering_object_tags'] is None:
+                current['tiering_object_tags'] = []
         self.volume_style = self.get_volume_style(current)
         if self.volume_style == 'flexgroup' and self.parameters.get('aggregate_name') is not None:
             self.module.fail_json(msg='Error: aggregate_name option cannot be used with FlexGroups.')

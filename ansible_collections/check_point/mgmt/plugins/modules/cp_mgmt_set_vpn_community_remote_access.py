@@ -33,6 +33,7 @@ description:
   - Edit existing Remote Access object. Using object name or uid is optional.
   - Add and Delete API commands for this object are unavailable since there is single object per domain.
   - All operations are performed over Web Services API.
+  - Available from R80.40 JHF management version.
 version_added: "5.0.0"
 author: "Eden Brillant (@chkp-edenbr)"
 options:
@@ -87,9 +88,9 @@ EXAMPLES = """
 - name: set-vpn-community-remote-access
   cp_mgmt_set_vpn_community_remote_access:
     gateways:
-    - mygateway
+      - mygateway
     user_groups:
-    - myusergroup
+      - myusergroup
 """
 
 RETURN = """

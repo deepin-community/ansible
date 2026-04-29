@@ -4,6 +4,173 @@ Community RouterOS Release Notes
 
 .. contents:: Topics
 
+v3.10.0
+=======
+
+Release Summary
+---------------
+
+Bugfix and feature release.
+
+Minor Changes
+-------------
+
+- api_info, api_modify - add ``show-at-cli-login`` property in ``system note`` (https://github.com/ansible-collections/community.routeros/pull/392).
+- api_info, api_modify - set default value for ``include`` and ``exclude`` properties in ``system note`` to an empty string (https://github.com/ansible-collections/community.routeros/pull/394).
+
+Bugfixes
+--------
+
+- api_facts - also report interfaces that are inferred only by reference by IP addresses.
+  RouterOS's APIs have IPv4 and IPv6 addresses point at interfaces by their name, which can
+  change over time and in-between API calls, such that interfaces may have been enumerated
+  under another name, or not at all (for example when removed). Such interfaces are now reported
+  under their new or temporary name and with a synthetic ``type`` property set to differentiate
+  the more likely and positively confirmed removal case (with ``type: "ansible:unknown"``) from
+  the unlikely and probably transient naming mismatch (with ``type: "ansible:mismatch"``).
+  Previously, the api_facts module would have crashed with a ``KeyError`` exception
+  (https://github.com/ansible-collections/community.routeros/pull/391).
+
+v3.9.0
+======
+
+Release Summary
+---------------
+
+Bugfix and feature release.
+
+Minor Changes
+-------------
+
+- api_info, api modify - add ``remote-log-format``, ``remote-protocol``, and ``event-delimiter`` to ``system logging action`` (https://github.com/ansible-collections/community.routeros/pull/381).
+- api_info, api_modify - add ``disable-link-local-address`` and ``stale-neighbor-timeout`` fields to ``ipv6 settings`` (https://github.com/ansible-collections/community.routeros/pull/380).
+- api_info, api_modify - adjust neighbor limit fields in ``ipv6 settings`` to match RouterOS 7.18 and newer (https://github.com/ansible-collections/community.routeros/pull/380).
+- api_info, api_modify - set ``passthrough`` default in ``ip firewall mangle`` to ``true`` for RouterOS 7.19 and newer (https://github.com/ansible-collections/community.routeros/pull/382).
+- api_info, api_modify - since RouterOS 7.17 VRF is supported for OVPN server. It now supports multiple entries, while ``api_modify`` so far only accepted a single entry. The ``interface ovpn-server server`` path now allows multiple entries on RouterOS 7.17 and newer (https://github.com/ansible-collections/community.routeros/pull/383).
+
+Bugfixes
+--------
+
+- routeros terminal plugin - fix ``terminal_stdout_re`` pattern to handle long system identities when connecting to RouterOS through SSH (https://github.com/ansible-collections/community.routeros/pull/386).
+
+v3.8.1
+======
+
+Release Summary
+---------------
+
+Bugfix release.
+
+Bugfixes
+--------
+
+- facts and api_facts modules - prevent deprecation warnings when used with ansible-core 2.19 (https://github.com/ansible-collections/community.routeros/pull/384).
+
+v3.8.0
+======
+
+Release Summary
+---------------
+
+Feature release.
+
+Minor Changes
+-------------
+
+- api_info, api_modify - add ``interface ethernet switch port-isolation`` which is supported since RouterOS 6.43 (https://github.com/ansible-collections/community.routeros/pull/375).
+- api_info, api_modify - add ``routing bfd configuration``. Officially stabilized BFD support for BGP and OSPF is available since RouterOS 7.11
+  (https://github.com/ansible-collections/community.routeros/pull/375).
+- api_modify, api_info - support API path ``ip ipsec mode-config`` (https://github.com/ansible-collections/community.routeros/pull/376).
+
+v3.7.0
+======
+
+Release Summary
+---------------
+
+Feature release.
+
+Minor Changes
+-------------
+
+- api_find_and_modify - allow to control whether ``dynamic`` and/or ``builtin`` entries are ignored with the new ``ignore_dynamic`` and ``ignore_builtin`` options (https://github.com/ansible-collections/community.routeros/issues/372, https://github.com/ansible-collections/community.routeros/pull/373).
+- api_info, api_modify - add ``port-cost-mode`` to ``interface bridge`` which is supported since RouterOS 7.13 (https://github.com/ansible-collections/community.routeros/pull/371).
+
+v3.6.0
+======
+
+Release Summary
+---------------
+
+Feature release.
+
+Minor Changes
+-------------
+
+- api_info, api_modify - add ``mdns-repeat-ifaces`` to ``ip dns`` for RouterOS 7.16 and newer (https://github.com/ansible-collections/community.routeros/pull/358).
+- api_info, api_modify - field name change in ``routing bgp connection`` path implemented by RouterOS 7.19 and newer (https://github.com/ansible-collections/community.routeros/pull/360).
+- api_info, api_modify - rename ``is-responder`` property in ``interface wireguard peers`` to ``responder`` for RouterOS 7.17 and newer (https://github.com/ansible-collections/community.routeros/pull/364).
+
+v3.5.0
+======
+
+Release Summary
+---------------
+
+Feature release.
+
+Minor Changes
+-------------
+
+- api_info, api_modify - change default for ``/ip/cloud/ddns-enabled`` for RouterOS 7.17 and newer from ``yes`` to ``auto`` (https://github.com/ansible-collections/community.routeros/pull/350).
+
+v3.4.0
+======
+
+Release Summary
+---------------
+
+Feature and bugfix release.
+
+Minor Changes
+-------------
+
+- api_info, api_modify - add support for the ``ip dns forwarders`` path implemented by RouterOS 7.17 and newer (https://github.com/ansible-collections/community.routeros/pull/343).
+
+Bugfixes
+--------
+
+- api_info, api_modify - remove the primary key ``action`` from the ``interface wifi provisioning`` path, since RouterOS also allows to create completely duplicate entries (https://github.com/ansible-collections/community.routeros/issues/344, https://github.com/ansible-collections/community.routeros/pull/345).
+
+v3.3.0
+======
+
+Release Summary
+---------------
+
+Feature release.
+
+Minor Changes
+-------------
+
+- api_info, api_modify - add missing attribute ``require-message-auth`` for the ``radius`` path which exists since RouterOS version 7.15 (https://github.com/ansible-collections/community.routeros/issues/338, https://github.com/ansible-collections/community.routeros/pull/339).
+- api_info, api_modify - add the ``interface 6to4`` path. Used to manage IPv6 tunnels via tunnel-brokers like HE, where native IPv6 is not provided (https://github.com/ansible-collections/community.routeros/pull/342).
+- api_info, api_modify - add the ``interface wireless access-list`` and ``interface wireless connect-list`` paths (https://github.com/ansible-collections/community.routeros/issues/284, https://github.com/ansible-collections/community.routeros/pull/340).
+- api_info, api_modify - add the ``use-interface-duid`` option for ``ipv6 dhcp-client`` path. This option prevents issues with Fritzbox modems and routers, when using virtual interfaces (like VLANs) may create duplicated records in hosts config, this breaks original "expose-host" function. Also add the ``script``, ``custom-duid`` and ``validate-server-duid`` as backport from 7.15 version update (https://github.com/ansible-collections/community.routeros/pull/341).
+
+v3.2.0
+======
+
+Release Summary
+---------------
+
+Feature release.
+
+Minor Changes
+-------------
+
+- api_info, api_modify - add support for the ``routing filter community-list`` path implemented by RouterOS 7 and newer (https://github.com/ansible-collections/community.routeros/pull/331).
+
 v3.1.0
 ======
 
